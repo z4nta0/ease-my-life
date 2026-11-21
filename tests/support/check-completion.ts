@@ -9,7 +9,7 @@ import { steOkaFun } from './check-generation.ts'; // What: Step Okay Function. 
 
 
 import type { ConRcdTyp } from '../../src/core/data-model.ts'; // What: Conditional Record Type. Why: Completions can change conditionals. How: This types the conditional expectations.
-import type { IssAddTyp } from './check-generation.ts';        // What: Issue Add Type. Why: Every check reports through one callback. How: This types it.
+import type { IssAddTyp } from './check-generation.ts';        // What: Issue Add Type. Why: The conditional check reports through one callback. How: This types it.
 import type { PicUpdTyp } from '../../src/core/pickers.ts';    // What: Pick Update Type. Why: Staged rows for one item are merged. How: This types the merged map.
 import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: Each check compares the state before and after a click. How: This types both states.
 import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today Entry Type. Why: The checks read the toggled entry. How: This types it.
@@ -312,7 +312,7 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 
 
 
-const jsoStrFun = ( valAny : unknown ) : string => JSON.stringify( valAny ); // What: JSON String Function. Why: Saved records compare most simply as JSON, which drops undefined fields the same way the app's saves do. How: This serializes a value.
+const jsoStrFun = ( valAny : unknown ) : string => JSON.stringify( valAny ); // What: JSON String Function. Why: Saved records compare most simply as JSON, which drops undefined fields. How: This serializes a value.
 
 
 
@@ -373,7 +373,7 @@ const cheRemFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, tasIdeStr : st
 
 
 
-	return issMesArr; // What: Issues Return. Why: The caller collects every reminder's problems. How: This returns the list.
+	return issMesArr; // What: Issues Return. Why: The findings go back to whoever ran the check. How: This returns the list.
 
 
 };
@@ -382,7 +382,17 @@ const cheRemFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, tasIdeStr : st
 
 
 
-const unsConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : carPreObj, _chargePrev : chrPreObj, ...resConObj } = conRcdObj; return jsoStrFun( resConObj ); }; // What: Unsnapshotted Conditional Function. Why: Undo snapshots linger from earlier days and aren't part of what a check-off restores. How: This serializes a conditional without them. // What: Card Previous Object. Why: The day-off card's undo snapshot is left out. How: This takes _cardPrev off conRcdObj, unread. // What: Charge Previous Object. Why: The charge undo snapshot is left out too. How: This takes _chargePrev off conRcdObj, unread. // What: Rest Conditional Object. Why: Every other field is compared. How: This keeps them in resConObj.
+const unsConFun = ( conRcdObj : ConRcdTyp ) : string => { // What: Unsnapshotted Conditional Function. Why: Undo snapshots linger from earlier days and aren't part of what a check-off restores. How: This serializes a conditional without them.
+
+
+	const { _cardPrev : carPreObj, _chargePrev : chrPreObj, ...resConObj } = conRcdObj; // What: Card Previous Object. Why: The day-off card's undo snapshot is left out. How: This takes _cardPrev off conRcdObj, unread. // What: Charge Previous Object. Why: The charge undo snapshot is left out too. How: This takes _chargePrev off conRcdObj, unread. // What: Rest Conditional Object. Why: Every other field is compared. How: This keeps them in resConObj.
+
+
+
+	return jsoStrFun( resConObj ); // What: Serialized Return. Why: The comparison reads the conditional without its snapshots. How: This returns resConObj as JSON.
+
+
+};
 
 
 
@@ -463,7 +473,7 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entIdeStr : st
 
 
 
-		for ( const fieNamStr of [ 'chargeStep', 'value', 'weight' ] as const ) { // What: Staged Field Loop. Why: Each staged field lands exactly; unstaged ones stay. How: This compares each field.
+		for ( const fieNamStr of [ 'chargeStep', 'value', 'weight' ] as const ) { // What: Staged Field Loop. Why: Each staged field lands exactly; unstaged ones stay. How: This compares each field. // What: Type Assertion Note. Why: The field names must stay literal so they index the item's own fields. How: The as const tells TypeScript the names are exactly those three.
 
 
 			const expValNum = updRowObj && fieNamStr in updRowObj ? updRowObj[ fieNamStr ] : preIteObj[ fieNamStr ]; // What: Expected Value Number. Why: A staged field takes its new value, any other keeps its old one. How: This picks whichever applies.
@@ -582,7 +592,7 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entIdeStr : st
 
 
 
-	return issMesArr; // What: Issues Return. Why: The caller collects every check-off's problems. How: This returns the list.
+	return issMesArr; // What: Issues Return. Why: The findings go back to whoever ran the check. How: This returns the list.
 
 
 };
@@ -601,7 +611,7 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entIdeStr : st
  * items, pickers, conditionals (undo snapshots aside), and the conditional
  * log exactly, the entry undone with no revert, and its live pick-log row
  * undone with no completion time. The only allowed leftover is the live
- * row's depletedEnd, which unchecking always writes as false.
+ * row's depletedEnd, which unchecking writes as false where it was unset.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -664,7 +674,7 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entIdeStr : st
 
 
 
-	return issMesArr; // What: Issues Return. Why: The caller collects every undo's problems. How: This returns the list.
+	return issMesArr; // What: Issues Return. Why: The findings go back to whoever ran the check. How: This returns the list.
 
 
 };
@@ -677,7 +687,7 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entIdeStr : st
 
 // #region Exports
 
-export { cheDonFun, cheRemFun, cheUndFun }; // What: Named Exports. Why: The simulation checks every check-off, undo, and reminder through these. How: This exports them by name.
+export { cheDonFun, cheRemFun, cheUndFun }; // What: Named Exports. Why: Other files check check-offs, undos, and reminder completions through these. How: This exports them by name.
 
 // #endregion Exports
 

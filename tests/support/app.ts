@@ -22,15 +22,13 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * app.ts = App
  *
  * @summary
- * Moves around the running app the way a person would. opeDayFun opens the
- * app on a given Chicago day, which is how the simulation advances: it
- * moves the fake clock, loads the page fresh so the Today tab mounts and
- * runs its own check for a new day, and waits until that day's list has
- * been generated and saved. selTabFun switches tabs through the real
- * navigation buttons, subHolFun adds a custom holiday through the Settings
- * form, and opeFixFun opens the real-data backup on a fixed day for the
- * suites that need realistic content. TIP_URL_STR is the placeholder tip
- * page address the test server builds the app with.
+ * Moves around the running app the way a person would: opening a chosen
+ * Chicago day, which moves the fake clock, loads the page fresh so the Today
+ * tab mounts and runs its own new-day check, and waits for that day's list to
+ * be saved; opening the real-data backup on a fixed day; switching tabs
+ * through the real navigation buttons; and adding a custom holiday through the
+ * Settings form. It also holds the placeholder tip page address the test
+ * server builds the app with.
  *
  * Sections:
  *  - Constants
@@ -45,7 +43,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
 
 // #region Constants
 
-const TIP_URL_STR = '/robots.txt?tip-page'; // What: Tip URL String. Why: The Buy Me a Coffee button needs a tip page address in tests, and a real one would leave the test server. How: This same-origin placeholder is the test server's VITE_TIP_URL, and the Settings suite expects the button to open it.
+const TIP_URL_STR = '/robots.txt?tip-page'; // What: Tip URL String. Why: The Buy Me a Coffee button needs a tip page address in tests, and a real one would leave the test server. How: This same-origin placeholder is the test server's VITE_TIP_URL.
 
 // #endregion Constants
 
@@ -73,7 +71,8 @@ const TIP_URL_STR = '/robots.txt?tip-page'; // What: Tip URL String. Why: The Bu
  * @param houValNum - Hour Value Number: The Chicago hour to open at,
  *                    defaulting to 10, after the usual run times.
  *
- * @returns The saved state once the day's list was generated.
+ * @returns A promise that resolves with the saved state once the day's list
+ *          is generated.
  *
  * @example
  * ```ts
@@ -123,7 +122,8 @@ const opeDayFun = async ( curPagObj : Page, dayIsoStr : string, houValNum : numb
  * @param dayIsoStr - Day ISO String: The Chicago date to open, defaulting to
  *                    2026-10-05.
  *
- * @returns The saved state once the day's list was generated.
+ * @returns A promise that resolves with the saved state once the day's list
+ *          is generated.
  *
  * @example
  * ```ts
@@ -167,11 +167,11 @@ const opeFixFun = async ( curPagObj : Page, dayIsoStr : string = '2026-10-05' ) 
  * @param curPagObj - Current Page Object: The page to switch tabs on.
  * @param tabIdeStr - Tab Identifier String: The tab to switch to.
  *
- * @returns A promise that settles once the tab is current.
+ * @returns A promise that settles once the tab is current, with no value.
  *
  * @example
  * ```ts
- * await selTabFun(curPagObj, 'stats') // => void
+ * await selTabFun(curPagObj, 'stats') // => Promise<void>
  * ```
  *
 */
@@ -241,7 +241,7 @@ const subHolFun = async ( curPagObj : Page, holNamStr : string, holDatStr : stri
 
 // #region Exports
 
-export { opeDayFun, opeFixFun, selTabFun, subHolFun, TIP_URL_STR }; // What: Named Exports. Why: The suites open days, open the backup, switch tabs, and add holidays through these, and the config and the Settings suite share the tip placeholder. How: This exports opeDayFun, opeFixFun, selTabFun, subHolFun, and TIP_URL_STR by name.
+export { opeDayFun, opeFixFun, selTabFun, subHolFun, TIP_URL_STR }; // What: Named Exports. Why: Other files open days, open the backup, switch tabs, add holidays, and read the tip placeholder through these. How: This exports opeDayFun, opeFixFun, selTabFun, subHolFun, and TIP_URL_STR by name.
 
 // #endregion Exports
 

@@ -11,6 +11,7 @@ import { selTabFun   } from './app.ts';                      // What: Select Tab
 import { wriStaFun   } from './storage.ts';                  // What: Write State Function. Why: A device signing in with data starts from a saved state. How: This writes it.
 
 
+import type { AdmRepTyp } from './emulator.ts';                // What: Admin Reply Type. Why: The claim helper hands back the emulator's reply. How: This types claSetFun's result.
 import type { Page      } from '@playwright/test';             // What: Page. Why: The helpers drive one device's page. How: This types their page parameter.
 import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: A device signing in with data starts from a saved state. How: This types the state its helper writes.
 
@@ -49,7 +50,31 @@ const DAY_ONE_STR = '2026-10-05'; // What: Day One String. Why: The account flow
 
 // #region Helpers
 
-const claSetFun = ( uidValStr : string ) => admPosFun( `/identitytoolkit.googleapis.com/v1/projects/${ EMU_PRO_STR }/accounts:update`, { customAttributes : JSON.stringify( { paid : true } ), localId : uidValStr } ); // What: Claim Set Function. Why: Tests stand in for the payment webhook. How: This sets an account's paid claim.
+// #region claSetFun
+
+/**
+ * claSetFun = Claim Set Function
+ *
+ * @summary
+ * Sets the paid claim on an emulator account, standing in for the payment
+ * webhook.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param uidValStr - UID Value String: The account's id.
+ *
+ * @returns A promise that resolves with the emulator's reply.
+ *
+ * @example
+ * ```ts
+ * await claSetFun(uidValStr) // => the emulator's reply
+ * ```
+ *
+*/
+
+const claSetFun = ( uidValStr : string ) : Promise< AdmRepTyp > => admPosFun( `/identitytoolkit.googleapis.com/v1/projects/${ EMU_PRO_STR }/accounts:update`, { customAttributes : JSON.stringify( { paid : true } ), localId : uidValStr } ); // What: Claim Set Function. Why: Tests stand in for the payment webhook. How: This sets an account's paid claim.
+
+// #endregion claSetFun
 
 
 
@@ -71,11 +96,11 @@ const claSetFun = ( uidValStr : string ) => admPosFun( `/identitytoolkit.googlea
  * @param paiValBoo - Paid Value Boolean: Whether it starts paid, defaulting
  *                    to true.
  *
- * @returns A promise that settles with the account's id once it's set up.
+ * @returns A promise that resolves with the account's id.
  *
  * @example
  * ```ts
- * await creAccFun('sync@example.com') // => Promise<string>
+ * await creAccFun('sync@example.com') // => the account's id
  * ```
  *
 */
@@ -179,7 +204,7 @@ async function sigLinFun ( curPagObj : Page, emaAdrStr : string ) : Promise< voi
  * @summary
  * Signs a fresh install in: opens the app, skips the welcome modal's tour,
  * and signs in through the emailed link. It leaves waiting for a sync to
- * the caller, since an unpaid account never syncs.
+ * the caller, since an unpaid account has no sync to wait for.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -212,7 +237,31 @@ async function freSigFun ( curPagObj : Page, emaAdrStr : string ) : Promise< voi
 
 
 
-const synWaiFun = ( curPagObj : Page ) => expect( curPagObj.locator( '[data-element-name-hook~="accStaSpa"]' ) ).toHaveText( /^Synced at/, { timeout : 30000 } ); // What: Sync Wait Function. Why: Each step waits for a finished sync. How: This waits for the status to read Synced.
+// #region synWaiFun
+
+/**
+ * synWaiFun = Sync Wait Function
+ *
+ * @summary
+ * Waits up to 30 seconds for the account status to read Synced.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The device's page.
+ *
+ * @returns A promise that settles once the status reads Synced, with no
+ *          value.
+ *
+ * @example
+ * ```ts
+ * await synWaiFun(curPagObj) // => Promise<void>
+ * ```
+ *
+*/
+
+const synWaiFun = ( curPagObj : Page ) : Promise< void > => expect( curPagObj.locator( '[data-element-name-hook~="accStaSpa"]' ) ).toHaveText( /^Synced at/, { timeout : 30000 } ); // What: Sync Wait Function. Why: Each step waits for a finished sync. How: This waits for the status to read Synced.
+
+// #endregion synWaiFun
 
 
 
@@ -264,7 +313,7 @@ async function bacUplFun ( curPagObj : Page, emaAdrStr : string, staAppObj : Sta
 
 // #region Exports
 
-export { bacUplFun, claSetFun, creAccFun, DAY_ONE_STR, freSigFun, sigLinFun, synWaiFun }; // What: Named Exports. Why: The account suites create accounts, sign devices in, wait for syncs, and start their new-day flows through these. How: This exports them by name.
+export { bacUplFun, claSetFun, creAccFun, DAY_ONE_STR, freSigFun, sigLinFun, synWaiFun }; // What: Named Exports. Why: Other files create accounts, sign devices in, wait for syncs, and start their new-day flows through these. How: This exports them by name.
 
 // #endregion Exports
 

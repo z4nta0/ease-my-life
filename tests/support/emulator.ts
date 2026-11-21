@@ -68,7 +68,7 @@ const admPosFun = ( adrPatStr : string, posBodObj : object ) : Promise< AdmRepTy
 
 // #region Exports
 
-export { admPosFun, AUT_EMU_STR, FIR_EMU_STR }; // What: Named Exports. Why: The account helpers, the account specs, and the payments test reach the emulator through these. How: This exports them by name.
+export { admPosFun, type AdmRepTyp, AUT_EMU_STR, FIR_EMU_STR }; // What: Named Exports. Why: The account helpers, the account specs, and the payments test reach the emulator through these. How: This exports them by name.
 
 // #endregion Exports
 

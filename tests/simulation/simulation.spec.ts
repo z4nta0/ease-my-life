@@ -4,9 +4,9 @@
 // #region Imports
 
 import { addDayFun     } from '../support/dates.ts';            // What: Add Day Function. Why: Each segment's days count up from its start. How: This shifts a date.
-import { addSimFun     } from '../support/scenario.ts';         // What: Add Simulation Function. Why: The run covers every schedule whatever the backup holds. How: This adds the scenario's records.
+import { addSimFun     } from '../support/scenario.ts';         // What: Add Simulation Function. Why: The run covers the schedules the backup may lack. How: This adds the scenario's records.
 import { cheDonFun     } from '../support/check-completion.ts'; // What: Check Done Function. Why: Every check-off is verified. How: This checks one entry's completion.
-import { cheGenFun     } from '../support/check-generation.ts'; // What: Check Generation Function. Why: Every generated day is verified. How: This checks the day's list.
+import { cheGenFun     } from '../support/check-generation.ts'; // What: Check Generation Function. Why: Each generated day after the warm-up is verified. How: This checks the day's list.
 import { cheRemFun     } from '../support/check-completion.ts'; // What: Check Reminder Function. Why: Every reminder check-off is verified. How: This checks one completion.
 import { cheUndFun     } from '../support/check-completion.ts'; // What: Check Undo Function. Why: Unchecking must undo exactly. How: This checks one undo.
 import { donCouFun     } from '../support/today.ts';            // What: Done Count Function. Why: A check-off raises the done count by one. How: This counts done entries.
@@ -31,8 +31,8 @@ import { writeFileSync } from 'node:fs';                        // What: Write F
 
 
 import type { Locator   } from '@playwright/test';             // What: Locator. Why: Clicks target cards on the page. How: This types the card locators.
-import type { Page      } from '@playwright/test';             // What: Page. Why: Every step drives the page. How: This types the page parameters.
-import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: Every check compares saved states. How: This types them.
+import type { Page      } from '@playwright/test';             // What: Page. Why: The steps drive the page. How: This types the page parameters.
+import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: The checks compare saved states. How: This types them.
 
 // #endregion Imports
 
@@ -42,18 +42,17 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * simulation.spec.ts = Simulation Spec
  *
  * @summary
- * Runs the real app through weeks of simulated days on a copy of real data
- * and checks every day against the rules. The run loads the backup, seeds
- * the scheduling draws, and fakes the clock, then for each day opens the app
- * at 10 AM Chicago time so the day's list generates on its own. It checks
- * the generated list, checks Today's reminders against the predicted set,
- * then checks everything off one at a time, verifying each check-off and,
- * for the day's first entry, that unchecking undoes it exactly. A few days
- * vary the routine on a fixed schedule, so carried entries, missed
- * periods, overdue one-time reminders, entry skips, re-rolls, and reminder
- * skips all get exercised. The first day is a warm-up: its list is built
- * from the backup's state before the app migrates it, so generation checks
- * start on day two.
+ * Runs the real app through weeks of simulated days on a copy of real data and
+ * checks each day against the rules. The run loads the backup, seeds the
+ * scheduling draws, and fakes the clock, then for each day opens the app at 10
+ * AM Chicago time so the day's list generates on its own. It checks the
+ * generated list, checks Today's reminders against the predicted set, then
+ * checks everything off one at a time, verifying each check-off and, for the
+ * day's first entry, that unchecking undoes it exactly. A few days vary the
+ * routine on a fixed schedule, so carried entries, missed periods, overdue
+ * one-time reminders, entry skips, re-rolls, and reminder skips all get
+ * exercised. The first day is a warm-up: its list is built from the backup's
+ * state before the app migrates it, so generation checks start on day two.
  *
  * At the end the Stats tab is compared with figures recomputed from the
  * logs, and each probability conditional's trigger rate is checked against
@@ -108,7 +107,7 @@ type SegDefTyp = { dayNum : number, staIsoStr : string }; // What: Segment Defin
 const SEG_DEF_ARR : SegDefTyp[] = process.env.EML_SIM_SEGMENTS ? JSON.parse( process.env.EML_SIM_SEGMENTS ) : [ // What: Segment Definition Array. Why: The default stretches cover weekly, monthly, and year-end schedules. How: This reads EML_SIM_SEGMENTS or uses the defaults.
 
 
-	{ dayNum : 35, staIsoStr : '2026-10-05' }, // What: Autumn Segment. Why: Five weeks cover every weekly and monthly schedule and a daylight saving change. How: This runs October 5 to November 8, 2026.
+	{ dayNum : 35, staIsoStr : '2026-10-05' }, // What: Autumn Segment. Why: Five weeks cover weekly and monthly schedules and a daylight saving change. How: This runs October 5 to November 8, 2026.
 	{ dayNum : 18, staIsoStr : '2026-12-27' }  // What: Year End Segment. Why: Crossing a year covers yearly schedules and the gap after a missed stretch. How: This runs December 27, 2026 to January 13, 2027.
 
 
@@ -138,7 +137,8 @@ const SEG_DEF_ARR : SegDefTyp[] = process.env.EML_SIM_SEGMENTS ? JSON.parse( pro
  * @param couDonFun - Count Done Function: Counts done things in a state, so
  *                    the save is recognized by the count rising.
  *
- * @returns The handle and the states around the click, or null.
+ * @returns A promise that resolves with the handle and the states around the
+ *          click, or null.
  *
  * @example
  * ```ts
@@ -211,7 +211,8 @@ const remDonFun = ( staAppObj : StaAppTyp, dayIsoStr : string ) => staAppObj.tas
  * @param staAppObj - State App Object: The saved state, for entry names.
  * @param conTesFun - Condition Test Function: Which entries qualify.
  *
- * @returns The card and its entry, or null when none qualifies.
+ * @returns A promise that resolves with the card and its entry, or null when
+ *          none qualifies.
  *
  * @example
  * ```ts
@@ -300,7 +301,7 @@ const visEntFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( (
  * @param proRolMap - Probability Roll Map: Tallies probability rolls.
  * @param traDayArr - Trace Day Array: Collects each day's trace.
  *
- * @returns The state the day ended with.
+ * @returns A promise that resolves with the state the day ended with.
  *
  * @example
  * ```ts
@@ -313,7 +314,7 @@ const visEntFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( (
 const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : number, preStaObj : StaAppTyp | null, issMesArr : string[], proRolMap : Map< string, ProRolTyp >, traDayArr : DayTraTyp[] ) : Promise< StaAppTyp > => { // What: Run Day Function. Why: The run is a sequence of days. How: This opens, checks, and completes one day.
 
 
-	const genStaObj = await opeDayFun( curPagObj, dayIsoStr ); // What: Generated State Object. Why: Every check starts from the generated list. How: This opens the day and waits for it.
+	const genStaObj = await opeDayFun( curPagObj, dayIsoStr ); // What: Generated State Object. Why: The checks start from the generated list. How: This opens the day and waits for it.
 
 
 
@@ -428,7 +429,7 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 
 		const rolModArr = dayIndNum % 22 === 19 ? [ 'ease-down' ] : [ 'dynamic', 'random', 'weighted' ]; // What: Roll Mode Array. Why: An Ease Down re-roll abandons its active item, which must recharge to full, so every other re-roll day re-rolls one. How: This picks the Ease Down mode on those days and the draw modes otherwise.
-		const rolCarObj = await uniCarFun( curPagObj, ( await reaStaFun( curPagObj ) )!, ( curEntObj ) => rolModArr.includes( genStaObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId )?.mode || '' ) ); // What: Roll Card Object. Why: The re-roll needs a known draw-mode pick. How: This finds one with a unique name. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
+		const rolCarObj = await uniCarFun( curPagObj, ( await reaStaFun( curPagObj ) )!, ( curEntObj ) => rolModArr.includes( genStaObj.pickers.find( ( curPicObj ) => curPicObj.id === curEntObj.pickerId )?.mode || '' ) ); // What: Roll Card Object. Why: The re-roll needs a known pick of the day's roll modes. How: This finds one with a unique name. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
 
 
 
@@ -457,7 +458,7 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 
 
-	if ( dayIndNum % 13 === 6 ) { // What: Reminder Skip Variation. Why: Skipping a reminder must hide it until its next eligible day. How: This skips the first recurring reminder.
+	if ( dayIndNum % 13 === 6 ) { // What: Reminder Skip Variation. Why: Skipping a reminder must hide it until its next eligible day. How: This skips the first shown, unchecked recurring reminder.
 
 
 		const skiStaObj = ( await reaStaFun( curPagObj ) )!;                                                                                                                              // What: Skip State Object. Why: The skip is checked around the click. How: This reads the state first. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
@@ -521,7 +522,7 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 
 
-	while ( true ) { // What: Check-Off Loop. Why: Every entry is checked off in turn. How: This clicks the next unchecked card until none remain.
+	while ( true ) { // What: Check-Off Loop. Why: Entries are checked off in turn, all but the last one on a leave-undone day. How: This clicks the next unchecked card until none remain.
 
 
 		if ( leaUndBoo && await entCarLoc.locator( `${ CHE_BUT_STR }[aria-pressed="false"]` ).count() <= 1 ) break; // What: Leave Undone Guard. Why: On a leave-undone day the last entry stays unchecked. How: This stops with one left.
@@ -536,7 +537,7 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 
 
-		const entIdeStr = cliResObj.aftStaObj.today.entries.find( ( curEntObj ) => curEntObj.done && !cliResObj.preStaObj.today.entries.find( ( oldEntObj ) => oldEntObj.eid === curEntObj.eid )?.done )!.eid; // What: Entry Eid String. Why: The click is identified by which entry became done. How: This finds it. // What: Non-Null Note. Why: The done count just rose by one. How: The ! tells TypeScript the entry exists.
+		const entIdeStr = cliResObj.aftStaObj.today.entries.find( ( curEntObj ) => curEntObj.done && !cliResObj.preStaObj.today.entries.find( ( oldEntObj ) => oldEntObj.eid === curEntObj.eid )?.done )!.eid; // What: Entry Identifier String. Why: The click is identified by which entry became done. How: This finds it. // What: Non-Null Note. Why: The done count just rose by one. How: The ! tells TypeScript the entry exists.
 
 
 
@@ -582,7 +583,7 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 
 
-	while ( true ) { // What: Reminder Loop. Why: Every shown reminder is checked off in turn. How: This clicks the next unchecked card until none remain.
+	while ( true ) { // What: Reminder Loop. Why: Shown reminders are checked off in turn, except the one left unchecked on a leave-undone day. How: This clicks the next unchecked card until none remain.
 
 
 		const cliResObj = await cliCheFun( curPagObj, remCarLoc, ( staAppObj ) => remDonFun( staAppObj, dayIsoStr ) ); // What: Click Result Object. Why: Each reminder check-off is verified. How: This clicks the next card and returns the states.
@@ -636,11 +637,11 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 
 // #region Module Init
 
-test.use( { contextOptions : { reducedMotion : 'reduce' }, viewport : { height : 900, width : 1280 } } ); // What: Page Options Call. Why: Reduced motion makes skips and generation immediate, and a wide page shows every card. How: This sets them for this file's pages.
+test.use( { contextOptions : { reducedMotion : 'reduce' }, viewport : { height : 900, width : 1280 } } ); // What: Page Options Call. Why: Reduced motion makes skips and generation immediate, and the 1,280px viewport sets the page width. How: This sets them for this file's pages.
 
 
 
-test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }, tesInfObj ) => { // What: Simulation Test. Why: Weeks of real use must follow every rule. How: This loads the backup, runs every day, then checks Stats and the odds.
+test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }, tesInfObj ) => { // What: Simulation Test. Why: Weeks of real use must follow the scheduling rules. How: This loads the backup, runs each day, then checks Stats and the odds.
 
 
 	// #region Run State
@@ -705,7 +706,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-	for ( const [ ranLabStr, ranDayNum ] of [ [ 'All Time', null ], [ 'Month', 30 ], [ 'Week', 7 ] ] as const ) { // What: Range Loop. Why: Each range filters differently. How: This checks three ranges.
+	for ( const [ ranLabStr, ranDayNum ] of [ [ 'All Time', null ], [ 'Month', 30 ], [ 'Week', 7 ] ] as const ) { // What: Range Loop. Why: Each range filters differently. How: This checks three ranges. // What: Type Assertion Note. Why: The range labels and day counts must stay literal values. How: The as const tells TypeScript the rows are fixed tuples.
 
 
 		await curPagObj.locator( '[data-element-name-hook~="ranPilBut"]' ).getByText( ranLabStr, { exact : true } ).click(); // What: Range Click Call. Why: Each range is shown through its pill. How: This clicks it.
@@ -747,7 +748,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-		for ( const [ scoLabStr, cheRowArr ] of [ [ 'Reminders', [ [ 'remDonDiv', expStaObj.remDonStr ], [ 'remActDiv', expStaObj.remActStr ], [ 'remBusDiv', expStaObj.remBusStr ] ] ], [ 'Conditionals', [ [ 'conFirDiv', expStaObj.conFirStr ], [ 'conCycDiv', expStaObj.conCycStr ], [ 'conRatDiv', expStaObj.conRatStr ] ] ] ] as const ) { // What: Scope Loop. Why: The reminders and conditionals views have their own cards. How: This switches scope and compares each card.
+		for ( const [ scoLabStr, cheRowArr ] of [ [ 'Reminders', [ [ 'remDonDiv', expStaObj.remDonStr ], [ 'remActDiv', expStaObj.remActStr ], [ 'remBusDiv', expStaObj.remBusStr ] ] ], [ 'Conditionals', [ [ 'conFirDiv', expStaObj.conFirStr ], [ 'conCycDiv', expStaObj.conCycStr ], [ 'conRatDiv', expStaObj.conRatStr ] ] ] ] as const ) { // What: Scope Loop. Why: The reminders and conditionals views have their own cards. How: This switches scope and compares each card. // What: Type Assertion Note. Why: The scope labels, hooks, and expected texts must stay literal values. How: The as const tells TypeScript the rows are fixed tuples.
 
 
 			await curPagObj.locator( '[data-element-name-hook~="scoTabBut"]' ).filter( { hasText : scoLabStr } ).first().click(); // What: Scope Click Call. Why: Each view is shown through its scope tab. How: This clicks it.
