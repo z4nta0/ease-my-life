@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { admAutFun   } from '../lib/admin-auth.mts'; // What: Admin Auth Function. Why: The webhook sets and clears the paid claim. How: This returns Firebase's admin auth service.
+import { admAutFun   } from '../lib/admin-auth.mts'; // What: Admin Authentication Function. Why: The webhook sets and clears the paid claim. How: This returns Firebase's admin auth service.
 import { isaLivFun   } from '../lib/polar.mts';      // What: Is-A Live Function. Why: Production listens to live Polar and previews to the sandbox. How: This checks the deploy context.
 import { ordUidFun   } from '../lib/polar.mts';      // What: Order UID Function. Why: An order names its account through the checkout's tags. How: This reads them.
 import { PRO_LIV_STR } from '../lib/polar.mts';      // What: Product Live String. Why: Only the sync product unlocks sync. How: This is the live product's id.
@@ -212,7 +212,7 @@ async function webSerFun ( reqCurObj : Request, netCotObj : NetCotTyp ) : Promis
 
 	// #region Claim Write
 
-	const admAutObj = admAutFun();                          // What: Admin Auth Object. Why: The claim is set through it. How: This gets the service.
+	const admAutObj = admAutFun();                          // What: Admin Authentication Object. Why: The claim is set through it. How: This gets the service.
 	const accRcdObj = await admAutObj.getUser( accUidStr ); // What: Account Record Object. Why: Other claims must survive. How: This reads the account's current claims.
 
 

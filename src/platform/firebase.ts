@@ -3,11 +3,11 @@
 
 // #region Imports
 
-import { connectAuthEmulator         } from 'firebase/auth';          // What: Connect Auth Emulator. Why: Tests sign in against the local emulator, never the real project. How: This points the auth instance at it.
+import { connectAuthEmulator         } from 'firebase/auth';          // What: Connect Authentication Emulator. Why: Tests sign in against the local emulator, never the real project. How: This points the auth instance at it.
 import { connectFirestoreEmulator    } from 'firebase/firestore';     // What: Connect Firestore Emulator. Why: Tests read and write the local emulator's database. How: This points Firestore at it.
 import { EMU_PRO_STR                 } from '../emulator-project.ts'; // What: Emulator Project String. Why: The emulator serves a demo project, which can never reach a real one. How: This is its ID, which the app uses when testing.
-import { getAuth                     } from 'firebase/auth';          // What: Get Auth. Why: Every sign-in call needs the project's auth instance. How: This creates it, remembering the session in IndexedDB.
-import { GoogleAuthProvider          } from 'firebase/auth';          // What: Google Auth Provider. Why: Google is one of the two ways to sign in. How: This names it for the pop-up.
+import { getAuth                     } from 'firebase/auth';          // What: Get Authentication. Why: Every sign-in call needs the project's auth instance. How: This creates it, remembering the session in IndexedDB.
+import { GoogleAuthProvider          } from 'firebase/auth';          // What: Google Authentication Provider. Why: Google is one of the two ways to sign in. How: This names it for the pop-up.
 import { initializeApp               } from 'firebase/app';           // What: Initialize App. Why: Auth and Firestore both hang off one app instance. How: This creates it from the project's config.
 import { initializeAppCheck          } from 'firebase/app-check';     // What: Initialize App Check. Why: Firebase should serve only the real app, not a script reusing its public config. How: This starts App Check on the app instance before any request.
 import { initializeFirestore         } from 'firebase/firestore';     // What: Initialize Firestore. Why: The cloud copy lives in Firestore. How: This creates the database instance.
@@ -69,7 +69,7 @@ const FIR_CON_OBJ = { // What: Firebase Config Object. Why: The SDK has to know 
 
 	apiKey            : 'AIzaSyDcRI6zFAKRTHPRKIOiLPirzlKqZ9XYftA',     // What: API Key. Why: It identifies the project to Google's servers, and grants nothing by itself. How: This is the web app's key.
 	appId             : '1:609730787836:web:b72ce37d2aa361aa869a79', // What: App Identifier. Why: It names this web app within the project. How: This is its id.
-	authDomain        : 'ease-my-life-4ce18.firebaseapp.com',        // What: Auth Domain. Why: Google sign-in's pop-up runs on a page Firebase serves there. How: This is the project's own domain.
+	authDomain        : 'ease-my-life-4ce18.firebaseapp.com',        // What: Authentication Domain. Why: Google sign-in's pop-up runs on a page Firebase serves there. How: This is the project's own domain.
 	messagingSenderId : '609730787836',                              // What: Messaging Sender Identifier. Why: The config always carries it, though nothing here sends messages. How: This is the project's number.
 	projectId         : 'ease-my-life-4ce18',                        // What: Project Identifier. Why: Firestore and auth address the project by it. How: This is its id.
 	storageBucket     : 'ease-my-life-4ce18.firebasestorage.app'     // What: Storage Bucket. Why: The config always carries it, though nothing here stores files. How: This is the project's bucket name.
@@ -109,7 +109,7 @@ if ( !EMU_HOS_STR ) { // What: App Check Start Check. Why: Firebase should serve
 
 
 
-const firAutObj = getAuth( firAppObj );                                                                         // What: Firebase Auth Object. Why: Every sign-in call goes through it. How: This creates it.
+const firAutObj = getAuth( firAppObj );                                                                         // What: Firebase Authentication Object. Why: Every sign-in call goes through it. How: This creates it.
 const firStoObj = initializeFirestore( firAppObj, EMU_HOS_STR ? { experimentalForceLongPolling : true } : {} ); // What: Firebase Store Object. Why: The cloud backend reads and writes through it. How: This creates it with the default memory cache, since this device's own storage already holds the state. // What: Emulator Long Polling Note. Why: Playwright's WebKit stalls on Firestore's streaming connection to the plain-HTTP emulator, while Chromium and Firefox don't. How: Tests force long polling, and production keeps Firestore's default, which switches to long polling by itself where a browser needs it.
 
 
@@ -117,7 +117,7 @@ const firStoObj = initializeFirestore( firAppObj, EMU_HOS_STR ? { experimentalFo
 if ( EMU_HOS_STR ) { // What: Emulator Check. Why: Tests run against the local emulator. How: This connects both services to it when the build names a host.
 
 
-	connectAuthEmulator( firAutObj, `http://${ EMU_HOS_STR }:9099`, { disableWarnings : true } ); // What: Auth Emulator Connect. Why: Test sign-ins stay local. How: This uses the emulator's default auth port, and hides its banner.
+	connectAuthEmulator( firAutObj, `http://${ EMU_HOS_STR }:9099`, { disableWarnings : true } ); // What: Authentication Emulator Connect. Why: Test sign-ins stay local. How: This uses the emulator's default auth port, and hides its banner.
 
 	connectFirestoreEmulator( firStoObj, EMU_HOS_STR, 8080 ); // What: Firestore Emulator Connect. Why: Test data stays local. How: This uses the emulator's default Firestore port.
 

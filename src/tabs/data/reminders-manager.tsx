@@ -121,7 +121,7 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
 // #region paiSubFun
 
 /**
- * paiSubFun = Pair Sub Function
+ * paiSubFun = Pair Subtitle Function
  *
  * @summary
  * Data tab: full reminder management. Builds the dynamic
@@ -151,7 +151,7 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
 function paiSubFun ( verTexStr : string, neiConStr : string = 'and' ) : ( oncEnaBoo : boolean, reuEnaBoo : boolean ) => React.JSX.Element {
 
 
-	return ( oncEnaBoo, reuEnaBoo ) => ( // What: Pair Sub Return. Why: The caller (each REM_MAT_ARR entry's own dynFun) needs a function it can call with the live once/recurring toggle states. How: This renders one of the 4 mutually-exclusive phrases below.
+	return ( oncEnaBoo, reuEnaBoo ) => ( // What: Pair Subtitle Return. Why: The caller (each REM_MAT_ARR entry's own dynFun) needs a function it can call with the live once/recurring toggle states. How: This renders one of the 4 mutually-exclusive phrases below.
 
 
 		oncEnaBoo && reuEnaBoo // What: Both Check. Why: The phrase depends on which of the two classes has the setting on. How: This tests both flags first.

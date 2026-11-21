@@ -6,11 +6,11 @@
 import { cert          } from 'firebase-admin/app';            // What: Cert. Why: The real project is reached with the service account's key. How: This builds the credential from it.
 import { EMU_PRO_STR   } from '../../src/emulator-project.ts'; // What: Emulator Project String. Why: The emulator serves the demo project the app also uses in tests. How: This is its ID.
 import { getApps       } from 'firebase-admin/app';            // What: Get Apps. Why: A warm function instance must not initialize twice. How: This lists the apps already set up.
-import { getAuth       } from 'firebase-admin/auth';           // What: Get Auth. Why: The functions verify sign-ins and set the paid claim. How: This returns the admin auth service.
+import { getAuth       } from 'firebase-admin/auth';           // What: Get Authentication. Why: The functions verify sign-ins and set the paid claim. How: This returns the admin auth service.
 import { initializeApp } from 'firebase-admin/app';            // What: Initialize App. Why: Admin calls need an app. How: This creates it.
 
 
-import type { Auth } from 'firebase-admin/auth'; // What: Auth. Why: Callers use the admin auth service. How: This types it.
+import type { Auth } from 'firebase-admin/auth'; // What: Authentication. Why: Callers use the admin auth service. How: This types it.
 
 // #endregion Imports
 
@@ -54,7 +54,7 @@ const LIV_PRO_STR = 'ease-my-life-4ce18'; // What: Live Project String. Why: Pro
 // #region admAutFun
 
 /**
- * admAutFun = Admin Auth Function
+ * admAutFun = Admin Authentication Function
  *
  * @summary
  * Returns the admin auth service, setting up the admin app the first time a
@@ -89,7 +89,7 @@ function admAutFun () : Auth {
 
 
 
-		return getAuth(); // What: Emulator Auth Return. Why: The caller uses the emulator's service. How: This returns it.
+		return getAuth(); // What: Emulator Authentication Return. Why: The caller uses the emulator's service. How: This returns it.
 
 
 	}
@@ -125,7 +125,7 @@ function admAutFun () : Auth {
 
 
 
-	return getAuth(); // What: Auth Return. Why: The caller uses the service. How: This returns it.
+	return getAuth(); // What: Authentication Return. Why: The caller uses the service. How: This returns it.
 
 
 }

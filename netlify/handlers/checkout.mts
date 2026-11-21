@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { admAutFun   } from '../lib/admin-auth.mts'; // What: Admin Auth Function. Why: Only a verified sign-in may start a checkout. How: This verifies the caller's token.
+import { admAutFun   } from '../lib/admin-auth.mts'; // What: Admin Authentication Function. Why: Only a verified sign-in may start a checkout. How: This verifies the caller's token.
 import { API_LIV_STR } from '../lib/polar.mts';      // What: API Live String. Why: Production checkouts are created on live Polar. How: This is its address.
 import { API_SAN_STR } from '../lib/polar.mts';      // What: API Sandbox String. Why: Preview checkouts are created in the sandbox. How: This is its address.
 import { isaLivFun   } from '../lib/polar.mts';      // What: Is-A Live Function. Why: Only production uses live Polar. How: This checks the deploy context.

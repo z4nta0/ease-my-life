@@ -23,7 +23,7 @@
 
 // #region Constants
 
-const AUT_EMU_STR = 'http://127.0.0.1:9099'; // What: Auth Emulator String. Why: The admin calls reach the auth emulator. How: This is its default address.
+const AUT_EMU_STR = 'http://127.0.0.1:9099'; // What: Authentication Emulator String. Why: The admin calls reach the auth emulator. How: This is its default address.
 const FIR_EMU_STR = 'http://127.0.0.1:8080'; // What: Firestore Emulator String. Why: Specs read and write the cloud copy straight through the Firestore emulator's REST API. How: This is its default address.
 
 // #endregion Constants

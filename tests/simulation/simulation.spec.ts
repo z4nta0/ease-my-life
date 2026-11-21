@@ -4,7 +4,7 @@
 // #region Imports
 
 import { addDayFun     } from '../support/dates.ts';            // What: Add Day Function. Why: Each segment's days count up from its start. How: This shifts a date.
-import { addSimFun     } from '../support/scenario.ts';         // What: Add Sim Function. Why: The run covers every schedule whatever the backup holds. How: This adds the scenario's records.
+import { addSimFun     } from '../support/scenario.ts';         // What: Add Simulation Function. Why: The run covers every schedule whatever the backup holds. How: This adds the scenario's records.
 import { cheDonFun     } from '../support/check-completion.ts'; // What: Check Done Function. Why: Every check-off is verified. How: This checks one entry's completion.
 import { cheGenFun     } from '../support/check-generation.ts'; // What: Check Generation Function. Why: Every generated day is verified. How: This checks the day's list.
 import { cheRemFun     } from '../support/check-completion.ts'; // What: Check Reminder Function. Why: Every reminder check-off is verified. How: This checks one completion.

@@ -53,7 +53,7 @@ const ALO_HOS_ARR = [ // What: Allowed Host Array. Why: The only other origins t
 
 	'apis.google.com',                         // What: Google API Loader Host. Why: Google sign-in's frame loads its script loader from here. How: This allows it in script-src.
 	'content-firebaseappcheck.googleapis.com', // What: App Check Host. Why: App Check trades its reCAPTCHA proof for a token here. How: This allows it in connect-src.
-	'ease-my-life-4ce18.firebaseapp.com',      // What: Auth Domain Host. Why: The project's own auth domain runs Google sign-in's hidden frame. How: This allows it in frame-src.
+	'ease-my-life-4ce18.firebaseapp.com',      // What: Authentication Domain Host. Why: The project's own auth domain runs Google sign-in's hidden frame. How: This allows it in frame-src.
 	'firestore.googleapis.com',                // What: Firestore Host. Why: The cloud copy lives in Firestore. How: This allows it in connect-src.
 	'identitytoolkit.googleapis.com',          // What: Identity Toolkit Host. Why: Firebase Auth signs in through it. How: This allows it in connect-src.
 	'recaptcha.google.com',                    // What: ReCaptcha Host. Why: reCAPTCHA's challenge frames load from here. How: This allows it in frame-src.

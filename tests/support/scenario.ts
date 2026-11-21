@@ -48,7 +48,7 @@ const PIC_BAS_OBJ = { activeItemId : null, anchorDay : 1, anchorDom : 1, anchorD
 
 
 
-const SIM_ITE_ARR : [ string, string ][] = [ // What: Sim Item Array. Why: Each added picker needs items, some sharing names across pickers. How: Each row is a picker id and an item name.
+const SIM_ITE_ARR : [ string, string ][] = [ // What: Simulation Item Array. Why: Each added picker needs items, some sharing names across pickers. How: Each row is a picker id and an item name.
 
 
 	[ 'pkr_sim_month',   'Sim Deep Clean' ],     // What: Monthly Item One. Why: The monthly picker needs a pool. How: This is its first item.
@@ -68,7 +68,7 @@ const SIM_ITE_ARR : [ string, string ][] = [ // What: Sim Item Array. Why: Each 
 
 
 
-const SIM_PIC_ARR : Partial< PicRcdTyp >[] = [ // What: Sim Picker Array. Why: These pickers cover the schedules the real data may lack. How: Each row is one picker's own fields.
+const SIM_PIC_ARR : Partial< PicRcdTyp >[] = [ // What: Simulation Picker Array. Why: These pickers cover the schedules the real data may lack. How: Each row is one picker's own fields.
 
 
 	{ anchorDom : 31, cadence : 'monthly', id : 'pkr_sim_month', mode : 'ease-up', name : 'Sim Monthly' },                                       // What: Monthly Picker Row. Why: A 31st anchor must clamp in shorter months. How: This is a monthly Ease Up on the 31st.
@@ -82,7 +82,7 @@ const SIM_PIC_ARR : Partial< PicRcdTyp >[] = [ // What: Sim Picker Array. Why: T
 
 
 
-const SIM_TAS_ARR : Partial< TasRcdTyp >[] = [ // What: Sim Task Array. Why: These reminders cover schedules the real data may lack. How: Each row is one reminder's own fields.
+const SIM_TAS_ARR : Partial< TasRcdTyp >[] = [ // What: Simulation Task Array. Why: These reminders cover schedules the real data may lack. How: Each row is one reminder's own fields.
 
 
 	{ day : 31, id : 'tk_sim_year', month : 12, name : 'Sim Year End', repeat : 'annual' },                           // What: Yearly Reminder Row. Why: A yearly date reminder must fall once a year. How: This is due every December 31.
@@ -101,7 +101,7 @@ const SIM_TAS_ARR : Partial< TasRcdTyp >[] = [ // What: Sim Task Array. Why: The
 // #region addSimFun
 
 /**
- * addSimFun = Add Sim Function
+ * addSimFun = Add Simulation Function
  *
  * @summary
  * Returns a copy of a saved state with the scenario's pickers, items, and
@@ -123,7 +123,7 @@ const SIM_TAS_ARR : Partial< TasRcdTyp >[] = [ // What: Sim Task Array. Why: The
  *
 */
 
-const addSimFun = ( staAppObj : StaAppTyp ) : StaAppTyp => ( { // What: Add Sim Function. Why: Every schedule must be present whatever the backup holds. How: This returns the state with the scenario's records added.
+const addSimFun = ( staAppObj : StaAppTyp ) : StaAppTyp => ( { // What: Add Simulation Function. Why: Every schedule must be present whatever the backup holds. How: This returns the state with the scenario's records added.
 
 
 	...staAppObj, // What: State Spread. Why: Everything else stays as the backup has it. How: This copies the state.
