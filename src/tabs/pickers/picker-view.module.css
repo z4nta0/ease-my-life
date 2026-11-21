@@ -379,14 +379,15 @@
 
 
 }
-.picActDiv .picActBut--leaving { /* What: Leaving Picker Action. Why: Re-Roll and Done fall away before their action runs. How: This plays the action exit while the button carries its leaving class. */
+.picActDiv .picActBut--leaving,
+.picActDiv .picRerBut--leaving { /* What: Picker Action Button Leaving And Picker Re-Roll Button Leaving In Picker Actions Div. Why: Re-Roll and Done fall away before their action runs. How: This plays the action exit while the button carries its leaving class. */
 
 
 	animation : picActButLeaveFadeOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
 
 
 }
-.picActDiv .picActBut--sent { /* What: Sent Send Button. Why: Send to Today swells once as it confirms, winning over the entrance the other actions play. How: This plays the button pop while it carries its sent class. */
+.picActDiv .picSenBut--sent { /* What: Picker Send Button Sent In Picker Actions Div. Why: Send to Today swells once as it confirms, winning over the entrance the other actions play. How: This plays the button pop while it carries its sent class. */
 
 
 	animation : picActButSentPop var( --dur-ani-p03 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
@@ -412,7 +413,8 @@
 	.picActDiv .picSenBut,
 	.picActDiv .picRerBut,
 	.picActDiv .picOneBut,
-	.picActDiv .picActBut--leaving { /* What: Instant Picker Actions. Why: The buttons should arrive and leave at once. How: This shortens both animations to .01ms. */
+	.picActDiv .picActBut--leaving,
+	.picActDiv .picRerBut--leaving { /* What: Instant Picker Actions. Why: The buttons should arrive and leave at once. How: This shortens both animations to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -420,7 +422,7 @@
 
 	}
 
-	.picActDiv .picActBut--sent { /* What: Still Sent Send Button. Why: The swell is only decoration. How: This turns it off. */
+	.picActDiv .picSenBut--sent { /* What: Still Picker Send Button Sent In Picker Actions Div. Why: The swell is only decoration. How: This turns it off. */
 
 
 		animation : none;

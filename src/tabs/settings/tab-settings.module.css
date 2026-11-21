@@ -789,7 +789,7 @@
 
 
 }
-.setRowDiv--sub { /* What: Settings Row Div Sub. Why: The run time sits under its toggle as a dependent row that dims while unused. How: This drops the top border, adds top room, and fades its opacity. */
+.runTimDiv--sub { /* What: Run Time Div Sub. Why: The run time sits under its toggle as a dependent row that dims while unused. How: This drops the top border, adds top room, and fades its opacity. */
 
 
 	border-top  : 0;
@@ -798,17 +798,17 @@
 
 
 }
-.setRowDiv--sub[data-row-disabled-active] { /* What: Disabled Run Time Row. Why: The run time does nothing while the generator runs manually. How: This dims the row, keying off data-row-disabled-active. */
+.runTimDiv--sub[data-row-disabled-active] { /* What: Disabled Run Time Div Sub. Why: The run time does nothing while the generator runs manually. How: This dims the row, keying off data-row-disabled-active. */
 
 
 	opacity : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Run Time Row. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Run Time Div Sub. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.setRowDiv--sub { /* What: Still Settings Row Div Sub. Why: The change should happen at once. How: This turns its transition off. */
+	.runTimDiv--sub { /* What: Still Run Time Div Sub. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -821,7 +821,8 @@
 @container appRooDiv ( max-width : 500px ) { /* What: Narrow Stacking Settings Row. Why: A row with a wide control squeezes its text into a narrow column on a phone. How: This applies only when the app is 500px wide or less. */
 
 
-	.setRowDiv--stack { /* What: Stacked Settings Row Div Stack. Why: The text should get the row's full width, with the control underneath. How: This stacks the text above the control, keeping the control at its natural width on the left. */
+	.setRowDiv--stack,
+	.stoRowDiv--stack { /* What: Stacked Settings Row Div Stack And Storage Row Div Stack. Why: The text should get the row's full width, with the control underneath. How: This stacks the text above the control, keeping the control at its natural width on the left. */
 
 
 		align-items    : flex-start;
@@ -856,7 +857,7 @@
 
 
 }
-.setRowDiv--danger .setNamSpa { /* What: Danger Row Name. Why: A destructive row names itself in red. How: This colors it. */
+.resRowDiv--danger .setNamSpa { /* What: Settings Name Span In Reset Row Div Danger. Why: A destructive row names itself in red. How: This colors it. */
 
 
 	color : var( --err-dar-col ); /* Error Dark Color = oklch( 0.5 0.18 25 ) */
@@ -874,14 +875,14 @@
 
 
 }
-.setRowDiv--ios .setSubSpa { /* What: Install Note Description. Why: An install note reads as prose, not a one-line description. How: This caps its line length at 60ch. */
+.insRowDiv--ios .setSubSpa { /* What: Settings Sub Span In Install Row Div iOS. Why: An install note reads as prose, not a one-line description. How: This caps its line length at 60ch. */
 
 
 	max-width : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
 
 
 }
-.setRowDiv--ios .setSubSpa + .setSubSpa { /* What: Following Install Note Description. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one extra small 1 vertical spacing down. */
+.insRowDiv--ios .setSubSpa + .setSubSpa { /* What: Settings Sub Span Following Settings Sub Span In Install Row Div iOS. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one extra small 1 vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
@@ -1167,7 +1168,7 @@
 
 
 }
-.setRowDiv--sub[data-row-disabled-active] .runTimInp { /* What: Disabled Run Time Input. Why: The run time does nothing while the generator runs manually. How: This stops it from taking the pointer. */
+.runTimDiv--sub[data-row-disabled-active] .runTimInp { /* What: Run Time Input In Disabled Run Time Div Sub. Why: The run time does nothing while the generator runs manually. How: This stops it from taking the pointer. */
 
 
 	pointer-events : none;

@@ -670,7 +670,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 	// #region Picker Removal
 
-	const [ rmvHeiNum, setRmvHeiNum ] = React.useState( 0 );                     // What: Removing Height Number And Setter. Why: A deleted picker's open card can be any height, so its collapse needs its real height as the starting ceiling. How: delPicFun measures the card just before flagging it, and the card passes this to its keyframes as --cat-rem-hei.
+	const [ rmvHeiNum, setRmvHeiNum ] = React.useState( 0 );                     // What: Removing Height Number And Setter. Why: A deleted picker's open card can be any height, so its collapse needs its real height as the starting ceiling. How: delPicFun measures the card just before flagging it, and the card passes this to its keyframes as --cat-rmv-hei.
 	const [ rmvPicStr, setRmvPicStr ] = React.useState< string | null >( null ); // What: Removing Picker String And Setter. Why: A deleted picker's own card needs to finish its collapse+fade-out animation before actually being removed. How: This holds whichever picker's own id is currently mid-removal-animation.
 
 
@@ -2057,7 +2057,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 							style={{
 								animationDelay : ( isaDraBoo ? 0 : entIndNum * 45 ) + 'ms',
 								...( isaDraBoo ? { scrollMarginTop : 'var( --spa-ver-bas )' } : {} ),                        // Spacing Vertical Base ~= 14.572px
-								...( rmvPicStr === picCurObj.id && rmvHeiNum ? { '--cat-rem-hei' : rmvHeiNum + 'px' } : {} ) // What: Removing Height Spread. Why: A removing card's collapse must start from its own measured height. How: This sets --cat-rem-hei for the datCatSecRemoveFold keyframes only while this card is the one being removed.
+								...( rmvPicStr === picCurObj.id && rmvHeiNum ? { '--cat-rmv-hei' : rmvHeiNum + 'px' } : {} ) // What: Removing Height Spread. Why: A removing card's collapse must start from its own measured height. How: This sets --cat-rmv-hei for the datCatSecRemoveFold keyframes only while this card is the one being removed.
 							}}
 
 							data-card-vacation-active={ allVacBoo || undefined } // What: Card Vacation Active Attribute. Why: A picker with every item on vacation fades back. How: This sets the presence-only attribute while allVacBoo is true.

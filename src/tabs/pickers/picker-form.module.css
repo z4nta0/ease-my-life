@@ -94,10 +94,10 @@
 }
 
 
-/* #region forSteBut */
+/* #region detSteBut */
 
-.forSteBut,
-.detSteBut { /* What: Form Step Button And Details Step Button. Why: Each step is a button that jumps to it, muted until reached. How: This strips the button chrome and lines up the number and label, and eases its hover color, press, and focus ring. */
+.detSteBut,
+.iteSteBut { /* What: Details Step Button And Items Step Button. Why: Each step is a button that jumps to it, muted until reached. How: This strips the button chrome and lines up the number and label, and eases its hover color, press, and focus ring. */
 
 
 	align-items : center;
@@ -112,51 +112,51 @@
 
 
 }
-.forSteBut:disabled,
-.detSteBut:disabled { /* What: Unavailable Form Step Button And Details Step Button. Why: The Items step can't be reached until the details are ready. How: This drops the pointer cursor. */
+.detSteBut:disabled,
+.iteSteBut:disabled { /* What: Unavailable Details Step Button And Items Step Button. Why: The Items step can't be reached until the details are ready. How: This drops the pointer cursor. */
 
 
 	cursor : default;
 
 
 }
-.forSteBut:hover,
-.detSteBut:hover { /* What: Hovered Form Step Button And Details Step Button. Why: A step should respond to the pointer. How: This darkens it to body color, which the current and finished steps already read in. */
+.detSteBut:hover,
+.iteSteBut:hover { /* What: Hovered Details Step Button And Items Step Button. Why: A step should respond to the pointer. How: This darkens it to body color, which the current and finished steps already read in. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.forSteBut[data-step-current-active],
-.detSteBut[data-step-current-active] { /* What: Current Form Step Button And Details Step Button. Why: The step being filled in reads in body color. How: This darkens it, keying off data-step-current-active. */
+.detSteBut[data-step-current-active],
+.iteSteBut[data-step-current-active] { /* What: Current Details Step Button And Items Step Button. Why: The step being filled in reads in body color. How: This darkens it, keying off data-step-current-active. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.forSteBut[data-step-done-active],
-.detSteBut[data-step-done-active] { /* What: Finished Form Step Button And Details Step Button. Why: A finished step reads in body color too. How: This darkens it, keying off data-step-done-active. */
+.detSteBut[data-step-done-active],
+.iteSteBut[data-step-done-active] { /* What: Finished Details Step Button And Items Step Button. Why: A finished step reads in body color too. How: This darkens it, keying off data-step-done-active. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.forSteBut:active,
-.detSteBut:active { /* What: Pressed Form Step Button And Details Step Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+.detSteBut:active,
+.iteSteBut:active { /* What: Pressed Details Step Button And Items Step Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
 
 
 	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Form Step Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Details Step Button And Items Step Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.forSteBut,
-	.detSteBut { /* What: Still Form Step Button And Details Step Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+	.detSteBut,
+	.iteSteBut { /* What: Still Details Step Button And Items Step Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
 
 
 		transition : none;
@@ -185,8 +185,8 @@
 
 
 }
-.forSteBut[data-step-current-active] .steNumSpa,
-.detSteBut[data-step-current-active] .steNumSpa { /* What: Current Step Number Span. Why: The current step's circle fills in the accent. How: This fills it with contrasting text. */
+.detSteBut[data-step-current-active] .steNumSpa,
+.iteSteBut[data-step-current-active] .steNumSpa { /* What: Step Number Span In Current Details Step Button And Items Step Button. Why: The current step's circle fills in the accent. How: This fills it with contrasting text. */
 
 
 	background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -195,8 +195,8 @@
 
 
 }
-.forSteBut[data-step-done-active] .steNumSpa,
-.detSteBut[data-step-done-active] .steNumSpa { /* What: Finished Step Number Span. Why: A finished step's circle rings in the accent around its check. How: This borders and colors it in the accent. */
+.detSteBut[data-step-done-active] .steNumSpa,
+.iteSteBut[data-step-done-active] .steNumSpa { /* What: Step Number Span In Finished Details Step Button And Items Step Button. Why: A finished step's circle rings in the accent around its check. How: This borders and colors it in the accent. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -227,7 +227,7 @@
 
 }
 
-/* #endregion forSteBut */
+/* #endregion detSteBut */
 
 
 .steLinSpa { /* What: Step Line Span. Why: A short line joins the two steps. How: This draws a short line as a top border, so it snaps to a whole pixel. */
@@ -1182,7 +1182,7 @@
 
 
 }
-.forFooDiv--details { /* What: Form Footer Div Details. Why: The Details footer needs room below the fields. How: This spaces it extra large 1 vertical spacing down. */
+.detFooDiv { /* What: Details Footer Div. Why: The Details footer needs room below the fields. How: This spaces it extra large 1 vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */

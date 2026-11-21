@@ -1257,7 +1257,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 					<span className={ cssModObj.steLinSpa } />{ /* What: Step Line Span Element. Why: The two step buttons need a visible connecting line between them. How: This is a purely decorative element, styled entirely via CSS. */ }
 
 					<button
-						className={ cssModObj.forSteBut }
+						className={ cssModObj.iteSteBut }
 
 						data-step-current-active={ forSteNum === 2 || undefined } // What: Step Current Active Attribute. Why: The step being filled in reads as current. How: This sets the presence-only attribute while forSteNum is 2.
 
@@ -1876,7 +1876,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 					<div
-						className={` ${ cssModObj.detFooDiv }   ${ cssModObj.forFooDivDetails } `}
+						className={ cssModObj.detFooDiv }
 
 						data-element-name-hook='detFooDiv'
 					>{ /* What: Details Footer Div Element. Why: The step's own guidance note and its Cancel/Next actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode's Pickers catalog. */ }

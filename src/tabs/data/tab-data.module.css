@@ -659,7 +659,7 @@
 	from {
 
 
-		max-height : var( --cat-rem-hei, 100dvh ); /* Category Removing Height, set inline on the removing card */ /* What: Measured Ceiling. Why: An open card can be any height, so a fixed ceiling either clips it or delays the fold. How: The delete handler sets the card's measured height, falling back to the viewport height. */ /* What: Layout Collapse. Why: The cards below have to slide up into the removed card's place, which a transform can't make them do. How: This shrinks the card's own box so the list closes the gap as it fades. */
+		max-height : var( --cat-rmv-hei, 100dvh ); /* Category Removing Height, set inline on the removing card */ /* What: Measured Ceiling. Why: An open card can be any height, so a fixed ceiling either clips it or delays the fold. How: The delete handler sets the card's measured height, falling back to the viewport height. */ /* What: Layout Collapse. Why: The cards below have to slide up into the removed card's place, which a transform can't make them do. How: This shrinks the card's own box so the list closes the gap as it fades. */
 		opacity    : 1;
 
 

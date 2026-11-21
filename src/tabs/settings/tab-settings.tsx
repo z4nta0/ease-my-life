@@ -202,7 +202,7 @@ function InsRowCom ( { labTexStr, steTexEle, warTexEle } : IocProTyp ) : React.J
 
 
 		<div
-			className={` ${ cssModObj.insRowDiv }   ${ cssModObj.setRowDivIos } `}
+			className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivIos } `}
 
 			data-element-name-hook='insRowDiv'
 		>{ /* What: Install Row Div Element. Why: A platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -2054,7 +2054,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={` ${ cssModObj.runTimDiv }   ${ cssModObj.setRowDivSub } `}
+								className={` ${ cssModObj.runTimDiv }   ${ cssModObj.runTimDivSub } `}
 
 								data-element-name-hook='runTimDiv'
 								data-row-disabled-active={ daiModStr !== 'auto' || undefined } // What: Row Disabled Active Attribute. Why: The run time does nothing while the generator runs manually, so the row dims. How: This is present only while daiModStr isn't 'auto'.
@@ -2257,7 +2257,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={` ${ cssModObj.stoRowDiv }   ${ cssModObj.setRowDivStack } `}
+								className={` ${ cssModObj.stoRowDiv }   ${ cssModObj.stoRowDivStack } `}
 
 								data-element-name-hook='stoRowDiv'
 							>{ /* What: Store Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block, stacking them on a narrow app so the facts get the full width. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -2399,7 +2399,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<div
-									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.setRowDivIos } `}
+									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivIos } `}
 
 									data-element-name-hook='insRowDiv'
 								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
@@ -2426,7 +2426,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<div
-									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.setRowDivIos } `}
+									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivIos } `}
 
 									data-element-name-hook='insRowDiv'
 								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
@@ -2661,7 +2661,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={` ${ cssModObj.resRowDiv }   ${ cssModObj.setRowDivDanger } `}
+								className={` ${ cssModObj.resRowDiv }   ${ cssModObj.resRowDivDanger } `}
 
 								data-element-name-hook='resRowDiv'
 							>{ /* What: Reset Row Div Element. Why: The reset label/description and the Reset control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout, flagged as a dangerous action. How: This wraps the info block and whichever of the trigger/confirm/disabled controls currently applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
