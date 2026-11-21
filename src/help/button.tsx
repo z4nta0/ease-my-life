@@ -5,9 +5,6 @@
 
 import cssModObj from './button.module.css'; // What: CSS Module Object. Why: The help toggle is styled from its own module. How: This maps each class name in button.module.css to its hashed module class.
 
-
-import type { JSX } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
-
 // #endregion Imports
 
 
@@ -63,7 +60,7 @@ type HbcProTyp = { actModBoo : boolean, onTogModFun : () => void }; // What: Hel
  *
 */
 
-function HelButCom ( { actModBoo, onTogModFun } : HbcProTyp ) : JSX.Element {
+function HelButCom ( { actModBoo, onTogModFun } : HbcProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -102,7 +99,7 @@ function HelButCom ( { actModBoo, onTogModFun } : HbcProTyp ) : JSX.Element {
 
 // #region Exports
 
-export { HelButCom }; // What: Named Export. Why: Every tab renders the help-mode toggle in its own header. How: This exports HelButCom by name.
+export { HelButCom }; // What: Named Export. Why: The toggle is this file's only public binding. How: This exports HelButCom by name.
 
 // #endregion Exports
 

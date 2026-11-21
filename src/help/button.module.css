@@ -6,10 +6,10 @@
  *
  * @summary
  * Styles for HelButCom, the small circled "i" in each tab's header that turns
- * help mode on and off. It stays muted until engaged, like the other rarely
- * used help triggers, so it doesn't compete with real controls, and it fills
- * with the accent color while help mode is on. It sits above help mode's own
- * dim layer, so it stays bright and clickable as the way back out.
+ * help mode on and off. It stays muted until engaged, so it doesn't compete
+ * with real controls, and it fills with the accent color while help mode is
+ * on. It sits above help mode's own dim layer, so it stays bright and
+ * clickable as the way back out.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -17,7 +17,7 @@
 
 
 
-.helTogBut { /* What: Help Toggle Button. Why: The help toggle should be quiet but always reachable, even over help mode's own dim layer. How: This draws a small muted circled glyph raised above the dim layer, brightening on hover, and eases its press and focus ring. */
+.helTogBut { /* What: Help Toggle Button. Why: The help toggle should be quiet but reachable, even over help mode's own dim layer. How: This draws a small muted circled glyph raised above the dim layer, brightening on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -79,7 +79,7 @@
 
 
 }
-.helTogBut:active { /* What: Pressed Help Toggle Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.helTogBut:active { /* What: Pressed Help Toggle Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */

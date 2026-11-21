@@ -7,7 +7,7 @@ import cssModObj from './app.module.css'; // What: CSS Module Object. Why: The a
 import React     from 'react';            // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, React.useRef, React.useLayoutEffect, ...) throughout, instead of importing individual named hooks.
 
 
-import { APP_NAM_OBJ  } from './platform/appearance.ts';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through this file's theme functions. How: This is read as APP_NAM_OBJ.resTheFun, resCusFun, PAL_SET_OBJ and appPalFun in the palette effect.
+import { APP_NAM_OBJ  } from './platform/appearance.ts';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through this file's theme functions. How: This supplies the palette effect's theme resolution, palette lookup, and palette application.
 import { BacFloCom    } from './ui/bg-flourish.tsx';             // What: Background Flourish Component. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared maiInnDiv ref and the current tab id.
 import { durMilFun    } from './utils/rhythm.ts';                // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FeaTouCom    } from './onboarding/app-features.tsx';    // What: Feature Tour Component. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
@@ -22,9 +22,9 @@ import { TabPicCom    } from './tabs/pickers/tab-picker.tsx';    // What: Tab Pi
 import { TabSetCom    } from './tabs/settings/tab-settings.tsx'; // What: Tab Settings Component. Why: This is the actual Settings tab content. How: This is rendered while actIdeStr is 'settings', passed the shared state/actions.
 import { TabStaCom    } from './tabs/stats/tab-stats.tsx';       // What: Tab Stats Component. Why: This is the actual Stats tab content. How: This is rendered while actIdeStr is 'stats', passed the shared state/actions.
 import { TabTodCom    } from './tabs/today/tab-today.tsx';       // What: Tab Today Component. Why: This is the actual Today tab content and its own onboarding tour launchers. How: This is rendered while actIdeStr is 'today', passed the shared state/actions and the tour-starting setters.
-import { UpdNotCom    } from './ui/update-note.tsx';             // What: Update Note Component. Why: A new version waiting on an open edit is offered at the top of the open tab. How: This renders the note inside the main area.
+import { UpdNotCom    } from './ui/update-note.tsx';             // What: Update Note Component. Why: A new version waiting on work still under way is offered at the top of the open tab. How: This renders the note inside the main area.
 import { useAppStaFun } from './state/store.ts';                 // What: Use App State Function. Why: This is the entire state layer, the app's persisted state and the actions that mutate it. How: This is called once, seeded with a clean non-persisted state during the onboarding demo, otherwise loading the real persisted state.
-import { useEmlTouFun } from './state/tour-bus.ts';              // What: Use Ease-My-Life Tour Function. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus's touPhaStr/wanRaiBoo/touSteNum fields.
+import { useEmlTouFun } from './state/tour-bus.ts';              // What: Use Ease-My-Life Tour Function. Why: The Welcome Tour needs to auto-open/close the rail while running, outside the user's own manual toggling. How: This is called once to subscribe to the shared tour event bus.
 import { useRaiFocFun } from './ui/rail-focus.ts';               // What: Use Rail Focus Function. Why: A keyboard-focused pill at a rail's edge would stay half clipped. How: This is called once below to keep focused rail controls in view.
 import { useRaiWheFun } from './ui/rail-wheel.ts';               // What: Use Rail Wheel Function. Why: The pill rails scroll sideways, which a mouse wheel can't do on its own. How: This is called once in AppRooCom.
 import { useSynRunFun } from './state/sync-run.ts';              // What: Use Sync Run Function. Why: Paid sync runs from the app root, beside the state it syncs. How: This is called once, after useAppStaFun.
@@ -114,9 +114,9 @@ type TbcProTyp = { actIdeStr : string, className? : string, onChange : ( tabIdeS
  *                            decorative ghost copy during a placement-change
  *                            animation; defaults to false.
  *
- * @returns The tab bar's own nav element, including every tab button, the
- * sliding indicator, the brand button, and (when in a side placement)
- * the rail pull handle.
+ * @returns The tab bar's own nav element, including each tab button, the
+ * sliding indicator, the brand button, and the rail pull handle (drawn only
+ * in the side placement when the app is 720px wide or less).
  *
  * @example
  * ```tsx
@@ -231,9 +231,9 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 			data-element-name-hook='appTabNav'
 			data-rail-open-active={ raiOpeBoo || undefined } // What: Rail Open Active Attribute. Why: The side rail slides into view as a drawer on a small screen while it's open. How: This sets the presence-only attribute while raiOpeBoo is true and removes it otherwise.
 
-			aria-hidden={ tbcGhoBoo || undefined }
+			aria-hidden={ tbcGhoBoo || undefined } // What: ARIA Hidden Attribute. Why: A ghost copy is purely decorative during its exit animation. How: This hides the bar from assistive technology only while tbcGhoBoo is true and leaves the attribute off otherwise.
 			aria-label='Sections'
-		>{ /* What: Container Nav Element. Why: This is TabBarCom's own root element, holding every tab, the brand button, and the rail handle. How: This renders as an actual <nav> landmark, positioned/laid out per tabPlaStr and styled with the caller's own className. Its data-element-name-hook is read by the tour runner's and help mode's own layout math and outside-click checks, and the support form's scroll math, help mode's chrome clipping, and help mode's nav tip. */ }
+		>{ /* What: App Tab Nav Element. Why: This is TabBarCom's own root element, holding the tab buttons, the brand button, the rail handle, and the sliding indicator. How: This renders as an actual <nav> landmark, positioned and laid out per tabPlaStr and styled with the caller's own className. Its data-element-name-hook is read by tour, help mode, and support form layout and scroll code. */ }
 
 
 			{ indRecObj && ( // What: Indicator Visibility Check. Why: There is nothing to position until a measurement has actually happened. How: This renders the indicator span only while indRecObj holds a value, otherwise it renders nothing at all.
@@ -249,7 +249,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					}}
 
 					aria-hidden='true'
-				/> // What: Indicator Span Element. Why: This is the small sliding pill that visually marks the active tab. How: This is absolutely positioned via inline style using indRecObj's measured offsets and size.
+				/> // What: Tab Indicator Span Element. Why: This is the small sliding pill that visually marks the active tab. How: This is absolutely positioned via inline style using indRecObj's measured offsets and size.
 
 
 			) }
@@ -262,17 +262,17 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 				aria-label='Ease My Life link to go to the Today page'
 
 				onClick={ () => onChange( 'today' ) }
-			>{ /* What: Brand Button Element. Why: The logo/wordmark should also work as a shortcut back to the Today tab. How: This wraps the wordmark span in a real button and jumps to 'today' on click. */ }
+			>{ /* What: Tab Brand Button Element. Why: The logo/wordmark should also work as a shortcut back to the Today tab, except in the bottom placement, which hides the brand button. How: This wraps the wordmark span in a real button and jumps to 'today' on click. */ }
 
 
 				<span
 					className={ cssModObj.braWorSpa }
 
 					aria-hidden='true'
-				>{ /* What: Wordmark Span Element. Why: The side and top bars lead with the full "Ease My Life" wordmark. How: This wraps a small logo mark and the two text lines below, hidden from screen readers since the button's own label already covers it. */ }
+				>{ /* What: Brand Wordmark Span Element. Why: The side and top bars lead with the full "Ease My Life" wordmark, which the top bar cuts to the mark alone when the app is 500px wide or less. How: This wraps a small logo mark and the two text lines below, hidden from screen readers since the button's own label already covers it. */ }
 
 
-					<span className={ cssModObj.worMarSpa }>{ /* What: Mark Span Element. Why: The wordmark shows the small logo mark beside the text. How: This wraps a simplified copy of the logo svg. */ }
+					<span className={ cssModObj.worMarSpa }>{ /* What: Wordmark Mark Span Element. Why: The wordmark shows the small logo mark beside the text. How: This wraps a simplified copy of the logo svg. */ }
 
 
 						<svg
@@ -280,7 +280,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 							fill='none'
 							viewBox='8 8 528 528'
-						>{ /* What: Logo SVG Element. Why: This draws the small square logo mark that accompanies the wordmark text. How: This is a simplified copy of the tab headers' logo svg, without the grid lines or clipped badge outline. */ }
+						>{ /* What: Wordmark Mark SVG Element. Why: This draws the small square logo mark that accompanies the wordmark text. How: This is a simplified copy of the tab headers' logo svg, without the grid lines or clipped badge outline. */ }
 
 
 							<path
@@ -302,10 +302,10 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					</span>
 
 
-					<span className={ cssModObj.worLinSpa }>{ /* What: Lines Span Element. Why: The wordmark's text reads more naturally as two stacked lines than one long run. How: This wraps the "Ease" and "My Life" spans below. */ }
+					<span className={ cssModObj.worLinSpa }>{ /* What: Wordmark Lines Span Element. Why: The wordmark's text reads more naturally as two stacked lines than one long run. How: This wraps the "Ease" and "My Life" spans below. */ }
 
 
-						<span className={ cssModObj.worEasSpa }>Ease</span>{ /* What: Ease Span Element. Why: This is the wordmark's first line of text. How: This renders the literal word "Ease" on its own line. */ }
+						<span className={ cssModObj.worEasSpa }>Ease</span>{ /* What: Wordmark Ease Span Element. Why: This is the wordmark's first line of text. How: This renders the literal word "Ease" on its own line. */ }
 
 						<span className={ cssModObj.worLifSpa }>My Life</span>{ /* What: Wordmark Life Span Element. Why: This is the wordmark's second line of text. How: This renders the literal words "My Life" on their own line. */ }
 
@@ -329,11 +329,11 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					data-element-name-hook='navTabBut'
 					data-tab-button-key={ tabConObj.ideStr }
 
-					aria-current={ tabConObj.ideStr === actIdeStr ? 'page' : undefined }
-					aria-label={ tabConObj.labStr } // What: ARIA Label. Why: At phone widths the tab's label is hidden and the button shows only its icon, which leaves it nameless to screen readers. How: This names the button with the same text as its label, so it reads the same at every width.
+					aria-current={ tabConObj.ideStr === actIdeStr ? 'page' : undefined } // What: ARIA Current Attribute. Why: Assistive technology should announce which tab is open. How: This marks the button as the current page when its ideStr matches actIdeStr and leaves the attribute off otherwise.
+					aria-label={ tabConObj.labStr } // What: ARIA Label. Why: When the label is hidden (the bottom bar narrower than 720px, the top bar 720px wide or less), the button shows only its icon, which leaves it nameless to screen readers. How: This names the button with the same text as its label, so it reads the same at every width.
 
 					onClick={ () => onChange( tabConObj.ideStr ) }
-				>{ /* What: Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself current via aria-current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. Its data-element-name-hook is read by app.tsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator.jsx's own active-tab indicator. */ }
+				>{ /* What: Nav Tab Button Element. Why: This is the clickable control for switching to this specific tab. How: This marks itself current via aria-current when its own ideStr matches actIdeStr, and calls onChange with its ideStr when clicked. Its data-element-name-hook is how meaPosFun finds the active tab. */ }
 
 
 					<IcoSvgCom
@@ -343,7 +343,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 						sizSteStr='p01' // Vertical Rhythm Base Plus 1 ~= 19.304px
 					/>{ /* What: Icon SVG Component. Why: Every tab needs a recognizable glyph alongside its label. How: This renders the icon named by the tab's own icoStr at a fixed size. */ }
 
-					<span className={ cssModObj.tabLabSpa }>{ tabConObj.labStr }</span>{ /* What: Label Span Element. Why: Every tab needs its own visible text label. How: This renders the tab's own labStr. */ }
+					<span className={ cssModObj.tabLabSpa }>{ tabConObj.labStr }</span>{ /* What: Tab Label Span Element. Why: Each tab carries its own text label, hidden when the bottom bar is narrower than 720px or the top bar is 720px wide or less. How: This renders the tab's own labStr. */ }
 
 
 				</button>
@@ -360,10 +360,10 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 				type='button'
 
 				aria-expanded={ raiOpeBoo }
-				aria-label={ raiOpeBoo ? 'Collapse menu' : 'Expand menu' }
+				aria-label={ raiOpeBoo ? 'Collapse menu' : 'Expand menu' } // What: ARIA Label. Why: The handle's name should say what pressing it will do. How: This reads "Collapse menu" while raiOpeBoo is true and "Expand menu" otherwise.
 
 				onClick={ onTogRaiFun }
-			>{ /* What: Handle Button Element. Why: On small screens the rail collapses into an off-canvas drawer that needs a visible, CSS-gated pull handle to open/close, riding the rail's outer edge. How: This toggles raiOpeBoo via onTogRaiFun and flips its own chevron icon to reflect the current state. Its data-element-name-hook is read by help mode's own sidebar-toggle item. */ }
+			>{ /* What: Rail Handle Button Element. Why: On small screens the rail collapses into an off-canvas drawer that needs a visible, CSS-gated pull handle to open and close it, riding the rail's outer edge. How: This toggles raiOpeBoo via onTogRaiFun and flips its own chevron icon to reflect the current state. Its data-element-name-hook is read by help mode. */ }
 
 
 				<svg
@@ -406,8 +406,8 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
  *
  * @summary
  * Owns the single source of truth for which of the five tabs is active and
- * renders the app's entire shell around it: the persistent tab bar (plus its
- * ghost copy during a placement-change animation), the active tab's own
+ * renders the app's shell around it, including the persistent tab bar (plus
+ * its ghost copy during a placement-change animation), the active tab's own
  * content component, and every onboarding/tour overlay layered on top. Also
  * resolves and applies the current color palette, tracks the system's
  * dark-mode preference, and manages the animated crossfade between tab bar
@@ -417,8 +417,8 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
  *
  * @param props - This component does not use any props.
  *
- * @returns The app's entire rendered shell: the current tab bar, the active
- * tab's own content, and any onboarding overlay that's currently
+ * @returns The app's rendered shell, including the current tab bar, the
+ * active tab's own content, and any onboarding overlay that's currently
  * running.
  *
  * @example
@@ -444,8 +444,8 @@ function AppRooCom () : React.JSX.Element {
 
 	// #region Rail Scroll Hooks
 
-	useRaiFocFun(); // What: Use Rail Focus Function Call. Why: Every tab's pill rails should keep a keyboard-focused control in view. How: This attaches the shared focus listener for as long as the app is mounted.
-	useRaiWheFun(); // What: Use Rail Wheel Function Call. Why: Every tab's pill rails should scroll with a mouse wheel. How: This attaches the shared wheel listener for as long as the app is mounted.
+	useRaiFocFun(); // What: Use Rail Focus Function Call. Why: A keyboard-focused control in a pill rail should stay in view. How: This attaches the shared focus listener for as long as the app is mounted.
+	useRaiWheFun(); // What: Use Rail Wheel Function Call. Why: A pill rail should scroll with a mouse wheel. How: This attaches the shared wheel listener for as long as the app is mounted.
 
 	// #endregion Rail Scroll Hooks
 
@@ -560,7 +560,7 @@ function AppRooCom () : React.JSX.Element {
 		if ( maiEleRef.current ) maiEleRef.current.scrollTop = 0; // What: Scroll Reset Guard. Why: The shared main scroller would otherwise keep the previous tab's scroll position. How: This zeroes the scroll position of the main element, if it's currently mounted.
 
 
-	}, [] ); // What: Effect Dependency Array. Why: selTabFun only closes over stable setters and a ref, none of which ever change identity. How: An empty array means this callback is created once and never recreated.
+	}, [] ); // What: Callback Dependency Array. Why: selTabFun only closes over stable setters and a ref, none of which ever change identity. How: An empty array means this callback is created once and never recreated.
 
 
 
@@ -578,7 +578,7 @@ function AppRooCom () : React.JSX.Element {
 	React.useEffect( () => { // What: System Dark Listener Effect. Why: sysDarBoo needs to update live if the OS switches light/dark mode while the app is open, not just on load. How: This subscribes a change listener to the prefers-color-scheme media query and cleans it up on unmount.
 
 
-		if ( typeof matchMedia !== 'function' ) return; // What: No MatchMedia Guard. Why: Some environments (or very old browsers) may not support matchMedia at all. How: This bails out of the effect entirely when matchMedia isn't available, leaving sysDarBoo at its initial value.
+		if ( typeof matchMedia !== 'function' ) return; // What: No MatchMedia Guard. Why: The listener only works where matchMedia exists. How: This bails out of the effect entirely when matchMedia isn't available, leaving sysDarBoo at its initial value.
 
 
 
@@ -598,7 +598,7 @@ function AppRooCom () : React.JSX.Element {
 	React.useEffect( () => { // What: Theme Application Effect. Why: The active palette must be recalculated and applied whenever the persisted appearance settings or the system's dark-mode state change. How: This resolves the active theme key, picks the matching palette (built-in or custom), and applies it to the document.
 
 
-		const appCurObj = staAppObj.appearance;                          // What: Appearance Current Object. Why: Every branch below reads the persisted appearance settings. How: This reads staAppObj.appearance, which migStaFun guarantees on every load.
+		const appCurObj = staAppObj.appearance;                          // What: Appearance Current Object. Why: The theme key and the custom palette branches below read the persisted appearance settings. How: This reads staAppObj.appearance.
 		const theKeyStr = APP_NAM_OBJ.resTheFun( appCurObj, sysDarBoo ); // What: Theme Key String. Why: The actual palette to apply depends on the user's theme choice combined with the current system dark-mode state. How: This resolves both into a single concrete theme key, such as 'ink' or 'customLight'.
 
 		let palResObj; // What: Palette Resolved Object. Why: The concrete color palette to apply isn't known yet, since it depends on which branch below resolves it. How: This is declared here and assigned in exactly one of the branches that follow.
@@ -621,26 +621,13 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-	// #region Body Dataset Effects
-
-	React.useEffect( () => { // What: Placement Dataset Effect. Why: CSS elsewhere in the app selects on document.body's own data attributes to react to the current tab placement. How: This mirrors the persisted tabPlacement onto body.dataset.placement.
+	React.useEffect( () => { // What: Placement Dataset Effect. Why: The body carries the current tab placement as a data attribute. How: This mirrors the persisted tabPlacement onto body.dataset.placement.
 
 
-		document.body.dataset.placement = staAppObj.appearance.tabPlacement; // What: Placement Dataset Write. Why: This is the actual value CSS reads to lay out the tab bar differently per placement. How: This writes the persisted tabPlacement onto the body element.
+		document.body.dataset.placement = staAppObj.appearance.tabPlacement; // What: Placement Dataset Write. Why: This keeps the body's placement attribute in step with the persisted setting. How: This writes the persisted tabPlacement onto the body element.
 
 
 	}, [ staAppObj.appearance.tabPlacement ] ); // What: Effect Dependency Array. Why: The dataset only needs rewriting when the persisted placement itself actually changes. How: This depends on the specific tabPlacement field rather than the whole appearance object, so unrelated appearance changes don't trigger it.
-
-
-	React.useEffect( () => { // What: Completion Style Dataset Effect. Why: CSS elsewhere in the app selects on document.body's own data attributes to pick the completion celebration's visual style. How: This mirrors the persisted completionStyle onto body.dataset.completionStyle.
-
-
-		document.body.dataset.completionStyle = staAppObj.appearance.completionStyle; // What: Completion Style Dataset Write. Why: This is the actual value CSS reads to choose which celebration animation plays. How: This writes the persisted completionStyle onto the body element.
-
-
-	}, [ staAppObj.appearance.completionStyle ] ); // What: Effect Dependency Array. Why: The dataset only needs rewriting when the persisted completion style itself actually changes. How: This depends on the specific completionStyle field rather than the whole appearance object, so unrelated appearance changes don't trigger it.
-
-	// #endregion Body Dataset Effects
 
 
 
@@ -710,7 +697,7 @@ function AppRooCom () : React.JSX.Element {
 			className={ cssModObj.appRooDiv }
 
 			data-placement={ tabPlaStr }
-		>{ /* What: App Div Element. Why: This is AppRooCom's own root element, holding the skip link, the real and ghost nav bars, the rail scrim, the active tab's content, and every onboarding overlay. How: This renders as a plain div, tagged with the current tabPlaStr via a data attribute for CSS layout. */ }
+		>{ /* What: App Root Div Element. Why: This is AppRooCom's own root element, holding the skip link, the real and ghost nav bars, the rail scrim, the main area, and every onboarding overlay. How: This renders as a plain div, tagged with the current tabPlaStr via a data attribute for CSS layout. */ }
 
 
 			<a
@@ -763,7 +750,7 @@ function AppRooCom () : React.JSX.Element {
 
 					onChange={ () => {} }
 					onTogRaiFun={ () => {} }
-				/> // What: Tab Bar Component. Why: This plays the exit-toward-edge keyframe for the old placement while the real bar above enters its new slot. How: This is rendered at the previous placement, flagged tbcGhoBoo so its clipPath id gets the "--gho" modifier, with no-op handlers since it's purely decorative during its exit animation.
+				/> // What: Tab Bar Component. Why: This plays the exit-toward-edge keyframe for the old placement while the real bar above enters its new slot. How: This is rendered at the previous placement, flagged tbcGhoBoo so it is hidden from assistive technology, with no-op handlers since it's purely decorative during its exit animation.
 
 
 			) }
@@ -779,7 +766,7 @@ function AppRooCom () : React.JSX.Element {
 					aria-hidden='true'
 
 					onClick={ () => setRaiOpeBoo( false ) }
-				/> // What: Scrim Div Element. Why: Tapping outside an open rail drawer is a common way users expect to close it. How: This renders a full-screen overlay that closes the rail when clicked, hidden from screen readers since it's purely a visual/interaction affordance.
+				/> // What: Rail Scrim Div Element. Why: A tap on the dimmed area outside an open rail drawer should close it. How: This renders a full-screen overlay that closes the rail when clicked, hidden from screen readers since it's purely a visual/interaction affordance.
 
 
 			) }
@@ -793,13 +780,13 @@ function AppRooCom () : React.JSX.Element {
 				className={ cssModObj.appConMai }
 
 				data-element-name-hook='appConMai'
-				data-tab-today-active={ actIdeStr === 'today' || undefined } // What: Tab Today Active Attribute. Why: The Today tab runs edge to edge, so the main area drops its side padding while it shows. How: This sets the presence-only attribute while actIdeStr is 'today' and removes it otherwise.
+				data-tab-today-active={ actIdeStr === 'today' || undefined } // What: Tab Today Active Attribute. Why: The Today tab runs edge to edge in the bottom (below 880px) and top placements, so the main area drops its base side padding while it shows. How: This sets the presence-only attribute while actIdeStr is 'today' and removes it otherwise.
 
 				tabIndex={ -1 } // What: Main Tab Index. Why: The skip link moves focus here, but the main area isn't a control. How: A tabIndex of -1 lets it take focus without joining the Tab order.
-			>{ /* What: Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active, and the skip link's target. How: This renders the Today tab directly, or wraps every other tab in a shared maiInnDiv div, based on actIdeStr. Its id is kept plain as the skip link's target, and its data-element-name-hook is read by every tab's, tour's, and help surface's own scroll-into-view code. */ }
+			>{ /* What: App Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active, and the skip link's target. How: This renders the update note, then the Today tab directly or every other tab inside a shared maiInnDiv wrapper, based on actIdeStr. Its id is kept plain as the skip link's target, and its data-element-name-hook is read by tab, tour, and help scroll-into-view code. */ }
 
 
-				<UpdNotCom />{ /* What: Update Note Component. Why: A new version that couldn't reload quietly, since something was being edited, is offered here. How: This renders the note's status region first in the main area, above whichever tab is open. */ }
+				<UpdNotCom />{ /* What: Update Note Component. Why: A new version that couldn't reload while the app was hidden, since work was still under way, is offered here. How: This renders the note's status region first in the main area, above whichever tab is open. */ }
 
 
 
@@ -810,7 +797,7 @@ function AppRooCom () : React.JSX.Element {
 						key='today'
 
 						className={ cssModObj.tabFadDiv }
-					>{ /* What: Today Fade Div Element. Why: Switching tabs should play a fade transition, and React needs a stable key to treat each tab as a distinct mounted instance. How: This wraps TabTodCom and remounts (replaying the fade) whenever the active tab changes back to 'today'. */ }
+					>{ /* What: Tab Fade Div Element. Why: Switching tabs should play a fade transition, and React needs a stable key to treat each tab as a distinct mounted instance. How: This wraps TabTodCom and remounts (replaying the fade) whenever the active tab changes back to 'today'. */ }
 
 
 						<TabTodCom
@@ -840,7 +827,7 @@ function AppRooCom () : React.JSX.Element {
 						ref={ maiInnRef }
 
 						className={` ${ cssModObj.maiInnDiv }   ${ cssModObj.tabFadDiv } `}
-					>{ /* What: Main Inner Fade Div Element. Why: Every non-Today tab needs the same fade transition and a stable per-tab key so React remounts it on switch, plus a shared ref for the background flourish to measure. How: This wraps whichever tab matches actIdeStr below, remounting (and replaying the fade) every time the active tab changes. */ }
+					>{ /* What: Main Inner Div Element. Why: Every non-Today tab needs the same centered column with a fade transition (tabFadDiv), a stable per-tab key so React remounts it on switch, and a shared ref for the background flourish to measure. How: This wraps whichever tab matches actIdeStr below, remounting (and replaying the fade) every time the active tab changes. */ }
 
 
 						<BacFloCom
@@ -1003,7 +990,7 @@ function AppRooCom () : React.JSX.Element {
 
 // #region Exports
 
-export { AppRooCom }; // What: Named Export. Why: main.tsx is the sole consumer, mounting this as the app's whole root. How: This re-exports AppRooCom; every other binding in this file is internal-only.
+export { AppRooCom }; // What: Named Export. Why: The root component is this file's only public binding. How: This exports AppRooCom by name, and every other binding in this file stays internal.
 
 // #endregion Exports
 
