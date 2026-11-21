@@ -959,9 +959,9 @@
 }
 
 
-/* #region rowIteSpa */
+/* #region rowFirSpa */
 
-.rowIteSpa { /* What: Row Item Span. Why: The name row and its subline stack in the first column. How: This stacks them in a tight column that can shrink. */
+.rowFirSpa { /* What: Row First Span. Why: The name row and its subline stack in the first column. How: This stacks them in a tight column that can shrink. */
 
 
 	display        : flex;
@@ -1151,7 +1151,7 @@
 
 /* #endregion rowSubSpa */
 
-/* #endregion rowIteSpa */
+/* #endregion rowFirSpa */
 
 
 

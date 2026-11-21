@@ -1084,7 +1084,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 
 
 								<span
-									className={ cssModObj.rowIteSpa }
+									className={ cssModObj.rowFirSpa }
 
 									data-element-name-hook='logIteSpa'
 								>{ /* What: Conditional Name Span Element. Why: This groups the conditional's own name, mode pill and subline together. How: This renders conRcdObj's own name/mode row plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
@@ -1419,7 +1419,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 
 								<span
-									className={ cssModObj.rowIteSpa }
+									className={ cssModObj.rowFirSpa }
 
 									data-element-name-hook='logIteSpa'
 								>{ /* What: Item Name Span Element. Why: This groups the item's own name and subline together. How: This renders iteRcdObj's own name plus its computed subline below. Its data-element-name-hook is read by help mode's Today catalog. */ }
