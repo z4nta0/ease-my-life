@@ -10,11 +10,11 @@
 
 		<loc>https://easemylife.app/</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the root's absolute URL. -->
 
-		<lastmod>2026-10-03</lastmod><!-- What: Last Modified Element. Why: Crawlers come back sooner to a page that changed recently. How: This dates the last meaningful content change, and is updated whenever one ships. -->
+		<lastmod>2026-10-03</lastmod><!-- What: Last Modified Element. Why: The sitemap protocol lets an entry state when its page last changed. How: This dates the last meaningful content change, and is updated whenever one ships. -->
 
-		<changefreq>monthly</changefreq><!-- What: Change Frequency Element. Why: Crawlers pace their visits by how often a page changes. How: This hints at a monthly change. -->
+		<changefreq>monthly</changefreq><!-- What: Change Frequency Element. Why: The sitemap protocol lets an entry state how often its page changes. How: This hints at a monthly change. -->
 
-		<priority>1.0</priority><!-- What: Priority Element. Why: Crawlers weigh a site's pages against each other. How: This marks the app's page as the most important. -->
+		<priority>1.0</priority><!-- What: Priority Element. Why: The sitemap protocol lets an entry state its priority against the site's other pages. How: This marks the app's page as the most important. -->
 
 
 	</url>
@@ -24,11 +24,11 @@
 
 		<loc>https://easemylife.app/privacy</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the policy's absolute URL. -->
 
-		<lastmod>2026-10-20</lastmod><!-- What: Last Modified Element. Why: Crawlers come back sooner to a page that changed recently. How: This dates the policy's own last update. -->
+		<lastmod>2026-10-20</lastmod><!-- What: Last Modified Element. Why: The sitemap protocol lets an entry state when its page last changed. How: This dates the policy's own last update. -->
 
-		<changefreq>yearly</changefreq><!-- What: Change Frequency Element. Why: Crawlers pace their visits by how often a page changes. How: This hints that the policy rarely changes. -->
+		<changefreq>yearly</changefreq><!-- What: Change Frequency Element. Why: The sitemap protocol lets an entry state how often its page changes. How: This hints that the policy rarely changes. -->
 
-		<priority>0.3</priority><!-- What: Priority Element. Why: Crawlers weigh a site's pages against each other. How: This ranks the policy below the app. -->
+		<priority>0.3</priority><!-- What: Priority Element. Why: The sitemap protocol lets an entry state its priority against the site's other pages. How: This ranks the policy below the app. -->
 
 
 	</url>
@@ -38,11 +38,11 @@
 
 		<loc>https://easemylife.app/terms</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the terms' absolute URL. -->
 
-		<lastmod>2026-10-20</lastmod><!-- What: Last Modified Element. Why: Crawlers come back sooner to a page that changed recently. How: This dates the terms' own last update. -->
+		<lastmod>2026-10-20</lastmod><!-- What: Last Modified Element. Why: The sitemap protocol lets an entry state when its page last changed. How: This dates the terms' own last update. -->
 
-		<changefreq>yearly</changefreq><!-- What: Change Frequency Element. Why: Crawlers pace their visits by how often a page changes. How: This hints that the terms rarely change. -->
+		<changefreq>yearly</changefreq><!-- What: Change Frequency Element. Why: The sitemap protocol lets an entry state how often its page changes. How: This hints that the terms rarely change. -->
 
-		<priority>0.3</priority><!-- What: Priority Element. Why: Crawlers weigh a site's pages against each other. How: This ranks the terms below the app. -->
+		<priority>0.3</priority><!-- What: Priority Element. Why: The sitemap protocol lets an entry state its priority against the site's other pages. How: This ranks the terms below the app. -->
 
 
 	</url>

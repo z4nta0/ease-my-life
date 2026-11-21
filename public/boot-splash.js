@@ -8,10 +8,11 @@
  * Fades out the boot splash index.html paints while the app loads. It lives in
  * its own file rather than an inline script so the Content-Security-Policy's
  * script-src can stay 'self', with no hash or 'unsafe-inline' needed (see
- * public/_headers). The splash only fades once two things are true: the app
- * has mounted, and the equation has finished assembling, so it never vanishes
- * mid-animation. A safety timeout dismisses it regardless, so a boot that
- * never signals can't trap the page behind it. The build minifies this file.
+ * public/_headers). The splash normally fades once two things are true: the
+ * app has mounted, and the equation has finished assembling, so it doesn't
+ * vanish mid-animation. A safety timeout dismisses it regardless, so a boot
+ * that never signals can't trap the page behind it. The build minifies this
+ * file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -49,7 +50,7 @@
 ( () => { // What: Boot Splash Setup Function. Why: The splash's dismissal logic needs its own scope, run once as soon as the script loads. How: This is an immediately invoked arrow function.
 
 
-	const splRooEle = document.querySelector( '[data-element-name-hook~="booSplDiv"]' ); // What: Splash Root Element. Why: Every step below works on the splash itself. How: This finds it by its hook.
+	const splRooEle = document.querySelector( '[data-element-name-hook~="booSplDiv"]' ); // What: Splash Root Element. Why: The dismissal below fades and removes the splash itself. How: This finds it by its hook.
 
 
 	if ( !splRooEle ) return; // What: Missing Splash Guard. Why: A page without the splash has nothing to dismiss. How: This bails out of the setup.
@@ -62,7 +63,7 @@
 	const looDurNum = 3.4;                                                      // What: Loop Duration Number. Why: The equation's whole loop lasts this many seconds. How: This mirrors the 3.4s animation in index.html's equTokSpa rule.
 	const popSetNum = 0.16;                                                     // What: Pop Settled Number. Why: The checkmark's pop settles this far into the loop. How: This mirrors the 16% step in index.html's equTokSpaCheckPop keyframes.
 	const lasIndNum = 10;                                                       // What: Last Index Number. Why: The checkmark is the last token to appear. How: This mirrors its --equ-tok-ind of 10 in index.html.
-	const assMilNum = ( lasIndNum * tokStaNum + looDurNum * popSetNum ) * 1000; // What: Assembled Milliseconds Number. Why: The splash may only fade once the checkmark has appeared and its pop has settled, about 1.74s in, rather than after a whole loop, which would hold the finished equation for nearly 3 seconds and read as a second cycle. How: This adds the last token's delay to the pop's settle point and converts it to milliseconds.
+	const assMilNum = ( lasIndNum * tokStaNum + looDurNum * popSetNum ) * 1000; // What: Assembled Milliseconds Number. Why: The splash may only fade once the checkmark has appeared and its pop has settled, about 1.74s in, rather than after a whole loop, which would let the equation start a second cycle before the splash left. How: This adds the last token's delay to the pop's settle point and converts it to milliseconds.
 
 	// #endregion Assembly Timing
 
