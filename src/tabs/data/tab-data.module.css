@@ -226,7 +226,7 @@
 @container appRooDiv ( max-width : 560px ) { /* What: Narrow Page Title Heading. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
-	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to Font Size Base Plus 3. */
 
 
 		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
@@ -401,7 +401,7 @@
 @supports ( -moz-appearance : none ) { /* What: Firefox Scope Tab Div. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
 
 
-	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
+	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds Spacing Vertical Base Minus 9 (about 1px) of bottom padding. */
 
 
 		padding-bottom : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
@@ -415,7 +415,7 @@
 
 /* #region scoTabBut */
 
-.scoTabBut { /* What: Scope Tab Button. Why: Everything and each filtered item is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode, and eases its press and focus ring. */
+.scoTabBut { /* What: Scope Tab Button. Why: Everything and each filtered item is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the kind, and eases its press and focus ring. */
 
 
 	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) backwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Pickers and Stats tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the tab's transform and keep its press from showing. How: The tab holds the first frame only while it waits to start, and its own styles, which match the last frame, take over once it ends. */
@@ -643,7 +643,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Data Category Section Removing. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.datCatSec--removing { /* What: Still Data Category Section Removing. Why: The card should go at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
+	.datCatSec--removing { /* What: Still Data Category Section Removing. Why: The card should go at once, while still ending the animation its handler waits on. How: This shortens its animation-duration to .01ms. */
 
 
 		animation-duration : .01ms;
@@ -1046,7 +1046,7 @@
 .vacLabSpa { /* What: Vacation Label Span. Why: The toggle's label fades in each time it flips. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with the other live explanation lines, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1284,7 +1284,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion List Item Div Insert. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.lisIteDiv--insert { /* What: Still List Item Div Insert. Why: The row should appear at once, while still ending the animation its handler waits on. How: This turns its animation-duration off. */
+	.lisIteDiv--insert { /* What: Still List Item Div Insert. Why: The row should appear at once, while still ending the animation its handler waits on. How: This shortens its animation-duration to .01ms. */
 
 
 		animation-duration : .01ms;
