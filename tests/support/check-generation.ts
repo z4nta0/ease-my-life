@@ -11,7 +11,7 @@ import { perStaFun } from './schedule.ts'; // What: Period Start Function. Why: 
 
 import type { ConRcdTyp } from '../../src/core/data-model.ts'; // What: Conditional Record Type. Why: The day-off gates read conditionals. How: This types the conditional lookups.
 import type { IteRcdTyp } from '../../src/core/data-model.ts'; // What: Item Record Type. Why: Every pick is checked against the items before it. How: This types the item pools.
-import type { PicRcdTyp } from '../../src/core/data-model.ts'; // What: Picker Record Type. Why: Every expectation starts from a picker. How: This types the picker parameters.
+import type { PicRcdTyp } from '../../src/core/data-model.ts'; // What: Picker Record Type. Why: The pick expectations start from a picker. How: This types the picker parameters.
 import type { PicUpdTyp } from '../../src/core/pickers.ts';    // What: Pick Update Type. Why: A pick stages its updates as rows. How: This types the expected and actual update rows.
 import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State App Type. Why: Generation is checked from the state before it and after it. How: This types both states.
 import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today Entry Type. Why: The checks read the generated entries. How: This types the entries.
@@ -59,7 +59,7 @@ import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today En
 
 // #region Types
 
-type IssAddTyp = ( issMesStr : string ) => void; // What: Issue Add Type. Why: Every check reports through one callback. How: This types it.
+type IssAddTyp = ( issMesStr : string ) => void; // What: Issue Add Type. Why: The checks report through one callback. How: This types it.
 
 // #endregion Types
 
@@ -126,7 +126,32 @@ const aveEasFun = ( iteRcdArr : IteRcdTyp[] ) : { easMaxNum : number, easMinNum 
 
 
 
+// #region neaEquFun
+
+/**
+ * neaEquFun = Near Equal Function
+ *
+ * @summary
+ * Whether two numbers are equal within a float tolerance of one millionth,
+ * false when either isn't a number.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param oneValNum - One Value Number: The first number, or undefined.
+ * @param twoValNum - Two Value Number: The second number, or undefined.
+ *
+ * @returns Whether both are numbers within the tolerance.
+ *
+ * @example
+ * ```ts
+ * neaEquFun(0.1 + 0.2, 0.3) // => true
+ * ```
+ *
+*/
+
 const neaEquFun = ( oneValNum : number | undefined, twoValNum : number | undefined ) : boolean => typeof oneValNum === 'number' && typeof twoValNum === 'number' && Math.abs( oneValNum - twoValNum ) < EPS_VAL_NUM; // What: Near Equal Function. Why: Float results can differ in their last bits. How: This compares two numbers within the tolerance.
+
+// #endregion neaEquFun
 
 
 
@@ -189,9 +214,9 @@ const steOkaFun = ( steValNum : number | undefined, thrValNum : number, easMaxNu
  * updMapFun = Update Map Function
  *
  * @summary
- * Folds update rows into one row per item, later rows winning field by
- * field, the way the app applies them when an entry is completed. Two rows
- * for one item happen when an Ease Down picker abandons a streak.
+ * Folds update rows into one row per item, a later row's fields merged over
+ * an earlier one's. Two rows for one item happen when an Ease Down picker
+ * abandons a streak.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -214,7 +239,7 @@ const updMapFun = ( updRowArr : PicUpdTyp[] ) : Map< string, PicUpdTyp > => { //
 
 
 
-	for ( const updRowObj of updRowArr ) iteUpdMap.set( updRowObj.id, updRowObj ); // What: Row Fold Loop. Why: The app keeps one row per item, the later one winning. How: This sets each row in turn.
+	for ( const updRowObj of updRowArr ) iteUpdMap.set( updRowObj.id, { ...iteUpdMap.get( updRowObj.id ), ...updRowObj } ); // What: Row Fold Loop. Why: The app merges an item's rows, a later row adding to the earlier one. How: This spreads each row over any earlier one for its item.
 
 
 
@@ -273,7 +298,7 @@ const cmpUpdFun = ( expUpdArr : PicUpdTyp[], actUpdArr : PicUpdTyp[], issAddFun 
 
 
 
-		for ( const fieNamStr of [ 'chargeStep', 'value', 'weight' ] as const ) if ( fieNamStr in expRowObj && !neaEquFun( expRowObj[ fieNamStr ], actRowObj[ fieNamStr ] ) ) issAddFun( `${ labTexStr }: item ${ iteIdeStr } ${ fieNamStr } expected ${ expRowObj[ fieNamStr ] }, staged ${ actRowObj[ fieNamStr ] }` ); // What: Field Compare Loop. Why: Each field the rules fix must match. How: This compares the fields the expected row sets.
+		for ( const fieNamStr of [ 'chargeStep', 'value', 'weight' ] as const ) if ( fieNamStr in expRowObj && !neaEquFun( expRowObj[ fieNamStr ], actRowObj[ fieNamStr ] ) ) issAddFun( `${ labTexStr }: item ${ iteIdeStr } ${ fieNamStr } expected ${ expRowObj[ fieNamStr ] }, staged ${ actRowObj[ fieNamStr ] }` ); // What: Field Compare Loop. Why: Each field the rules fix must match. How: This compares the fields the expected row sets. // What: Type Assertion Note. Why: The field names must stay literal so they index the update rows' own fields. How: The as const tells TypeScript the names are exactly those three.
 
 
 	}
@@ -595,7 +620,7 @@ const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : 
  * cheGenFun = Check Generation Function
  *
  * @summary
- * Checks a whole generated day: that every active conditional's daily
+ * Checks a whole generated day: that every conditional's daily
  * charge flag was cleared and every Ease conditional kept its trigger, that
  * each picker produced exactly what the gates and its mode call for, that
  * day-off cards stand in for exactly the triggered conditionals, that
@@ -885,7 +910,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 
 
-	return issMesArr; // What: Issues Return. Why: The caller collects every day's problems. How: This returns the list.
+	return issMesArr; // What: Issues Return. Why: The findings go back to whoever ran the check. How: This returns the list.
 
 
 };
@@ -898,7 +923,7 @@ const cheGenFun = ( preStaObj : StaAppTyp, genStaObj : StaAppTyp, dayIsoStr : st
 
 // #region Exports
 
-export { cheGenFun, type IssAddTyp, neaEquFun, steOkaFun }; // What: Named Exports. Why: The simulation checks each day's list with cheGenFun, and the completion checks reuse the float and step helpers and the issue callback's type. How: This exports them by name.
+export { cheGenFun, type IssAddTyp, neaEquFun, steOkaFun }; // What: Named Exports. Why: Other files check each day's list with cheGenFun, and reuse the float and step helpers and the issue callback's type. How: This exports them by name.
 
 // #endregion Exports
 
