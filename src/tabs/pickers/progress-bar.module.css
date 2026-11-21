@@ -43,7 +43,7 @@
 
 
 }
-.proTraDiv--warm .proFilIta { /* What: Warm Progress Fill. Why: An ease-down picker's bar reads in the warm color. How: This recolors the fill under the warm modifier. */
+.proTraDiv--warm .proFilIta { /* What: Progress Fill Italic In Progress Track Div Warm. Why: An ease-down picker's bar reads in the warm color. How: This recolors the fill under the warm modifier. */
 
 
 	background : var( --acc-sec-col ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */

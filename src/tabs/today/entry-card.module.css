@@ -653,7 +653,7 @@
 
 
 }
-.todCarArt--charging .carNamDiv { /* What: Charging Card Status. Why: A charging card's name is a status line, not a task. How: This mutes and italicizes it. */
+.todCarArt--charging .carNamDiv { /* What: Card Name Div In Today Card Article Charging. Why: A charging card's name is a status line, not a task. How: This mutes and italicizes it. */
 
 
 	color      : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */

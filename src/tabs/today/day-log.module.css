@@ -997,7 +997,7 @@
 
 
 }
-.namRowSpa .rowNamSpa { /* What: Conditional Row Name. Why: Beside its mode pill the name keeps a fixed width so the pills line up. How: This fixes its basis at a rhythm step. */
+.namRowSpa .rowNamSpa { /* What: Row Name Span In Name Row Span. Why: Beside its mode pill the name keeps a fixed width so the pills line up. How: This fixes its basis at a rhythm step. */
 
 
 	flex      : 0 0 calc( var( --ver-rhy-p08 ) * 1rem ); /* Vertical Rhythm Base Plus 8 ~= 138.199px */
@@ -1015,7 +1015,7 @@
 @container appRooDiv ( min-width : 761px ) and ( max-width : 880px ) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
 
 
-	.conRowDiv .namRowSpa { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
+	.conRowDiv .namRowSpa { /* What: Wrapped Conditional Name Row Span In Conditional Row Div. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
 
 
 		flex-wrap : wrap;
@@ -1024,7 +1024,7 @@
 
 	}
 
-	.conRowDiv .rowNamSpa { /* What: Full-Width Conditional Name. Why: The name takes its own line above the pill. How: This makes it span the whole row. */
+	.conRowDiv .rowNamSpa { /* What: Full-Width Row Name Span In Conditional Row Div. Why: The name takes its own line above the pill. How: This makes it span the whole row. */
 
 
 		flex  : 0 0 100%;
@@ -1038,7 +1038,7 @@
 @container appRooDiv ( max-width : 640px ) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
 
 
-	.conRowDiv .namRowSpa { /* What: Wrapped Conditional Name Row. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
+	.conRowDiv .namRowSpa { /* What: Wrapped Conditional Name Row Span In Conditional Row Div. Why: The name and its mode pill stack instead of squeezing. How: This lets the row wrap with a tighter gap. */
 
 
 		flex-wrap : wrap;
@@ -1047,7 +1047,7 @@
 
 	}
 
-	.conRowDiv .rowNamSpa { /* What: Full-Width Conditional Name. Why: The name takes its own line above the pill. How: This makes it span the whole row. */
+	.conRowDiv .rowNamSpa { /* What: Full-Width Row Name Span In Conditional Row Div. Why: The name takes its own line above the pill. How: This makes it span the whole row. */
 
 
 		flex  : 0 0 100%;
@@ -1085,7 +1085,7 @@
 @container appRooDiv ( min-width : 761px ) and ( max-width : 880px ) { /* What: Mid-Width Log. Why: Just above the 760px layout switch, the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is in that range. */
 
 
-	.conRowDiv .conModSpa { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
+	.conRowDiv .conModSpa { /* What: Wrapped Conditional Mode Span In Conditional Row Div. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
 
 
 		display     : block;
@@ -1102,7 +1102,7 @@
 @container appRooDiv ( max-width : 640px ) { /* What: Narrow Log. Why: At 640px and below the Conditionals rows run out of room for the name beside its mode. How: This applies only when the app is 640px wide or less. */
 
 
-	.conRowDiv .conModSpa { /* What: Wrapped Conditional Mode Pill. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
+	.conRowDiv .conModSpa { /* What: Wrapped Conditional Mode Span In Conditional Row Div. Why: Under its name the pill sizes to its text, lined up with the name. How: This makes it a left-aligned block capped at a rhythm step, nudged left to align. */
 
 
 		display     : block;

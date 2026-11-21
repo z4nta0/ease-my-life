@@ -1927,7 +1927,7 @@
 
 
 }
-.onbCreDiv--pulsing::after { /* What: Generate Card Ping. Why: The ping expands from the card's edge outward onto the page, where it reads against the background. How: This draws a matching click-through layer that plays an expanding accent ring. */
+.onbCreDiv--pulsing::after { /* What: Onboarding Create Div Pulsing Ping. Why: The ping expands from the card's edge outward onto the page, where it reads against the background. How: This draws a matching click-through layer that plays an expanding accent ring. */
 
 
 	animation      : onbCreDivPulsePing var( --dur-ani-p09 ) var( --mot-dec-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
@@ -1942,7 +1942,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Generate Card Ping. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.onbCreDiv--pulsing::after { /* What: Still Generate Card Ping. Why: The ping is purely decorative. How: This turns its animation and transition off. */
+	.onbCreDiv--pulsing::after { /* What: Still Onboarding Create Div Pulsing Ping. Why: The ping is purely decorative. How: This turns its animation and transition off. */
 
 
 		animation  : none;
@@ -2019,7 +2019,7 @@
 
 
 }
-.onbCreDiv--norun .onbTexPar { /* What: No-Run Card Text. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin. */
+.onbCreDiv--norun .onbTexPar { /* What: Onboarding Text Paragraph In Onboarding Create Div Norun. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin. */
 
 
 	margin : 0;
@@ -2279,7 +2279,7 @@
 
 
 }
-.fooActDiv + .fooSubDiv { /* What: Spaced Footer Note. Why: The generated time needs room below the buttons. How: This spaces it extra small 1 vertical spacing down. */
+.fooActDiv + .fooSubDiv { /* What: Footer Sub Div After Footer Actions Div. Why: The generated time needs room below the buttons. How: This spaces it extra small 1 vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */

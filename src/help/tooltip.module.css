@@ -34,7 +34,7 @@
 
 
 }
-.helTipDiv::before { /* What: Help Tip Arrow. Why: The tip should point at the element it explains. How: This draws a small rotated square that pokes out of the card at the target's horizontal position. */
+.helTipDiv::before { /* What: Help Tip Div Arrow. Why: The tip should point at the element it explains. How: This draws a small rotated square that pokes out of the card at the target's horizontal position. */
 
 
 	background : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -48,7 +48,7 @@
 
 
 }
-.helTipDiv--up::before { /* What: Upward Help Tip Arrow. Why: A tip below its target points up at it. How: This sets the arrow on the card's top edge, showing only its upper two sides. */
+.helTipDiv--up::before { /* What: Help Tip Div Up Arrow. Why: A tip below its target points up at it. How: This sets the arrow on the card's top edge, showing only its upper two sides. */
 
 
 	border-bottom : 0;
@@ -57,7 +57,7 @@
 
 
 }
-.helTipDiv--down::before { /* What: Downward Help Tip Arrow. Why: A tip above its target points down at it. How: This sets the arrow on the card's bottom edge, showing only its lower two sides. */
+.helTipDiv--down::before { /* What: Help Tip Div Down Arrow. Why: A tip above its target points down at it. How: This sets the arrow on the card's bottom edge, showing only its lower two sides. */
 
 
 	border-left : 0;

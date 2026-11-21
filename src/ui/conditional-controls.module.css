@@ -56,7 +56,7 @@
 
 
 }
-.conConDiv--inline > .forFieDiv { /* What: Inline Form Field Div. Why: In the Data tab each field is a full-bleed row divided from the one above. How: This pads the field as a row under a hairline. */
+.conConDiv--inline > .forFieDiv { /* What: Form Field Div In Conditional Controls Div Inline. Why: In the Data tab each field is a full-bleed row divided from the one above. How: This pads the field as a row under a hairline. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -66,14 +66,14 @@
 
 
 }
-.conConDiv--inline > .forFieDiv:first-child { /* What: First Inline Form Field Div. Why: The editor's own top edge already closes the first row. How: This drops its hairline. */
+.conConDiv--inline > .forFieDiv:first-child { /* What: First Form Field Div In Conditional Controls Div Inline. Why: The editor's own top edge already closes the first row. How: This drops its hairline. */
 
 
 	border-top : 0;
 
 
 }
-.conConDiv--inline > .forFieDiv--cardtext { /* What: Inline Card Text Form Field Div. Why: In the Data tab the card text's label and help sit left of its input. How: This lays the field out as a centered row. */
+.conConDiv--inline > .forFieDiv--cardtext { /* What: Form Field Div Cardtext In Conditional Controls Div Inline. Why: In the Data tab the card text's label and help sit left of its input. How: This lays the field out as a centered row. */
 
 
 	align-items     : center;
@@ -216,7 +216,7 @@
 
 
 }
-.conConDiv--inline .typGroDiv { /* What: Inline Type Group Div. Why: In the Data tab the rows sit flush. How: This drops the gap. */
+.conConDiv--inline .typGroDiv { /* What: Type Group Div In Conditional Controls Div Inline. Why: In the Data tab the rows sit flush. How: This drops the gap. */
 
 
 	gap : 0;
@@ -293,7 +293,7 @@
 
 
 }
-.modCarDiv .conModDiv { /* What: Carded Conditional Mode Div. Why: Inside its card the card's border already frames the options. How: This drops the bleed and both hairlines. */
+.modCarDiv .conModDiv { /* What: Conditional Mode Div In Mode Card Div. Why: Inside its card the card's border already frames the options. How: This drops the bleed and both hairlines. */
 
 
 	border-bottom : 0;
@@ -302,7 +302,7 @@
 
 
 }
-.conConDiv--inline .conModDiv { /* What: Inline Conditional Mode Div. Why: In the Data tab the options sit flush between the rows' hairlines. How: This drops the bleed and keeps the top hairline. */
+.conConDiv--inline .conModDiv { /* What: Conditional Mode Div In Conditional Controls Div Inline. Why: In the Data tab the options sit flush between the rows' hairlines. How: This drops the bleed and keeps the top hairline. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -572,7 +572,7 @@
 
 
 }
-.conConDiv--inline .conTypDiv { /* What: Inline Conditional Type Div. Why: In the Data tab the rows sit flush against the radio. How: This drops the margin. */
+.conConDiv--inline .conTypDiv { /* What: Conditional Type Div In Conditional Controls Div Inline. Why: In the Data tab the rows sit flush against the radio. How: This drops the margin. */
 
 
 	margin : 0;
@@ -595,7 +595,7 @@
 
 
 }
-.conConDiv--inline .ediRowDiv { /* What: Inline Editor Row Div. Why: In the Data tab each setting is a full-bleed row divided from the one above. How: This pads the row taller under a hairline. */
+.conConDiv--inline .ediRowDiv { /* What: Editor Row Div In Conditional Controls Div Inline. Why: In the Data tab each setting is a full-bleed row divided from the one above. How: This pads the row taller under a hairline. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

@@ -172,7 +172,7 @@
 
 
 }
-.picDisDiv--settled .disNamSpa { /* What: Landed Dissolve Name Span. Why: The final pick should land with a small bounce in the accent color. How: This colors it and plays the settle animation. */
+.picDisDiv--settled .disNamSpa { /* What: Dissolve Name Span In Picker Dissolve Div Settled. Why: The final pick should land with a small bounce in the accent color. How: This colors it and plays the settle animation. */
 
 
 	animation : disNamSpaLandPopIn var( --dur-ani-p04 ) var( --mot-ove-eas ); /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */

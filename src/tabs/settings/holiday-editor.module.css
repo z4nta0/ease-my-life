@@ -228,7 +228,7 @@
 
 
 }
-.datMaiSpa::after { /* What: Holiday Date Strike Line. Why: Turning a day off should strike its date through, drawn in from the left, which text-decoration can't animate. How: This draws a thin top-border line across the date's middle, scaled to nothing until the day is off. */
+.datMaiSpa::after { /* What: Date Main Span Strike Line. Why: Turning a day off should strike its date through, drawn in from the left, which text-decoration can't animate. How: This draws a thin top-border line across the date's middle, scaled to nothing until the day is off. */
 
 
 	border-top       : var( --bor-wid-bas ) solid currentColor;             /* Border Width Base ~= 1.160px */
@@ -244,7 +244,7 @@
 
 
 }
-.holRowIte[data-holiday-off-active] .datMaiSpa::after { /* What: Off Holiday Date Strike Line. Why: A turned-off day's date should read as struck through. How: This scales the line to full width. */
+.holRowIte[data-holiday-off-active] .datMaiSpa::after { /* What: Off Date Main Span Strike Line. Why: A turned-off day's date should read as struck through. How: This scales the line to full width. */
 
 
 	transform : scaleX( 1 );
@@ -254,7 +254,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Holiday Date Strike Line. Why: Someone who asked for less motion shouldn't see the line draw in. How: This applies only when the reduced-motion preference is set. */
 
 
-	.datMaiSpa::after { /* What: Still Holiday Date Strike Line. Why: The line should simply appear. How: This turns its draw-in off. */
+	.datMaiSpa::after { /* What: Still Date Main Span Strike Line. Why: The line should simply appear. How: This turns its draw-in off. */
 
 
 		transition : none;

@@ -258,7 +258,7 @@
 
 
 }
-.groNamBut:hover .penIcoSvg { /* What: Hovered Editable Group Name Pencil. Why: Hover reveals the edit affordance. How: This fades the pencil in. */
+.groNamBut:hover .penIcoSvg { /* What: Pencil Icon SVG In Hovered Group Name Button. Why: Hover reveals the edit affordance. How: This fades the pencil in. */
 
 
 	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
@@ -372,7 +372,7 @@
 
 
 }
-.proDasIta.proDasIta--fresh::after { /* What: Fresh Group Progress Dash Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
+.proDasIta.proDasIta--fresh::after { /* What: Progress Dash Italic Fresh Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
 
 
 	animation        : global( dashFreshSweep ) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global Sweep Keyframes. Why: The dashFreshSweep keyframes are shared with the Reminders section's own progress dashes, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -397,7 +397,7 @@
 
 	}
 
-	.proDasIta.proDasIta--fresh::after { /* What: Hidden Group Progress Dash Sweep. Why: Without its sweep the overlay adds nothing. How: This turns the sweep off and hides the overlay. */
+	.proDasIta.proDasIta--fresh::after { /* What: Hidden Progress Dash Italic Fresh Sweep. Why: Without its sweep the overlay adds nothing. How: This turns the sweep off and hides the overlay. */
 
 
 		animation : none;
@@ -493,7 +493,7 @@
 
 
 }
-.namConDiv .conMesSpa { /* What: Group Name Conflict Message. Why: The warning's text should match its warm bar. How: This sets it in a darkened warm color. */
+.namConDiv .conMesSpa { /* What: Confirm Message Span In Name Conflict Div. Why: The warning's text should match its warm bar. How: This sets it in a darkened warm color. */
 
 
 	color : var( --war-dar-col ); /* Warning Dark Color = oklch( 0.45 0.13 50 ) */

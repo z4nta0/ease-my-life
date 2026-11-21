@@ -278,7 +278,7 @@
 
 
 }
-.steHinPar + .steHinPar { /* What: Following Step Hint. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
+.steHinPar + .steHinPar { /* What: Following Step Hint Paragraph. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
@@ -714,7 +714,7 @@
 
 
 }
-.modHinDiv + .modHinDiv { /* What: Following Mode Option Hint. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
+.modHinDiv + .modHinDiv { /* What: Following Mode Hint Div. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
 
 
 	margin-top : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
@@ -1001,7 +1001,7 @@
 
 
 }
-.conPilBut--new .conNamSpa { /* What: New Conditional Pill Label. Why: The placeholder's label reads muted with its pill. How: This mutes it. */
+.conPilBut--new .conNamSpa { /* What: Conditional Name Span In Conditional Pill Button New. Why: The placeholder's label reads muted with its pill. How: This mutes it. */
 
 
 	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */

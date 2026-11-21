@@ -878,7 +878,7 @@
 
 
 }
-.barSegSpa + .barSegSpa { /* What: Following Breakdown Segment. Why: Neighboring segments need a hairline between them. How: This draws a surface-colored line on its left. */
+.barSegSpa + .barSegSpa { /* What: Following Bar Segment Span. Why: Neighboring segments need a hairline between them. How: This draws a surface-colored line on its left. */
 
 
 	box-shadow : calc( var( --bor-wid-bas ) * -1 ) 0 0 var( --bac-sur-col ); /* Border Width Base ~= 1.160px, Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -1590,7 +1590,7 @@
 
 }
 
-.sumMetSpa .logTypSpa { /* What: Conditional Summary Mode Pill. Why: Every mode pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
+.sumMetSpa .logTypSpa { /* What: Log Type Span In Summary Meta Span. Why: Every mode pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
 
 
 	text-align : center;
@@ -1645,7 +1645,7 @@
 
 }
 
-.ranHeaDiv .pagKicDiv { /* What: List Header Kicker. Why: A long title should wrap rather than squeeze the sort toggle. How: This lets the kicker shrink. */
+.ranHeaDiv .pagKicDiv { /* What: Page Kicker Div In Rank Header Div. Why: A long title should wrap rather than squeeze the sort toggle. How: This lets the kicker shrink. */
 
 
 	min-width : 0;
@@ -2083,14 +2083,14 @@
 
 
 }
-.breValSpa .ranFraSpa { /* What: Item Breakdown Fraction. Why: A wider fraction would shift this row's share out of line with its siblings. How: This fixes it at a rhythm step. */
+.breValSpa .ranFraSpa { /* What: Rank Fraction Span In Breakdown Value Span. Why: A wider fraction would shift this row's share out of line with its siblings. How: This fixes it at a rhythm step. */
 
 
 	width : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 
 
 }
-.breValSpa .metNumSpa { /* What: Item Breakdown Number. Why: Every row's number should line up. How: This fixes it at a rhythm step. */
+.breValSpa .metNumSpa { /* What: Metric Number Span In Breakdown Value Span. Why: Every row's number should line up. How: This fixes it at a rhythm step. */
 
 
 	width : calc( var( --ver-rhy-p04 ) * 1rem ); /* Vertical Rhythm Base Plus 4 ~= 44.876px */
@@ -2205,7 +2205,7 @@
 
 }
 
-.conValSpa .logTypSpa { /* What: Conditional Breakdown Mode Pill. Why: Every row's pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
+.conValSpa .logTypSpa { /* What: Log Type Span In Conditional Value Span. Why: Every row's pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
 
 
 	flex       : 0 0 auto;
@@ -2214,14 +2214,14 @@
 
 
 }
-.conValSpa .ranFraSpa { /* What: Conditional Breakdown Fraction. Why: A wider fraction would shift this row's pill out of line. How: This fixes it at a rhythm step. */
+.conValSpa .ranFraSpa { /* What: Rank Fraction Span In Conditional Value Span. Why: A wider fraction would shift this row's pill out of line. How: This fixes it at a rhythm step. */
 
 
 	width : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 
 
 }
-.conValSpa .metNumSpa { /* What: Conditional Breakdown Number. Why: Every row's number should line up. How: This fixes it at a rhythm step. */
+.conValSpa .metNumSpa { /* What: Metric Number Span In Conditional Value Span. Why: Every row's number should line up. How: This fixes it at a rhythm step. */
 
 
 	width : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
@@ -2290,7 +2290,7 @@
 
 }
 
-.logMetSpa .logTypSpa { /* What: Reminder Log Type Pill. Why: One-time and recurring pills should be the same size. How: This fixes it at a rhythm step with its label centered. */
+.logMetSpa .logTypSpa { /* What: Log Type Span In Log Meta Span. Why: One-time and recurring pills should be the same size. How: This fixes it at a rhythm step with its label centered. */
 
 
 	text-align : center;
