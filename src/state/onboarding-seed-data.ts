@@ -20,12 +20,11 @@ import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument T
  * onboarding-seed-data.ts = Onboarding Seed Data
  *
  * @summary
- * Sample-picker and sample-reminder data seeded on a fresh install, before
- * the Welcome Tour begins (see the seeding effect in
- * onboarding/welcome-tour.tsx). Kept in its own plain-JS module, no JSX
- * and no React import, so it can also be imported directly by
- * scripts/build-onboarding-stats.mts: a Node script that precomputes about
- * a year of matching pick/reminder history offline.
+ * Sample-picker and sample-reminder data seeded on a fresh install, before the
+ * Welcome Tour begins (see the seeding effect in onboarding/welcome-tour.tsx).
+ * Kept in its own module, no JSX and no React import, so it can also be
+ * imported directly by scripts/build-onboarding-stats.mts: a Node script that
+ * precomputes about a year of matching pick/reminder history offline.
  *
  * The ids below are load-bearing: they must exactly match what that
  * script baked into src/state/onboarding-stats-data.ts, or the precomputed
@@ -87,7 +86,7 @@ type RawStaTyp = { pickLog : RawPicTyp[], reminderLog : RawRemTyp[], reminderSki
  *
  * - `id` (String): Id is this sample picker's own stable identifier,
  *   matching what scripts/build-onboarding-stats.mts baked into
- *   onboarding-stats-data.ts and what store.ts/onboarding-welcome-tour.jsx
+ *   onboarding-stats-data.ts and what store.ts and onboarding/welcome-tour.tsx
  *   use to recognize and later hide this sample; a literal, load-bearing
  *   string, never generated at runtime.
  *
@@ -135,9 +134,10 @@ type RawStaTyp = { pickLog : RawPicTyp[], reminderLog : RawRemTyp[], reminderSki
  * - `weight` (Number): Weight is this item's own fairness weight; on
  *   the dynamic-mode Coffee Creamer picker it genuinely drives the
  *   weighted-plus-drift draw (see picIteFun's own 'dynamic' branch in
- *   pickers.ts), but on every ease-up/ease-down picker here it is
- *   deliberately unused by the selection math (ease-up/ease-down is a
- *   cadence system, not a preference one) and just kept at a flat 1.
+ *   pickers.ts), on the ease-up pickers here it is deliberately unused by
+ *   the selection math (ease-up is a cadence system, not a preference one)
+ *   and just kept at a flat 1, and on the ease-down Relax picker it is the
+ *   fairness counter, starting at 1.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -293,7 +293,7 @@ const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > 
  *
  * - `id` (String): Id is this sample picker's own stable identifier,
  *   matching what scripts/build-onboarding-stats.mts baked into
- *   onboarding-stats-data.ts and what store.ts/onboarding-welcome-tour.jsx
+ *   onboarding-stats-data.ts and what store.ts and onboarding/welcome-tour.tsx
  *   use to recognize and later hide this sample; a literal, load-bearing
  *   string, never generated at runtime.
  *
@@ -487,7 +487,7 @@ const ONB_RCT_OBJ : Record< string, { kicStr? : string, namStr : string, timStr 
  *
  * - `id` (String): Id is this sample task's own stable identifier,
  *   matching what scripts/build-onboarding-stats.mts baked into
- *   onboarding-stats-data.ts and what store.ts/onboarding-welcome-tour.jsx
+ *   onboarding-stats-data.ts and what store.ts and onboarding/welcome-tour.tsx
  *   use to recognize and later hide this sample; a literal, load-bearing
  *   string, never generated at runtime.
  *
@@ -547,17 +547,13 @@ const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id ); // What: O
  * @summary
  * Converts the precomputed, day-offset-based ONB_STA_OBJ (see
  * src/state/onboarding-stats-data.ts and scripts/build-onboarding-stats.mts)
- * into real pickLog / reminderLog / reminderSkipLog rows, dated
- * relative to the ACTUAL current date rather than whenever that file
- * happened to be generated. Pure date arithmetic over a few thousand
- * rows; this is effectively instant, with no perceptible delay for the
- * tour that's about to start.
+ * into real pickLog / reminderLog / reminderSkipLog rows, dated relative to
+ * the ACTUAL current date rather than whenever that file happened to be
+ * generated. Pure date arithmetic over the precomputed rows.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staRawObj - Stats Raw Object: The precomputed stats object from
- *                    onboarding-stats-data.ts, holding day-offset-based
- *                    pickLog / reminderLog / reminderSkipLog arrays.
+ * @param staRawObj - Stats Raw Object: {@link ONB_STA_OBJ}
  *
  * @returns The same 3 logs, converted into real dated rows ready to
  * append onto app state.
@@ -622,7 +618,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 
 
-			rowTimObj.setHours( picRowObj.houNum, picRowObj.minNum!, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes picRowObj's own houNum/minNum onto rowTimObj, zeroing seconds/milliseconds. // What: Non-Null Note. Why: The generator writes h and m from the same completion date, so a row with an hour always has a minute. How: The ! tells TypeScript m is set once h is.
+			rowTimObj.setHours( picRowObj.houNum, picRowObj.minNum!, 0, 0 ); // What: Row Timestamp Hours Set. Why: The source data's own recorded hour/minute is what makes this timestamp realistic rather than always midnight. How: This writes picRowObj's own houNum/minNum onto rowTimObj, zeroing seconds/milliseconds. // What: Non-Null Note. Why: The generator writes houNum and minNum from the same completion date, so a row with an hour always has a minute. How: The ! tells TypeScript minNum is set once houNum is.
 
 			donTimStr = rowTimObj.toISOString(); // What: Done Timestamp String Assignment. Why: state.pickLog's own completedAt field expects an ISO string, not a date. How: This converts the just-set rowTimObj to its own ISO string form.
 
@@ -637,7 +633,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 			completedAt : donTimStr,                                  // What: Completed At. Why: state.pickLog's own completedAt field expects an ISO string when the row was actually completed, else null. How: This is donTimStr, resolved above.
 			date        : isoDayFun( rowDatObj ),                     // What: Date. Why: Every pickLog row needs its own real calendar day. How: This converts rowDatObj to an ISO day string via isoDayFun.
 			done        : picRowObj.done,                             // What: Done. Why: The row must record whether this pick was ever actually completed. How: This is copied straight from picRowObj's own done.
-			eid         : null,                                       // What: Eid. Why: A real pickLog row always carries an entry id linking it back to a live Today entry, but a precomputed sample row has none. How: This is always null, since no real Today entry ever backed this hydrated row.
+			eid         : null,                                       // What: Eid. Why: A live pickLog row carries the id of its Today entry, but a precomputed sample row has none. How: This is always null, since no real Today entry ever backed this hydrated row.
 			group       : picRowObj.group,                            // What: Group. Why: This denormalized copy lets the row survive a later rename or deletion of the picker's own group. How: This is copied straight from picRowObj's own group.
 			id          : 'pls_ob_' + ( seqCouNum++ ).toString( 36 ), // What: ID. Why: Every pickLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
 			itemId      : picRowObj.itemId,                           // What: Item ID. Why: Stats and other consumers filter/group pickLog rows by the item they belong to. How: This is copied straight from picRowObj's own itemId.
@@ -715,7 +711,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 
 
-	return { pickLog : picLogArr, reminderLog : remLogArr, reminderSkipLog : rslRowArr }; // What: Hydrated Logs Return. Why: The caller (onboarding/welcome-tour.tsx's own seeding effect) needs all 3 freshly-hydrated logs at once, in the same shape state itself expects. How: This returns picLogArr/remLogArr/rslRowArr above under their own state-contract key names.
+	return { pickLog : picLogArr, reminderLog : remLogArr, reminderSkipLog : rslRowArr }; // What: Hydrated Logs Return. Why: The three hydrated logs are handed back together, in the same shape state itself expects. How: This returns picLogArr/remLogArr/rslRowArr above under their own state-contract key names.
 
 
 }
@@ -728,7 +724,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 // #region Exports
 
-export { hydStaFun, ONB_ASP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: The onboarding tours, help mode, store.ts, the Today and Settings tabs, and scripts/build-onboarding-stats.mts each read some of this sample data by name. How: This exports the sample pickers, their combined list, tasks, id lists, card copy tables and the stats hydrator.
+export { hydStaFun, ONB_ASP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: Other modules, including the onboarding-stats script, read this sample data by name. How: This exports the sample pickers, their combined list, tasks, id lists, card copy tables and the stats hydrator.
 
 // #endregion Exports
 

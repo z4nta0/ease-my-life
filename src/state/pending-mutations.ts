@@ -17,8 +17,8 @@ import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Typ
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: Applying and reverting update the pick log. How: This types EnpResTyp's pick log.
 import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: Applying and reverting patch pickers. How: This types EnpResTyp's pickers.
 import type { PicUpdTyp } from '../core/pickers.ts';    // What: Pick Update Type. Why: Rows staged for the same item are merged before applying. How: This types the merged update map.
-import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: Every helper reads the current state. How: This types each curStaObj parameter.
-import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Type. Why: Every helper works on Today's entries. How: This types each entry parameter.
+import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The helpers that take the state read it. How: This types each curStaObj parameter.
+import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Type. Why: The apply, revert, rebase, and drop helpers work on Today's entries. How: This types each entry parameter.
 
 // #endregion Imports
 
@@ -47,13 +47,14 @@ import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Typ
  * generation time. Left alone, later completing a SIBLING entry for the same
  * picker would silently overwrite the fresh direct edit with that stale
  * snapshot via enpAplFun below, which is the actual bug spuDroFun exists to
- * prevent (items looked like they "lost" a manual Fill/Refill/Reset). It
- * strips the touched item's own stale row from every OTHER entry's pending; an
- * item's OWN entry is left alone on purpose, since its completion is still
- * supposed to perform its designed effect regardless of an interim Fill. The
- * one exception is Ease Down, whose designed effect is one decay step: its
- * planned value was worked out from the value at pick time, so rebPenFun
- * reworks it to start from the new value, keeping a refilled item active.
+ * prevent (items looked like they "lost" a manual Fill/Refill/Reset).
+ * spuDroFun strips the touched item's own stale row from every OTHER entry's
+ * pending; an item's OWN entry is left alone on purpose, since its completion
+ * is still supposed to perform its designed effect regardless of an interim
+ * Fill. The one exception is Ease Down, whose designed effect is one decay
+ * step: its planned value was worked out from the value at pick time, so
+ * rebPenFun reworks it to start from the new value, keeping a refilled item
+ * active.
  *
  * Sections:
  *  - Types
@@ -118,8 +119,7 @@ const nclIdeFun = ideMakFun( 'cl_' ); // What: New-Conditional-Log Identifier Fu
  * @summary
  * Counts how many of a conditional's dependent entries are done in a Today
  * list: entries that aren't day-off cards, are done, and come from a picker
- * that shares the conditional. A conditional charges and logs on the first of
- * them each day, and reverts once none is left.
+ * that shares the conditional.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -533,7 +533,7 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 		items   : curStaObj.items,         // What: Items. Why: Nothing is applied, so the items stay as they are. How: This passes curStaObj's own items through.
 		pickers : curStaObj.pickers,       // What: Pickers. Why: Nothing is applied, so the pickers stay as they are. How: This passes curStaObj's own pickers through.
-		pickLog : curStaObj.pickLog || [], // What: Pick Log. Why: Callers always expect an array here. How: This passes the pick log through, defaulting to an empty array.
+		pickLog : curStaObj.pickLog || [], // What: Pick Log. Why: The pick log is always handed back as an array. How: This passes the pick log through, defaulting to an empty array.
 		revert  : null                     // What: Revert. Why: There is nothing to undo later. How: This is null.
 
 
@@ -654,7 +654,7 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 
 
-	return { // What: Applied Pending Result Return. Why: The caller (togDonFun) needs the patched arrays plus a revert snapshot to stash on the entry. How: This bundles nexIteArr/nexPicArr/nexLogArr with a revert object capturing revIteArr/praIdeStr/the entry's own pickerId, plus the picker's previous lastRunPeriod when one was recorded.
+	return { // What: Applied Pending Result Return. Why: The patched arrays and a revert snapshot are handed back together, so the apply can be undone exactly. How: This bundles nexIteArr/nexPicArr/nexLogArr with a revert object capturing revIteArr/praIdeStr/the entry's own pickerId, plus the picker's previous lastRunPeriod when one was recorded.
 
 
 		items   : nexIteArr, // What: Items. Why: The caller writes the patched items back to state. How: This is nexIteArr.
@@ -724,7 +724,7 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 		items   : curStaObj.items,        // What: Items. Why: Nothing is reverted, so the items stay as they are. How: This passes curStaObj's own items through.
 		pickers : curStaObj.pickers,      // What: Pickers. Why: Nothing is reverted, so the pickers stay as they are. How: This passes curStaObj's own pickers through.
-		pickLog : curStaObj.pickLog || [] // What: Pick Log. Why: Callers always expect an array here. How: This passes the pick log through, defaulting to an empty array.
+		pickLog : curStaObj.pickLog || [] // What: Pick Log. Why: The pick log is always handed back as an array. How: This passes the pick log through, defaulting to an empty array.
 
 
 	};
@@ -778,7 +778,7 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 
 
-	return { items : nexIteArr, pickers : nexPicArr, pickLog : nexLogArr }; // What: Reverted Result Return. Why: The caller (togDonFun/skiEntFun/swaIteFun) needs the restored arrays. How: This bundles nexIteArr/nexPicArr/nexLogArr together.
+	return { items : nexIteArr, pickers : nexPicArr, pickLog : nexLogArr }; // What: Reverted Result Return. Why: The restored arrays are handed back together. How: This bundles nexIteArr/nexPicArr/nexLogArr together.
 
 
 }
@@ -909,10 +909,10 @@ function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr
  * spuDroFun = Stale-Pending-Updates Drop Function
  *
  * @summary
- * Strips any stale updates row for the given item ids from every NOT-
- * YET-DONE entry's own pending, except an entry whose own itemId is one
- * of those ids (see the design-rationale comment above). See the
- * design-rationale comment above for why this exists at all.
+ * Strips any stale updates row for the given item ids from every NOT-YET-DONE
+ * entry's own pending, except an entry whose own itemId is one of those ids.
+ * See the design-rationale comment at the top of this file for why this
+ * exists.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1001,7 +1001,7 @@ function spuDroFun ( todEntArr : TodEntTyp[], iteIdeArr : string[] ) : TodEntTyp
 
 // #region Exports
 
-export { cdlAplFun, cotAplFun, enpAplFun, enpRevFun, rebPenFun, spuDroFun }; // What: Named Exports. Why: The Today and item actions stage, apply, and revert pick consequences through these. How: This exports the mechanism functions by name; the conditional-log id generator stays private to this file.
+export { cdlAplFun, cotAplFun, enpAplFun, enpRevFun, rebPenFun, spuDroFun }; // What: Named Exports. Why: Other modules apply, revert, rework, and drop pending pick consequences through these. How: This exports the mechanism functions by name; the conditional-log id generator stays private to this file.
 
 // #endregion Exports
 

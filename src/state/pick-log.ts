@@ -25,13 +25,13 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * the Today list:
  *   { id, eid, date, pickerId, itemId, itemName, pickerName, group,
  *     done, completedAt, source }
- * date is the 'YYYY-MM-DD' the pick was placed on Today; eid links to a
- * live today.entries row (null once the day rolls); source is 'auto'
- * (placed by the Daily generator) or 'manual' (sent from the Pickers
- * tab). itemName/pickerName/group are denormalized so the log survives
- * an item/picker rename or delete, the same trick reminderLog uses. The
- * old per-day aggregate `history` is gone: Stats derives daily totals,
- * rankings, and streaks from this log on the fly.
+ * date is the 'YYYY-MM-DD' the pick was placed on Today; eid links to a live
+ * today.entries row (null once the day rolls); source is 'auto' (placed by the
+ * Daily generator), 'manual' (sent from the Pickers tab), or 'reroll'.
+ * itemName/pickerName/group are denormalized so the log survives an
+ * item/picker rename or delete, the same trick reminderLog uses. The old
+ * per-day aggregate `history` is gone: Stats derives daily totals, rankings,
+ * and streaks from this log on the fly.
  *
  * Sections:
  *  - Module State
@@ -156,7 +156,7 @@ function logRowFun ( curStaObj : StaAppTyp, logFieObj : { date? : string, deplet
 
 // #region Exports
 
-export { logRowFun }; // What: Named Export. Why: Every action that lands a pick on Today appends a row. How: This exports logRowFun by name; the id generator and its counter stay private to this file.
+export { logRowFun }; // What: Named Export. Why: Pick actions elsewhere build their rows through this. How: This exports logRowFun by name; the id generator and its counter stay private to this file.
 
 // #endregion Exports
 

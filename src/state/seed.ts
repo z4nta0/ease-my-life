@@ -31,7 +31,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * (picLogFun). This comment is the closest thing this app has to a schema
  * doc: read it before touching buiCleFun or MOD_DEF_OBJ.
  *
- * Data model:
+ * Data model (the main fields):
  *   item:   { id, name, pickerId, weight, value, vacation, picks,
  *             lastPicked, easeMin?, easeMax? }
  *   picker: { id, group, name, mode, easeMin, easeMax, threshold }
@@ -78,27 +78,25 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * MOD_DEF_OBJ = Mode Definition Object
  *
  * @summary
- * Every mode entry below shares one shape, read wherever a picker's mode
- * needs a label or an explanation (the Pickers, Data and Stats tabs and
- * the picker mini-tours), and none of them repeat these fields' own
- * boilerplate comments on their own lines (see the "Repeated-shape
- * object literals" comment exception in CLAUDE.md):
+ * Every mode entry below shares one shape, read wherever a picker's mode needs
+ * a label or an explanation, and none of them repeat these fields' own
+ * boilerplate comments on their own lines (see the "Repeated-shape object
+ * literals" comment exception in CLAUDE.md):
  *
  * - `hinArr` (Array): Hint Array, the mode's user-facing copy as 2
  *   paragraphs, a ruleset paragraph followed by an explanation paragraph.
  *
  * - `labStr` (String): Label String, the mode's user-facing display name.
  *
- * The entries keep their authored order rather than an alphabetical one:
- * the Data tab and the conditional editor render one option per mode
- * through Object.entries, so this order is the order those options
- * appear in.
+ * The entries keep their authored order rather than an alphabetical one: the
+ * picker and conditional editors render one option per mode through
+ * Object.entries, so this order is the order those options appear in.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const MOD_DEF_OBJ : Record< string, { hinArr : string[], labStr : string } > = { // What: Mode Definition Object. Why: Every consumer needing a picker mode's own display label and explanatory hint text (Pickers/Data/Stats tabs, the picker mini-tours) reads this shared table. How: This maps each of pickers.ts's own 5 selection-algorithm keys to its own { label, hint } pair.
+const MOD_DEF_OBJ : Record< string, { hinArr : string[], labStr : string } > = { // What: Mode Definition Object. Why: Every place that needs a picker mode's display label and explanatory hint text reads this shared table. How: This maps each of pickers.ts's own 5 selection-algorithm keys to its own { label, hint } pair.
 
 
 	'random' : { // What: Random Mode Entry. Why: This documents the random selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
@@ -202,7 +200,7 @@ const MOD_DEF_OBJ : Record< string, { hinArr : string[], labStr : string } > = {
 
 // #region Helpers
 
-type CleStaTyp = Omit< StaAppTyp, 'groupOrder' | 'onboarding' | 'pickerOrder' | 'ui' | 'v' > & { onboarding : Pick< OnbStaTyp, 'dismissed' | 'welcomed' > }; // What: Clean State Type. Why: A fresh state is never used until migStaFun has run on it, which fills in the group and picker orders, the UI settings, the schema version, and the rest of onboarding. How: This is the full app state without those four fields, and with onboarding narrowed to the two flags a new user needs.
+type CleStaTyp = Omit< StaAppTyp, 'groupOrder' | 'onboarding' | 'pickerOrder' | 'ui' | 'v' > & { onboarding : Pick< OnbStaTyp, 'dismissed' | 'welcomed' > }; // What: Clean State Type. Why: A fresh state still lacks the group and picker orders, the UI settings, the schema version, and the rest of onboarding, which migStaFun fills in. How: This is the full app state without those four fields, and with onboarding narrowed to the two flags a new user needs.
 
 // #region buiCleFun
 
@@ -210,10 +208,9 @@ type CleStaTyp = Omit< StaAppTyp, 'groupOrder' | 'onboarding' | 'pickerOrder' | 
  * buiCleFun = Build Clean Function
  *
  * @summary
- * Builds the canonical clean state: what a brand-new user sees, no
- * pickers, no items, no reminders, and every app setting at its own
- * default. A Reset restores exactly this. It leaves a few fields for
- * migStaFun to fill in, which every caller runs on it before use.
+ * Builds the canonical clean state: what a brand-new user sees, no pickers, no
+ * items, no reminders, and every app setting at its own default. It leaves a
+ * few fields for migStaFun to fill in.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -473,7 +470,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 			const curIteObj = picWeiFun( itePooArr ); // What: Current Item Object. Why: This is the item this simulated day's own pick actually lands on. How: This draws one item from itePooArr, weighted by each item's own weight.
 
 
-			if ( itePooArr.length > 1 && Math.random() < 0.2 ) { // What: Reroll Simulation Guard. Why: About 20% of real days involve the user rerolling once or twice before settling, and that history should be visible too. How: This only simulates a reroll when there is more than one eligible item and a 20% roll succeeds.
+			if ( itePooArr.length > 1 && Math.random() < 0.2 ) { // What: Reroll Simulation Guard. Why: The simulation gives each pick a 20% chance that the user rerolled once or twice before settling, so that history shows too. How: This only simulates a reroll when there is more than one eligible item and a 20% roll succeeds.
 
 
 				const tosCouNum = Math.random() < 0.7 ? 1 : 2; // What: Toss Count Number. Why: A rerolling user usually rerolls once, occasionally twice. How: This rolls 1 toss 70% of the time, otherwise 2.
@@ -506,7 +503,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 
-			if ( Math.random() < 0.09 ) { logPicFun( curDatObj, curPicObj, curIteObj, false, souValStr, 'skipped' ); continue; } // What: Skip Simulation Guard. Why: About 9% of the time, a real generated pick is skipped (marked, not completed) rather than acted on at all. How: This logs curIteObj as a skipped row and moves on to the next picker.
+			if ( Math.random() < 0.09 ) { logPicFun( curDatObj, curPicObj, curIteObj, false, souValStr, 'skipped' ); continue; } // What: Skip Simulation Guard. Why: The simulation skips about 9% of generated picks (marked, not completed) rather than acting on them. How: This logs curIteObj as a skipped row and moves on to the next picker.
 
 
 
@@ -632,7 +629,7 @@ const SED_NAM_OBJ = { // What: Seed Namespace Object. Why: This is the single pu
 
 
 
-export { SED_NAM_OBJ }; // What: Seed Namespace Object Export. Why: store.ts, the tabs, the tours and the onboarding-stats script reach the clean state, the mode table and the simulation helpers through the one namespace object. How: This exports SED_NAM_OBJ by name at the very end of the file.
+export { SED_NAM_OBJ }; // What: Named Export. Why: Other modules and the onboarding-stats script reach the clean state, the mode table, and the simulation helpers through the one namespace object. How: This exports SED_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 
