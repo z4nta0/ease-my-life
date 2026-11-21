@@ -16,12 +16,11 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  *
  * @summary
  * This is the actual persistence engine backing the whole app: IndexedDB
- * primary, localStorage fallback. Why IndexedDB at all:
- * navigator.storage.persist() exempts an origin from eviction, and what
- * it protects is the IDB/Cache bucket, not localStorage. localStorage is
- * the most eviction-prone tier and capped around 5MB, which the pick log
- * will eventually reach on its own. All data still lives only on this
- * device either way, there is no server component to any of it.
+ * primary, localStorage fallback. Why IndexedDB at all: localStorage is
+ * capped around 5MB, which the pick log will eventually reach on its own,
+ * and this file can request persistent storage through
+ * navigator.storage.persist(). This file keeps data only on this device
+ * and contacts no server; account sync lives in other files.
  *
  * The async/sync seam this file maintains: iniStoFun (exposed publicly
  * as STG_NAM_OBJ.iniStoFun) runs BEFORE React mounts and parks the
@@ -30,11 +29,10 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * persisted state. Writes made after that point are fire-and-forget
  * from the caller's own point of view.
  *
- * STG_NAM_OBJ is this file's whole public API, the single object every
- * consuming file imports and calls through, its own external names
- * swept to match the internal implementation exactly after checking
- * the blast radius across pwa.ts, main.tsx, store.ts, and
- * tab-settings.tsx.
+ * STG_NAM_OBJ is this file's main public API, the object consuming files
+ * import and call through (MIR_KEY_STR and StoRepTyp are exported beside
+ * it), its own external names swept to match the internal implementation
+ * exactly.
  *
  * Sections:
  *  - Types
@@ -59,13 +57,13 @@ type StoRepTyp = { bytNum : number | null, engStr : string, mirBoo : boolean, mi
 
 // #region Constants
 
-const ACC_SIG_STR = 'easemylife.signedin';         // What: Account Signed-In String. Why: The app loads Firebase only for a device that has signed in, so it needs to know that before loading it. How: The sync hook sets this localStorage key on sign-in and removes it on sign-out.
+const ACC_SIG_STR = 'easemylife.signedin';         // What: Account Signed-In String. Why: The app loads Firebase only for a device that has signed in, so it needs to know that before loading it. How: This is the localStorage key that records it.
 const BOO_DEA_NUM = 3500;                          // What: Boot Deadline Number. Why: A slow IndexedDB must never hold up the app's first paint, and the whole session must then run on localStorage rather than switch engines midway. How: iniStoFun gives up on IndexedDB this many milliseconds after boot starts.
 const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
 const DAT_NAM_STR = 'easemylife';                  // What: Database Name String. Why: This is the fixed IndexedDB database name every browser profile opens under. How: This is passed as the first argument to indexedDB.open inside opeDatFun.
 const DAT_VER_NUM = 1;                             // What: Database Version Number. Why: This is the fixed IndexedDB schema version, structural only, tracking which object stores exist rather than their contents. How: This is passed as the second argument to indexedDB.open inside opeDatFun.
-const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and exported by name for store.ts's fallback.
-const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by every fallback-engine caller of this file. How: This is written by wriLocFun and read by reaLocFun, and re-exported as-is on the STG_NAM_OBJ object below.
+const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and removed there once IndexedDB has booted cleanly SNA_KEE_NUM times.
+const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by the fallback paths. How: This is written by wriLocFun and read by reaLocFun, and exported by name at the end of the file.
 const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. Why: Mirror freshness must survive a reload, not just live in memory, since the Settings storage panel reports it on a cold load before any tab-hide has happened this session. How: This is written by wriLocFun and read by staRepFun.
 
 
@@ -90,9 +88,9 @@ const OWN_KEY_REG = /^ease[-]?my[-]?life/i; // What: Own Key Regular Expression.
 
 
 
-const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked for persistent storage once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: pwa.ts reads and writes it through STG_NAM_OBJ, and the boot sweep keeps it.
+const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked for persistent storage once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: This is the localStorage key that records it, kept by the boot sweep.
 const PIC_LOG_STR = 'picklog';                 // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
-const SIG_EMA_STR = 'easemylife.signinemail';  // What: Sign-In Email String. Why: Finishing an emailed-link sign-in needs the address the link was sent to. How: The sync hook stores the address here when it sends a link and removes it once the link is used.
+const SIG_EMA_STR = 'easemylife.signinemail';  // What: Sign-In Email String. Why: Finishing an emailed-link sign-in needs the address the link was sent to. How: This is the localStorage key that holds the address until the link is used.
 
 
 
@@ -102,9 +100,9 @@ const SIG_EMA_STR = 'easemylife.signinemail';  // What: Sign-In Email String. Wh
  * @summary
  * The migration snapshot (MIG_SNA_STR) exists purely to roll back a bad
  * migration, not to live forever. A permanent plaintext copy of
- * everything would survive "Delete all data" and break the app's own
- * on-device-only promise, so it is dropped once IDB has proven itself
- * over this many clean boots in a row.
+ * everything would survive "Delete all data" and break the promise that
+ * data stays on this device unless the account syncs it, so it is dropped
+ * once IDB has proven itself over this many clean boots in a row.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -115,7 +113,7 @@ const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clea
 
 
 const STA_STO_STR = 'state';               // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
-const SYN_MET_STR = 'easemylife.syncmeta'; // What: Sync Meta String. Why: Each sync compares against what this device last synced, and conflicts need the time of its last change. How: The sync hook keeps that record here as JSON.
+const SYN_MET_STR = 'easemylife.syncmeta'; // What: Sync Meta String. Why: Each sync compares against what this device last synced, and conflicts need the time of its last change. How: This is the localStorage key that holds that record as JSON.
 
 
 
@@ -174,21 +172,20 @@ let mirWriBoo : boolean               = true;      // What: Mirror Write Boolean
  * @summary
  * Opens (or creates, on a first run) the app's own IndexedDB database,
  * ensuring both object stores exist, and settles once the connection is
- * actually ready. Safari can leave its own open() call hanging
- * indefinitely instead of ever firing onsuccess, onerror, or onblocked,
- * so this also races a fixed timeout against all three of those.
+ * actually ready. It also races a fixed timeout against onsuccess,
+ * onerror, and onblocked, rejecting if none of them has fired in time.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to the opened IDBDatabase instance, or
- * rejecting when IndexedDB is unavailable, blocked by another tab, or
+ * @returns A promise that resolves with the opened IDBDatabase instance,
+ * and rejects when IndexedDB is unavailable, blocked by another tab, or
  * hangs past its own open timeout.
  *
  * @example
  * ```ts
- * opeDatFun() // => Promise<IDBDatabase>
+ * opeDatFun() // => the open IDBDatabase
  * ```
  *
 */
@@ -199,7 +196,7 @@ function opeDatFun () : Promise< IDBDatabase > {
 	return new Promise( ( resValFun, rejErrFun ) => { // What: Open Database Promise. Why: The caller needs a real Promise it can await, not indexedDB.open's own request-object callback style. How: This wraps the whole open/upgrade/timeout sequence below and settles resValFun/rejErrFun exactly once.
 
 
-		if ( !window.indexedDB ) return rejErrFun( new Error( 'no indexedDB' ) ); // What: No IndexedDB Guard. Why: Some browsers/modes (very old browsers, some private-mode configurations) expose no indexedDB global at all. How: This rejects immediately rather than calling indexedDB.open on an object that does not exist.
+		if ( !window.indexedDB ) return rejErrFun( new Error( 'no indexedDB' ) ); // What: No IndexedDB Guard. Why: A missing indexedDB global leaves nothing to open. How: This rejects immediately rather than calling indexedDB.open on an object that does not exist.
 
 
 
@@ -234,7 +231,7 @@ function opeDatFun () : Promise< IDBDatabase > {
 		opeReqObj.onblocked = () => rejErrFun( new Error( 'idb blocked' ) ); // What: Open Blocked Handler Assignment. Why: A pending version change blocked by another open tab must not hang the caller forever. How: This rejects with a dedicated error the moment onblocked fires.
 
 
-		setTimeout( () => rejErrFun( new Error( 'idb open timeout' ) ), 3000 ); // What: Open Hang Timeout Call. Why: Safari can leave open() hanging indefinitely rather than ever firing onsuccess, onerror, or onblocked. How: This rejects the wrapping Promise after 3 seconds if none of those handlers has fired by then.
+		setTimeout( () => rejErrFun( new Error( 'idb open timeout' ) ), 3000 ); // What: Open Hang Timeout Call. Why: An open that never fires onsuccess, onerror, or onblocked must not hang the caller. How: This rejects the wrapping Promise after 3 seconds if none of those handlers has fired by then.
 
 
 	} );
@@ -285,7 +282,7 @@ const reqProFun = < T >( idbReqObj : IDBRequest< T > ) : Promise< T > => new Pro
  *
 */
 
-function traStoFun ( stoNamStr : string, modValStr : IDBTransactionMode ) : IDBObjectStore { return datConObj!.transaction( stoNamStr, modValStr ).objectStore( stoNamStr ); } // What: Transaction Store Body. Why: Every IndexedDB read/write elsewhere in this file needs a freshly-opened store to call get/put/clear on. How: This opens one transaction on datConObj in the given mode and returns its own named object store. // What: Non-Null Note. Why: Every caller checks that IndexedDB is the engine and its connection is open first. How: The ! tells TypeScript datConObj is set here.
+function traStoFun ( stoNamStr : string, modValStr : IDBTransactionMode ) : IDBObjectStore { return datConObj!.transaction( stoNamStr, modValStr ).objectStore( stoNamStr ); } // What: Transaction Store Body. Why: Every IndexedDB read/write elsewhere in this file needs a freshly-opened store to call get/put/clear on. How: This opens one transaction on datConObj in the given mode and returns its own named object store. // What: Non-Null Note. Why: Each caller runs once datConObj is set, either right after idbBooFun assigns it or behind an engine check. How: The ! tells TypeScript datConObj is set here.
 
 // #endregion traStoFun
 
@@ -304,8 +301,8 @@ function traStoFun ( stoNamStr : string, modValStr : IDBTransactionMode ) : IDBO
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to the full persisted state object with
- * its own pickLog merged back in, or null when the state store has
+ * @returns A promise that resolves with the full persisted state object
+ * with its own pickLog merged back in, or null when the state store has
  * nothing written to it yet (a fresh install).
  *
  * @example
@@ -364,11 +361,12 @@ async function reaDatFun () : Promise< RawSavTyp > {
  *
  * @param appStaObj - App State Object: The full app state object to persist.
  *
- * @returns This function does not return anything.
+ * @returns A promise that settles once the state is written to IndexedDB,
+ * with no value.
  *
  * @example
  * ```ts
- * wriDatFun(appStaObj) // => void
+ * wriDatFun(appStaObj) // => Promise<void>
  * ```
  *
 */
@@ -511,7 +509,7 @@ function reaLocFun () : RawSavTyp {
 		const parStaObj = JSON.parse( rawJsoStr ); // What: Parsed State Object. Why: The caller needs a real object, not the raw JSON text. How: This parses rawJsoStr into a plain JS object.
 
 
-		if ( parStaObj && !Array.isArray( parStaObj.pickLog ) ) parStaObj.pickLog = []; // What: Pick Log Backfill Check. Why: Every reader of this state elsewhere in the app expects pickLog to be a real array, but the warm mirror deliberately omits it. How: This backfills an empty array onto parStaObj whenever its own pickLog is missing or not already an array.
+		if ( parStaObj && !Array.isArray( parStaObj.pickLog ) ) parStaObj.pickLog = []; // What: Pick Log Backfill Check. Why: The rest of the app expects pickLog to be a real array, but the warm mirror deliberately omits it. How: This backfills an empty array onto parStaObj whenever its own pickLog is missing or not already an array.
 
 
 
@@ -585,7 +583,7 @@ function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
 
 			const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Pick Log Array. Why: pickLog must be pulled out before the remaining fields become the actual mirror payload. How: This pulls pickLog out as picLogArr, discarded below. // What: Rest State Object. Why: The mirror holds everything else. How: This keeps every other field in resStaObj.
 
-			payDatObj = { ...resStaObj, __mirrorNoLog : true }; // What: Payload Data Object Rebuild. Why: A later reader (reaLocFun/iniStoFun) needs to know this specific copy's own pickLog is a stand-in, not real history. How: This spreads resStaObj and adds the __mirrorNoLog marker field.
+			payDatObj = { ...resStaObj, __mirrorNoLog : true }; // What: Payload Data Object Rebuild. Why: A later reader (iniStoFun/mirAdoFun) needs to know this specific copy's own pickLog is a stand-in, not real history. How: This spreads resStaObj and adds the __mirrorNoLog marker field.
 
 
 		}
@@ -617,7 +615,7 @@ function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
 
 
 
-		return true; // What: Local Write Success Return. Why: The caller needs to know the mirror write actually went through. How: This returns true once every step above has completed without throwing.
+		return true; // What: Local Write Success Return. Why: The caller needs to know the mirror write actually went through. How: This returns true once the mirror write above has completed without throwing.
 
 
 	}
@@ -684,7 +682,7 @@ const cacStaFun = () : RawSavTyp => cacStaObj; // What: Cached State Function. W
  * fluSynFun = Flush Sync Function
  *
  * @summary
- * Called on pagehide/tab-hide. Mirrors synchronously to localStorage
+ * Meant for pagehide/tab-hide. Mirrors synchronously to localStorage
  * first, so a later IDB failure on the very next boot still falls back
  * to warm data instead of a seed, then kicks the async IDB write too
  * for good measure.
@@ -862,13 +860,13 @@ function mirAdoFun ( idbStaObj : RawSavTyp, mirStaObj : RawSavTyp ) : RawSavTyp 
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to the state to boot from, or null for a
- * fresh install. It rejects when IndexedDB can't be opened or read, or a
- * first migration can't be verified.
+ * @returns A promise that resolves with the state to boot from, or null
+ * for a fresh install. It rejects when IndexedDB can't be opened or read,
+ * or a first migration can't be verified.
  *
  * @example
  * ```ts
- * idbBooFun() // => Promise<state or null>
+ * idbBooFun() // => state to boot from, or null
  * ```
  *
 */
@@ -980,8 +978,8 @@ async function idbBooFun () : Promise< RawSavTyp > {
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to the loaded state object, or null for
- * a genuinely fresh install with nothing persisted anywhere yet.
+ * @returns A promise that resolves with the loaded state object, or null
+ * for a genuinely fresh install with nothing persisted anywhere yet.
  * @see {@link cacStaObj}
  *
  * @example
@@ -1077,7 +1075,7 @@ async function iniStoFun () : Promise< RawSavTyp > {
 					const isaDeaBoo = !LIV_KEY_ARR.includes( curKeyStr ); // What: Is-A Dead Boolean. Why: Only a key nothing still uses is a genuinely dead generation. How: This is true when curKeyStr isn't in LIV_KEY_ARR.
 
 
-					if ( isaDeaBoo ) localStorage.removeItem( curKeyStr ); // What: Dead Generation Removal Check. Why: Only a genuinely dead pre-IDB key should be removed, never a key in LIV_KEY_ARR that this app still actively reads and writes. How: This removes curKeyStr unless it matches one of those three survivors.
+					if ( isaDeaBoo ) localStorage.removeItem( curKeyStr ); // What: Dead Generation Removal Check. Why: Only a genuinely dead pre-IDB key should be removed, never a key in LIV_KEY_ARR that this app still actively reads and writes. How: This removes curKeyStr unless it is in LIV_KEY_ARR.
 
 
 				}
@@ -1110,11 +1108,10 @@ async function iniStoFun () : Promise< RawSavTyp > {
  * savStaFun = Save State Function
  *
  * @summary
- * Fire-and-forget save, called on every debounced state change. Writes
- * to IndexedDB when it is the engine of record, falling back to a full
- * localStorage write (including pickLog) if that write itself fails,
- * since a failed IDB write (quota, corruption) must not silently lose
- * data.
+ * Fire-and-forget save of the current state. Writes to IndexedDB when it
+ * is the engine of record, falling back to a full localStorage write
+ * (including pickLog) if that write itself fails, since a failed IDB write
+ * (quota, corruption) must not silently lose data.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1175,18 +1172,19 @@ function savStaFun ( appStaObj : StaAppTyp ) : void {
  * and every localStorage key this layer owns, including the migration
  * snapshot. Without this, a reset would leave a complete plaintext copy
  * of the user's data behind, contradicting both the reset copy ("This
- * can't be undone") and the app's own on-device-only promise. Any
- * future delete-account control must call this too.
+ * can't be undone") and the promise that data stays on this device unless
+ * the account syncs it. Any future delete-account control must call this
+ * too.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param void - This function takes no parameters.
  *
- * @returns This function does not return anything.
+ * @returns A promise that settles once the wipe is done, with no value.
  *
  * @example
  * ```ts
- * wipDatFun() // => void
+ * wipDatFun() // => Promise<void>
  * ```
  *
 */
@@ -1216,7 +1214,7 @@ async function wipDatFun () : Promise< void > {
 
 		}
 
-		catch ( errCatObj ) { console.warn( errCatObj ); } // What: IndexedDB Clear Guard. Why: The clean state written by the very next save overwrites whatever is left either way, so a failed clear here is not fatal. How: This silently ignores any error from the two clear calls above. It logs the error as a warning so the failure stays visible in the console.
+		catch ( errCatObj ) { console.warn( errCatObj ); } // What: IndexedDB Clear Guard. Why: The clean state written by the very next save overwrites whatever is left either way, so a failed clear here is not fatal. How: This logs any error from the two clear calls above as a console warning and carries on.
 
 
 	}
@@ -1243,15 +1241,14 @@ async function wipDatFun () : Promise< void > {
  *
  * @summary
  * Reads the authoritative persisted state, fresh from whichever store
- * is currently of record, rather than from the in-memory cacStaObj.
- * Export uses this specifically so a backup can never inherit a
- * truncated in-memory pickLog.
+ * is currently of record, rather than from the in-memory cacStaObj, so a
+ * backup built from it never inherits a truncated in-memory pickLog.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to the authoritative persisted state
+ * @returns A promise that resolves with the authoritative persisted state
  * object, or null when it cannot be read at all.
  *
  * @example
@@ -1317,8 +1314,8 @@ async function reaPerFun () : Promise< RawSavTyp > {
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to the exact byte size of the persisted
- * state's own JSON serialization, or null when there is nothing
+ * @returns A promise that resolves with the exact byte size of the
+ * persisted state's own JSON serialization, or null when there is nothing
  * persisted yet or no way to measure it in this environment.
  *
  * @example
@@ -1373,15 +1370,14 @@ async function datBytFun () : Promise< number | null > {
  * reqPerFun = Request Persist Function
  *
  * @summary
- * Requests eviction exemption from the browser. This should only ever
- * be called after real user engagement, since Chromium will not
- * re-prompt for the rest of the session once denied once.
+ * Requests eviction exemption from the browser. This should only be
+ * called after real user engagement.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to whether persistent storage was
+ * @returns A promise that resolves with whether persistent storage was
  * already granted, or was just successfully requested.
  *
  * @example
@@ -1434,7 +1430,7 @@ async function reqPerFun () : Promise< boolean > {
  *
  * @param void - This function takes no parameters.
  *
- * @returns A Promise resolving to the full status report object.
+ * @returns A promise that resolves with the full status report object.
  * @see {@link outStaObj}
  *
  * @example
@@ -1503,29 +1499,29 @@ async function staRepFun () : Promise< StoRepTyp > {
 
 // #region Exports
 
-const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is the single public entry point every other file in this app imports by name. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
+const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is this file's main public entry point, imported by name by the files that use persistence. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
 
 
-	ACC_SIG_STR : ACC_SIG_STR, // What: Account Signed-In String. Why: The sync hook records whether this device has signed in under a key the boot sweep keeps. How: This re-exports ACC_SIG_STR under its own matching name.
-	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: store.ts's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This re-exports cacStaFun under its own matching name.
-	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: store.ts calls this synchronously on pagehide/tab-hide, where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
-	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: main.tsx awaits this before React ever mounts, and store.ts's own loaStaFun() reads its result back synchronously afterward. How: This re-exports iniStoFun under its own matching name.
-	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: store.ts calls this right after an import or a reset, before the next save writes the fresh pickLog. How: This re-exports logAutFun under its own matching name.
-	PER_ASK_STR : PER_ASK_STR, // What: Persist Ask String. Why: pwa.ts records the persistence prompt under a key the boot sweep must keep, so the key lives here beside LIV_KEY_ARR. How: This re-exports PER_ASK_STR under its own matching name.
-	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: tab-settings.tsx calls this so an export can never inherit a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
-	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: pwa.ts calls this after real user engagement to request eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
-	savStaFun   : savStaFun,   // What: Save State Function. Why: store.ts calls this on every debounced state change. How: This re-exports savStaFun under its own matching name.
-	SIG_EMA_STR : SIG_EMA_STR, // What: Sign-In Email String. Why: The sync hook remembers a link's address under a key the boot sweep keeps. How: This re-exports SIG_EMA_STR under its own matching name.
-	staRepFun   : staRepFun,   // What: Status Report Function. Why: tab-settings.tsx polls this to render the storage panel. How: This re-exports staRepFun under its own matching name.
-	SYN_MET_STR : SYN_MET_STR, // What: Sync Meta String. Why: The sync hook keeps its record under a key the boot sweep keeps. How: This re-exports SYN_MET_STR under its own matching name.
-	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: store.ts calls this from the Settings "Delete all data" flow. How: This re-exports wipDatFun under its own matching name.
+	ACC_SIG_STR : ACC_SIG_STR, // What: Account Signed-In String. Why: Whether this device has signed in is recorded under this key, which the boot sweep keeps. How: This re-exports ACC_SIG_STR under its own matching name.
+	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: This hands back the state iniStoFun loaded, synchronously. How: This re-exports cacStaFun under its own matching name.
+	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: This mirrors the state synchronously, for a page hide where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
+	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: This loads the persisted state, before React mounts. How: This re-exports iniStoFun under its own matching name.
+	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: This marks the next save's pickLog as authoritative after an import or a reset. How: This re-exports logAutFun under its own matching name.
+	PER_ASK_STR : PER_ASK_STR, // What: Persist Ask String. Why: The persistence prompt is recorded under this key, which the boot sweep keeps. How: This re-exports PER_ASK_STR under its own matching name.
+	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: This reads the persisted state fresh, so an export never inherits a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
+	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: This requests eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
+	savStaFun   : savStaFun,   // What: Save State Function. Why: This saves the current state. How: This re-exports savStaFun under its own matching name.
+	SIG_EMA_STR : SIG_EMA_STR, // What: Sign-In Email String. Why: A sign-in link's address is kept under this key, which the boot sweep keeps. How: This re-exports SIG_EMA_STR under its own matching name.
+	staRepFun   : staRepFun,   // What: Status Report Function. Why: This builds the storage status report. How: This re-exports staRepFun under its own matching name.
+	SYN_MET_STR : SYN_MET_STR, // What: Sync Meta String. Why: The sync record is kept under this key, which the boot sweep keeps. How: This re-exports SYN_MET_STR under its own matching name.
+	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: This tears down every stored copy for "Delete all data". How: This re-exports wipDatFun under its own matching name.
 
 
 };
 
 
 
-export { MIR_KEY_STR, STG_NAM_OBJ, type StoRepTyp }; // What: Named Exports. Why: main.tsx, store.ts, pwa.ts and tab-settings.tsx reach every persistence operation through the one namespace object, Settings holds the storage report it returns, and store.ts's fallback writes under the mirror's key. How: This exports STG_NAM_OBJ, StoRepTyp, and MIR_KEY_STR by name at the very end of the file.
+export { MIR_KEY_STR, STG_NAM_OBJ, type StoRepTyp }; // What: Named Exports. Why: The namespace object carries the persistence operations, StoRepTyp types the report staRepFun returns, and MIR_KEY_STR is the mirror's key read by name. How: This exports STG_NAM_OBJ, StoRepTyp, and MIR_KEY_STR by name at the very end of the file.
 
 // #endregion Exports
 
