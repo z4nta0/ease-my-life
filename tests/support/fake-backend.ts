@@ -14,14 +14,14 @@ import type { SynManTyp } from '../../src/state/sync-engine.ts'; // What: Sync M
  * fake-backend.ts = Fake Backend
  *
  * @summary
- * An in-memory stand-in for the cloud copy, so the sync engine can be
- * tested without Firebase. It keeps one manifest and the documents it lists,
- * commits an upload only when the manifest's revision is still the one the
- * upload was built from, as the real backend's transaction will, and counts
- * every call, so a test can check what a sync downloaded and uploaded. A
- * test can also make the next uploads lose the race, as if another device
- * had committed first, or delete the manifest, as if another device had
- * deleted the cloud copy.
+ * An in-memory stand-in for the cloud copy, so the sync engine can be tested
+ * without Firebase. It keeps one manifest and the documents it lists, commits
+ * an upload only when the manifest's revision is still the one the upload was
+ * built from, as the real backend's transaction will, and records the ids of
+ * each download and each committed upload, so a test can check what a sync
+ * downloaded and uploaded. A test can also make the next uploads lose the
+ * race, as if another device had committed first, or delete the manifest, as
+ * if another device had deleted the cloud copy.
  *
  * Sections:
  *  - Helpers
@@ -55,8 +55,8 @@ type FakBacTyp = SynBacTyp & { // What: Fake Backend Type. Why: Tests read what 
  *
  * @summary
  * Creates an empty fake cloud copy. Its upload commits only when the stored
- * revision matches the one given, or when rejCouObj.couNum is above 0, in
- * which case it refuses the upload and counts down instead.
+ * revision matches the one given and rejCouObj.couNum is 0; otherwise it
+ * refuses the upload and counts rejCouObj.couNum down toward 0.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -105,7 +105,7 @@ function fakBacFun () : FakBacTyp {
 
 
 
-			return Object.fromEntries( docIdeArr.map( ( docIdeStr ) => [ docIdeStr, docTexMap.get( docIdeStr )! ] ) ); // What: Document Text Return. Why: The engine parses the texts. How: This maps each id to its text. // What: Non-Null Note. Why: The engine only downloads ids the manifest lists, and every listed id is stored. How: The ! tells TypeScript the text exists.
+			return Object.fromEntries( docIdeArr.map( ( docIdeStr ) => [ docIdeStr, docTexMap.get( docIdeStr )! ] ) ); // What: Document Text Return. Why: The engine parses the texts. How: This maps each id to its text. // What: Non-Null Note. Why: A sync is expected to download only ids that are stored. How: The ! tells TypeScript the text exists.
 
 
 		},

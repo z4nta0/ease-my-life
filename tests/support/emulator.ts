@@ -32,7 +32,35 @@ const FIR_EMU_STR = 'http://127.0.0.1:8080'; // What: Firestore Emulator String.
 
 // #region Helpers
 
-const admPosFun = ( adrPatStr : string, posBodObj : object ) => fetch( `${ AUT_EMU_STR }${ adrPatStr }`, { body : JSON.stringify( posBodObj ), headers : { 'Authorization' : 'Bearer owner', 'Content-Type' : 'application/json' }, method : 'POST' } ).then( ( resCurObj ) => resCurObj.json() ); // What: Admin Post Function. Why: The emulator's admin API creates, reads, and updates test accounts. How: This posts JSON as the emulator's owner and parses the reply.
+type AdmRepTyp = { idToken : string, localId : string, users : { customAttributes? : string }[] }; // What: Admin Reply Type. Why: The callers read a new account's ID and token, and a looked-up account's claims. How: This types the fields of the emulator's JSON reply that they read.
+
+// #region admPosFun
+
+/**
+ * admPosFun = Admin Post Function
+ *
+ * @summary
+ * Posts a JSON body to a path on the auth emulator's admin API as the
+ * emulator's owner and parses the reply.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param adrPatStr - Address Path String: The path after the emulator's
+ *                    address.
+ * @param posBodObj - Post Body Object: The object sent as the JSON body.
+ *
+ * @returns A promise that resolves with the parsed reply.
+ *
+ * @example
+ * ```ts
+ * await admPosFun(adrPatStr, posBodObj) // => the emulator's JSON reply
+ * ```
+ *
+*/
+
+const admPosFun = ( adrPatStr : string, posBodObj : object ) : Promise< AdmRepTyp > => fetch( `${ AUT_EMU_STR }${ adrPatStr }`, { body : JSON.stringify( posBodObj ), headers : { 'Authorization' : 'Bearer owner', 'Content-Type' : 'application/json' }, method : 'POST' } ).then( ( resCurObj ) => resCurObj.json() ); // What: Admin Post Function. Why: The emulator's admin API creates, reads, and updates test accounts. How: This posts JSON as the emulator's owner and parses the reply.
+
+// #endregion admPosFun
 
 // #endregion Helpers
 

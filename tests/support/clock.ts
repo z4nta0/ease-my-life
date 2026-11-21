@@ -13,14 +13,13 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The clock help
  * clock.ts = Clock
  *
  * @summary
- * Fakes the page's clock in the app's own timezone. Every suite runs its
- * pages in America/Chicago, the timezone the real data was made in, so "10
- * AM on October 5" has to mean 10 AM Chicago time whatever timezone the
- * machine running the tests is in, and whether daylight saving applies that
- * day or not. insClcFun installs Playwright's fake clock at such a moment
- * before the app loads, and setClcFun moves it to another day; time keeps
- * flowing normally from wherever it's set. locDayFun turns a saved
- * timestamp back into the Chicago date it falls on.
+ * Fakes the page's clock in the app's own timezone, America/Chicago, the
+ * timezone the real data was made in, so "10 AM on October 5" has to mean 10
+ * AM Chicago time whatever timezone the machine running the tests is in, and
+ * whether daylight saving applies that day or not. insClcFun installs
+ * Playwright's fake clock at such a moment before the app loads, and setClcFun
+ * moves it to another day; time keeps flowing normally from wherever it's set.
+ * locDayFun turns a saved timestamp back into the Chicago date it falls on.
  *
  * Sections:
  *  - Constants
@@ -35,7 +34,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The clock help
 
 // #region Constants
 
-const TIM_ZON_STR = 'America/Chicago'; // What: Time Zone String. Why: Day boundaries decide everything the simulation checks, and the real data was made in this timezone. How: This names the timezone every page runs in.
+const TIM_ZON_STR = 'America/Chicago'; // What: Time Zone String. Why: Day boundaries decide what the simulation checks, and the real data was made in this timezone. How: This names the Chicago timezone the helpers read and write times in.
 
 
 
@@ -55,8 +54,8 @@ const HOU_FOR_OBJ = new Intl.DateTimeFormat( 'en-US', { hour : 'numeric', hourCy
  *
  * @summary
  * Returns the Chicago date an instant falls on, as YYYY-MM-DD. The app saves
- * timestamps like generatedAt and completedAt in UTC, while every day the
- * suites reason about is a Chicago date.
+ * timestamps like generatedAt and completedAt in UTC, while the suites
+ * reason in Chicago dates.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -86,8 +85,8 @@ const locDayFun = ( timValStr : string ) : string => DAY_FOR_OBJ.format( new Dat
  * Returns the instant at which the Chicago clock reads the given date, hour,
  * and minute. Chicago is five hours behind UTC in daylight saving time and
  * six otherwise, so both offsets are tried and the one whose instant reads
- * back as the requested date and time wins. Times inside a daylight saving
- * jump aren't needed by any suite and throw.
+ * back as the requested date and time wins. A time inside a daylight saving
+ * jump has no single instant and throws.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -157,7 +156,7 @@ const locTimFun = ( dayIsoStr : string, houValNum : number, minValNum : number =
  *
  * @example
  * ```ts
- * await insClcFun(curPagObj, '2026-10-05', 10) // => void
+ * await insClcFun(curPagObj, '2026-10-05', 10) // => Promise<void>
  * ```
  *
 */
@@ -175,9 +174,7 @@ const insClcFun = async ( curPagObj : Page, dayIsoStr : string, houValNum : numb
  *
  * @summary
  * Moves an installed fake clock to another Chicago date and hour. Only the
- * current time jumps; no timers fire for the time skipped over, which is
- * why the simulation reloads the page afterwards to let the app notice the
- * new day the way it does on a fresh open.
+ * current time jumps; no timers fire for the time skipped over.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -189,7 +186,7 @@ const insClcFun = async ( curPagObj : Page, dayIsoStr : string, houValNum : numb
  *
  * @example
  * ```ts
- * await setClcFun(curPagObj, '2026-10-06', 10) // => void
+ * await setClcFun(curPagObj, '2026-10-06', 10) // => Promise<void>
  * ```
  *
 */

@@ -13,9 +13,9 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The seeding in
  * random.ts = Random
  *
  * @summary
- * Makes the app's own scheduling decisions repeatable. The picker, cadence,
- * conditional, and id code in src/core/ and src/state/ draws from
- * Math.random, but so do the background flourish, the celebration
+ * Makes the app's own scheduling decisions repeatable. The picker and
+ * conditional code in src/core/ and the sample data code in src/state/ draw
+ * from Math.random, but so do the background flourish, the celebration
  * particles, and the regeneration loader, whose draws depend on layout and
  * animation timing. Seeding Math.random as a whole would let one extra
  * flourish draw shift every pick after it, so this splits the stream by
@@ -55,7 +55,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The seeding in
  * generator is mulberry32, a small, fast generator that gives
  * the same sequence for the same 32-bit seed in every browser. A draw is
  * routed to it when the calling stack passes through /src/core/ or
- * /src/state/, the folders holding every scheduling decision; everything
+ * /src/state/, the folders holding the scheduling draws; everything
  * else keeps the browser's own Math.random.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -67,7 +67,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The seeding in
  *
  * @example
  * ```ts
- * await insSedFun(curPagObj, 20261004) // => void
+ * await insSedFun(curPagObj, 20261004) // => Promise<void>
  * ```
  *
 */
@@ -104,7 +104,7 @@ const insSedFun = async ( curPagObj : Page, sedValNum : number ) : Promise< void
 		let genStaNum = ( iniSedNum ^ Math.imul( loaCouNum + 1, 2654435761 ) ) >>> 0; // What: Generator State Number. Why: mulberry32 advances one 32-bit state per draw, and no load may replay another's draws. How: This starts at the seed mixed with the load count, read as an unsigned 32-bit integer.
 
 		const natRanFun = Math.random.bind( Math ); // What: Native Random Function. Why: Draws from anywhere else must keep the browser's own randomness. How: This keeps the original Math.random.
-		const schPatReg = /\/src\/(core|state)\//;  // What: Scheduling Pattern Regular Expression. Why: Every scheduling decision lives in these two folders. How: This regex matches a stack frame from either one.
+		const schPatReg = /\/src\/(core|state)\//;  // What: Scheduling Pattern Regular Expression. Why: The scheduling draws come from these two folders. How: This regex matches a stack frame from either one.
 
 
 

@@ -78,7 +78,7 @@ function heaBloFun ( filPatStr : string ) : HeaBloTyp[] {
 	const heaBloArr : HeaBloTyp[] = []; // What: Header Block Array. Why: Each path's headers are kept apart. How: This collects one block per path line.
 
 
-	for ( const linTexStr of readFileSync( filPatStr, 'utf8' ).split( '\n' ) ) { // What: Line Loop. Why: The file is read line by line, the way Netlify reads it. How: This walks every line of the file.
+	for ( const linTexStr of readFileSync( filPatStr, 'utf8' ).split( '\n' ) ) { // What: Line Loop. Why: The file is read line by line. How: This walks every line of the file.
 
 
 		if ( /^[^\s#]/.test( linTexStr ) ) { heaBloArr.push( { heaObj : {}, patStr : linTexStr.trim() } ); continue; } // What: Path Line Guard. Why: An unindented line that isn't a comment names the path the lines below it apply to. How: This starts a new block for it and moves on.
@@ -148,9 +148,9 @@ function heaAllFun () : Record< string, string > {
  * @summary
  * Returns every header the built dist/_headers sends with one path, keyed by
  * lowercase name, merged from each block whose path matches it in the file's
- * order, the way Netlify combines them: a path ending in * matches every path
- * that starts with what comes before it, and any other path matches only
- * itself. It reads the build, so it expects npm run build to have run first.
+ * order: a path ending in * matches every path that starts with what comes
+ * before it, and any other path matches only itself. It reads the build, so it
+ * expects npm run build to have run first.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

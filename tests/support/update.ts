@@ -64,7 +64,31 @@ const NOT_MES_STR = 'A new version of Ease My Life is ready.'; // What: Note Mes
 
 // #region Helpers
 
-const conChaFun = ( curPagObj : Page ) => curPagObj.evaluate( () => navigator.serviceWorker.dispatchEvent( new Event( 'controllerchange' ) ) ); // What: Controller Change Function. Why: A new version taking control is what starts the flow. How: This fires the container's controllerchange event.
+// #region conChaFun
+
+/**
+ * conChaFun = Controller Change Function
+ *
+ * @summary
+ * Fires controllerchange on the page's service worker container, the signal
+ * that a new version has taken control.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param curPagObj - Current Page Object: The page to fire it on.
+ *
+ * @returns A promise that settles once the event is fired, with no value.
+ *
+ * @example
+ * ```ts
+ * await conChaFun(page) // => Promise<void>
+ * ```
+ *
+*/
+
+const conChaFun = ( curPagObj : Page ) : Promise< void > => curPagObj.evaluate( () => { navigator.serviceWorker.dispatchEvent( new Event( 'controllerchange' ) ); } ); // What: Controller Change Function. Why: A new version taking control is what starts the flow. How: This fires the container's controllerchange event.
+
+// #endregion conChaFun
 
 
 

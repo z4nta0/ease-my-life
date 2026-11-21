@@ -5,12 +5,12 @@
  * dates.ts = Dates
  *
  * @summary
- * Calendar math on plain YYYY-MM-DD dates for the simulation's checker. It
- * is written independently of the app's own utils/date.ts, so the checker
- * can't inherit a bug from the code it's checking. Every helper works in
- * UTC on the date's own year, month, and day, so no timezone or daylight
- * saving shift can move a date; the Chicago clock only matters when the
- * suite turns a timestamp into a date, which clock.ts does.
+ * Calendar math on plain YYYY-MM-DD dates for the simulation's checker. It is
+ * written independently of the app's own utils/date.ts, so the checker can't
+ * inherit a bug from the code it's checking. The helpers work on the date's
+ * own year, month, and day, in UTC wherever they build a Date, so no timezone
+ * or daylight saving shift can move a date; the Chicago clock only matters
+ * when the suite turns a timestamp into a date, which clock.ts does.
  *
  * Sections:
  *  - Helpers
@@ -24,11 +24,122 @@
 
 // #region Helpers
 
-const daySerFun = ( dayIsoStr : string ) : number => Date.parse( `${ dayIsoStr }T00:00:00Z` ) / 86400000;                                                                                              // What: Day Serial Function. Why: Day differences are simplest as whole-day counts. How: This turns a date into days since 1970.
-const difDayFun = ( froIsoStr : string, endIsoStr : string ) : number => daySerFun( endIsoStr ) - daySerFun( froIsoStr );                                                                              // What: Difference Day Function. Why: Intervals and anchors are measured in days. How: This returns how many days the second date is after the first.
-const dimValFun = ( yeaValNum : number, monValNum : number ) : number => new Date( Date.UTC( yeaValNum, monValNum, 0 ) ).getUTCDate();                                                                 // What: Days-In-Month Value Function. Why: Day-of-month rules clamp to a month's length. How: This reads day 0 of the next month, the last day of this one.
-const dowValFun = ( dayIsoStr : string ) : number => new Date( `${ dayIsoStr }T00:00:00Z` ).getUTCDay();                                                                                               // What: Day-Of-Week Value Function. Why: Weekday rules read the weekday, 0 for Sunday. How: This reads it in UTC from the date's own parts.
+const daySerFun = ( dayIsoStr : string ) : number => Date.parse( `${ dayIsoStr }T00:00:00Z` ) / 86400000; // What: Day Serial Function. Why: Day differences are simplest as whole-day counts. How: This turns a date into days since 1970.
+
+
+
+// #region difDayFun
+
+/**
+ * difDayFun = Difference Day Function
+ *
+ * @summary
+ * Counts the days from one date to another, negative when the second is
+ * earlier.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param froIsoStr - From ISO String: The earlier date, as YYYY-MM-DD.
+ * @param endIsoStr - End ISO String: The later date, as YYYY-MM-DD.
+ *
+ * @returns The number of days between them.
+ *
+ * @example
+ * ```ts
+ * difDayFun('2026-10-05', '2026-10-08') // => 3
+ * ```
+ *
+*/
+
+const difDayFun = ( froIsoStr : string, endIsoStr : string ) : number => daySerFun( endIsoStr ) - daySerFun( froIsoStr ); // What: Difference Day Function. Why: Intervals and anchors are measured in days. How: This returns how many days the second date is after the first.
+
+// #endregion difDayFun
+
+
+
+// #region dimValFun
+
+/**
+ * dimValFun = Days-In-Month Value Function
+ *
+ * @summary
+ * Returns how many days a month has, leap years included.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param yeaValNum - Year Value Number: The year.
+ * @param monValNum - Month Value Number: The month, 1 to 12.
+ *
+ * @returns The month's length in days.
+ *
+ * @example
+ * ```ts
+ * dimValFun(2028, 2) // => 29
+ * ```
+ *
+*/
+
+const dimValFun = ( yeaValNum : number, monValNum : number ) : number => new Date( Date.UTC( yeaValNum, monValNum, 0 ) ).getUTCDate(); // What: Days-In-Month Value Function. Why: Day-of-month rules clamp to a month's length. How: This reads day 0 of the next month, the last day of this one.
+
+// #endregion dimValFun
+
+
+
+// #region dowValFun
+
+/**
+ * dowValFun = Day-Of-Week Value Function
+ *
+ * @summary
+ * Returns the weekday of a YYYY-MM-DD date, 0 for Sunday, read in UTC from
+ * the date's own parts.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
+ *
+ * @returns The weekday, 0 to 6.
+ *
+ * @example
+ * ```ts
+ * dowValFun('2026-10-05') // => 1
+ * ```
+ *
+*/
+
+const dowValFun = ( dayIsoStr : string ) : number => new Date( `${ dayIsoStr }T00:00:00Z` ).getUTCDay(); // What: Day-Of-Week Value Function. Why: Weekday rules read the weekday, 0 for Sunday. How: This reads it in UTC from the date's own parts.
+
+// #endregion dowValFun
+
+
+
+// #region isoParFun
+
+/**
+ * isoParFun = ISO Parts Function
+ *
+ * @summary
+ * Writes a year, month, and day as a YYYY-MM-DD date, padding the month and
+ * day to two digits.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param yeaValNum - Year Value Number: The year.
+ * @param monValNum - Month Value Number: The month, 1 to 12.
+ * @param dayValNum - Day Value Number: The day of the month.
+ *
+ * @returns The date, as YYYY-MM-DD.
+ *
+ * @example
+ * ```ts
+ * isoParFun(2026, 10, 5) // => '2026-10-05'
+ * ```
+ *
+*/
+
 const isoParFun = ( yeaValNum : number, monValNum : number, dayValNum : number ) : string => `${ yeaValNum }-${ String( monValNum ).padStart( 2, '0' ) }-${ String( dayValNum ).padStart( 2, '0' ) }`; // What: ISO Parts Function. Why: Rules compute dates from a year, month, and day. How: This writes them as YYYY-MM-DD.
+
+// #endregion isoParFun
 
 
 
@@ -76,9 +187,62 @@ const nthDayFun = ( yeaValNum : number, monValNum : number, nthValNum : number, 
 
 
 
-const parIsoFun = ( dayIsoStr : string ) : number[] => dayIsoStr.split( '-' ).map( Number );                              // What: Parts ISO Function. Why: Rules read a date's year, month, and day. How: This splits YYYY-MM-DD into numbers.
-const serDayFun = ( daySerNum : number ) : string => new Date( daySerNum * 86400000 ).toISOString().slice( 0, 10 );       // What: Serial Day Function. Why: Arithmetic results have to become dates again. How: This turns a day count back into YYYY-MM-DD.
+// #region parIsoFun
+
+/**
+ * parIsoFun = Parts ISO Function
+ *
+ * @summary
+ * Splits a YYYY-MM-DD date into its year, month, and day numbers.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
+ *
+ * @returns The year, month, and day, in that order.
+ *
+ * @example
+ * ```ts
+ * parIsoFun('2026-10-05') // => [2026, 10, 5]
+ * ```
+ *
+*/
+
+const parIsoFun = ( dayIsoStr : string ) : number[] => dayIsoStr.split( '-' ).map( Number ); // What: Parts ISO Function. Why: Rules read a date's year, month, and day. How: This splits YYYY-MM-DD into numbers.
+
+// #endregion parIsoFun
+
+
+
+const serDayFun = ( daySerNum : number ) : string => new Date( daySerNum * 86400000 ).toISOString().slice( 0, 10 ); // What: Serial Day Function. Why: Arithmetic results have to become dates again. How: This turns a day count back into YYYY-MM-DD.
+
+
+
+// #region addDayFun
+
+/**
+ * addDayFun = Add Day Function
+ *
+ * @summary
+ * Shifts a YYYY-MM-DD date by a whole number of days, which may be negative.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
+ * @param addValNum - Add Value Number: The days to add.
+ *
+ * @returns The shifted date, as YYYY-MM-DD.
+ *
+ * @example
+ * ```ts
+ * addDayFun('2026-10-05', 2) // => '2026-10-07'
+ * ```
+ *
+*/
+
 const addDayFun = ( dayIsoStr : string, addValNum : number ) : string => serDayFun( daySerFun( dayIsoStr ) + addValNum ); // What: Add Day Function. Why: The simulation steps and looks back by whole days. How: This shifts a date by a number of days.
+
+// #endregion addDayFun
 
 // #endregion Helpers
 
