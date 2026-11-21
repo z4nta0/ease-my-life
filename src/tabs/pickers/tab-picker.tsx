@@ -8,7 +8,7 @@ import React     from 'react';                   // What: React. Why: TabPicCom 
 
 
 import { clePicFun    } from '../../help/sample-data.ts';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicCom's own help-mode effect and its unmount cleanup.
-import { emlTouObj    } from '../../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill, and written via emlTouObj.set() to clear a staged empty-state prefill.
+import { emlTouObj    } from '../../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: A staged empty-state prefill must be cleared synchronously once consumed, not through React state. How: This is written via emlTouObj.set() to clear a staged empty-state prefill.
 import { FilRaiCom    } from '../../ui/filter-rail.tsx';            // What: Filter Rail Component. Why: The Group and Type filter rows share one labeled pill rail. How: This is rendered once for each of those rows, fed its own entries and actions.
 import { HelButCom    } from '../../help/button.tsx';               // What: Help Button Component. Why: This page needs its own toggle for entering/exiting help mode. How: This is rendered in the page header, wired to the local helOpeBoo boolean.
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: Help mode needs its own highlighted-tooltip overlay layered above the page. How: This is rendered once, fed this page's own PIC_HEL_ARR.
@@ -19,12 +19,12 @@ import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onb
 import { PIC_HEL_ARR  } from '../../help/pickers-catalog.tsx';      // What: Picker Help Array. Why: Help mode needs this page's own list of highlighted elements and their explanations. How: This is passed straight through to HelOveCom.
 import { PicForCom    } from './picker-form.tsx';                   // What: Picker Form Component. Why: Creating a picker happens in the same slot a picker's view would occupy. How: This is rendered while the create form is open.
 import { PicVieCom    } from './picker-view.tsx';                   // What: Picker View Component. Why: The selected picker's run stage and pool list render below the picker rails. How: This is rendered for the active picker whenever the create form is closed.
-import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
+import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: The create form's close delay must be skipped for a user who prefers reduced motion. How: This is checked before the create form's scroll-then-close delay.
 import { scrBehFun    } from '../../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
-import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
+import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) for each mode's label in the Type filter pills, their sort order, and each tab's mode line.
 import { sedPicFun    } from '../../help/sample-data.ts';           // What: Seed Pickers Function. Why: Help mode needs real pickers of every mode, plus a conditional-gated one, to point its tooltips at. How: This is called the moment help mode turns on.
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
-import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
+import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the page tour's gating, the picker mini-tour's prefill, and the empty-state create prefill.
 
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The tab changes state through the store's actions. How: This types TpcProTyp's actStoObj.
@@ -40,7 +40,7 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
  * tab-picker.tsx = Tab Picker
  *
  * @summary
- * The Pickers tab: browse, manually run, and create or edit every picker.
+ * The Pickers tab: browse, manually run, and create or edit pickers.
  * TabPicCom renders the Group and Type filter rails and the picker tabs, then
  * either the selected picker's PicVieCom (picker-view.tsx) or the create
  * form's PicForCom (picker-form.tsx), plus the disposable-sample machinery
@@ -319,7 +319,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	const preFilRef = React.useRef( { groStr : groFilStr, typStr : typFilStr } ); // What: Previous Filters Reference. Why: The selection-coherence effect below needs to remember the last-seen filter values across renders to detect an actual filter change, distinct from the picker list itself changing for some unrelated reason. How: This starts at the current filters and is updated by that effect whenever either one changes.
 
 
-	React.useEffect( () => { // What: Selection Coherence Effect. Why: Either filter itself just changing should always land on the first card in the new Show row, matching it exactly rather than only reacting once the OLD selection happens to fall out of view (e.g. switching from a wide group to a narrower one that still happens to contain the same active picker used to leave it stranded, not jumped to the new first card); the picker list changing for some unrelated reason (e.g. the active picker got deleted) should only jump when the current selection actually became invalid. How: This computes filChaBoo by comparing against preFilRef, then jumps to sorPicArr's own first entry whenever either that or an invalid selection applies.
+	React.useEffect( () => { // What: Selection Coherence Effect. Why: Either filter itself just changing should land on the first card in the new Show row, matching it exactly rather than only reacting once the OLD selection happens to fall out of view (e.g. switching from a wide group to a narrower one that still happens to contain the same active picker used to leave it stranded, not jumped to the new first card); the picker list changing for some unrelated reason (e.g. the active picker got deleted) should only jump when the current selection actually became invalid. How: This computes filChaBoo by comparing against preFilRef, then jumps to sorPicArr's own first entry whenever either that or an invalid selection applies.
 
 
 		if ( creOpeBoo ) return; // What: Creating Guard. Why: The create form has no "selection" of its own to keep coherent. How: This bails out entirely while creOpeBoo is true.
@@ -342,7 +342,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 	// #region Filter Rails
 
-	const tabRaiRef = React.useRef< HTMLDivElement | null >( null ); // What: Tab Rail Reference. Why: The scroll-edge fade effect below needs the Show row's own element. How: This is attached to that rail's ref prop. // What: Scroll-Aware Edge Fades Design Note. Why: The tab strip, and the Group/Type filter rails, all need the same scroll-edge mask-gradient behavior so each one's own fade only shows on the side that has more content. How: tabRaiRef/groRaiRef/typRaiRef below are attached to those three rails; the effect right after wires up a shared scroll+resize listener for whichever of them are actually mounted.
+	const tabRaiRef = React.useRef< HTMLDivElement | null >( null ); // What: Tab Rail Reference. Why: The scroll-edge fade effect below needs the Show row's own element. How: This is attached to that rail's ref prop. // What: Scroll-Aware Edge Fades Design Note. Why: The tab strip and the Group and Type filter rails each show a scroll-edge mask-gradient fade only on the side that has more content. How: tabRaiRef, groRaiRef, and typRaiRef below are attached to those three rails, which the Rail Fade Effect right after tracks.
 	const groRaiRef = React.useRef< HTMLDivElement | null >( null ); // What: Group Rail Reference. Why: The scroll-edge fade effect below needs the Group rail's own element. How: This is attached to that rail's ref prop.
 	const typRaiRef = React.useRef< HTMLDivElement | null >( null ); // What: Type Rail Reference. Why: Same reasoning as groRaiRef, for the Type rail. How: This is attached to that rail's ref prop.
 
@@ -359,9 +359,9 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 			const updFadFun = () => togFadFun( curRaiEle ); // What: Update Fade Function. Why: The scroll-edge attributes need recomputing every time this rail scrolls or resizes. How: This calls togFadFun on curRaiEle.
 
 
-			updFadFun(); // What: Initial Update Call. Why: The classes need to be correct immediately on mount, without waiting for a scroll or resize event. How: This invokes updFadFun once, synchronously.
+			updFadFun(); // What: Initial Update Call. Why: The edge attributes need to be correct immediately on mount, without waiting for a scroll or resize event. How: This invokes updFadFun once, synchronously.
 
-			curRaiEle.addEventListener( 'scroll', updFadFun, { passive : true } ); // What: Scroll Listener Call. Why: The classes must stay correct as the user actually scrolls this rail. How: This re-runs updFadFun on every scroll event.
+			curRaiEle.addEventListener( 'scroll', updFadFun, { passive : true } ); // What: Scroll Listener Call. Why: The edge attributes must stay correct as the user actually scrolls this rail. How: This re-runs updFadFun on every scroll event.
 
 
 			const resObsObj = new ResizeObserver( updFadFun ); // What: Resize Observer Object. Why: The filter rows/Show row's own content can change width (a group added/removed, a picker created/deleted) without the rail itself scrolling. How: This re-runs updFadFun whenever the observed element's size changes.
@@ -396,13 +396,13 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 	// #region Create Form Closing
 
-	const scrTopFun = () => { // What: Scroll Top Function. Why: Both canCreFun below and the successful-create flow need to scroll the shared .main container back to the top. How: This queries for .main directly and scrolls it, if found.
+	const scrTopFun = () => { // What: Scroll Top Function. Why: The create form's cancel and success paths both scroll the app's main scroller back to the top, so one function does it. How: This queries for the appConMai scroller directly and scrolls it, if found.
 
 
-		const scrConEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The scroll call below needs the actual live DOM node. How: This queries for the .main element directly.
+		const scrConEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The scroll call below needs the actual live DOM node. How: This queries for the appConMai element directly.
 
 
-		if ( scrConEle ) scrConEle.scrollTo({ // What: Scroll Call Guard. Why: Only a genuinely-found container should be scrolled. How: This scrolls .main to the top if it exists.
+		if ( scrConEle ) scrConEle.scrollTo({ // What: Scroll Call Guard. Why: Only a genuinely-found container should be scrolled. How: This scrolls the main scroller to the top if it exists.
 
 
 			behavior : scrBehFun(), // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
@@ -424,7 +424,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	 * Backs out of the create form. It scrolls the page to the top first,
 	 * while the tall form is still mounted so the scroll has real distance to
 	 * glide, then swaps back to the picker view 240ms later; under reduced
-	 * motion it scrolls and closes at once.
+	 * motion it closes at once without scrolling.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -439,7 +439,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	 *
 	*/
 
-	const canCreFun = () => { // What: Cancel Create Function. Why: Backing out of the create form should scroll up first (while the tall form is still mounted, so there's real distance to glide), then swap back to the picker view. How: This scrolls to top immediately under reduced motion (closing right away), otherwise scrolling first and closing 240ms later once the glide has had time to play.
+	const canCreFun = () => { // What: Cancel Create Function. Why: Backing out of the create form should scroll up first (while the tall form is still mounted, so there's real distance to glide), then swap back to the picker view. How: This scrolls to the top first and closes the form 240ms later, once the glide has had time to play.
 
 
 		if ( redMotFun() ) { setCreOpeBoo( false ); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped scroll animation. How: This closes the form immediately and returns.
@@ -462,7 +462,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	return (
 
 
-		<div className={ cssModObj.tabPagDiv }>{ /* What: Tab Picker Div Element. Why: This is TabPicCom's own root, holding the help overlay, the header, and the body (filters, Show row, and the active create/view content). How: This wraps every piece of the whole Pickers page. */ }
+		<div className={ cssModObj.tabPagDiv }>{ /* What: Tab Page Div Element. Why: This is TabPicCom's own root, holding the help overlay, the header, and the body (filters, Show row, and the active create/view content). How: This wraps every piece of the whole Pickers page. */ }
 
 
 			<HelOveCom
@@ -474,13 +474,13 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-			<header className={ cssModObj.pagHeaHed }>{ /* What: Header Element. Why: The kicker/help row, the brand lead, and the intro paragraph form one page header. How: This wraps those three pieces. */ }
+			<header className={ cssModObj.pagHeaHed }>{ /* What: Page Header Header Element. Why: The kicker/help row, the brand lead, and the intro paragraph form one page header. How: This wraps those three pieces. */ }
 
 
 				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The page kicker and the Help toggle sit side by side. How: This wraps those two pieces. */ }
 
 
-					<div className={ cssModObj.pagKicDiv }>Pickers</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the page's own heading below. How: This renders the literal word "Pickers". */ }
+					<div className={ cssModObj.pagKicDiv }>Pickers</div>{ /* What: Page Kicker Div Element. Why: A small eyebrow label orients the reader before the page's own heading below. How: This renders the literal word "Pickers". */ }
 
 
 
@@ -499,7 +499,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 					className={ cssModObj.heaLeaDiv }
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Lead Div Element. Why: The brand mark and the page's own main heading sit side by side. How: This wraps those two pieces. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+				>{ /* What: Header Lead Div Element. Why: The brand mark and the page's own main heading sit side by side. How: This wraps those two pieces. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 					<button
@@ -512,7 +512,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 						aria-label='Ease My Life link to go to the Today page'
 
 						onClick={ onNavHomFun }
-					>{ /* What: Brand Button Element. Why: The logo also works as a shortcut back to the Today tab. How: This wraps the logo svg and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+					>{ /* What: Brand Mark Button Element. Why: The logo also works as a shortcut back to the Today tab. How: This wraps the logo svg and calls onNavHomFun on click. Its data-element-name-hook is read by help mode's Stats catalog, help mode's Settings catalog, help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 						<svg
@@ -522,7 +522,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							viewBox='8 8 528 528'
 
 							aria-hidden='true'
-						>{ /* What: Logo SVG Element. Why: This draws the same small square "Ease My Life" logo mark app.tsx's own TabBarCom uses, so every page's own header reads as one product. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
+						>{ /* What: Brand Mark SVG Element. Why: This draws the same small square "Ease My Life" logo mark app.tsx's own TabBarCom uses, so every page's own header reads as one product. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
 
 
 							<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }
@@ -613,10 +613,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 					</button>
 
 
-					<div className={ cssModObj.heaTitDiv }>{ /* What: Section Header Div Element. Why: The page's own main heading needs its own wrapper for layout. How: This wraps pagTitHea. */ }
+					<div className={ cssModObj.heaTitDiv }>{ /* What: Header Title Div Element. Why: The page's own main heading needs its own wrapper for layout. How: This wraps pagTitHea. */ }
 
 
-						<h1 className={ cssModObj.pagTitHea }><span className={ cssModObj.titAccSpa }>Easing</span> your life, one pick at a time.</h1>{ /* What: Title Heading Element. Why: Every tab needs its own main heading. How: This renders a fixed heading with its first word given its own accent-colored span. */ }
+						<h1 className={ cssModObj.pagTitHea }><span className={ cssModObj.titAccSpa }>Easing</span> your life, one pick at a time.</h1>{ /* What: Page Title Heading Element. Why: Every tab needs its own main heading. How: This renders a fixed heading with its first word given its own accent-colored span. */ }
 
 
 					</div>
@@ -626,7 +626,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-				<p className={ cssModObj.pagSubPar }>Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing picker and its items&rsquo; settings. Conditionals and reminders can be managed in the <button className={ cssModObj.subLinBut } type='button' onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }>Data page</button>.</p>{ /* What: Intro Paragraph Element. Why: A first-time user needs a plain-language orientation to the whole page before touching anything. How: This renders a fixed explanatory sentence with an inline link that switches to the Data tab. */ }
+				<p className={ cssModObj.pagSubPar }>Each picker has its own rule for how it chooses. Run a picker for a random item or just select an item manually and then push it to the Today tab. You can also create an entirely new picker here, add to its list of items, or edit an existing picker and its items&rsquo; settings. Conditionals and reminders can be managed in the <button className={ cssModObj.subLinBut } type='button' onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }>Data page</button>.</p>{ /* What: Page Sub Paragraph Element. Why: A first-time user needs a plain-language orientation to the whole page before touching anything. How: This renders a fixed explanatory paragraph with an inline link that switches to the Data tab. */ }
 
 
 			</header>
@@ -637,10 +637,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 				className={ cssModObj.pagBodDiv }
 
 				style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
-			>{ /* What: Body Div Element. Why: A running tour can reserve extra top padding to keep its own coach clear of the header. How: This wraps every filter row, the Show row, and the active create/view content below. */ }
+			>{ /* What: Page Body Div Element. Why: A running tour can reserve extra top padding to keep its own coach clear of the header. How: This wraps every filter row, the Show row, and the active create/view content below. */ }
 
 
-				<div className={ cssModObj.pagFilDiv }>{ /* What: Filters Div Element. Why: The Group row, the Type row, and the Show row all belong to one shared filter block the Pickers page tour can target together. How: This wraps every filRowDiv below. */ }
+				<div className={ cssModObj.pagFilDiv }>{ /* What: Page Filters Div Element. Why: The Group row, the Type row, and the Show row all belong to one shared filter block the Pickers page tour can target together. How: This wraps the Group row, the Type row, and the Show row. */ }
 
 
 					{ exiGroArr.length > 1 && ( // What: Group Row Check. Why: A single-group install has nothing to actually filter by. How: This renders the whole Group filter row only once more than one distinct group exists.
@@ -725,10 +725,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-					<div className={ cssModObj.filRowDiv }>{ /* What: Show Filter Row Div Element. Why: The "Show" label and the actual per-picker tab rail sit side by side. How: This wraps filLabSpa and the picTabDiv rail. */ }
+					<div className={ cssModObj.filRowDiv }>{ /* What: Filter Row Div Element. Why: The "Show" label sits above the per-picker tab rail. How: This wraps filLabSpa and the picTabDiv rail. */ }
 
 
-						<span className={ cssModObj.filLabSpa }>Show</span>{ /* What: Show Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Show". */ }
+						<span className={ cssModObj.filLabSpa }>Show</span>{ /* What: Filter Label Span Element. Why: The rail below needs a readable label. How: This renders the literal word "Show". */ }
 
 
 						<div
@@ -739,7 +739,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 							data-element-name-hook='picTabDiv'
 							data-rail-wheel-scroll
-						>{ /* What: Picker Tabs Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in sorPicArr. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
+						>{ /* What: Picker Tab Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in sorPicArr. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 
 							{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: Distinct from disAddBoo below, this tooltip's wording ("until all tutorials are completed") would be misleading during a Replay of the Pickers page tour, which runs AFTER the checklist finishes, when tutProBoo is always false, so that case still falls through to the plain disabled button with no tooltip. How: This renders a disabled, explanatory InfTipCom instead of the real button while the guided checklist is still in progress.
@@ -777,7 +777,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 									type='button'
 
 									onClick={ () => setCreOpeBoo( true ) }
-								>{ /* What: Add Picker Tab Button Element. Why: This is the real entry point into PicForCom's own create flow. How: This opens creOpeBoo, disabled only during the page tour's own intercepted step. Its data-element-name-hook is read by the Pickers page tour, the picker mini-tours, and help mode's Pickers catalog. */ }
+								>{ /* What: Picker Add Button Element. Why: This is the real entry point into PicForCom's own create flow. How: This opens creOpeBoo, disabled only during the page tour's own intercepted step. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 									<AddLabCom />{ /* What: Add Label Component. Why: The add tab needs its plus glyph and visible label. How: This renders both. */ }
@@ -803,7 +803,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 									data-element-name-hook='picTabBut'
 									data-tab-select-active={ ( !creOpeBoo && curPicObj.id === actPicStr ) || undefined } // What: Tab Select Active Attribute. Why: The picker showing below reads as selected in the strip, unless the create form has taken over. How: This sets the presence-only attribute while this tab's picker is the active one and the form is closed.
 
-									onClick={ () => { // What: On Click Handler. Why: Tapping a picker's tab shows that picker. How: This closes the create form and selects the picker.
+									onClick={ () => { // What: On Click Function. Why: Tapping a picker's tab shows that picker. How: This closes the create form and selects the picker.
 
 
 										setCreOpeBoo( false );        // What: Create Close Call. Why: Choosing a filter or picker closes the create form. How: This resets creOpeBoo to false.
@@ -811,7 +811,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 									} }
-								>{ /* What: Picker Tab Button Element. Why: Tapping a picker's own tab should select it and close the create form. How: This writes curPicObj.id into actPicStr. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
+								>{ /* What: Picker Tab Button Element. Why: Tapping a picker's own tab should select it and close the create form. How: This writes curPicObj.id into actPicStr. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 									<span className={ cssModObj.tabNamSpa }>{ curPicObj.name }</span>{ /* What: Tab Name Span Element. Why: Every tab needs its own picker name. How: This renders curPicObj.name. */ }
@@ -839,7 +839,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 					key={ creOpeBoo ? '__new' : ( actPicStr || '__none' ) }
 
 					className={ cssModObj.picFadDiv }
-				>{ /* What: Content Fade Div Element. Why: Switching between create/view (or between two different pickers) should play a fade transition, and React needs a stable key to treat each as a distinct mounted instance. How: This wraps whichever of PicForCom/PicVieCom currently applies. */ }
+				>{ /* What: Picker Fade Div Element. Why: Switching between create/view (or between two different pickers) should play a fade transition, and React needs a stable key to treat each as a distinct mounted instance. How: This wraps whichever of PicForCom/PicVieCom currently applies. */ }
 
 
 					{ creOpeBoo ? ( // What: Create Open Check. Why: The body shows either the create form or the selected picker's view. How: This picks PicForCom while creOpeBoo is on, otherwise PicVieCom.
@@ -862,15 +862,15 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							onCrePicFun={ ( payForObj ) => { // What: On Create Picker Function. Why: A successful create must reconcile with whatever the guided-tour checklist expects, then land the user on the freshly-made picker. How: This tags a tour-created picker for later replay matching, then advances the selection once the created id comes back.
 
 
-								const newPicStr = actStoObj.addPicFun({ // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields above. // What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.ts's own addPicFun; createdFromSample tags this run's picker either way, so a LATER replay can find it too. How: This is gated on touBusObj.prePayObj, which is only set while a picker tutorial walks this form. // What: Hidden Field Note. Why: While the mini-tour checklist is up, ANY picker created here (via a tutorial's own walkthrough OR the user just clicking this same real button themselves) stays out of the real list until the closing Generate step (mirrors reminders-section.tsx's own staAddFun). How: This is driven by touBusObj.shoCheBoo below.
+								const newPicStr = actStoObj.addPicFun({ // What: New Picker String. Why: This is the actual created (or replayed-in-place) picker's own id. How: This calls actions.addPicFun with the payload plus the tour-driven fields below.
 
 
 									...payForObj, // What: Payload Spread. Why: Every field the form collected goes into the new picker. How: This spreads in payForObj.
 
-									hidden : !!touBusObj.shoCheBoo, // What: Hidden. Why: A picker made while the tour checklist is up stays out of sight until the tour finishes. How: This is true while the bus shows the checklist.
+									hidden : !!touBusObj.shoCheBoo, // What: Hidden. Why: A picker made while the tour checklist is up stays out of sight until the tour finishes. How: This is true while the bus shows the checklist. // What: Hidden Field Note. Why: While the mini-tour checklist is up, any picker created here (via a tutorial's own walkthrough or the user clicking this same real button) stays out of the real list until the closing Generate step (mirrors reminders-section.tsx's own staAddFun). How: This is driven by touBusObj.shoCheBoo.
 
 									...( touBusObj.prePayObj ? { createdFromSample : touBusObj.samIdeStr! } : {} ), // What: Sample Tag Spread. Why: A tour-prefilled picker records which sample it came from. How: This adds createdFromSample only while a prefill is active. // What: Non-Null Note. Why: A picker tour sets its prefill and its sample id in the same bus write. How: The ! tells TypeScript samIdeStr is set whenever prePayObj is.
-									...( touBusObj.exiIdeStr ? { replaceId : touBusObj.exiIdeStr } : {} )           // What: Replace ID Spread. Why: A tour replay updates its earlier picker in place instead of adding a duplicate. How: This adds replaceId only while the bus names an existing picker.
+									...( touBusObj.exiIdeStr ? { replaceId : touBusObj.exiIdeStr } : {} )           // What: Replace ID Spread. Why: A tour replay updates its earlier picker in place instead of adding a duplicate. How: This adds replaceId only while the bus names an existing picker. // What: Replay Update Note. Why: A replay updates the SAME picker in place (via replaceId) instead of creating a duplicate, see store.ts's own addPicFun. How: This is gated on touBusObj.exiIdeStr, which names the earlier picker only while a replay runs.
 
 
 								});

@@ -221,7 +221,7 @@
 @container appRooDiv ( max-width : 560px ) { /* What: Narrow Page Title Heading. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
-	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the Base Plus 3 font size. */
 
 
 		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
@@ -371,8 +371,8 @@
 
 
 	--fad-edg-off : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the rail. How: --fad-lef-off and --fad-rig-off start from it. */
-	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 33.876px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-start-active. */
-	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 33.876px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-end-active. */
+	--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 33.876px */ /* What: Fade Left Offset. Why: The left edge fades until the rail reaches its start. How: The mask reads this, and the data-scroll-start-active rule below zeroes it. */
+	--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 33.876px */ /* What: Fade Right Offset. Why: The right edge fades until the rail reaches its end. How: The mask reads this, and the data-scroll-end-active rule below zeroes it. */
 
 	-webkit-mask-image : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 33.876px, Fade Right Offset ~= 33.876px */
 	display            : flex;
@@ -408,7 +408,7 @@
 @supports ( -moz-appearance : none ) { /* What: Firefox Picker Tab Div. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
 
 
-	.picTabDiv { /* What: Padded Picker Tab Div. Why: The bottom border needs a pixel of room. How: This adds extra small 8 vertical spacing (about 1px) of bottom padding. */
+	.picTabDiv { /* What: Padded Picker Tab Div. Why: The bottom border needs a pixel of room. How: This adds Spacing Vertical Base Minus 9 (about 1px) of bottom padding. */
 
 
 		padding-bottom : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
@@ -424,7 +424,7 @@
 
 .picTabBut,
 .picAddBut,
-.picAddSpa { /* What: Picker Tab Button And Add Button And Span. Why: Each picker is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode, and eases its press and focus ring. */
+.picAddSpa { /* What: Picker Tab Button And Add Button And Span. Why: Each picker is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the mode, and eases its hover and selected colors, press, and focus ring. */
 
 
 	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) backwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with the Stats and Data scope tabs, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the tab's transform and keep its press from showing. How: The tab holds the first frame only while it waits to start, and its own styles, which match the last frame, take over once it ends. */
@@ -586,7 +586,7 @@
 
 }
 .picAddBut .tabNamSpa,
-.picAddSpa .tabNamSpa { /* What: Tab Name Span In Picker Add Button And Span. Why: The add label reads smaller and follows the tab's own color. How: This shrinks it and inherits the color. */
+.picAddSpa .tabNamSpa { /* What: Tab Name Span In Picker Add Button And Span. Why: The add label follows its tab's own color. How: This inherits the color and restates the tab name's font size. */
 
 
 	color     : inherit;
