@@ -257,7 +257,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	};
 
 
-	const numLasFun = ( cmpOneNum : number | null | undefined, cmpTwoNum : number | null | undefined ) => { // What: Numeric Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
+	const numLasFun = ( cmpOneNum : number | null | undefined, cmpTwoNum : number | null | undefined ) => { // What: Number Last Function. Why: A numeric field (Range/Odds/Boost) that's irrelevant to a row needs the same "always last" rule as lasNulFun, plus the actual numeric comparison once both sides are real. How: This defers to lasNulFun first, then subtracts the two values and applies revSorBoo/the name tie-break.
 
 
 		const notAvaNum = lasNulFun( cmpOneNum, cmpTwoNum ); // What: Not Available Number. Why: A real comparison result from lasNulFun means one side was N/A and nothing more needs computing. How: This calls lasNulFun and checks its result before doing any real math.

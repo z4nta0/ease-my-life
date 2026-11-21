@@ -169,7 +169,7 @@ type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string
  * @param props.isaTutBoo   - Is-A Tutorial Boolean: Whether this instance is a
  *                            mini-tour launcher card for a still-hidden
  *                            sample, rather than a real due reminder.
- * @param props.jusCheStr   - Just Check String: The id of whichever reminder
+ * @param props.jusCheStr   - Just Checked String: The id of whichever reminder
  *                            was just checked, driving the brief fresh
  *                            flourish; unrelated to isaTutBoo.
  * @param props.onAniEndFun - On Animate End Function: Fires when this card's
@@ -745,7 +745,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 	const [ insIdeStr, setInsIdeStr ] = React.useState< string | null >( null ); // What: Insert Identifier String And Setter. Why: A newly-added card needs to play its own entrance animation exactly once. How: This is set to the new card's own id right when commit finishes, then cleared on that card's own animation end.
 	const [ rmvIdeStr, setRmvIdeStr ] = React.useState< string | null >( null ); // What: Removing Identifier String And Setter. Why: A card slated for delete/skip needs to play its own collapse-out animation before the underlying task is actually removed. How: This is set right before that animation starts, then cleared once it ends.
 	const [ skiIdeStr, setSkiIdeStr ] = React.useState< string | null >( null ); // What: Skip Identifier String And Setter. Why: A card's own skip confirm is its own independent open/closed slot, separate from actEdiStr. How: This holds whichever task's own skip confirm is currently open.
-	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just-Checked String And Setter. Why: A reminder that was JUST checked needs a brief "fresh" flourish, distinct from one that was already done. How: This is set on every fresh check and cleared 700ms later.
+	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just Checked String And Setter. Why: A reminder that was JUST checked needs a brief "fresh" flourish, distinct from one that was already done. How: This is set on every fresh check and cleared 700ms later.
 
 	const rmvActRef = React.useRef< ( () => void ) | null >( null ); // What: Remove Action Reference. Why: Delete and Skip share the same collapse-out animation, but each needs its own action to run once it finishes. How: This holds whichever thunk should run on the removing card's own animation end.
 

@@ -339,7 +339,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param fulOrdArr - Full Ordinal Array: The fuller, previously-saved
+ * @param fulOrdArr - Full Order Array: The fuller, previously-saved
  *                    ordering, which may hold keys that are absent from
  *                    prsNewArr entirely.
  * @param prsNewArr - Present New Array: The subset of keys that are present

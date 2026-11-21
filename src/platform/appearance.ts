@@ -373,8 +373,9 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appSetObj - App Settings Object: The persisted appearance settings
- *                    object (theme, autoSystem, customLight, customDark).
+ * @param appSetObj - Appearance Settings Object: The persisted appearance
+ *                    settings object (theme, autoSystem, customLight,
+ *                    customDark).
  * @param sysDarBoo - System Dark Boolean: Whether the OS currently prefers
  *                    dark mode.
  *

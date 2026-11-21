@@ -747,7 +747,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just-Checked String And Setter. Why: A just-completed row needs a brief "fresh" cue, keyed by its own eid. How: This is set by hanCheFun below and cleared 700ms later.
+	const [ jusCheStr, setJusCheStr ] = React.useState< string | null >( null ); // What: Just Checked String And Setter. Why: A just-completed row needs a brief "fresh" cue, keyed by its own eid. How: This is set by hanCheFun below and cleared 700ms later.
 
 	const rinEleRef = React.useRef< HTMLDivElement | null >( null );            // What: Ring Element Reference. Why: The celebration effect below needs a direct DOM handle to trigger CSS classes on. How: This is attached to the .ring div's own ref prop below.
 	const stkEleRef = React.useRef< HTMLDivElement | null >( null );            // What: Streak Element Reference. Why: The streak-pulse effect below needs a direct DOM handle to trigger its own CSS class on. How: This is attached to the .streak div's own ref prop below.
@@ -1805,7 +1805,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const intSeeBoo = !!staAppObj.onboarding.appFeaturesIntroSeen; // What: Intro Seen Boolean. Why: The tip must never show a second time once the user has already seen it. How: This reads staAppObj.onboarding.appFeaturesIntroSeen.
 
-	const [ shoIntBoo, setShoIntBoo ] = React.useState( false ); // What: Show Feature Intro Boolean And Setter. Why: See the doc comment just above. How: This is set by the effect below.
+	const [ shoIntBoo, setShoIntBoo ] = React.useState( false ); // What: Show Intro Boolean And Setter. Why: See the doc comment just above. How: This is set by the effect below.
 
 
 	React.useEffect( () => { // What: Feature Intro Timing Effect. Why: See the doc comment just above. How: This stages shoIntBoo true after a fixed delay, only while every gating condition holds, and clears it immediately whenever any of them stop holding.

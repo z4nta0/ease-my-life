@@ -71,7 +71,7 @@ const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. 
 
 
 /**
- * OWN_KEY_REG = Own Key Regexp
+ * OWN_KEY_REG = Own Key Regular Expression
  *
  * @summary
  * Matches every localStorage key this app has ever written, across
@@ -86,7 +86,7 @@ const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. 
  *
 */
 
-const OWN_KEY_REG = /^ease[-]?my[-]?life/i; // What: Own Key Regexp. Why: Every localStorage key this app owns, across every naming generation, must be found by pattern rather than by a fixed list. How: This is tested against each localStorage key inside ownKeyFun below.
+const OWN_KEY_REG = /^ease[-]?my[-]?life/i; // What: Own Key Regular Expression. Why: Every localStorage key this app owns, across every naming generation, must be found by pattern rather than by a fixed list. How: This is tested against each localStorage key inside ownKeyFun below.
 
 
 
@@ -557,7 +557,7 @@ function reaLocFun () : RawSavTyp {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param appStaObj - App State Object: The full app state object to mirror.
- * @param fulWriBoo - Full Writer Boolean: Whether to write pickLog too,
+ * @param fulWriBoo - Full Write Boolean: Whether to write pickLog too,
  *                    instead of excluding it. True whenever localStorage is
  *                    the store of record rather than just a warm mirror of
  *                    IDB.

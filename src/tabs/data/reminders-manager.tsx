@@ -131,7 +131,7 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param verTexStr - Version Text String: The trailing clause naming what the
+ * @param verTexStr - Verb Text String: The trailing clause naming what the
  *                    setting does, e.g. 'trigger the day streak in the Today
  *                    page'.
  * @param neiConStr - Neither Conjunction String: The conjunction used in the
@@ -370,7 +370,7 @@ type OmcProTyp = { actStoObj : ActStoTyp, onCloConFun : () => void, remOptObj : 
 // #region OptMatCom
 
 /**
- * OptMatCom = Options Matrix Component
+ * OptMatCom = Option Matrix Component
  *
  * @summary
  * Data tab: the Reminders Controls body, the participation matrix.

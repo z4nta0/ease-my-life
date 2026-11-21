@@ -629,7 +629,7 @@ function HeaLegCom () : React.JSX.Element {
 
 
 
-type PncProTyp = { alwShoBoo? : boolean, curPagNum : number, onChange : ( nexPagNum : number ) => void, pagSizNum : number, totIteNum : number, uniWorStr? : string }; // What: Page-Navigation-Component Props Type. Why: A pager steps through a long list a page at a time. How: This types PagNavCom's props.
+type PncProTyp = { alwShoBoo? : boolean, curPagNum : number, onChange : ( nexPagNum : number ) => void, pagSizNum : number, totIteNum : number, uniWorStr? : string }; // What: Pager-Navigation-Component Props Type. Why: A pager steps through a long list a page at a time. How: This types PagNavCom's props.
 
 // #region PagNavCom
 

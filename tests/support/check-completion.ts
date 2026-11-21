@@ -151,7 +151,7 @@ const expConFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, curEntObj : To
 
 	const thrValNum = preConObj.threshold ?? 100;                                                                                               // What: Threshold Value Number. Why: Ease conditionals charge toward the threshold. How: This reads it, defaulting to 100.
 	const rolOkaFun = ( steValNum : number | undefined ) => steOkaFun( steValNum, thrValNum, preConObj.easeMax ?? 14, preConObj.easeMin ?? 7 ); // What: Roll Okay Function. Why: A conditional rolls within its own range. How: This checks a step against it.
-	const steResNum = ( preConObj.chargeStep ?? 0 ) > 0 ? preConObj.chargeStep! : aftConObj.chargeStep;                                         // What: Step Reserved Number. Why: A set step is kept, an unset one is rolled. How: This uses the set step or the rolled result. // What: Non-Null Note. Why: The branch only reads chargeStep after checking it's above 0. How: The ! tells TypeScript it's set here.
+	const steResNum = ( preConObj.chargeStep ?? 0 ) > 0 ? preConObj.chargeStep! : aftConObj.chargeStep;                                         // What: Step Result Number. Why: A set step is kept, an unset one is rolled. How: This uses the set step or the rolled result. // What: Non-Null Note. Why: The branch only reads chargeStep after checking it's above 0. How: The ! tells TypeScript it's set here.
 	const valFamBoo = [ 'dynamic', 'ease-down', 'ease-up' ].includes( preConObj.mode );                                                         // What: Value Family Boolean. Why: Only value modes charge and resolve. How: This checks the mode.
 
 	// #endregion Step Constants
@@ -382,7 +382,7 @@ const cheRemFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, tasIdeStr : st
 
 
 
-const unsConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : carPreObj, _chargePrev : chrPreObj, ...resConObj } = conRcdObj; return jsoStrFun( resConObj ); }; // What: Unsnapshotted Conditional Function. Why: Undo snapshots linger from earlier days and aren't part of what a check-off restores. How: This serializes a conditional without them.
+const unsConFun = ( conRcdObj : ConRcdTyp ) : string => { const { _cardPrev : carPreObj, _chargePrev : chrPreObj, ...resConObj } = conRcdObj; return jsoStrFun( resConObj ); }; // What: Unsnapshotted Conditional Function. Why: Undo snapshots linger from earlier days and aren't part of what a check-off restores. How: This serializes a conditional without them. // What: Card Previous Object. Why: The day-off card's undo snapshot is left out. How: This takes _cardPrev off conRcdObj, unread. // What: Charge Previous Object. Why: The charge undo snapshot is left out too. How: This takes _chargePrev off conRcdObj, unread. // What: Rest Conditional Object. Why: Every other field is compared. How: This keeps them in resConObj.
 
 
 

@@ -141,7 +141,7 @@ function conSubFun ( conRcdObj : ConRcdTyp ) : string {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picLogArr - Picker Log Array: The full state.pickLog array to scan.
+ * @param picLogArr - Pick Log Array: The full state.pickLog array to scan.
  * @param picIdeStr - Picker Identifier String: Which picker's own rows to
  *                    keep.
  * @param dayKeyStr - Day Key String: Which day's own rows to keep, as a

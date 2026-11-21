@@ -203,7 +203,7 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 	};
 
 
-	const canConFun = () => { // What: Cancel Controls Function. Why: Cancelling a brand-new conditional must discard it entirely, while cancelling an existing one just closes without saving. How: This calls onDisDraFun when isaNewBoo, otherwise onCloEdiFun.
+	const canConFun = () => { // What: Cancel Conditional Function. Why: Cancelling a brand-new conditional must discard it entirely, while cancelling an existing one just closes without saving. How: This calls onDisDraFun when isaNewBoo, otherwise onCloEdiFun.
 
 
 		if ( isaNewBoo ) onDisDraFun(); // What: Discard Branch. Why: A brand-new, not-yet-saved conditional has nothing worth keeping, so cancelling it should discard it entirely. How: This calls onDisDraFun.
