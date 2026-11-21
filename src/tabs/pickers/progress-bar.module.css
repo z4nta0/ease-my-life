@@ -32,7 +32,7 @@
 
 }
 
-.proFilIta { /* What: Progress Fill Italic. Why: This is the filled portion showing how far along the value is. How: This spans the track and slides with the transform the component sets inline, so the track hides the empty share. */
+.proFilIta { /* What: Progress Fill Italic. Why: This is the filled portion showing how far along the value is. How: This spans the track and slides with the transform the component sets inline, so the track hides the empty share, and eases that slide on the overshoot curve. */
 
 
 	background    : var( --acc-mai-col );                                /* Accent Main Color = oklch( 0.5 0.14 250 ) */
