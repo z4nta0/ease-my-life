@@ -22,7 +22,7 @@
 
 /* #region todCarArt */
 
-.todCarArt { /* What: Today Card Article. Why: The tutorial offer should sit in the list like any other Today card. How: This lays out the check, body, and actions in the Today card's three-column grid, surface, border, and spacing. */
+.todCarArt { /* What: Today Card Article. Why: The tutorial offer should sit in the list like the other Today cards. How: This lays out the check, body, and actions in the Today card's three-column grid, surface, border, and spacing, and eases its background, opacity, and border color. */
 
 
 	align-items           : center;
@@ -102,10 +102,10 @@
 /* #region carCheBut */
 
 .carCheBut,
-.carCheSpa { /* What: Card Check Button And Span. Why: The check spot holds the play and undo buttons, shaped like a real card's checkbox. How: This draws the rounded square with the button chrome reset and a color fade, and eases its focus ring in, and eases its press and focus ring. */
+.carCheSpa { /* What: Card Check Button And Span. Why: The check spot holds the play and undo buttons, shaped like a real card's checkbox. How: This draws the rounded square with the button chrome reset, and eases its color changes, press, and focus ring. */
 
 
-	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: This line resets the button's native styling in WebKit-based browsers. How: This sets the prefixed appearance to none, the same as the standard appearance line below. */
 	align-items        : center;
 	appearance         : none;
 	background         : none;
@@ -144,7 +144,7 @@
 
 
 }
-.todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Card Check Button In Done Today Card Article. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This adds a thin background-colored inset line inside the gap. */
+.todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Card Check Button In Done Today Card Article. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This keeps the gap and adds a thin background-colored inset line just inside the box's edge. */
 
 
 	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ), Vertical Rhythm Base Minus 8 ~= 1.537px */
@@ -197,7 +197,7 @@
 
 
 }
-.carCheBut:active { /* What: Pressed Card Check Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.carCheBut:active { /* What: Pressed Card Check Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -205,7 +205,7 @@
 
 }
 
-.cheRipSpa { /* What: Check Ripple Span. Why: The done check keeps the same ripple layer every done row carries. How: This draws an invisible accent ring just outside the box that never takes the pointer. */
+.cheRipSpa { /* What: Check Ripple Span. Why: The done check carries a ripple layer like the other Today cards' checks. How: This draws an invisible accent ring just outside the box that never takes the pointer. */
 
 
 	border         : var( --bor-wid-bas ) solid var( --acc-mai-col ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -371,7 +371,7 @@
 
 
 }
-.actIcoBut:active { /* What: Pressed Action Icon Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.actIcoBut:active { /* What: Pressed Action Icon Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */

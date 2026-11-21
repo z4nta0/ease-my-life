@@ -48,11 +48,9 @@ type AfcProTyp = { actStoObj : ActStoTyp, feaRcdObj : { ideStr : string, labStr 
  * AppFeaCom = App Feature Component
  *
  * @summary
- * An "App Features" launcher card: same shape/behavior as a PagTouCom
- * card above, but backed by its own staAppObj.onboarding.appFeatures map
- * instead of the checklist, and with no cheExiBoo celebration-exit
- * animation to key off (App Features isn't part of that "closing card"
- * flow at all, see shoFeaBoo's own comment in TabTodCom for why).
+ * An "App Features" launcher card: it starts one app-feature tour from the
+ * onboarding appFeatures map in staAppObj, with Play and uncheck controls,
+ * and shows an explanation when the tour is blocked.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -81,10 +79,10 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 	const bloReaStr = !tutDonBoo ? bloReaFun( feaRcdObj.ideStr, staAppObj ) : null;                                   // What: Blocked Reason String. Why: A still-pending card can require an earlier one first, and needs its own explanation string when it does. How: This calls bloReaFun only while tutDonBoo is false, otherwise null.
 
 
-	const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this feature, unless it is currently blocked. How: This checks the actions-area exclusion and the blocked guard first, then dispatches to onUncFeaFun or onPlaTutFun based on tutDonBoo.
+	const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: A click on the card itself, outside its own buttons, should start or un-resolve this feature, unless it is currently blocked. How: This checks the actions-area exclusion and the blocked guard first, then dispatches to onUncFeaFun or onPlaTutFun based on tutDonBoo.
 
 
-		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Type Assertion Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Type Assertion Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since the target of a click on this card is the card or an element inside it.
 
 
 
@@ -112,7 +110,7 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 			data-element-name-hook='todCarArt tutCarArt'
 
 			onClick={ onRowCliFun }
-		>{ /* What: App Feature Card Article Element. Why: This is AppFeaCom's own root. How: This renders a Play/Undo/blocked check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+		>{ /* What: Today Card Article Element. Why: This is AppFeaCom's own root, which also carries the tutCarArt hook. How: This renders a Play/Undo/blocked check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 			{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved App Feature card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, otherwise one of the 2 branches below.
@@ -136,21 +134,21 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 					} }
-				>{ /* What: Undo Check Button Element. Why: A resolved App Feature card can be un-resolved directly from its own check button, unlike a pending one. How: This calls onUncFeaFun. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>{ /* What: Card Check Button Element. Why: A resolved App Feature card can be un-resolved directly from its own check button, unlike a pending one. How: This calls onUncFeaFun. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 					<span
 						className={ cssModObj.cheRipSpa }
 
 						aria-hidden='true'
-					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
+					/>{ /* What: Check Ripple Span Element. Why: A completed check carries the same ripple layer as the other Today cards' done checks. How: This is a purely decorative, empty span. */ }
 
 					<IcoSvgCom
 						className={ cssModObj.cheIcoSvg }
 
 						icoNamStr='cheEle'
 						sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
-					/>{ /* What: Icon SVG Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
+					/>{ /* What: Check Icon SVG Component. Why: A resolved card needs a checkmark glyph. How: This renders the 'cheEle' icon at a fixed size. */ }
 
 
 				</button>
@@ -166,7 +164,7 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 					actNamStr={ `Start the ${ feaRcdObj.labStr } tutorial` }
 					labTexStr={ bloReaStr }
-				>{ /* What: Info Tip Component. Why: A blocked feature's own disabled check button still needs to explain WHY it is blocked. How: This wraps a disabled-looking play icon with bloReaStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>{ /* What: Card Check Span Info Tip Component. Why: A blocked feature's own disabled check button still needs to explain WHY it is blocked. How: This wraps a disabled-looking play icon with bloReaStr. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 					<IcoSvgCom
@@ -198,7 +196,7 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 					} }
-				>{ /* What: Play Check Button Element. Why: A pending, unblocked App Feature card's own check button starts its tutorial instead of toggling done. How: This calls onPlaTutFun, scoped to 'appFeature'. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>{ /* What: Card Check Button Element. Why: A pending, unblocked App Feature card's own check button starts its tutorial instead of toggling done. How: This calls onPlaTutFun, scoped to 'appFeature'. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 					<IcoSvgCom
@@ -220,14 +218,14 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 				<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The feature's own page label and its optional time estimate sit together. How: This wraps the page-label span and, when one exists, the time estimate. */ }
 
 
-					<span>{ PAG_LAB_OBJ[ feaRcdObj.pagStr ] }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRcdObj's own pagStr in PAG_LAB_OBJ. */ }
+					<span>{ PAG_LAB_OBJ[ feaRcdObj.pagStr ] }</span>{ /* What: Page Label Span Element. Why: The user needs to see which page this App Feature lives on. How: This looks up feaRcdObj's own pagStr in PAG_LAB_OBJ. */ }
 
 
 
 					{ feaRcdObj.timStr && ( // What: Time Estimate Check. Why: Not every App Feature card has a manually-timed estimate. How: This renders the dot/time pair only while feaRcdObj's own timStr is set.
 
 
-						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
+						<React.Fragment>{ /* What: Time Estimate Fragment. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
 
 
 							<span className={ cssModObj.metDotSpa }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The page label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
@@ -273,7 +271,7 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 
 						} }
-					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setFeaFun with a 'cancelled' status. */ }
+					>{ /* What: Action Icon Button Element. Why: Cancelling marks this card resolved without actually finishing its tutorial. How: This calls actStoObj.setFeaFun with a 'cancelled' status. */ }
 
 
 						<IcoSvgCom
