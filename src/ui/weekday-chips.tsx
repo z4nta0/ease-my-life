@@ -124,7 +124,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 			aria-describedby={ desIdeStr }
 			aria-label='Days of the week'
 			role='group'
-		>{ /* What: Container Dow Chips Div Element. Why: This groups all 7 weekday toggle chips as one accessible group. How: This renders one chip per WEE_LAB_ARR entry below, locked or toggleable depending on locDayNum. Its data-element-name-hook is read by help mode's Data catalog. */ }
+		>{ /* What: Day-Of-Week Chips Div Element. Why: This groups all 7 weekday chips as one accessible group. How: This renders one chip per WEE_LAB_ARR entry below, locked or toggleable depending on locDayNum. Its data-element-name-hook is read by help mode. */ }
 
 
 			{ WEE_LAB_ARR.map( ( labChaStr, dayIndNum ) => { // What: Weekday Chip Map. Why: One chip is needed per day of the week. How: This maps WEE_LAB_ARR to either a locked InfTipCom chip or a toggleable button chip, keyed by dayIndNum.
@@ -142,7 +142,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 						className={ cssModObj.dowChiSpa }
 
 						labTexStr={ locTipStr }
-					>{ labChaStr }</InfTipCom> // What: Info Tip Component. Why: This looks selected like any other "on" chip, but tapping explains why it can't be turned off instead of silently doing nothing. How: This renders as an InfTipCom whose trigger is the day's own single-letter label.
+					>{ labChaStr }</InfTipCom> // What: Day-Of-Week Chip Span Info Tip Component. Why: This looks selected like any other "on" chip, but tapping explains why it can't be turned off instead of silently doing nothing. How: This renders as an InfTipCom whose trigger is the day's own single-letter label.
 
 
 				);
@@ -165,7 +165,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 						title={ DAY_FUL_ARR[ dayIndNum ] }
 
 						onClick={ () => togDayFun( dayIndNum ) }
-					>{ labChaStr }</button> // What: Toggle Day Chip Element. Why: This is the actual clickable control for an unlocked day. How: This shows daySelBoo as its own aria-pressed state, which its module styles as selected, and calls togDayFun with dayIndNum when clicked.
+					>{ labChaStr }</button> // What: Day-Of-Week Chip Button Element. Why: This is the actual clickable control for an unlocked day. How: This shows daySelBoo as its own aria-pressed state, which its module styles as selected, and calls togDayFun with dayIndNum when clicked.
 
 
 				);
@@ -190,7 +190,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 
 // #region Exports
 
-export { WeeChiCom }; // What: Named Export. Why: The Pickers and Data tabs and the reminders editor all pick weekdays with these chips. How: This exports WeeChiCom by name.
+export { WeeChiCom }; // What: Named Export. Why: Schedule controls need this row of weekday chips as one shared component. How: This exports WeeChiCom by name.
 
 // #endregion Exports
 

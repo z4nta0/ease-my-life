@@ -15,9 +15,8 @@ import React     from 'react';                          // What: React. Why: Seg
  *
  * @summary
  * The app's shared segmented control: a row of mutually exclusive option
- * buttons with a sliding thumb behind the selected one, used by the reminders
- * schedule editor, the cadence controls, and the Settings tab's placement and
- * theme-mode choices.
+ * buttons with a sliding thumb behind the selected one, used wherever a
+ * person picks one option from a short row, such as the cadence controls.
  *
  * Sections:
  *  - Components
@@ -59,10 +58,7 @@ type SccProTyp< T extends string > = { ariLabStr : string, desIdeStr? : string, 
  *                          to its content's width (Day selection).
  * @param props.onChange  - On Change: Called with the clicked entry's own key.
  * @param props.optIteArr - Option Item Array: The array of { keyStr, labStr }
- *                          entries this control renders one button per; also
- *                          read directly by cadence-control.tsx and
- *                          tab-settings.tsx when they build their own option
- *                          arrays for this same component.
+ *                          entries this control renders one button per.
  * @param props.value     - Value: The currently-selected entry's own key.
  *
  * @returns The segmented control's own group element, including the
@@ -82,13 +78,13 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 
 	const segEleRef = React.useRef< HTMLDivElement | null >( null );                                      // What: Segment Element Reference. Why: plaThuFun needs a handle on the actual group DOM node to query and measure it. How: This is attached via the group div's own ref prop below.
 	const thuEleRef = React.useRef< HTMLSpanElement | null >( null );                                     // What: Thumb Element Reference. Why: plaThuFun needs a handle on the sliding thumb span to move and resize it. How: This is attached via the thumb span's own ref prop below.
-	const preIndRef = React.useRef( optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of every plaThuFun run.
+	const preIndRef = React.useRef( optIteArr.findIndex( ( optConObj ) => optConObj.keyStr === value ) ); // What: Previous Index Reference. Why: plaThuFun needs to know which direction the selection just moved in, to decide which edge of the thumb leads the animation. How: This starts at the initially-selected entry's own index and is updated at the end of each plaThuFun run that finds an active button.
 
 	// #endregion Segment References
 
 
 
-	const plaThuFun = React.useCallback( ( aniMovBoo : boolean ) => { // What: Place Thumb Function. Why: This centralizes measuring the active button and moving/resizing the thumb span to match it, with or without an animated transition. How: This is called by both layout effects below, once on every selection/resize and once (with animation) on every value change.
+	const plaThuFun = React.useCallback( ( aniMovBoo : boolean ) => { // What: Place Thumb Function. Why: This centralizes measuring the active button and moving/resizing the thumb span to match it, with or without an animated transition. How: This runs instantly on mount and on each observed resize, and with animation when value changes.
 
 
 		// #region Element Lookup
@@ -228,7 +224,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 			aria-describedby={ desIdeStr }
 			aria-label={ ariLabStr }
 			role='group'
-		>{ /* What: Segment Group Element. Why: This is SegConCom's own root element, holding the sliding thumb and every option button. How: This renders as a group landmark, its own aria-label/aria-describedby passed straight through from props. Its data-element-name-hook is read by the reminder mini-tours. */ }
+		>{ /* What: Segment Control Div Element. Why: This is SegConCom's own root element, holding the sliding thumb and its option buttons. How: This renders as a group landmark, its own aria-label/aria-describedby passed straight through from props, with the grid or snug modifier class its layVarStr picks. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 			<span
@@ -237,7 +233,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 				className={ cssModObj.segThuSpa }
 
 				aria-hidden='true'
-			/>{ /* What: Thumb Span Element. Why: This is the small sliding pill plaThuFun positions and sizes via direct style writes. How: This starts with no inline position at all, until the first layout effect above places it. */ }
+			/>{ /* What: Segment Thumb Span Element. Why: This is the small sliding pill plaThuFun positions and sizes via direct style writes. How: This starts with no inline position at all, until the first layout effect above places it. */ }
 
 			{ optIteArr.map( ( optConObj ) => ( // What: Option Button List Render. Why: One button is needed per configured option, and the option set itself is data, not hardcoded markup. How: This maps optIteArr to one button element per entry, keyed by its own keyStr.
 
@@ -255,7 +251,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 					aria-pressed={ value === optConObj.keyStr }
 
 					onClick={ () => onChange( optConObj.keyStr ) }
-				>{ optConObj.labStr }</button> // What: Option Button Element. Why: This is the clickable control for selecting this specific option. How: This marks itself pressed when its own keyStr matches value, and calls onChange with its keyStr when clicked. Its data-element-name-hook is read by SegConCom's own active-indicator measurement and the reminder mini-tours.
+				>{ optConObj.labStr }</button> // What: Segment Control Button Element. Why: This is the clickable control for selecting this specific option. How: This marks itself pressed when its own keyStr matches value, and calls onChange with its keyStr when clicked. Its data-element-name-hook is read by layout code, the tours, and the test suites.
 
 
 			) ) }
@@ -277,7 +273,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 
 // #region Exports
 
-export { SegConCom }; // What: Named Export. Why: The reminders schedule editor, the cadence controls and the Settings tab all render this control. How: This exports SegConCom by name.
+export { SegConCom }; // What: Named Export. Why: Other files need this control as one shared component. How: This exports SegConCom by name.
 
 // #endregion Exports
 

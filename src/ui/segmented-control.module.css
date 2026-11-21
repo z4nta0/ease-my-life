@@ -5,10 +5,11 @@
  * segmented-control.module.css = Segmented Control Module
  *
  * @summary
- * Styles for SegConCom, the app's shared segmented control: a rounded track
- * of option buttons with one accent thumb that slides under whichever option
- * is pressed. The buttons sit above the thumb and only change their text
- * color; the thumb's own position, size, and glide are written from JS.
+ * Styles for SegConCom, the app's shared segmented control: a rounded track of
+ * option buttons with one accent thumb that slides under whichever option is
+ * pressed. The buttons sit above the thumb and change their text color as
+ * their option is pressed; the thumb's own position, size, and glide are
+ * written from JS.
  *
  * A parent that needs the control sized or spaced differently sets the
  * --seg-* custom properties on itself (flex sizing and wrapping, a max width,
@@ -36,18 +37,18 @@
 	flex-wrap       : var( --seg-wra-fle, wrap );                      /* Segment Wrap Flex, set by its parent, falling back to wrap */ /* What: Segment Wrap Flex. Why: A control in a Settings row must stay on one line. How: A parent sets --seg-wra-fle, falling back to wrapping. */
 	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
 	justify-content : space-between;
-	margin-bottom   : var( --seg-bot-mar, 0 );                         /* Segment Bottom Margin, set by its parent, falling back to 0 */ /* What: Segment Bottom Margin. Why: The cadence editor wants room below its controls. How: A parent sets --seg-bot-mar, falling back to none. */
-	max-width       : var( --seg-max-wid, none );                      /* Segment Max Width, set by its parent, falling back to none */ /* What: Segment Maximum Width. Why: In the schedule editor's rows layout no control may outgrow its row. How: A parent sets --seg-max-wid, falling back to no limit. */
+	margin-bottom   : var( --seg-bot-mar, 0 );                         /* Segment Bottom Margin, set by its parent, falling back to 0 */ /* What: Segment Bottom Margin. Why: A control may need room below it. How: A parent sets --seg-bot-mar, falling back to none. */
+	max-width       : var( --seg-max-wid, none );                      /* Segment Max Width, set by its parent, falling back to none */ /* What: Segment Maximum Width. Why: A control in a narrow row must not outgrow it. How: A parent sets --seg-max-wid, falling back to no limit. */
 	padding         : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
 	position        : relative;
 
 
 }
-.segConDiv--grid { /* What: Segment Control Div Grid. Why: With five options, Repeat is the only control that wraps on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, spreading its columns across the full width so no large gap is left at the end of a row. */
+.segConDiv--grid { /* What: Segment Control Div Grid. Why: Repeat's five options wrap on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, spreading its columns across the full width so no large gap is left at the end of a row. */
 
 
 	display               : grid;
-	flex-basis            : var( --seg-gri-fle, auto );                                                     /* Segment Grid Flex, set by its parent, falling back to auto */ /* What: Segment Grid Flex. Why: The schedule editor's rows layout gives Repeat its own full-width line. How: A parent sets --seg-gri-fle, falling back to auto. */
+	flex-basis            : var( --seg-gri-fle, auto );                                                     /* Segment Grid Flex, set by its parent, falling back to auto */ /* What: Segment Grid Flex. Why: A grid control may need its own full-width line. How: A parent sets --seg-gri-fle, falling back to auto. */
 	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
 	justify-content       : space-between;
 
@@ -139,7 +140,7 @@
 
 
 }
-.segConBut:active { /* What: Pressed Segment Control Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.segConBut:active { /* What: Pressed Segment Control Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */

@@ -5,11 +5,11 @@
  * weekday-chips.module.css = Weekday Chips Module
  *
  * @summary
- * Styles for WeeChiCom, the row of seven round weekday toggles used by the
- * new-picker form, the Data tab's picker controls, and the reminder schedule
- * editor. A chip fills with the accent tint while its day is selected, and a
- * locked chip (a weekly picker's anchor day) looks selected but explains
- * itself on tap instead of toggling. The small size shrinks every chip.
+ * Styles for WeeChiCom, the row of seven round weekday toggles used wherever a
+ * schedule picks weekdays. A chip fills with the accent tint while its day is
+ * selected, and a locked chip (a weekly picker's anchor day) looks selected
+ * but explains itself on tap instead of toggling. The small size shrinks every
+ * chip.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -75,7 +75,7 @@
 
 
 }
-.dowChiSpa { /* What: Locked Day-Of-Week Chip Span. Why: The anchor day explains itself instead of toggling, so it shouldn't look clickable. How: This shows the help cursor instead of the pointer, and since only the toggle chip darkens on hover, its accent border holds. */
+.dowChiSpa { /* What: Day-Of-Week Chip Span. Why: The anchor day explains itself instead of toggling, so it shouldn't look clickable. How: This shows the help cursor instead of the pointer, and since only the toggle chip darkens on hover, its accent border holds. */
 
 
 	cursor : help;
@@ -106,7 +106,7 @@
 
 
 }
-.dowChiBut:active { /* What: Pressed Day-Of-Week Chip Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.dowChiBut:active { /* What: Pressed Day-Of-Week Chip Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
