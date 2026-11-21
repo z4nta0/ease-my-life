@@ -517,7 +517,7 @@
 @container appRooDiv ( max-width : 560px ) { /* What: Narrow Today Title Heading. Why: A narrow app needs a smaller heading. How: This applies only when the app is 560px wide or less. */
 
 
-	.todTitHea { /* What: Smaller Today Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+	.todTitHea { /* What: Smaller Today Title Heading. Why: The heading has less room. How: This drops it one step, to Font Size Base Plus 3. */
 
 
 		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
@@ -1347,7 +1347,7 @@
 	display         : flex;
 	flex-direction  : column;
 	gap             : var( --spa-ver-m03 );                                                                                                     /* Spacing Vertical Base Minus 3 ~= 6.268px */
-	max-height      : calc( 100dvh - var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) ) - var( --spa-ver-bas ) - var( --spa-ver-p07 ) ); /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px, Spacing Vertical Base ~= 14.572px, Spacing Vertical Base Plus 7 ~= 104.323px */ /* What: Rail Maximum Height. Why: The sticky rail should end where the page content's own bottom clearance does, so it never runs behind the floating tab bar. How: This subtracts the header, the rail's gap below it, and the p07 bottom clearance from the viewport height. */
+	max-height      : calc( 100dvh - var( --tod-hea-hei, calc( var( --ver-rhy-p09 ) * 1rem ) ) - var( --spa-ver-bas ) - var( --spa-ver-p07 ) ); /* Today Header Height, set by its parent, falling back to Vertical Rhythm Base Plus 9 ~= 183.074px, Spacing Vertical Base ~= 14.572px, Spacing Vertical Base Plus 7 ~= 104.323px */ /* What: Rail Maximum Height. Why: The sticky rail should end where the page content's own bottom clearance does, so it stays clear of the floating tab bar. How: This subtracts the header, the rail's gap below it, and the p07 bottom clearance from the viewport height. */
 	overflow-y      : auto;
 	position        : sticky;
 	scrollbar-width : none;
@@ -1365,12 +1365,12 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Group Rail Aside. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.groRaiAsi { /* What: Narrow Group Rail Aside. Why: The rail becomes a frosted, sticky pill row under the header that scrolls sideways, its edges faded as a cue. How: This turns it into a full-bleed scrolling row with a blurred translucent background and a gradient mask on each end. */
+	.groRaiAsi { /* What: Pill Row Group Rail Aside. Why: The rail becomes a frosted, sticky pill row under the header that scrolls sideways, its edges faded as a cue. How: This turns it into a full-bleed scrolling row with a blurred translucent background and a gradient mask on each end. */
 
 
 		--fad-edg-off : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Fade Edge Offset. Why: This is how far each edge fade reaches into the row. How: --fad-lef-off and --fad-rig-off start from it. */
-		--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Left Offset. Why: The left edge fades until the row reaches its start. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-start-active. */
-		--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Right Offset. Why: The right edge fades until the row reaches its end. How: The mask reads this, and edge-fade.ts zeroes it via data-scroll-end-active. */
+		--fad-lef-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Left Offset. Why: The left edge fades until the row reaches its start. How: The mask reads this, and the data-scroll-start-active rule below zeroes it. */
+		--fad-rig-off : var( --fad-edg-off );                /* Fade Edge Offset ~= 28.0PX */ /* What: Fade Right Offset. Why: The right edge fades until the row reaches its end. How: The mask reads this, and the data-scroll-end-active rule below zeroes it. */
 
 		-webkit-backdrop-filter : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 140% );                                                                      /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 		-webkit-mask-image      : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 28.0PX, Fade Right Offset ~= 28.0PX */
@@ -1411,7 +1411,7 @@
 
 }
 
-.raiKicDiv { /* What: Rail Kicker Div. Why: The rail's heading lines up with its buttons and keeps the kicker's usual line height, since only the date row beside the streak chip needs the taller one. How: This insets it like a button and restores the large rhythm line height. */
+.raiKicDiv { /* What: Rail Kicker Div. Why: The rail's heading lines up with its buttons and sits tighter than the date kicker, whose taller line height only the date row beside the streak chip needs. How: This insets it like a button and sets its line height to the p01 rhythm step. */
 
 
 	line-height : var( --ver-rhy-p01 );                        /* Vertical Rhythm Base Plus 1 ~= 1.755 */
@@ -1449,7 +1449,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail List Unordered. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.raiLisUno { /* What: Narrow Rail List Unordered. Why: The pills sit in one row as wide as they need. How: This lays them out in a row at its content width. */
+	.raiLisUno { /* What: Row Rail List Unordered. Why: The pills sit in one row as wide as they need. How: This lays them out in a row at its content width. */
 
 
 		flex           : 0 0 auto;
@@ -1512,7 +1512,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Rail Group Button. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.raiGroBut { /* What: Narrow Rail Group Button. Why: In the narrow pill row each group is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
+	.raiGroBut { /* What: Pill Rail Group Button. Why: In the narrow pill row each group is an outlined pill. How: This turns the button into a compact bordered pill that never shrinks or wraps. */
 
 
 		background    : var( --bac-sur-col );                            /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -1557,7 +1557,7 @@
 
 }
 
-.raiNamSpa { /* What: Rail Name Span. Why: A long group name should wrap evenly. How: This balances its line breaks. */
+.raiNamSpa { /* What: Rail Name Span. Why: A long group name shouldn't leave a lone word on its last line. How: This sets text-wrap to pretty. */
 
 
 	text-wrap : pretty;
@@ -1822,7 +1822,7 @@
 @container appRooDiv ( max-width : 760px ) { /* What: Narrow Following Today Group Section In Group Drag Div. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
-	.groDraDiv > .todGroSec:not( :first-child ) { /* What: Tighter Following Today Group Section In Group Drag Div. Why: The narrow list needs less room above each divider. How: This trims the space to large vertical spacing. */
+	.groDraDiv > .todGroSec:not( :first-child ) { /* What: Tighter Following Today Group Section In Group Drag Div. Why: The narrow list needs less room above each divider. How: This trims the space to Spacing Vertical Base Plus 1. */
 
 
 		padding-top : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
@@ -1899,7 +1899,7 @@
 
 
 }
-.onbCarDiv.onbCarDiv--removing { /* What: Onboarding Card Div Removing. Why: The Generate card slides away once the real list is made. How: This plays the shared card skip-out. */
+.onbCarDiv.onbCarDiv--removing { /* What: Onboarding Card Div Removing. Why: The Generate card slides away once the real list is made. How: This plays the shared card slide-out. */
 
 
 	animation : global( cardRemoveSlideOut ) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */ /* What: Global cardRemoveSlideOut Keyframes. Why: The cardRemoveSlideOut keyframes are shared with the Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -2037,7 +2037,7 @@
 	font                      : inherit;
 	padding                   : 0;
 	text-decoration           : underline;
-	text-decoration-thickness : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */ /* What: Resting Underline Thickness. Why: A thickness of auto can't ease toward the hover's 2px. How: This sets a length close to the font's own underline, which the hover thickens. */
+	text-decoration-thickness : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */ /* What: Resting Underline Thickness. Why: The hover thickens the underline from this resting thickness. How: This sets it to the base border width. */
 	text-underline-offset     : 2px;
 	transition                : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), text-decoration-thickness var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
 
@@ -2279,7 +2279,7 @@
 
 
 }
-.fooActDiv + .fooSubDiv { /* What: Footer Sub Div After Footer Actions Div. Why: The generated time needs room below the buttons. How: This spaces it extra small 1 vertical spacing down. */
+.fooActDiv + .fooSubDiv { /* What: Footer Sub Div After Footer Actions Div. Why: The generated time needs room below the buttons. How: This adds a Spacing Vertical Base Minus 2 margin above it. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
