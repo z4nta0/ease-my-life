@@ -1214,7 +1214,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 					<button
-						className={ cssModObj.forSteBut }
+						className={ cssModObj.detSteBut }
 
 						data-element-name-hook='detSteBut'
 						data-step-current-active={ forSteNum === 1 || undefined } // What: Step Current Active Attribute. Why: The step being filled in reads as current. How: This sets the presence-only attribute while forSteNum is 1.
@@ -1540,14 +1540,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivConditional } `}
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps forTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Conditional Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps conTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<div
-								className={ cssModObj.forTogDiv }
+								className={ cssModObj.conTogDiv }
 
 								data-element-name-hook='conTogDiv'
-							>{ /* What: Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps togTexDiv and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+							>{ /* What: Conditional Toggle Div Element. Why: The label/help text block and the switch control sit side by side. How: This wraps togTexDiv and the switch button. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 								<div className={ cssModObj.togTexDiv }>{ /* What: Toggle Text Div Element. Why: The label and its two help paragraphs read as one block. How: This wraps those three pieces. */ }
@@ -1707,13 +1707,13 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivDaily } `}
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps forTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+						>{ /* What: Daily Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps daiTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 							<TogRowCom
 								ideValStr='daiTogBut'
 
-								className={ cssModObj.forTogDiv }
+								className={ cssModObj.daiTogDiv }
 
 								data-element-name-hook='daiTogDiv'
 
@@ -1876,10 +1876,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 					<div
-						className={` ${ cssModObj.forFooDiv }   ${ cssModObj.forFooDivDetails } `}
+						className={` ${ cssModObj.detFooDiv }   ${ cssModObj.forFooDivDetails } `}
 
 						data-element-name-hook='detFooDiv'
-					>{ /* What: Footer Div Element. Why: The step's own guidance note and its Cancel/Next actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+					>{ /* What: Details Footer Div Element. Why: The step's own guidance note and its Cancel/Next actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 						<div
@@ -2413,10 +2413,10 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 					<div
-						className={ cssModObj.forFooDiv }
+						className={ cssModObj.iteFooDiv }
 
 						data-element-name-hook='iteFooDiv'
-					>{ /* What: Footer Div Element. Why: The step's own guidance note and its Back/Create actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
+					>{ /* What: Items Footer Div Element. Why: The step's own guidance note and its Back/Create actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
 						<div

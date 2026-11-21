@@ -479,10 +479,10 @@ function ConSupCom () : React.JSX.Element {
 
 
 				<div
-					className={ cssModObj.setRowDiv }
+					className={ cssModObj.supTriDiv }
 
 					data-element-name-hook='supTriDiv'
-				>{ /* What: Contact Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+				>{ /* What: Support Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 					<div className={ cssModObj.setInfDiv }>{ /* What: Contact Info Div Element. Why: The row's own name/description/sent-note need their own grouping, apart from the button. How: This wraps the name span, the description span, and (conditionally) the sent-confirmation span. */ }

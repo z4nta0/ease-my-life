@@ -106,7 +106,7 @@ const PRE_CAN_ARR = [ // What: Preview Candidate Array. Why: The picker-animatio
  * The celebration preview's own few mock "done" cards for the ripple/
  * confetti/sparkle effects to visibly act on, mirroring the Today list
  * rather than the progress ring. This is mapped inside CelPreCom to
- * render one mock todCarDiv row per entry.
+ * render one mock preCarDiv row per entry.
  *
  * Every entry shares this exact shape, and none of them repeat these
  * same fields' own boilerplate comments on their own lines (see the
@@ -126,12 +126,12 @@ const PRE_CAN_ARR = [ // What: Preview Candidate Array. Why: The picker-animatio
  *
 */
 
-const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview needs a few mock done-cards for its effects to act on. How: CelPreCom maps this to one mock todCarDiv row per entry.
+const PRE_CAR_ARR = [ // What: Preview Card Array. Why: The celebration preview needs a few mock done-cards for its effects to act on. How: CelPreCom maps this to one mock preCarDiv row per entry.
 
 
-	{ ideStr : 'pc1', namStr : 'Make the bed',     picStr : 'Morning' }, // What: Make The Bed Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one todCarDiv row.
-	{ ideStr : 'pc2', namStr : 'Water the plants', picStr : 'Chores'  }, // What: Water The Plants Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one todCarDiv row.
-	{ ideStr : 'pc3', namStr : 'Inbox zero',       picStr : 'Focus'   }  // What: Inbox Zero Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one todCarDiv row.
+	{ ideStr : 'pc1', namStr : 'Make the bed',     picStr : 'Morning' }, // What: Make The Bed Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one preCarDiv row.
+	{ ideStr : 'pc2', namStr : 'Water the plants', picStr : 'Chores'  }, // What: Water The Plants Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one preCarDiv row.
+	{ ideStr : 'pc3', namStr : 'Inbox zero',       picStr : 'Focus'   }  // What: Inbox Zero Card. Why: This is one mock done-card the celebration acts on. How: CelPreCom renders it as one preCarDiv row.
 
 
 ];
@@ -202,13 +202,13 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 			carEleArr.forEach( ( carCurEle, iteIndNum ) => { // What: Ripple Start Loop. Why: Every mock card needs its own staggered exhale animation restarted, matching the real Today list's own cascade. How: This iterates carEleArr, giving each card a delay proportional to its own position before re-triggering its exhale class.
 
 
-				carCurEle.classList.remove( cssModObj.todCarDivExhaling ); // What: Exhale Class Reset. Why: A card already mid-animation from a previous Play press must be reset before it can replay. How: This removes the module's todCarDivExhaling class so it can be re-added below to actually restart the CSS animation.
+				carCurEle.classList.remove( cssModObj.preCarDivExhaling ); // What: Exhale Class Reset. Why: A card already mid-animation from a previous Play press must be reset before it can replay. How: This removes the module's preCarDivExhaling class so it can be re-added below to actually restart the CSS animation.
 
 				void carCurEle.offsetWidth; // What: Reflow Force. Why: Re-adding the same class immediately after removing it would otherwise be batched by the browser and never restart the animation. How: Reading offsetWidth forces a synchronous layout flush between the remove above and the add below.
 
 				carCurEle.style.setProperty( '--exh-car-del', `${ iteIndNum * durMilFun( 'm03' ) }ms` ); // What: Exhale Delay Set. Why: Each card's own cascade position needs its own staggered start time. How: This writes the '--exh-car-del' custom property, read by the CSS animation, proportional to this card's own index. // Duration Base Minus 3 ~= 67.9ms
 
-				carCurEle.classList.add( cssModObj.todCarDivExhaling ); // What: Exhale Class Restart. Why: This is the actual trigger that (re)starts the CSS exhale animation on this card. How: This re-adds the module's todCarDivExhaling class, now that the reflow above guarantees the browser treats it as a fresh start.
+				carCurEle.classList.add( cssModObj.preCarDivExhaling ); // What: Exhale Class Restart. Why: This is the actual trigger that (re)starts the CSS exhale animation on this card. How: This re-adds the module's preCarDivExhaling class, now that the reflow above guarantees the browser treats it as a fresh start.
 
 
 			} );
@@ -220,7 +220,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 				carEleArr.forEach( ( carCurEle ) => { // What: Ripple Cleanup Loop. Why: Every card the loop above set exhaling needs its own animation state cleared afterward. How: This iterates carEleArr, clearing both the class and the custom property from each one.
 
 
-					carCurEle.classList.remove( cssModObj.todCarDivExhaling ); // What: Exhale Class Clear. Why: This class must not linger past the end of the cascade animation. How: This removes the module's todCarDivExhaling class from the current card element.
+					carCurEle.classList.remove( cssModObj.preCarDivExhaling ); // What: Exhale Class Clear. Why: This class must not linger past the end of the cascade animation. How: This removes the module's preCarDivExhaling class from the current card element.
 
 					carCurEle.style.removeProperty( '--exh-car-del' ); // What: Exhale Delay Clear. Why: This inline custom property must not linger past the end of the cascade animation either. How: This removes the '--exh-car-del' custom property from the current card element.
 
@@ -319,13 +319,13 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 			>{ /* What: Celebration Preview Cards Div Element. Why: The ripple style animates these specific card elements directly, so they need a stable container carConRef can query into. How: This renders one mock done-card per entry in PRE_CAR_ARR. */ }
 
 
-				{ PRE_CAR_ARR.map( ( carCurObj ) => ( // What: Preview Card Map. Why: One mock done-card is needed per entry in PRE_CAR_ARR. How: This maps PRE_CAR_ARR to one todCarDiv row per entry, keyed by its own ideStr.
+				{ PRE_CAR_ARR.map( ( carCurObj ) => ( // What: Preview Card Map. Why: One mock done-card is needed per entry in PRE_CAR_ARR. How: This maps PRE_CAR_ARR to one preCarDiv row per entry, keyed by its own ideStr.
 
 
 					<div
 						key={ carCurObj.ideStr }
 
-						className={ cssModObj.todCarDiv }
+						className={ cssModObj.preCarDiv }
 
 						data-element-name-hook='preCarDiv'
 					>{ /* What: Preview Card Div Element. Why: This mirrors the real Today tab's own done-card markup so the ripple/confetti/sparkle effects render identically here. How: This renders the check glyph and the card's own picker/name text. Its data-element-name-hook is read by the completion-celebration preview. */ }

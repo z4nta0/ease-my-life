@@ -202,7 +202,7 @@ function InsRowCom ( { labTexStr, steTexEle, warTexEle } : IocProTyp ) : React.J
 
 
 		<div
-			className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivIos } `}
+			className={` ${ cssModObj.insRowDiv }   ${ cssModObj.setRowDivIos } `}
 
 			data-element-name-hook='insRowDiv'
 		>{ /* What: Install Row Div Element. Why: A platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -233,7 +233,7 @@ function InsRowCom ( { labTexStr, steTexEle, warTexEle } : IocProTyp ) : React.J
 
 
 
-type LwcProTyp = { 'data-element-name-hook' : string, labTexStr : string, onClick : () => void, subTexStr : string }; // What: Legal-Row-Component Props Type. Why: Each legal document row names its document and opens it. How: This types LegRowCom's props.
+type LwcProTyp = { className : string, 'data-element-name-hook' : string, labTexStr : string, onClick : () => void, subTexStr : string }; // What: Legal-Row-Component Props Type. Why: Each legal document row names its document and opens it. How: This types LegRowCom's props.
 
 // #region LegRowCom
 
@@ -246,6 +246,8 @@ type LwcProTyp = { 'data-element-name-hook' : string, labTexStr : string, onClic
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
+ * @param props.className              - Class Name: The row's own class, named
+ *                                       for its hook.
  * @param props.data-element-name-hook - Data Element Name Hook: The row's own
  *                                       identity hook, forwarded onto it.
  * @param props.labTexStr              - Label Text String: The document's
@@ -258,19 +260,19 @@ type LwcProTyp = { 'data-element-name-hook' : string, labTexStr : string, onClic
  *
  * @example
  * ```tsx
- * LegRowCom({ labTexStr, onClick, subTexStr, ... }) // => <LegRowCom />
+ * LegRowCom({ className, labTexStr, onClick, ... }) // => <LegRowCom />
  * ```
  *
 */
 
-function LegRowCom ( { 'data-element-name-hook' : hooNamStr, labTexStr, onClick, subTexStr } : LwcProTyp ) : React.JSX.Element {
+function LegRowCom ( { className, 'data-element-name-hook' : hooNamStr, labTexStr, onClick, subTexStr } : LwcProTyp ) : React.JSX.Element {
 
 
 	return (
 
 
 		<div
-			className={ cssModObj.setRowDiv }
+			className={ className }
 
 			data-element-name-hook={ hooNamStr }
 		>{ /* What: Legal Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. */ }
@@ -1660,10 +1662,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'appearance' ] = secCurEle; } }
 
-						className={ cssModObj.setSecSec }
+						className={ cssModObj.setAppSec }
 
 						data-element-name-hook='setAppSec'
-					>{ /* What: Appearance Section Element. Why: This is the Appearance section's own root, registering itself for scroll-spy/jump-to. How: This wraps the system-preference row, the Theme cards, the 2 style pickers, and the tab-placement control. Its data-element-name-hook is read by the Settings page tour and help mode's Settings catalog. */ }
+					>{ /* What: Settings Appearance Section Element. Why: This is the Appearance section's own root, registering itself for scroll-spy/jump-to. How: This wraps the system-preference row, the Theme cards, the 2 style pickers, and the tab-placement control. Its data-element-name-hook is read by the Settings page tour and help mode's Settings catalog. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -1677,10 +1679,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						<p className={ cssModObj.secSubPar }>Control the appearance of Ease My life, including colors, animations and tab placement.</p>{ /* What: Settings Sub Paragraph Element. Why: Every section has its own short intro line beneath its heading. How: This renders the fixed intro copy for Appearance. */ }
 
 						<div
-							className={ cssModObj.setSubDiv }
+							className={ cssModObj.sysPreDiv }
 
 							data-element-name-hook='sysPreDiv'
-						>{ /* What: System Pref Subsection Div Element. Why: The system-preference toggle needs its own labeled subsection, first among Appearance's own controls. How: This wraps the toggle row's own CarSurCom. Its data-element-name-hook is read by the App Features tours. */ }
+						>{ /* What: System Preferences Div Element. Why: The system-preference toggle needs its own labeled subsection, first among Appearance's own controls. How: This wraps the toggle row's own CarSurCom. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 							<CarSurCom>{ /* What: Card Surface Component. Why: The toggle row needs the same bordered container as every other row in this tab. How: This wraps the system-preference row below. */ }
@@ -1761,10 +1763,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 						<div
-							className={ cssModObj.setSubDiv }
+							className={ cssModObj.celStyDiv }
 
 							data-element-name-hook='celStyDiv'
-						>{ /* What: Celebration Subsection Div Element. Why: The completion-celebration style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
+						>{ /* What: Celebration Style Div Element. Why: The completion-celebration style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 							<div className={ cssModObj.subHeaDiv }>Completion celebration</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Completion celebration". */ }
@@ -1814,10 +1816,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						</div>
 
 						<div
-							className={ cssModObj.setSubDiv }
+							className={ cssModObj.picAniDiv }
 
 							data-element-name-hook='picAniDiv'
-						>{ /* What: Pickanim Subsection Div Element. Why: The picker-animation style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
+						>{ /* What: Pick Animation Div Element. Why: The picker-animation style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 							<div className={ cssModObj.subHeaDiv }>Picker animation</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Picker animation". */ }
@@ -1875,10 +1877,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						</div>
 
 						<div
-							className={ cssModObj.setSubDiv }
+							className={ cssModObj.setLayDiv }
 
 							data-element-name-hook='setLayDiv'
-						>{ /* What: Layout Subsection Div Element. Why: The tab-bar-placement control needs its own labeled subsection. How: This wraps its own heading, intro copy, and the placement row's own CarSurCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+						>{ /* What: Settings Layout Div Element. Why: The tab-bar-placement control needs its own labeled subsection. How: This wraps its own heading, intro copy, and the placement row's own CarSurCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 							<div className={ cssModObj.subHeaDiv }>Layout</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Layout". */ }
@@ -1970,10 +1972,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'daily' ] = secCurEle; } }
 
-						className={ cssModObj.setSecSec }
+						className={ cssModObj.setDaiSec }
 
 						data-element-name-hook='setDaiSec'
-					>{ /* What: Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings CarSurCom. Its data-element-name-hook is read by the Settings page tour, the App Features tours, and help mode's Settings catalog. */ }
+					>{ /* What: Settings Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings CarSurCom. Its data-element-name-hook is read by the Settings page tour, the App Features tours, and help mode's Settings catalog. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2052,11 +2054,11 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivSub } `}
+								className={` ${ cssModObj.runTimDiv }   ${ cssModObj.setRowDivSub } `}
 
 								data-element-name-hook='runTimDiv'
 								data-row-disabled-active={ daiModStr !== 'auto' || undefined } // What: Row Disabled Active Attribute. Why: The run time does nothing while the generator runs manually, so the row dims. How: This is present only while daiModStr isn't 'auto'.
-							>{ /* What: Run Time Row Div Element. Why: The run-time input is only meaningful while auto mode is on, so this whole row visually disables itself otherwise. How: This wraps the info block and the time input. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+							>{ /* What: Run Time Div Element. Why: The run-time input is only meaningful while auto mode is on, so this whole row visually disables itself otherwise. How: This wraps the info block and the time input. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Run Time Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the input. How: This wraps the name span and the description span. */ }
@@ -2100,7 +2102,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<div
-									className={ cssModObj.setRowDiv }
+									className={ cssModObj.notRowDiv }
 
 									data-element-name-hook='notRowDiv'
 								>{ /* What: Notify Row Div Element. Why: The label/description and the permission control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and whichever of the 3 permission-state controls below applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -2197,10 +2199,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'holidays' ] = secCurEle; } }
 
-						className={ cssModObj.setSecSec }
+						className={ cssModObj.setHolSec }
 
 						data-element-name-hook='setHolSec'
-					>{ /* What: Holidays Section Element. Why: This is the Holidays section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and HolEdiCom's own CarSurCom. Its data-element-name-hook is read by the Settings page tour. */ }
+					>{ /* What: Settings Holidays Section Element. Why: This is the Holidays section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and HolEdiCom's own CarSurCom. Its data-element-name-hook is read by the Settings page tour. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2233,10 +2235,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'data' ] = secCurEle; } }
 
-						className={ cssModObj.setSecSec }
+						className={ cssModObj.setDatSec }
 
 						data-element-name-hook='setDatSec'
-					>{ /* What: Data Section Element. Why: This is the Data control section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the whole storage/export/import/reset CarSurCom. Its data-element-name-hook is read by the Settings page tour. */ }
+					>{ /* What: Settings Data Section Element. Why: This is the Data control section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the whole storage/export/import/reset CarSurCom. Its data-element-name-hook is read by the Settings page tour. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2255,7 +2257,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivStack } `}
+								className={` ${ cssModObj.stoRowDiv }   ${ cssModObj.setRowDivStack } `}
 
 								data-element-name-hook='stoRowDiv'
 							>{ /* What: Store Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block, stacking them on a narrow app so the facts get the full width. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -2397,10 +2399,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<div
-									className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivIos } `}
+									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.setRowDivIos } `}
 
 									data-element-name-hook='insRowDiv'
-								>{ /* What: Already Installed Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
+								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 									<div className={ cssModObj.setInfDiv }>{ /* What: Already Installed Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }
@@ -2424,10 +2426,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 								<div
-									className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivIos } `}
+									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.setRowDivIos } `}
 
 									data-element-name-hook='insRowDiv'
-								>{ /* What: Unsupported Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
+								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 									<div className={ cssModObj.setInfDiv }>{ /* What: Unsupported Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }
@@ -2476,7 +2478,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={ cssModObj.setRowDiv }
+								className={ cssModObj.expRowDiv }
 
 								data-element-name-hook='expRowDiv'
 							>{ /* What: Export Row Div Element. Why: The export label/description and the Export button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Export control. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -2550,7 +2552,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={ cssModObj.setRowDiv }
+								className={ cssModObj.impRowDiv }
 
 								data-element-name-hook='impRowDiv'
 							>{ /* What: Import Row Div Element. Why: The import label/description and the Import control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block, the hidden file input, and whichever of the trigger/confirm controls currently applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -2659,7 +2661,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivDanger } `}
+								className={` ${ cssModObj.resRowDiv }   ${ cssModObj.setRowDivDanger } `}
 
 								data-element-name-hook='resRowDiv'
 							>{ /* What: Reset Row Div Element. Why: The reset label/description and the Reset control (or its confirm pair) need to sit in the tab's usual info-plus-action row layout, flagged as a dangerous action. How: This wraps the info block and whichever of the trigger/confirm/disabled controls currently applies. Its data-element-name-hook is read by help mode's Settings catalog. */ }
@@ -2806,10 +2808,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'account' ] = secCurEle; } }
 
-						className={ cssModObj.setSecSec }
+						className={ cssModObj.setAccSec }
 
 						data-element-name-hook='setAccSec'
-					>{ /* What: Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section's heading and AccSecCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+					>{ /* What: Settings Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section's heading and AccSecCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2829,10 +2831,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'about' ] = secCurEle; } }
 
-						className={ cssModObj.setSecSec }
+						className={ cssModObj.setAboSec }
 
 						data-element-name-hook='setAboSec'
-					>{ /* What: About Section Element. Why: This is the About section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy plus 4 Cards: the app identity, the Buy Me a Coffee row, the replay-tour row, and ConSupCom. Its data-element-name-hook is read by the Settings page tour. */ }
+					>{ /* What: Settings About Section Element. Why: This is the About section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy plus 4 Cards: the app identity, the Buy Me a Coffee row, the replay-tour row, and ConSupCom. Its data-element-name-hook is read by the Settings page tour. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2885,10 +2887,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={ cssModObj.setRowDiv }
+								className={ cssModObj.supProDiv }
 
 								data-element-name-hook='supProDiv'
-							>{ /* What: Support Project Row Div Element. Why: The label/description and the Buy Me a Coffee button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+							>{ /* What: Support Project Div Element. Why: The label/description and the Buy Me a Coffee button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Support Project Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -2925,10 +2927,10 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<div
-								className={ cssModObj.setRowDiv }
+								className={ cssModObj.repTouDiv }
 
 								data-element-name-hook='repTouDiv'
-							>{ /* What: Replay Tour Row Div Element. Why: The label/description and the Replay Tour button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Replay Tour ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+							>{ /* What: Replay Tour Div Element. Why: The label/description and the Replay Tour button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Replay Tour ButBasCom. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Replay Tour Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }
@@ -2993,12 +2995,12 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					<section
 						ref={ ( secCurEle ) => { secMapRef.current[ 'legal' ] = secCurEle; } }
 
-						className={ cssModObj.setSecSec }
+						className={ cssModObj.setLegSec }
 
 						style={{ minHeight : legMinNum }}
 
 						data-element-name-hook='setLegSec'
-					>{ /* What: Legal Section Element. Why: This is the Legal section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the Privacy Policy/Terms of Service rows. Its data-element-name-hook is read by the Settings page tour. */ }
+					>{ /* What: Settings Legal Section Element. Why: This is the Legal section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the Privacy Policy/Terms of Service rows. Its data-element-name-hook is read by the Settings page tour. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Set Section H Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -3018,6 +3020,8 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<LegRowCom
+								className={ cssModObj.priRowDiv }
+
 								data-element-name-hook='priRowDiv'
 
 								labTexStr='Privacy Policy'
@@ -3029,6 +3033,8 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 							<LegRowCom
+								className={ cssModObj.terRowDiv }
+
 								data-element-name-hook='terRowDiv'
 
 								labTexStr='Terms of Service'

@@ -648,12 +648,12 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	},
 
-	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PicConCom's own "How it picks" group, ConEdiCom has its own separate .conModDiv inside .conConDiv, which doesn't live under .conGroFie--picks.
+	{ // What: Picker Type Help Item. Why: This is the on-demand help tip for the Picker Type element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Scoped to PicConCom's own "How it picks" group, ConEdiCom has its own separate .conModDiv inside .conConDiv, which doesn't live under .picConFie.
 
 
 		bodEle    : <>This is where you choose the rule this picker follows each time it runs. Each option below explains its own ruleset, so have a read through them to see which one fits best.</>,
 		ideStr    : 'dataPickerType',
-		padYcoNum : 0, // padYcoNum:0, .conGroFie--picks (this group's own wrapper) touches "When it runs" below with zero gap.
+		padYcoNum : 0, // padYcoNum:0, .picConFie (this group's own wrapper) touches "When it runs" below with zero gap.
 		selStr    : '[data-element-name-hook~="picConFie"] [data-element-name-hook~="modRadDiv"]',
 		titStr    : 'Picker Type'
 

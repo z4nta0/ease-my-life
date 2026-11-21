@@ -54,9 +54,9 @@
 }
 
 
-/* #region todCarDiv */
+/* #region preCarDiv */
 
-.todCarDiv { /* What: Today Card Div. Why: Each mock card should look exactly like a done Today card, so the celebration renders the same as the real one. How: This lays out the check and body in the Today card's grid, with the done card's dimmed surface. */
+.preCarDiv { /* What: Preview Card Div. Why: Each mock card should look exactly like a done Today card, so the celebration renders the same as the real one. How: This lays out the check and body in the Today card's grid, with the done card's dimmed surface. */
 
 
 	align-items           : center;
@@ -75,31 +75,31 @@
 
 
 }
-.todCarDiv:last-child { /* What: Last Preview Card. Why: The last card needs no gap below it. How: This drops its bottom margin. */
+.preCarDiv:last-child { /* What: Last Preview Card Div. Why: The last card needs no gap below it. How: This drops its bottom margin. */
 
 
 	margin-bottom : 0;
 
 
 }
-.todCarDiv:hover { /* What: Hovered Preview Card. Why: The mock card responds to the pointer like a real one. How: This darkens its border slightly. */
+.preCarDiv:hover { /* What: Hovered Preview Card Div. Why: The mock card responds to the pointer like a real one. How: This darkens its border slightly. */
 
 
 	border-color : var( --bor-hov-col ); /* Border Hover Color = oklch( 0.83 0.005 240 ) */
 
 
 }
-.todCarDiv--exhaling { /* What: Exhaling Today Card Div. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exh-car-del, playing the shared exhale animation. */
+.preCarDiv--exhaling { /* What: Preview Card Div Exhaling. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exh-car-del, playing the shared exhale animation. */
 
 
 	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global Exhale Keyframes. Why: The cardCelebrateSwell keyframes are shared with the real Today celebration, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Preview Card. Why: Someone who asked for less motion shouldn't see the card's colors fade on hover; the exhale itself is the previewed animation, so it stays. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Preview Card Div. Why: Someone who asked for less motion shouldn't see the card's colors fade on hover; the exhale itself is the previewed animation, so it stays. How: This applies only when the reduced-motion preference is set. */
 
 
-	.todCarDiv { /* What: Still Today Card Div. Why: The hover border should simply switch. How: This turns the card's fades off. */
+	.preCarDiv { /* What: Still Preview Card Div. Why: The hover border should simply switch. How: This turns the card's fades off. */
 
 
 		transition : none;
@@ -219,7 +219,7 @@
 
 /* #endregion carBodDiv */
 
-/* #endregion todCarDiv */
+/* #endregion preCarDiv */
 
 /* #endregion preLisDiv */
 

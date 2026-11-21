@@ -777,9 +777,20 @@
 }
 
 
-/* #region staCarDiv */
+/* #region conFirDiv */
 
-.staRowDiv > .staCarDiv { /* What: Stat Card. Why: A headline number needs a tighter card than the default, with room for its corner icon. How: This trims the card's padding and positions it for the icon, scoped to the row so it wins over the card's own padding. */
+.staRowDiv > .conFirDiv,
+.staRowDiv > .conCycDiv,
+.staRowDiv > .conRatDiv,
+.staRowDiv > .conLasDiv,
+.staRowDiv > .remDonDiv,
+.staRowDiv > .remWeeDiv,
+.staRowDiv > .remActDiv,
+.staRowDiv > .remBusDiv,
+.staRowDiv > .staStkDiv,
+.staRowDiv > .staFulDiv,
+.staRowDiv > .staDonDiv,
+.staRowDiv > .staRatDiv { /* What: Stat Cards In Stat Row Div. Why: A headline number needs a tighter card than the default, with room for its corner icon. How: This trims the card's padding and positions it for the icon, scoped to the row so it wins over the card's own padding. */
 
 
 	padding  : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
@@ -825,7 +836,7 @@
 
 }
 
-/* #endregion staCarDiv */
+/* #endregion conFirDiv */
 
 /* #endregion staRowDiv */
 

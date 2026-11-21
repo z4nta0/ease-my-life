@@ -218,7 +218,8 @@
 
 }
 
-.intActBut { /* What: Intro Action Button. Why: Both actions are full-width, tappable buttons. How: This gives them the shared outlined button look, easing their hover tint, press, and focus ring. */
+.intActBut,
+.intRetBut { /* What: Intro Action Button And Intro Return Button. Why: Both actions are full-width, tappable buttons. How: This gives them the shared outlined button look, easing their hover tint, press, and focus ring. */
 
 
 	background    : transparent;
@@ -258,7 +259,7 @@
 
 
 }
-.intActBut:not( .intActBut--link ):active { /* What: Pressed Intro Action Button. Why: A press should register before anything else happens. How: This presses the button in slightly, leaving the text-styled link to dim instead. */
+.intActBut:active { /* What: Pressed Intro Action Button. Why: A press should register before anything else happens. How: This presses the button in slightly, leaving the text-styled link to dim instead. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -268,7 +269,8 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Intro Action Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.intActBut { /* What: Still Intro Action Button. Why: The change should happen at once. How: This turns its transition off. */
+	.intActBut,
+	.intRetBut { /* What: Still Intro Action Button And Intro Return Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;
@@ -279,7 +281,7 @@
 
 }
 
-.intActBut--link { /* What: Intro Action Button Link. Why: The returning-user option is for a few people, so it reads quieter than both buttons. How: This drops the border, sets it muted and smaller, and fades its color, press, and focus ring. */
+.intRetBut { /* What: Intro Return Button. Why: The returning-user option is for a few people, so it reads quieter than both buttons. How: This drops the border, sets it muted and smaller, and fades its color, press, and focus ring. */
 
 
 	border-color : transparent;
@@ -292,14 +294,14 @@
 
 
 }
-.intActBut--link:hover { /* What: Hovered Intro Action Button Link. Why: A text button shifts color on hover, as every text link does. How: This turns it the accent color. */
+.intRetBut:hover { /* What: Hovered Intro Return Button. Why: A text button shifts color on hover, as every text link does. How: This turns it the accent color. */
 
 
 	color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
 }
-.intActBut--link:active { /* What: Pressed Intro Action Button Link. Why: A text button dims when pressed, as text links do. How: This lowers its opacity. */
+.intRetBut:active { /* What: Pressed Intro Return Button. Why: A text button dims when pressed, as text links do. How: This lowers its opacity. */
 
 
 	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
@@ -309,7 +311,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Intro Link. Why: Someone who asked for less motion shouldn't see the fade. How: This applies only when the reduced-motion preference is set. */
 
 
-	.intActBut--link { /* What: Still Intro Action Button Link. Why: The change should happen at once. How: This turns its transition off. */
+	.intRetBut { /* What: Still Intro Return Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;

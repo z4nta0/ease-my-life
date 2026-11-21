@@ -948,10 +948,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 				<div
-					className={` ${ cssModObj.basRowDiv }   ${ cssModObj.basRowDivGroup } `}
+					className={ cssModObj.basGroDiv }
 
 					data-element-name-hook='basGroDiv'
-				>{ /* What: Group Row Div Element. Why: The Group field needs its own labeled row. How: This wraps the label span and the group pill selector below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+				>{ /* What: Basics Group Div Element. Why: The Group field needs its own labeled row. How: This wraps the label span and the group pill selector below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 					<span className={ cssModObj.basLabSpa }>Group</span>{ /* What: Group Label Span Element. Why: The group selector needs a visible label beside it. How: This renders the literal text "Group". */ }
@@ -1100,10 +1100,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 			<fieldset
-				className={` ${ cssModObj.conGroFie }   ${ cssModObj.conGroFiePicks } `}
+				className={ cssModObj.picConFie }
 
 				data-element-name-hook='picConFie'
-			>{ /* What: Picks Group Fieldset Element. Why: The mode radio group is a real form control set and belongs in a fieldset. How: This wraps the legend and the mode radio group below. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Picker Controls Fieldset Element. Why: The mode radio group is a real form control set and belongs in a fieldset. How: This wraps the legend and the mode radio group below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				<legend className={ cssModObj.conSubLeg }>How it picks</legend>{ /* What: Picks Legend Element. Why: A fieldset needs its own legend to label the radio group it contains. How: This renders the literal text "How it picks". */ }
@@ -1941,10 +1941,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 			<div
-				className={` ${ cssModObj.conGroDiv }   ${ cssModObj.conGroDivFoot } `}
+				className={ cssModObj.picFooDiv }
 
 				data-element-name-hook='picFooDiv'
-			>{ /* What: Footer Group Div Element. Why: Delete/Cancel/Save (or the new-draft Cancel/Add-Items/Save variant) needs its own bottom group. How: This renders whichever of the 3 footer states below matches conDelBoo/isaNewBoo. Its data-element-name-hook is read by help mode's Data catalog. */ }
+			>{ /* What: Picker Footer Div Element. Why: Delete/Cancel/Save (or the new-draft Cancel/Add-Items/Save variant) needs its own bottom group. How: This renders whichever of the 3 footer states below matches conDelBoo/isaNewBoo. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 				{ conDelBoo ? ( // What: Confirm Delete Check. Why: A real picker's Delete morphs the footer into an inline confirm before actually deleting. How: This renders the confirm row while conDelBoo is true.

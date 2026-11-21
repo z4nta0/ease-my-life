@@ -42,7 +42,8 @@
 /* #region conGroDiv */
 
 .conGroDiv,
-.conGroFie { /* What: Controls Group Div And Fieldset. Why: Each group of controls stacks its pieces. How: This stacks them in a spaced column. */
+.picConFie,
+.picFooDiv { /* What: Controls Group Div, Picker Controls Fieldset, And Picker Footer Div. Why: Each group of controls stacks its pieces. How: This stacks them in a spaced column. */
 
 
 	display        : flex;
@@ -61,7 +62,7 @@
 
 
 }
-.conGroFie--picks { /* What: Picks Controls Group Fieldset. Why: The mode radio runs edge to edge under its heading, and the details group above already closes with a hairline, so no line of its own is needed. How: This pulls the fieldset past the body's padding, flush and borderless. */
+.picConFie { /* What: Picker Controls Fieldset. Why: The mode radio runs edge to edge under its heading, and the details group above already closes with a hairline, so no line of its own is needed. How: This pulls the fieldset past the body's padding, flush and borderless. */
 
 
 	border    : 0;
@@ -84,7 +85,7 @@
 
 
 }
-.conGroDiv--foot { /* What: Footer Controls Group Div. Why: The footer runs edge to edge below a hairline, with its buttons inset. How: This pulls it past the body's padding and pads it on every side but the bottom. */
+.picFooDiv { /* What: Picker Footer Div. Why: The footer runs edge to edge below a hairline, with its buttons inset. How: This pulls it past the body's padding and pads it on every side but the bottom. */
 
 
 	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -117,7 +118,7 @@
 
 
 }
-.conGroFie--picks .conSubLeg { /* What: How It Picks Subhead. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
+.picConFie .conSubLeg { /* What: Controls Subhead Legend In Picker Controls Fieldset. Why: The group's heading sits inset over its full-bleed rows, centered between the hairline above and the first row's border below. How: This pads it base vertical spacing above and below and base horizontal spacing at the sides. */
 
 
 	padding : var( --spa-ver-bas ) var( --spa-hor-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
@@ -146,7 +147,8 @@
 
 /* #region basRowDiv */
 
-.basRowDiv { /* What: Basics Row Div. Why: The name and group each sit in a labeled row. How: This lines the label and its control up in a padded row under a hairline. */
+.basRowDiv,
+.basGroDiv { /* What: Basics Row Div And Basics Group Div. Why: The name and group each sit in a labeled row. How: This lines the label and its control up in a padded row under a hairline. */
 
 
 	align-items : center;
@@ -157,7 +159,7 @@
 
 
 }
-.basRowDiv--group { /* What: Group Basics Row Div. Why: The group pills can wrap onto several lines, so the label stays at the top. How: This aligns the row to its start. */
+.basGroDiv { /* What: Basics Group Div. Why: The group pills can wrap onto several lines, so the label stays at the top. How: This aligns the row to its start. */
 
 
 	align-items : flex-start;
@@ -175,7 +177,7 @@
 
 
 }
-.basRowDiv:not( .basRowDiv--group ) .basLabSpa { /* What: Name Label. Why: The name row is centered, so its label needs no nudge. How: This drops the top padding. */
+.basRowDiv .basLabSpa { /* What: Basics Label Span In Basics Row Div. Why: The name row is centered, so its label needs no nudge. How: This drops the top padding. */
 
 
 	padding-top : 0;

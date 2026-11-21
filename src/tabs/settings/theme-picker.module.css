@@ -23,9 +23,10 @@
 
 
 
-/* #region setSubDiv */
+/* #region theLigDiv */
 
-.setSubDiv { /* What: Settings Subsection Div. Why: The heading, copy, and card read top to bottom as one Appearance subsection. How: This stacks them in a column with a small gap. */
+.theLigDiv,
+.theDarDiv { /* What: Theme Light Div And Theme Dark Div. Why: The heading, copy, and card read top to bottom as one Appearance subsection. How: This stacks them in a column with a small gap. */
 
 
 	display        : flex;
@@ -378,6 +379,6 @@
 
 /* #endregion theRowDiv */
 
-/* #endregion setSubDiv */
+/* #endregion theLigDiv */
 
 

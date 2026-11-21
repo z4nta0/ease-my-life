@@ -96,7 +96,8 @@
 
 /* #region forSteBut */
 
-.forSteBut { /* What: Form Step Button. Why: Each step is a button that jumps to it, muted until reached. How: This strips the button chrome and lines up the number and label, and eases its hover color, press, and focus ring. */
+.forSteBut,
+.detSteBut { /* What: Form Step Button And Details Step Button. Why: Each step is a button that jumps to it, muted until reached. How: This strips the button chrome and lines up the number and label, and eases its hover color, press, and focus ring. */
 
 
 	align-items : center;
@@ -111,35 +112,40 @@
 
 
 }
-.forSteBut:disabled { /* What: Unavailable Step Button. Why: The Items step can't be reached until the details are ready. How: This drops the pointer cursor. */
+.forSteBut:disabled,
+.detSteBut:disabled { /* What: Unavailable Form Step Button And Details Step Button. Why: The Items step can't be reached until the details are ready. How: This drops the pointer cursor. */
 
 
 	cursor : default;
 
 
 }
-.forSteBut:hover { /* What: Hovered Form Step Button. Why: A step should respond to the pointer. How: This darkens it to body color, which the current and finished steps already read in. */
+.forSteBut:hover,
+.detSteBut:hover { /* What: Hovered Form Step Button And Details Step Button. Why: A step should respond to the pointer. How: This darkens it to body color, which the current and finished steps already read in. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.forSteBut[data-step-current-active] { /* What: Current Step Button. Why: The step being filled in reads in body color. How: This darkens it, keying off data-step-current-active. */
+.forSteBut[data-step-current-active],
+.detSteBut[data-step-current-active] { /* What: Current Form Step Button And Details Step Button. Why: The step being filled in reads in body color. How: This darkens it, keying off data-step-current-active. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.forSteBut[data-step-done-active] { /* What: Finished Step Button. Why: A finished step reads in body color too. How: This darkens it, keying off data-step-done-active. */
+.forSteBut[data-step-done-active],
+.detSteBut[data-step-done-active] { /* What: Finished Form Step Button And Details Step Button. Why: A finished step reads in body color too. How: This darkens it, keying off data-step-done-active. */
 
 
 	color : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 
 }
-.forSteBut:active { /* What: Pressed Form Step Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
+.forSteBut:active,
+.detSteBut:active { /* What: Pressed Form Step Button And Details Step Button. Why: A text-styled control presses by dimming. How: This drops it to about 75% strength. */
 
 
 	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
@@ -149,7 +155,8 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Form Step Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.forSteBut { /* What: Still Form Step Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+	.forSteBut,
+	.detSteBut { /* What: Still Form Step Button And Details Step Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
 
 
 		transition : none;
@@ -178,7 +185,8 @@
 
 
 }
-.forSteBut[data-step-current-active] .steNumSpa { /* What: Current Step Number. Why: The current step's circle fills in the accent. How: This fills it with contrasting text. */
+.forSteBut[data-step-current-active] .steNumSpa,
+.detSteBut[data-step-current-active] .steNumSpa { /* What: Current Step Number Span. Why: The current step's circle fills in the accent. How: This fills it with contrasting text. */
 
 
 	background   : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -187,7 +195,8 @@
 
 
 }
-.forSteBut[data-step-done-active] .steNumSpa { /* What: Finished Step Number. Why: A finished step's circle rings in the accent around its check. How: This borders and colors it in the accent. */
+.forSteBut[data-step-done-active] .steNumSpa,
+.detSteBut[data-step-done-active] .steNumSpa { /* What: Finished Step Number Span. Why: A finished step's circle rings in the accent around its check. How: This borders and colors it in the accent. */
 
 
 	border-color : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -719,9 +728,10 @@
 
 
 
-/* #region forTogDiv */
+/* #region conTogDiv */
 
-.forTogDiv { /* What: Form Toggle Div. Why: A field whose answer is on or off puts its text beside a switch, divided from the field above. How: This spreads them across a top-aligned row under a hairline. */
+.conTogDiv,
+.daiTogDiv { /* What: Conditional Toggle Div And Daily Toggle Div. Why: A field whose answer is on or off puts its text beside a switch, divided from the field above. How: This spreads them across a top-aligned row under a hairline. */
 
 
 	align-items     : flex-start;
@@ -735,7 +745,8 @@
 
 }
 
-.forTogDiv .togTexDiv { /* What: Toggle Field Text. Why: A toggle field's label and help stack together beside its switch. How: This stacks them in a spaced column, while the schedule's own toggles keep their plain block flow. */
+.conTogDiv .togTexDiv,
+.daiTogDiv .togTexDiv { /* What: Toggle Text Div In Toggle Divs. Why: A toggle field's label and help stack together beside its switch. How: This stacks them in a spaced column, while the schedule's own toggles keep their plain block flow. */
 
 
 	display        : flex;
@@ -744,7 +755,8 @@
 
 
 }
-.forFieDiv--conditional .forTogDiv .togTexDiv { /* What: Conditional Toggle Text. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at a rhythm step. */
+.forFieDiv--conditional .conTogDiv .togTexDiv,
+.forFieDiv--conditional .daiTogDiv .togTexDiv { /* What: Conditional Toggle Text. Why: The conditional's two paragraphs shouldn't run so wide that the switch drops off the title's line. How: This caps the column at a rhythm step. */
 
 
 	max-width : calc( var( --ver-rhy-p12 ) * 1rem ); /* Vertical Rhythm Base Plus 12 ~= 425.596px */
@@ -850,7 +862,7 @@
 
 /* #endregion togSwiBut */
 
-/* #endregion forTogDiv */
+/* #endregion conTogDiv */
 
 
 
@@ -1147,9 +1159,10 @@
 
 
 
-/* #region forFooDiv */
+/* #region detFooDiv */
 
-.forFooDiv { /* What: Form Footer Div. Why: Each step ends with a note and its actions below a divider. How: This spreads them across a centered row under a hairline. */
+.detFooDiv,
+.iteFooDiv { /* What: Details Footer Div And Items Footer Div. Why: Each step ends with a note and its actions below a divider. How: This spreads them across a centered row under a hairline. */
 
 
 	align-items     : center;
@@ -1161,14 +1174,15 @@
 
 
 }
-.itePooDiv + .forFooDiv { /* What: Items Footer. Why: The Items footer needs room below the pool. How: This spaces it large vertical spacing down. */
+.itePooDiv + .detFooDiv,
+.itePooDiv + .iteFooDiv { /* What: Items Footer Div After Item Pool Div. Why: The Items footer needs room below the pool. How: This spaces it large vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */
 
 
 }
-.forFooDiv--details { /* What: Details Form Footer Div. Why: The Details footer needs room below the fields. How: This spaces it extra large 1 vertical spacing down. */
+.forFooDiv--details { /* What: Form Footer Div Details. Why: The Details footer needs room below the fields. How: This spaces it extra large 1 vertical spacing down. */
 
 
 	margin-top : var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px */
@@ -1201,7 +1215,7 @@
 
 }
 
-/* #endregion forFooDiv */
+/* #endregion detFooDiv */
 
 
 

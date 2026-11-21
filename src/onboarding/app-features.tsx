@@ -693,7 +693,7 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 		return [ // What: Theme Tour Steps Return. Why: The caller needs this feature tour's own full ordered step array beyond Step 1. How: This returns the app-theme tour's own remaining steps, each carrying its own selector/copy/navigation fields.
 
 
-			{ // What: System Preferences Toggle Step. Why: This is the theme tour's own 2nd step. How: This spotlights the real System Preferences toggle as a reference blurb. // The sysPreDiv hook, added to tab-settings.tsx for exactly this (the shared setSubDiv class is ambiguous against its own siblings, the celStyDiv/picAniDiv/setLayDiv subsections further down the same Appearance section). catBoo: true, same reasoning as every other Settings section step in this app: content can easily run taller than the viewport.
+			{ // What: System Preferences Toggle Step. Why: This is the theme tour's own 2nd step. How: This spotlights the real System Preferences toggle as a reference blurb. // The sysPreDiv hook, added to tab-settings.tsx for exactly this, tells this subsection apart from its siblings, the celStyDiv/picAniDiv/setLayDiv subsections further down the same Appearance section. catBoo: true, same reasoning as every other Settings section step in this app: content can easily run taller than the viewport.
 
 
 				bacBoo : true,                                    // What: Back Boolean. Why: The user should always be able to return to Step 1's own nav highlight. How: GuiTouCom shows its own Back button whenever this is true.

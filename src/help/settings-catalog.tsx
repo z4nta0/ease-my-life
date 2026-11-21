@@ -96,7 +96,7 @@ const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is t
 
 	},
 
-	// padYcoNum:4 (not the default 8), consecutive setSubDiv blocks have a real but modest 11px gap (setSecSec's own flex gap), and 8+8 exceeds that by 5px; 4+4 stays safely inside it.
+	// padYcoNum:4 (not the default 8), consecutive Appearance subsection blocks have a real but modest 11px gap (the section's own flex gap), and 8+8 exceeds that by 5px; 4+4 stays safely inside it.
 	{ // What: Dark Theme Help Item. Why: This is the on-demand help tip for the Dark Theme element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 

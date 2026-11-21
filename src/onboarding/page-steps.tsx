@@ -313,7 +313,7 @@ const PRE_PIC_STR = ONB_EXA_OBJ.id; // What: Preselect Picker String. Why: The S
  * Target and description catalog for the Settings page's OWN interior
  * elements, same shape/reasoning as PIC_TAR_OBJ above. One step per
  * section, each a fixed-content reference blurb (no interaction to
- * drive, unlike the Pickers tour), every setSecSec is always
+ * drive, unlike the Pickers tour), every Settings section is always
  * mounted (a scroll-spy sidebar, not a disclosure), so GuiTouCom's own
  * scroll-into-view handles reaching each one without any runFun staging.
  *

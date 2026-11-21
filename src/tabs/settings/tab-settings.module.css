@@ -634,9 +634,15 @@
 }
 
 
-/* #region setSecSec */
+/* #region setAppSec */
 
-.setSecSec { /* What: Settings Section Section. Why: Each section stacks its heading, intro, and rows, and a rail jump should stop short of the top. How: This stacks them in a spaced column with a scroll margin. */
+.setAppSec,
+.setDaiSec,
+.setHolSec,
+.setDatSec,
+.setAccSec,
+.setAboSec,
+.setLegSec { /* What: Settings Sections. Why: Each section stacks its heading, intro, and rows, and a rail jump should stop short of the top. How: This stacks them in a spaced column with a scroll margin. */
 
 
 	display           : flex;
@@ -677,9 +683,12 @@
 }
 
 
-/* #region setSubDiv */
+/* #region sysPreDiv */
 
-.setSubDiv { /* What: Settings Subsection Div. Why: Each Appearance topic stacks its heading, copy, and control. How: This stacks them in a column. */
+.sysPreDiv,
+.celStyDiv,
+.picAniDiv,
+.setLayDiv { /* What: Appearance Subsection Divs. Why: Each Appearance topic stacks its heading, copy, and control. How: This stacks them in a column. */
 
 
 	display        : flex;
@@ -709,13 +718,24 @@
 
 }
 
-/* #endregion setSubDiv */
+/* #endregion sysPreDiv */
 
 
 
 /* #region setRowDiv */
 
-.setRowDiv { /* What: Settings Row Div. Why: Each setting puts its text on the left and its control on the right, divided from the next row. How: This spreads them across a centered row under a hairline, and hands the segmented control and buttons their no-shrink, no-wrap sizing. */
+.setRowDiv,
+.insRowDiv,
+.runTimDiv,
+.notRowDiv,
+.stoRowDiv,
+.expRowDiv,
+.impRowDiv,
+.resRowDiv,
+.supProDiv,
+.repTouDiv,
+.priRowDiv,
+.terRowDiv { /* What: Settings Rows. Why: Each setting puts its text on the left and its control on the right, divided from the next row. How: This spreads them across a centered row under a hairline, and hands the segmented control and buttons their no-shrink, no-wrap sizing. */
 
 
 	--but-bas-fle : 0 0 auto; /* What: Button Base Flex. Why: A row's button should keep its size. How: ButBasCom reads this for its own flex. */
@@ -732,14 +752,36 @@
 
 
 }
-.setRowDiv:first-child { /* What: First Settings Row. Why: The top row shouldn't add extra space under its section's heading. How: This trims its top padding. */
+.setRowDiv:first-child,
+.insRowDiv:first-child,
+.runTimDiv:first-child,
+.notRowDiv:first-child,
+.stoRowDiv:first-child,
+.expRowDiv:first-child,
+.impRowDiv:first-child,
+.resRowDiv:first-child,
+.supProDiv:first-child,
+.repTouDiv:first-child,
+.priRowDiv:first-child,
+.terRowDiv:first-child { /* What: First Settings Rows. Why: The top row shouldn't add extra space under its section's heading. How: This trims its top padding. */
 
 
 	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
-.setRowDiv:last-child { /* What: Last Settings Row. Why: The bottom row needs no divider. How: This drops its border and trims its bottom padding. */
+.setRowDiv:last-child,
+.insRowDiv:last-child,
+.runTimDiv:last-child,
+.notRowDiv:last-child,
+.stoRowDiv:last-child,
+.expRowDiv:last-child,
+.impRowDiv:last-child,
+.resRowDiv:last-child,
+.supProDiv:last-child,
+.repTouDiv:last-child,
+.priRowDiv:last-child,
+.terRowDiv:last-child { /* What: Last Settings Rows. Why: The bottom row needs no divider. How: This drops its border and trims its bottom padding. */
 
 
 	border-bottom  : 0;
@@ -1347,7 +1389,7 @@
 
 /* #endregion aboInfDiv */
 
-/* #endregion setSecSec */
+/* #endregion setAppSec */
 
 /* #endregion setSecDiv */
 

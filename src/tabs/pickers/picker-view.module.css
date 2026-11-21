@@ -369,7 +369,10 @@
 
 /* #region picActBut */
 
-.picActDiv .picActBut { /* What: Picker Action Button. Why: The buttons rise in, staggered by their inline delay, when a pick resolves. How: This plays the action entrance. */
+.picActDiv .picActBut,
+.picActDiv .picSenBut,
+.picActDiv .picRerBut,
+.picActDiv .picOneBut { /* What: Picker Action Button. Why: The buttons rise in, staggered by their inline delay, when a pick resolves. How: This plays the action entrance. */
 
 
 	animation : picActButEnterFadeIn var( --dur-ani-p01 ) var( --mot-ove-eas ) backwards; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the button's transform and keep its press from showing. How: The button holds the first frame while its inline delay runs, and its own styles, which match the last frame, take over once it ends. */
@@ -390,7 +393,10 @@
 
 
 }
-.picActBut[data-tour-disabled-active] { /* What: Tour-Disabled Picker Action. Why: While the tour asks for Send to Today, Re-Roll and Done must look and act unavailable, since a disabled button alone looks no different. How: This dims them and stops them taking the pointer. */
+.picActBut[data-tour-disabled-active],
+.picSenBut[data-tour-disabled-active],
+.picRerBut[data-tour-disabled-active],
+.picOneBut[data-tour-disabled-active] { /* What: Tour-Disabled Picker Action. Why: While the tour asks for Send to Today, Re-Roll and Done must look and act unavailable, since a disabled button alone looks no different. How: This dims them and stops them taking the pointer. */
 
 
 	cursor         : default;
@@ -403,6 +409,9 @@
 
 
 	.picActDiv .picActBut,
+	.picActDiv .picSenBut,
+	.picActDiv .picRerBut,
+	.picActDiv .picOneBut,
 	.picActDiv .picActBut--leaving { /* What: Instant Picker Actions. Why: The buttons should arrive and leave at once. How: This shortens both animations to .01ms. */
 
 

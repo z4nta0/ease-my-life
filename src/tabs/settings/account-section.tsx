@@ -249,12 +249,12 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 					<form
-						className={ cssModObj.setRowDiv }
+						className={ cssModObj.accFinFor }
 
 						data-element-name-hook='accFinFor'
 
 						onSubmit={ finNeeFun }
-					>{ /* What: Settings Row Form Element. Why: Finishing needs the address the link was sent to. How: This holds the address field and its button. */ }
+					>{ /* What: Account Finish Form Element. Why: Finishing needs the address the link was sent to. How: This holds the address field and its button. */ }
 
 
 						<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's name, description, and field stack together. How: This wraps them. */ }
@@ -351,12 +351,12 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 							<form
-								className={ cssModObj.setRowDiv }
+								className={ cssModObj.accLinFor }
 
 								data-element-name-hook='accLinFor'
 
 								onSubmit={ senLinFun }
-							>{ /* What: Settings Row Form Element. Why: An emailed link is the other way in. How: This holds the address field and its button. */ }
+							>{ /* What: Account Link Form Element. Why: An emailed link is the other way in. How: This holds the address field and its button. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's name, description, and field stack together. How: This wraps them. */ }
@@ -422,12 +422,12 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 							<form
-								className={ cssModObj.setRowDiv }
+								className={ cssModObj.accPasFor }
 
 								data-element-name-hook='accPasFor'
 
 								onSubmit={ finPasFun }
-							>{ /* What: Settings Row Form Element. Why: A copied link can finish the sign-in here. How: This holds the paste field and its button. */ }
+							>{ /* What: Account Paste Form Element. Why: A copied link can finish the sign-in here. How: This holds the paste field and its button. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's name, description, and field stack together. How: This wraps them. */ }
@@ -452,7 +452,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										<input
 											id='accPasInp'
 
-											className={ cssModObj.accEmaInp }
+											className={ cssModObj.accPasInp }
 
 											data-element-name-hook='accPasInp'
 
@@ -463,7 +463,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 											aria-describedby='accPasSpa'
 
 											onChange={ ( chaEveObj ) => setPasUrlStr( chaEveObj.target.value ) }
-										/>{ /* What: Account Email Input Element. Why: The pasted link holds the sign-in code. How: This holds it. */ }
+										/>{ /* What: Account Paste Input Element. Why: The pasted link holds the sign-in code. How: This holds it. */ }
 
 
 
@@ -631,10 +631,10 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 									<span
 										key={ accSynObj.synStaStr }
 
-										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
+										className={ cssModObj.accStaSpa }
 
 										data-element-name-hook='accStaSpa'
-									>{ synTexFun( accSynObj ) }</span>{ /* What: Settings Sub Span Element. Why: The status explains itself, fading in each new one. How: This renders the status sentence, keyed by the status so a change remounts it. */ }
+									>{ synTexFun( accSynObj ) }</span>{ /* What: Account Status Span Element. Why: The status explains itself, fading in each new one. How: This renders the status sentence, keyed by the status so a change remounts it. */ }
 
 
 								</div>

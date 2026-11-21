@@ -365,10 +365,10 @@ function TheSecCom ( { actStoObj, staAppObj } : TscProTyp ) : React.JSX.Element 
 
 
 			<div
-				className={ cssModObj.setSubDiv }
+				className={ cssModObj.theLigDiv }
 
 				data-element-name-hook='theLigDiv'
-			>{ /* What: Theme Light Subsection Div Element. Why: The Light card needs its own labeled subsection, matching every other Appearance subsection. How: This wraps the subsection heading, its explanatory copy, and the Light theme CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
+			>{ /* What: Theme Light Div Element. Why: The Light card needs its own labeled subsection, matching every other Appearance subsection. How: This wraps the subsection heading, its explanatory copy, and the Light theme CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 				<div className={ cssModObj.subHeaDiv }>Theme &middot; Light</div>{ /* What: Set Subsection H Div Element. Why: Every subsection in Appearance names itself with this same heading style. How: This renders the fixed heading "Theme · Light". */ }
@@ -428,10 +428,10 @@ function TheSecCom ( { actStoObj, staAppObj } : TscProTyp ) : React.JSX.Element 
 			</div>
 
 			<div
-				className={ cssModObj.setSubDiv }
+				className={ cssModObj.theDarDiv }
 
 				data-element-name-hook='theDarDiv'
-			>{ /* What: Theme Dark Subsection Div Element. Why: The Dark card needs its own labeled subsection, matching the Light one above. How: This wraps the subsection heading, its explanatory copy, and the Dark theme CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
+			>{ /* What: Theme Dark Div Element. Why: The Dark card needs its own labeled subsection, matching the Light one above. How: This wraps the subsection heading, its explanatory copy, and the Dark theme CarSurCom. Its data-element-name-hook is read by the App Features tours and help mode's Settings catalog. */ }
 
 
 				<div className={ cssModObj.subHeaDiv }>Theme &middot; Dark</div>{ /* What: Set Subsection H Div Element. Why: Every subsection in Appearance names itself with this same heading style. How: This renders the fixed heading "Theme · Dark". */ }

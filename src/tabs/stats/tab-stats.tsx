@@ -3265,7 +3265,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.conFirDiv }
 
 										data-element-name-hook='conFirDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "triggered" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
@@ -3281,7 +3281,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.conCycDiv }
 
 										data-element-name-hook='conCycDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "cycles" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
@@ -3297,7 +3297,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.conRatDiv }
 
 										data-element-name-hook='conRatDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "fire rate" percentage. Its data-element-name-hook is read by help mode's Stats catalog. */ }
@@ -3313,7 +3313,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.conLasDiv }
 
 										data-element-name-hook='conLasDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "last fired" date. Its data-element-name-hook is read by help mode's Stats catalog. */ }
@@ -3590,7 +3590,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.remDonDiv }
 
 										data-element-name-hook='remDonDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "completed" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
@@ -3606,7 +3606,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.remWeeDiv }
 
 										data-element-name-hook='remWeeDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "this week" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
@@ -3622,7 +3622,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.remActDiv }
 
 										data-element-name-hook='remActDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "active days" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
@@ -3638,7 +3638,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.remBusDiv }
 
 										data-element-name-hook='remBusDiv'
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "busiest day" total. Its data-element-name-hook is read by help mode's Stats catalog. */ }
@@ -3662,7 +3662,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.staStkDiv }
 
 										data-element-name-hook='staStkDiv'
 										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
@@ -3688,7 +3688,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.staFulDiv }
 
 										data-element-name-hook='staFulDiv'
 										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
@@ -3705,7 +3705,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.staDonDiv }
 
 										data-element-name-hook='staDonDiv'
 										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
@@ -3722,7 +3722,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 									<CarSurCom
-										className={ cssModObj.staCarDiv }
+										className={ cssModObj.staRatDiv }
 
 										data-element-name-hook='staRatDiv'
 										data-picker-scope-active={ isaPicBoo || undefined } // What: Picker Scope Active Attribute. Why: Help mode tells the single-picker version of this card apart from the all-pickers version without reading the card's own classes. How: This is present only while isaPicBoo is true, since undefined drops the attribute entirely.
