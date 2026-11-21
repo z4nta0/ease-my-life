@@ -7,23 +7,23 @@ import cssModObj from './conditionals-manager.module.css'; // What: CSS Module O
 import React     from 'react';                             // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState) instead of importing individual named hooks.
 
 
-import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: ConEdiCom's own Save/Cancel/Delete footer and ConManCom's add button need consistently-styled buttons. How: This is rendered in both components below.
+import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: ConEdiCom's own Save/Cancel/Delete footer needs consistently-styled buttons. How: This is rendered throughout ConEdiCom below.
 import { CodConCom    } from '../../ui/conditional-controls.tsx';   // What: Conditional Control Component. Why: ConEdiCom reuses the exact same "type + settings" editor the Pickers create-flow uses, so both stay in sync. How: This is rendered directly inside ConEdiCom below.
-import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: Each conditional row opens and closes with the same collapse-height animation as every other disclosure in the app. How: This wraps each row's editor body, driven by that row's open state.
+import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: Each conditional row opens and closes with the same collapse-height animation the app's other disclosures use. How: This wraps each row's editor body, driven by that row's open state.
 import { colMapFun    } from '../../state/store.ts';                // What: Collapsed Map Function. Why: The saved section collapse state may be missing on an old save. How: This is called with the app state to read the collapse map, empty when there is none.
 import { CON_NAM_OBJ  } from '../../core/conditionals.ts';          // What: Conditionals Namespace Object. Why: A conditional's sortable Odds falls back to the shared default odds. How: This reads CON_NAM_OBJ.DEF_ODD_NUM in conOddFun.
 import { conDraFun    } from '../../ui/conditional-controls.tsx';   // What: Conditional Draft Function. Why: A brand-new conditional started from ConManCom needs the same sensible starting draft the Pickers create-flow uses. How: This is called once when the "Add a conditional" button is clicked.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The rows and buttons in this file need recognizable glyphs. How: This is rendered throughout both components below.
-import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add button or a truncated type label still needs to explain itself on demand. How: This wraps those controls in ConManCom.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The chevrons and the add control need recognizable glyphs. How: This is rendered throughout ConManCom below.
+import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain itself on demand. How: This wraps that control in ConManCom.
 import { norConFun    } from '../../core/pickers.ts';               // What: Normalize Conditional Function. Why: A newly-typed conditional name needs the same tidy-casing rule pickers themselves already use. How: This is called on ConManCom's own in-progress draft name.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Adding a conditional must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun in ConManCom.
 import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: A conditional's sortable Range falls back to the shared full-charge ceiling and default drift band. How: This reads PIC_NAM_OBJ.THR_VAL_NUM and DEF_EAS_OBJ in conRanFun.
 import { ranIdeFun    } from '../../utils/random-id.ts';            // What: Random Identifier Function. Why: A brand-new conditional draft needs its own id at once. How: This mints a 'cnd_' id.
-import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A user who prefers reduced motion shouldn't see this section's own row open, close, save, or delete animations. How: This is checked before each of those animations in ConManCom.
+import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A user who prefers reduced motion should see this section's row close, save, delete, and scroll steps happen at once. How: This is checked at the start of each of those steps in ConManCom.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: Each conditional mode's own label comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in ConManCom for each row's type label.
 import { sorEntFun    } from './list-sorting.ts';                   // What: Sort Entries Function. Why: The conditional list shares the app's own sort-key vocabulary. How: This is called once per comparison inside ConManCom's own sort.
-import { SorSelCom    } from './sort-select.tsx';                   // What: Sort Select Component. Why: The conditional list needs the same sort control every other list uses. How: This is rendered in ConManCom's header with CIS_OPT_ARR as its options.
+import { SorSelCom    } from './sort-select.tsx';                   // What: Sort Select Component. Why: The conditional list needs the same sort control every other list uses. How: This is rendered in ConManCom's body with CIS_OPT_ARR as its options.
 import { useEscCanFun } from '../../ui/escape-cancel.ts';           // What: Use Escape Cancel Function. Why: ConEdiCom's Escape key must cancel the current edit (or back out of a delete confirm) the same way every other editor in the app does. How: This is called once inside ConEdiCom.
 
 
@@ -245,8 +245,8 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 				<CodConCom
 					conDraObj={ conDraObj }
-					hidNamBoo
-					layVarStr='inline'
+					hidNamBoo // What: Hide Name Boolean. Why: The row's own header already holds the live name input. How: This makes CodConCom omit its own name field.
+					layVarStr='inline' // What: Layout Variant String. Why: The editor sits inside a row rather than on a card. How: This picks CodConCom's inline layout.
 
 					onChange={ setConDraObj }
 				/>{ /* What: Conditional Control Component. Why: Every non-name field (type + settings) is edited through the exact same control the Pickers create-flow uses. How: This is passed the current draft, committing every change back via setConDraObj. */ }
@@ -385,14 +385,14 @@ type CmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Cond
  *
  * @summary
  * Lists every conditional as a collapsible card whose body is ConEdiCom.
- * Edits are live (updConFun). A brand-new conditional is held
- * LOCALLY (not written to the store) until Save, so a reload or
- * tab-switch mid-create discards it, mirroring the "nothing committed
- * until Save" contract TabDatCom's own new-picker draft flow uses (that
- * one is backed by a real hidden picker instead, since PicConCom's own
- * fields already write straight to the store). Delete detaches the
- * conditional from any pickers that reference it (the store itself
- * handles that cleanup).
+ * Edits stay in a draft until Save (updConFun) or the row's chevron keeps
+ * them. A brand-new conditional is held LOCALLY (not written to the store)
+ * until Save, so a reload or tab-switch mid-create discards it, mirroring the
+ * "nothing committed until Save" contract TabDatCom's own new-picker draft
+ * flow uses (that one is backed by a real hidden picker instead, since
+ * PicConCom's own fields already write straight to the store). Delete detaches
+ * the conditional from any pickers that reference it (the store itself handles
+ * that cleanup).
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -443,7 +443,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 	// #region Row Values And Sorting
 
-	const picCouFun = ( conIdeStr : string ) => allPicArr.filter( ( picCurObj ) => picCurObj.conditionalId === conIdeStr && !picCurObj.hidden ).length; // What: Picker Count Function. Why: Every conditional's own row needs to show how many (non-hidden) pickers currently use it. How: This counts every picker whose own conditionalId matches conIdeStr.
+	const picCouFun = ( conIdeStr : string ) => allPicArr.filter( ( picCurObj ) => picCurObj.conditionalId === conIdeStr && !picCurObj.hidden ).length; // What: Picker Count Function. Why: Every conditional's own row needs to show how many (non-hidden) pickers currently use it. How: This counts the non-hidden pickers whose own conditionalId matches conIdeStr.
 
 
 
@@ -547,7 +547,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	 *
 	*/
 
-	const cloAniFun = () => { // What: Close Animated Function. Why: Cancelling a brand-new conditional should collapse its row first (so it visibly animates shut) before actually dropping it, rather than unmounting it instantly. How: This closes the row immediately when motion is reduced, otherwise defers the state drop by 300ms.
+	const cloAniFun = () => { // What: Close Animated Function. Why: Cancelling a brand-new conditional should collapse its row first (so it visibly animates shut) before actually dropping it, rather than unmounting it instantly. How: This clears the row, draft, and pending state at once when motion is reduced, otherwise closes the row and defers the draft and pending drop by the p02 duration step.
 
 
 		if ( redMotFun() ) { // What: Reduced Motion Guard. Why: A user who prefers reduced motion should see this happen instantly, not mid-animation. How: This clears every piece of state synchronously and returns early.
@@ -609,7 +609,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	 *
 	*/
 
-	const delAniFun = ( conIdeStr : string ) => { // What: Delete Animated Function. Why: Deleting an existing conditional should collapse its card shut before actually removing it from the store. How: This runs the removal immediately when motion is reduced, otherwise defers it by 300ms while the row plays its own collapse.
+	const delAniFun = ( conIdeStr : string ) => { // What: Delete Animated Function. Why: Deleting an existing conditional should collapse its card shut before actually removing it from the store. How: This runs the removal immediately when motion is reduced, otherwise defers it by the p02 duration step while the row plays its own collapse.
 
 
 		const delFinFun = () => { // What: Delete Finish Function. Why: The actual removal and every piece of open/closing state need to clear together, whenever this finally runs. How: This is called either immediately or after the deferred timeout below.
@@ -668,7 +668,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	 *
 	*/
 
-	const savAniFun = ( finNamStr : string ) => { // What: Save Animated Function. Why: Committing a brand-new conditional to the store should happen after the row's own collapse, so the row stays in place (same id/name) rather than visibly jumping. How: This commits immediately when motion is reduced, otherwise defers the commit by 300ms.
+	const savAniFun = ( finNamStr : string ) => { // What: Save Animated Function. Why: Committing a brand-new conditional to the store should happen after the row's own collapse, so the row stays in place (same id/name) rather than visibly jumping. How: This commits immediately when motion is reduced, otherwise defers the commit by the p02 duration step.
 
 
 		const finDraObj = { ...conDraObj, name : finNamStr }; // What: Final Draft Object. Why: The committed conditional needs its own name replaced by the freshly-tidied final one. How: This spreads conDraObj with name overridden by finNamStr.
@@ -734,7 +734,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 
-		actStoObj.updConFun( opeIdeStr!, { ...conDraObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's own "keep" means committing its edited fields. How: This writes every draft field, with name replaced by its tidied form. // What: Non-Null Note. Why: keeCloFun only runs from an open row's own chevron, so a row is open. How: The ! tells TypeScript opeIdeStr is set here.
+		actStoObj.updConFun( opeIdeStr!, { ...conDraObj, name : tidNamStr } ); // What: Update Conditional Call. Why: An existing conditional's own "keep" means committing its edited fields. How: This writes every draft field, with name replaced by its tidied form. // What: Non-Null Note. Why: keeCloFun expects a row already open, so opeIdeStr is set when it runs. How: The ! tells TypeScript opeIdeStr is set here.
 
 		cloEdiFun(); // What: Close Editor Call. Why: A successful keep should also close the row. How: This calls cloEdiFun after the update above.
 
@@ -750,7 +750,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	const opeRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Open Row Reference. Why: A brand-new conditional's own "+ Add a conditional" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
 
 
-	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created conditional's own form should scroll into view once its ColDisCom has actually finished opening. How: This waits 300ms (matching the ColDisCom open animation) before scrolling, or scrolls instantly under reduced motion.
+	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created conditional's own form should scroll into view once its ColDisCom has actually finished opening. How: This waits the p02 duration step (matching the ColDisCom open animation) before scrolling, or scrolls instantly under reduced motion.
 
 
 		const notOpeBoo = !opeIdeStr;         // What: Not Open Boolean. Why: No row is open, so there is nothing to scroll to. How: This negates opeIdeStr.
@@ -842,11 +842,11 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 						<span className={ cssModObj.catCouSpa }>{ /* What: Category Count Span Element. Why: The active/total count needs 3 separate elements (see conditionals-manager.module.css) rather than one text run. How: This wraps the active count, the "of" separator, and the total count below. */ }
 
 
-							<span>{ conIteArr.filter( ( conCurObj ) => conCurObj.active !== false ).length }</span>{ /* What: Count N Span Element. Why: The active conditional count needs its own element. How: This counts every conditional whose own active field isn't explicitly false. */ }
+							<span>{ conIteArr.filter( ( conCurObj ) => conCurObj.active !== false ).length }</span>{ /* What: Active Count Span Element. Why: The active conditional count needs its own element. How: This counts every conditional whose own active field isn't explicitly false. */ }
 
 							<span>of</span>{ /* What: Count Of Span Element. Why: The separator between the active and total counts needs its own element. How: This renders the literal text "of". */ }
 
-							<span>{ conIteArr.length }</span>{ /* What: Count N Span Element. Why: The total conditional count needs its own element. How: This renders conIteArr's own length. */ }
+							<span>{ conIteArr.length }</span>{ /* What: Total Count Span Element. Why: The total conditional count needs its own element. How: This renders conIteArr's own length. */ }
 
 
 						</span>
@@ -882,7 +882,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 							actNamStr='Add a conditional'
 							labTexStr='This button is disabled until all tutorials are completed.'
-						>{ /* What: Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. Its data-element-name-hook is read by help mode's Data catalog. */ }
+						>{ /* What: Row Add Span Info Tip Component. Why: A disabled control still needs to explain why it can't be clicked yet. How: This wraps the same visible label/icon the real button uses. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
 							<IcoSvgCom
@@ -986,7 +986,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 							<div
 								key={ conCurObj.id }
-								ref={ isaOpeBoo ? opeRowRef : undefined }
+								ref={ isaOpeBoo ? opeRowRef : undefined } // What: Open Row Reference. Why: Only the open row needs scrolling into view. How: This attaches opeRowRef only while isaOpeBoo is true.
 
 								className={ cssModObj.lisIteDiv }
 
@@ -1042,10 +1042,10 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 												aria-invalid={ !!namErrStr }
 												aria-label='Conditional name'
 
-												onBlur={ () => { if ( tidNamStr ) setConDraObj( { ...conDraObj, name : tidNamStr } ); } }
+												onBlur={ () => { if ( tidNamStr ) setConDraObj( { ...conDraObj, name : tidNamStr } ); } } // What: On Blur Function. Why: The typed name should settle into its tidy casing once the person leaves the field. How: This replaces the draft name with tidNamStr only when tidNamStr is not empty.
 												onChange={ ( chaEveObj ) => setConDraObj( { ...conDraObj, name : chaEveObj.target.value } ) }
-												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
-											/>{ /* What: Row Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This commits every keystroke immediately, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
+												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: On Key Down Function. Why: Enter should finish the name edit the way leaving the field does. How: This blurs the input only when the key is Enter.
+											/>{ /* What: Row Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This writes every keystroke into the draft, and tidies the name on blur. Its data-element-name-hook is read by the picker mini-tours, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
 										</span>
@@ -1189,7 +1189,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 											} ) }
-											onSavNewFun={ isaPenBoo ? ( () => savAniFun( tidNamStr ) ) : undefined }
+											onSavNewFun={ isaPenBoo ? ( () => savAniFun( tidNamStr ) ) : undefined } // What: On Save New Function. Why: Only a brand-new row commits through the animated save. How: This passes an arrow calling savAniFun with tidNamStr for the pending row, otherwise undefined.
 										/> // What: Conditional Editor Component. Why: This is the actual editor body for this one conditional. How: This is passed the live conditional, its draft, and every handler this row needs.
 
 

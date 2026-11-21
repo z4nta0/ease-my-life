@@ -125,7 +125,7 @@
 
 /* #region chvDisSpa */
 
-.chvDisSpa { /* What: Chevron Disclosure Span. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
+.chvDisSpa { /* What: Chevron Disclosure Span. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened, and eases that turn. */
 
 
 	color      : var( --tex-mut-col );                                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -411,7 +411,7 @@
 
 }
 
-.rowNamInp { /* What: Row Name Input. Why: An open row renames its conditional in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+.rowNamInp { /* What: Row Name Input. Why: An open row renames its conditional in place, styled like the name it replaces. How: This draws a borderless field with only an underline, and eases the underline's color change. */
 
 
 	background     : transparent;
