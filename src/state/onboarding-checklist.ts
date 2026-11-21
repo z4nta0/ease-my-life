@@ -211,10 +211,10 @@ function cheStaFun ( appStaObj : StaAppTyp ) : { donNum : number, fulBoo : boole
 
 
 
-// #region othRemFun
+// #region othRmnFun
 
 /**
- * othRemFun = Others Remaining Function
+ * othRmnFun = Others Remaining Function
  *
  * @summary
  * How many checklist items OTHER than the Generate card itself are
@@ -231,14 +231,14 @@ function cheStaFun ( appStaObj : StaAppTyp ) : { donNum : number, fulBoo : boole
  *
  * @example
  * ```ts
- * othRemFun(appStaObj) // => 2
+ * othRmnFun(appStaObj) // => 2
  * ```
  *
 */
 
-function othRemFun ( appStaObj : StaAppTyp ) : number { return CHE_IDE_ARR.filter( ( iteIdeStr ) => iteIdeStr !== ONB_GII_STR && !entLooFun( appStaObj, iteIdeStr ) ).length; } // What: Others Remaining Body. Why: The caller needs a plain count of every non-Generate item that still has no resolution. How: This filters CHE_IDE_ARR down to ids that are neither the Generate card nor already resolved, then takes the resulting count.
+function othRmnFun ( appStaObj : StaAppTyp ) : number { return CHE_IDE_ARR.filter( ( iteIdeStr ) => iteIdeStr !== ONB_GII_STR && !entLooFun( appStaObj, iteIdeStr ) ).length; } // What: Others Remaining Body. Why: The caller needs a plain count of every non-Generate item that still has no resolution. How: This filters CHE_IDE_ARR down to ids that are neither the Generate card nor already resolved, then takes the resulting count.
 
-// #endregion othRemFun
+// #endregion othRmnFun
 
 
 
@@ -300,7 +300,7 @@ function reaPicFun ( appStaObj : StaAppTyp ) : number { return appStaObj.pickers
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param appStaObj - App State Object: The full app state object, passed
- *                    straight through to othRemFun and reaPicFun above.
+ *                    straight through to othRmnFun and reaPicFun above.
  *
  * @returns Whether the Generate card is actionable yet, as a boolean.
  *
@@ -311,7 +311,7 @@ function reaPicFun ( appStaObj : StaAppTyp ) : number { return appStaObj.pickers
  *
 */
 
-function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRemFun( appStaObj ) === 0 && reaPicFun( appStaObj ) >= 1; } // What: Ready Generate Body. Why: The caller needs a single boolean saying whether the Generate card can actually be actioned yet. How: This combines othRemFun's own zero-check with reaPicFun's own >=1 check.
+function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRmnFun( appStaObj ) === 0 && reaPicFun( appStaObj ) >= 1; } // What: Ready Generate Body. Why: The caller needs a single boolean saying whether the Generate card can actually be actioned yet. How: This combines othRmnFun's own zero-check with reaPicFun's own >=1 check.
 
 // #endregion reaGenFun
 
@@ -395,7 +395,7 @@ const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: store.ts, the r
 
 	cheStaFun : cheStaFun, // What: Checklist Status Function. Why: tab-today.tsx reads this to decide whether the whole checklist (and therefore its own launcher UI) is complete, by this exact name. How: This re-exports cheStaFun under its own matching name.
 	entLooFun : entLooFun, // What: Entry Lookup Function. Why: Every consuming file needs to check one specific checklist item's own resolution, by this exact name. How: This re-exports entLooFun under its own matching name.
-	othRemFun : othRemFun, // What: Others Remaining Function. Why: tab-today.tsx reads this for the Generate card's own dynamic explanation text, by this exact name. How: This re-exports othRemFun under its own matching name.
+	othRmnFun : othRmnFun, // What: Others Remaining Function. Why: tab-today.tsx reads this for the Generate card's own dynamic explanation text, by this exact name. How: This re-exports othRmnFun under its own matching name.
 	reaGenFun : reaGenFun, // What: Ready Generate Function. Why: store.ts and tab-today.tsx both gate the Generate card's own actionability on this, by this exact name. How: This re-exports reaGenFun under its own matching name.
 	reaPicFun : reaPicFun, // What: Real Picker Function. Why: store.ts and tab-today.tsx both gate real-data-exists checks on this, by this exact name. How: This re-exports reaPicFun under its own matching name.
 	tutProFun : tutProFun  // What: Tutorials Progress Function. Why: The reminders files, tab-picker.tsx, and tab-data.tsx all gate their own "add new X" controls on this, by this exact name. How: This re-exports tutProFun under its own matching name.

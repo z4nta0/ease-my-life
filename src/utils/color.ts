@@ -65,7 +65,7 @@ function invColFun ( hexColStr : string ) : string {
 			const hexBarStr = hexColStr.replace( '#', '' ); // What: Hex Bare String. Why: The '#' prefix isn't part of the actual hex digits parseInt below needs. How: This strips it from hexColStr.
 
 			const hexFulStr = hexBarStr.length === 3 // What: Hex Full String. Why: A 3-digit shorthand ('abc') must be expanded to 6 digits ('aabbcc') before parseInt can read it as a 24-bit color. How: This doubles each of the 3 characters when hexBarStr is that short, otherwise uses it as-is.
-				? hexBarStr.split( '' ).map( ( curChrStr ) => curChrStr + curChrStr ).join( '' ) // What: Shorthand Expand Branch. Why: A 3-digit color must double each digit first. How: This repeats every character once and joins them back.
+				? hexBarStr.split( '' ).map( ( curChaStr ) => curChaStr + curChaStr ).join( '' ) // What: Shorthand Expand Branch. Why: A 3-digit color must double each digit first. How: This repeats every character once and joins them back.
 				: hexBarStr;                                                                     // What: Full Hex Branch. Why: A 6-digit color is already in the needed form. How: This passes hexBarStr through.
 
 			const hexIntNum = parseInt( hexFulStr, 16 ); // What: Hex Integer Number. Why: The channel splits below need one plain 24-bit integer to bit-shift/mask against. How: This parses hexFulStr as base-16.

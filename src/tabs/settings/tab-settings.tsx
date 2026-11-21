@@ -1049,7 +1049,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param cloDelBoo - Cloud Delete Boolean: Whether to delete the cloud
+	 * @param cldDelBoo - Cloud Delete Boolean: Whether to delete the cloud
 	 *                    copy too.
 	 *
 	 * @returns A promise that settles once the reset starts or fails, with
@@ -1062,7 +1062,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	 *
 	*/
 
-	const resRunFun = async ( cloDelBoo : boolean ) : Promise< void > => {
+	const resRunFun = async ( cldDelBoo : boolean ) : Promise< void > => {
 
 
 		// #region Account Wipe
@@ -1071,7 +1071,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-		const accOkaBoo = await accSynObj.wipAccFun( cloDelBoo ); // What: Account Okay Boolean. Why: A failed sign-out or deletion means nothing should be reset. How: This runs the account part and reads whether it worked.
+		const accOkaBoo = await accSynObj.wipAccFun( cldDelBoo ); // What: Account Okay Boolean. Why: A failed sign-out or deletion means nothing should be reset. How: This runs the account part and reads whether it worked.
 
 
 		setResBusBoo( false ); // What: Busy Clear. Why: The buttons can be used again. How: This re-enables them.

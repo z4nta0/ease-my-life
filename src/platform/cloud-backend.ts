@@ -148,12 +148,12 @@ async function wriBatFun ( uidValStr : string, verEntArr : [ string, string | nu
 
 
 
-type CloManTyp = SynManTyp & { prior : Record< string, string > }; // What: Cloud Manifest Type. Why: The stored manifest also lists the previous revision's hashes, for cleanup. How: This adds prior to the engine's manifest.
+type CldManTyp = SynManTyp & { prior : Record< string, string > }; // What: Cloud Manifest Type. Why: The stored manifest also lists the previous revision's hashes, for cleanup. How: This adds prior to the engine's manifest.
 
-// #region cloBacFun
+// #region cldBacFun
 
 /**
- * cloBacFun = Cloud Backend Function
+ * cldBacFun = Cloud Backend Function
  *
  * @summary
  * Returns the sync engine's backend for one account's cloud copy. Downloads
@@ -171,12 +171,12 @@ type CloManTyp = SynManTyp & { prior : Record< string, string > }; // What: Clou
  *
  * @example
  * ```ts
- * cloBacFun(uidValStr) // => synBacObj
+ * cldBacFun(uidValStr) // => synBacObj
  * ```
  *
 */
 
-function cloBacFun ( uidValStr : string ) : SynBacTyp {
+function cldBacFun ( uidValStr : string ) : SynBacTyp {
 
 
 	const manRefObj = doc( firStoObj, 'users', uidValStr ); // What: Manifest Reference Object. Why: The manifest is the account's own document. How: This builds its reference.
@@ -223,7 +223,7 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 
 
 
-			const { docs : docHasObj, rev : revValNum, savedAt : savTimNum, v : verValNum } = manSnaObj.data() as CloManTyp; // What: Document Hash Object. Why: The engine compares each document's hash. How: This reads the manifest's docs, leaving prior behind. // What: Revision Value Number. Why: An upload commits only on the revision it was built from. How: This reads the manifest's rev. // What: Saved Time Number. Why: The engine knows which side saved later. How: This reads the manifest's savedAt. // What: Version Value Number. Why: The engine checks the schema version. How: This reads the manifest's v. // What: Type Assertion Note. Why: The security rules only let this app write the manifest in this shape. How: The as types the stored data.
+			const { docs : docHasObj, rev : revValNum, savedAt : savTimNum, v : verValNum } = manSnaObj.data() as CldManTyp; // What: Document Hash Object. Why: The engine compares each document's hash. How: This reads the manifest's docs, leaving prior behind. // What: Revision Value Number. Why: An upload commits only on the revision it was built from. How: This reads the manifest's rev. // What: Saved Time Number. Why: The engine knows which side saved later. How: This reads the manifest's savedAt. // What: Version Value Number. Why: The engine checks the schema version. How: This reads the manifest's v. // What: Type Assertion Note. Why: The security rules only let this app write the manifest in this shape. How: The as types the stored data.
 
 
 
@@ -250,7 +250,7 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 
 
 				const manSnaObj = await traCurObj.get( manRefObj );                          // What: Manifest Snapshot Object. Why: The revision is checked inside the transaction. How: This reads the manifest.
-				const curManObj = manSnaObj.exists() ? manSnaObj.data() as CloManTyp : null; // What: Current Manifest Object. Why: Cleanup needs what the cloud listed. How: This reads it, null before the first upload. // What: Type Assertion Note. Why: The security rules only let this app write the manifest in this shape. How: The as types the stored data.
+				const curManObj = manSnaObj.exists() ? manSnaObj.data() as CldManTyp : null; // What: Current Manifest Object. Why: Cleanup needs what the cloud listed. How: This reads it, null before the first upload. // What: Type Assertion Note. Why: The security rules only let this app write the manifest in this shape. How: The as types the stored data.
 				const cmtNowBoo = ( curManObj ? curManObj.rev : 0 ) === basRevNum;           // What: Commit Now Boolean. Why: An upload built on an older revision must not land. How: This is true when the cloud is still at basRevNum.
 
 
@@ -293,14 +293,14 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
 
 }
 
-// #endregion cloBacFun
+// #endregion cldBacFun
 
 
 
-// #region delCloFun
+// #region delCldFun
 
 /**
- * delCloFun = Delete Cloud Function
+ * delCldFun = Delete Cloud Function
  *
  * @summary
  * Deletes an account's whole cloud copy: its manifest first, so no device
@@ -317,12 +317,12 @@ function cloBacFun ( uidValStr : string ) : SynBacTyp {
  *
  * @example
  * ```ts
- * await delCloFun(uidValStr) // => Promise<void>
+ * await delCldFun(uidValStr) // => Promise<void>
  * ```
  *
 */
 
-async function delCloFun ( uidValStr : string ) : Promise< void > {
+async function delCldFun ( uidValStr : string ) : Promise< void > {
 
 
 	await deleteDoc( doc( firStoObj, 'users', uidValStr ) ); // What: Manifest Delete Call. Why: Without a manifest, no device reads the copy as present. How: This deletes it.
@@ -337,7 +337,7 @@ async function delCloFun ( uidValStr : string ) : Promise< void > {
 
 }
 
-// #endregion delCloFun
+// #endregion delCldFun
 
 // #endregion Helpers
 
@@ -345,7 +345,7 @@ async function delCloFun ( uidValStr : string ) : Promise< void > {
 
 // #region Exports
 
-export { cloBacFun, delCloFun }; // What: Named Exports. Why: The sync hook gets an account's backend through cloBacFun, and deletes its copy through delCloFun. How: This exports both by name.
+export { cldBacFun, delCldFun }; // What: Named Exports. Why: The sync hook gets an account's backend through cldBacFun, and deletes its copy through delCldFun. How: This exports both by name.
 
 // #endregion Exports
 

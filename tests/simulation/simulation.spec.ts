@@ -609,10 +609,10 @@ const runDayFun = async ( curPagObj : Page, dayIsoStr : string, dayIndNum : numb
 	// #region Streak Check
 
 	const endStaObj = ( await reaStaFun( curPagObj ) )!;                                    // What: End State Object. Why: The streak is checked once the day's clicks are saved. How: This reads the final state. // What: Non-Null Note. Why: The day's list was already saved. How: The ! tells TypeScript a state exists.
-	const strTasArr = endStaObj.tasks.filter( ( curTasObj ) => remVisFun( curTasObj, endStaObj, dayIsoStr ) && ( ( endStaObj.reminderOpts || {} )[ curTasObj.repeat === 'once' ? 'once' : 'recurring' ] || {} ).streak !== false ); // What: Streak Task Array. Why: Shown reminders whose class counts toward the streak must be done too. How: This collects them.
-	const hasAnyBoo = visEntFun( endStaObj ).length + strTasArr.length > 0;                 // What: Has Any Boolean. Why: An empty day doesn't advance the streak. How: This checks something was shown.
+	const stkTasArr = endStaObj.tasks.filter( ( curTasObj ) => remVisFun( curTasObj, endStaObj, dayIsoStr ) && ( ( endStaObj.reminderOpts || {} )[ curTasObj.repeat === 'once' ? 'once' : 'recurring' ] || {} ).streak !== false ); // What: Streak Task Array. Why: Shown reminders whose class counts toward the streak must be done too. How: This collects them.
+	const hasAnyBoo = visEntFun( endStaObj ).length + stkTasArr.length > 0;                 // What: Has Any Boolean. Why: An empty day doesn't advance the streak. How: This checks something was shown.
 	const entDonBoo = visEntFun( endStaObj ).every( ( curEntObj ) => curEntObj.done );      // What: Entry Done Boolean. Why: Every shown entry must be done. How: This checks each.
-	const tasDonBoo = strTasArr.every( ( curTasObj ) => curTasObj.lastDone === dayIsoStr ); // What: Task Done Boolean. Why: Every streak reminder must be done today. How: This checks each.
+	const tasDonBoo = stkTasArr.every( ( curTasObj ) => curTasObj.lastDone === dayIsoStr ); // What: Task Done Boolean. Why: Every streak reminder must be done today. How: This checks each.
 
 	const allDonBoo = hasAnyBoo && entDonBoo && tasDonBoo; // What: All Done Boolean. Why: The streak advances only when everything shown is done. How: This checks every entry and streak reminder.
 
@@ -717,7 +717,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-		for ( const [ hooNamStr, expTexStr ] of [ [ 'staStrDiv', expStaObj.staStrStr ], [ 'staFulDiv', expStaObj.staFulStr ], [ 'staDonDiv', expStaObj.staDonStr ], [ 'staRatDiv', expStaObj.staRatStr ] ] ) { // What: Headline Loop. Why: Each headline card must match. How: This compares each one.
+		for ( const [ hooNamStr, expTexStr ] of [ [ 'staStrDiv', expStaObj.staStkStr ], [ 'staFulDiv', expStaObj.staFulStr ], [ 'staDonDiv', expStaObj.staDonStr ], [ 'staRatDiv', expStaObj.staRatStr ] ] ) { // What: Headline Loop. Why: Each headline card must match. How: This compares each one.
 
 
 			const shoTexStr = await numTexFun( hooNamStr ); // What: Shown Text String. Why: The card's number as shown. How: This reads it.

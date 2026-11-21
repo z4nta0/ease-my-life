@@ -405,11 +405,11 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-			const { _cardPrev : carPreObj, ...remFieObj } = curConObj; // What: Card Previous Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curConObj as carPreObj, which goes unused. // What: Remaining Fields Object. Why: Every other field is restored. How: This keeps them in remFieObj.
+			const { _cardPrev : carPreObj, ...rmnFieObj } = curConObj; // What: Card Previous Object. Why: The restored object below must drop the now-consumed _cardPrev snapshot. How: This destructures _cardPrev off curConObj as carPreObj, which goes unused. // What: Remaining Fields Object. Why: Every other field is restored. How: This keeps them in rmnFieObj.
 
 
 
-			return { ...remFieObj, chargeStep : preSnaObj.chargeStep, triggered : preSnaObj.triggered, value : preSnaObj.value }; // What: Restored Card Return. Why: The caller needs curConObj's own pre-completion fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargeStep from preSnaObj.
+			return { ...rmnFieObj, chargeStep : preSnaObj.chargeStep, triggered : preSnaObj.triggered, value : preSnaObj.value }; // What: Restored Card Return. Why: The caller needs curConObj's own pre-completion fields restored exactly. How: This spreads rmnFieObj, overriding value/triggered/chargeStep from preSnaObj.
 
 
 		} );
@@ -467,11 +467,11 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 			const preSnaObj = curConObj._chargePrev!; // What: Previous Snapshot Object. Why: The restoration below needs the exact pre-charge fields recorded earlier. How: This reads curConObj's own _chargePrev field. // What: Non-Null Note. Why: This branch only runs when hasPreBoo found a snapshot. How: The ! tells TypeScript _chargePrev is set here.
 
-			const { _chargePrev : chrPreObj, ...remFieObj } = curConObj; // What: Charge Previous Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curConObj as chrPreObj, which goes unused. // What: Remaining Fields Object. Why: Every other field is restored. How: This keeps them in remFieObj.
+			const { _chargePrev : chrPreObj, ...rmnFieObj } = curConObj; // What: Charge Previous Object. Why: The restored object below must drop the now-consumed _chargePrev snapshot. How: This destructures _chargePrev off curConObj as chrPreObj, which goes unused. // What: Remaining Fields Object. Why: Every other field is restored. How: This keeps them in rmnFieObj.
 
 
 
-			return { ...remFieObj, chargedToday : preSnaObj.chargedToday, chargeStep : preSnaObj.chargeStep, triggered : preSnaObj.triggered, value : preSnaObj.value }; // What: Restored Charge Return. Why: The caller needs curConObj's own pre-charge fields restored exactly. How: This spreads remFieObj, overriding value/triggered/chargedToday/chargeStep from preSnaObj.
+			return { ...rmnFieObj, chargedToday : preSnaObj.chargedToday, chargeStep : preSnaObj.chargeStep, triggered : preSnaObj.triggered, value : preSnaObj.value }; // What: Restored Charge Return. Why: The caller needs curConObj's own pre-charge fields restored exactly. How: This spreads rmnFieObj, overriding value/triggered/chargedToday/chargeStep from preSnaObj.
 
 
 		}
@@ -850,8 +850,8 @@ function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr
 
 		const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM;   // What: Threshold Value Number. Why: A depleted item recharges to its picker's own threshold. How: This reads the picker's threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
 		const basValNum = newValNum > 0 ? newValNum : thrValNum;            // What: Base Value Number. Why: The decay starts from the item's new value, the same way a new streak starts from a full one when the item is empty. How: This uses newValNum, or thrValNum when it's 0.
-		const remValNum = Math.max( 0, basValNum - decUpdObj.chargeStep! ); // What: Remaining Value Number. Why: Completing the entry takes one step off the new value. How: This subtracts the row's chargeStep, floored at 0. // What: Non-Null Note. Why: decUpdObj was found only when its chargeStep is above 0. How: The ! tells TypeScript the step is set.
-		const depEndBoo = remValNum <= 0.5;                                 // What: Depleted End Boolean. Why: The streak ends only when this step empties the item, with the same half-unit tolerance pickers.ts uses. How: This checks remValNum against 0.5.
+		const rmnValNum = Math.max( 0, basValNum - decUpdObj.chargeStep! ); // What: Remaining Value Number. Why: Completing the entry takes one step off the new value. How: This subtracts the row's chargeStep, floored at 0. // What: Non-Null Note. Why: decUpdObj was found only when its chargeStep is above 0. How: The ! tells TypeScript the step is set.
+		const depEndBoo = rmnValNum <= 0.5;                                 // What: Depleted End Boolean. Why: The streak ends only when this step empties the item, with the same half-unit tolerance pickers.ts uses. How: This checks rmnValNum against 0.5.
 
 
 
@@ -881,7 +881,7 @@ function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr
 
 				},
 
-				updates : curEntObj.pending.updates.map( ( curUpdObj ) => curUpdObj === decUpdObj ? { ...curUpdObj, value : depEndBoo ? thrValNum : remValNum } : curUpdObj ) // What: Updates. Why: The decay row has to land on the reworked value. How: This replaces decUpdObj's value with thrValNum when depEndBoo, else remValNum, keeping every other row.
+				updates : curEntObj.pending.updates.map( ( curUpdObj ) => curUpdObj === decUpdObj ? { ...curUpdObj, value : depEndBoo ? thrValNum : rmnValNum } : curUpdObj ) // What: Updates. Why: The decay row has to land on the reworked value. How: This replaces decUpdObj's value with thrValNum when depEndBoo, else rmnValNum, keeping every other row.
 
 
 			}

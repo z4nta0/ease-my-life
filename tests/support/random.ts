@@ -87,8 +87,8 @@ const insSedFun = async ( curPagObj : Page, sedValNum : number ) : Promise< void
 		try { // What: Load Count Read. Why: The count has to survive reloads, which session storage does. How: This reads the tab's count and stores it raised by one.
 
 
-			loaCouNum = Number( sessionStorage.getItem( '__emlSeeLoa' ) ) || 0; // What: Load Count Read Call. Why: Earlier loads in this tab set it. How: This reads it, or zero on the first load.
-			sessionStorage.setItem( '__emlSeeLoa', String( loaCouNum + 1 ) );   // What: Load Count Write Call. Why: The next load must see a higher count. How: This stores the raised count.
+			loaCouNum = Number( sessionStorage.getItem( '__emlSedLoa' ) ) || 0; // What: Load Count Read Call. Why: Earlier loads in this tab set it. How: This reads it, or zero on the first load.
+			sessionStorage.setItem( '__emlSedLoa', String( loaCouNum + 1 ) );   // What: Load Count Write Call. Why: The next load must see a higher count. How: This stores the raised count.
 
 
 		}

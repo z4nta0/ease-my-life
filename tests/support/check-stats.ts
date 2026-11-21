@@ -58,7 +58,7 @@ type ExpStaTyp = { // What: Expected Stats Type. Why: The simulation compares ea
 	staDonStr : string;   // What: Stats Done String. Why: The headline shows items done. How: This is that count as text.
 	staFulStr : string;   // What: Stats Full String. Why: The headline shows full days. How: This is that count as text.
 	staRatStr : string;   // What: Stats Rate String. Why: The headline shows the completion rate. How: This is the rounded percent with a % sign.
-	staStrStr : string;   // What: Stats Streak String. Why: The headline shows the day streak. How: This is that count as text.
+	staStkStr : string;   // What: Stats Streak String. Why: The headline shows the day streak. How: This is that count as text.
 
 
 };
@@ -144,11 +144,11 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 	// #region Streak Walk
 
 	let walDayStr = dayAggMap.has( todIsoStr ) ? todIsoStr : addDayFun( todIsoStr, -1 ); // What: Walk Day String. Why: The streak counts back from today, or yesterday when today has nothing yet. How: This picks the starting day.
-	let strDayNum = 0;                                                                   // What: Streak Day Number. Why: The streak's running count. How: This starts at zero.
+	let stkDayNum = 0;                                                                   // What: Streak Day Number. Why: The streak's running count. How: This starts at zero.
 
 
 
-	while ( ( dayAggMap.get( walDayStr )?.donNum ?? 0 ) > 0 ) { strDayNum++; walDayStr = addDayFun( walDayStr, -1 ); } // What: Streak Walk Loop. Why: The streak is the run of days with something done. How: This counts back until a day without.
+	while ( ( dayAggMap.get( walDayStr )?.donNum ?? 0 ) > 0 ) { stkDayNum++; walDayStr = addDayFun( walDayStr, -1 ); } // What: Streak Walk Loop. Why: The streak is the run of days with something done. How: This counts back until a day without.
 
 	// #endregion Streak Walk
 
@@ -233,7 +233,7 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 		staDonStr : String( totDonNum ),                                                             // What: Stats Done String. Why: Items done counts done rows. How: This is that count.
 		staFulStr : String( [ ...dayAggMap.values() ].filter( ( dayAggObj ) => dayAggObj.totNum > 0 && dayAggObj.donNum === dayAggObj.totNum ).length ), // What: Stats Full String. Why: A full day has every row done. How: This counts them.
 		staRatStr : `${ Math.round( totDonNum / Math.max( 1, picRowArr.length ) * 100 ) }%`,         // What: Stats Rate String. Why: The completion rate is done over all rows. How: This is the rounded percent.
-		staStrStr : String( strDayNum )                                                              // What: Stats Streak String. Why: The streak is the run of active days. How: This is the walked count.
+		staStkStr : String( stkDayNum )                                                              // What: Stats Streak String. Why: The streak is the run of active days. How: This is the walked count.
 
 
 	};

@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import path from 'node:path'; // What: Path. Why: The output file's absolute path is built from this script's own folder. How: This joins and resolves the path parts for OUT_PAT_STR.
+import patModObj from 'node:path'; // What: Path Module Object. Why: The output file's absolute path is built from this script's own folder. How: This joins and resolves the path parts for OUT_PAT_STR.
 
 
 import { fileURLToPath } from 'node:url';                             // What: File URL To Path. Why: ESM modules have no __dirname, so this script reconstructs its own folder. How: This converts import.meta.url for CUR_DIR_STR.
@@ -62,9 +62,9 @@ import type { RawStaTyp } from '../src/state/onboarding-seed-data.ts'; // What: 
 
 // #region Constants
 
-const CUR_DIR_STR = path.dirname( fileURLToPath( import.meta.url ) );                           // What: Current Directory String. Why: The output path is resolved from this script's own folder, not the folder it's run from. How: This converts import.meta.url to a file path and takes its directory.
-const OUT_PAT_STR = path.join( CUR_DIR_STR, '..', 'src', 'state', 'onboarding-stats-data.ts' ); // What: Output Path String. Why: The generated file always lands in the same place. How: This joins CUR_DIR_STR with the data file's path in src/state.
-const TRA_TAS_OBJ = ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === 'tk_ob_trash' )!;       // What: Trash Task Object. Why: Only the weekly "Take trash out for pickup" reminder gets history, since the one-time prescription reminder hasn't been completed on a fresh install. How: This finds its definition by id. // What: Non-Null Note. Why: The onboarding samples always include the weekly trash reminder. How: The ! tells TypeScript the find returns it.
+const CUR_DIR_STR = patModObj.dirname( fileURLToPath( import.meta.url ) );                           // What: Current Directory String. Why: The output path is resolved from this script's own folder, not the folder it's run from. How: This converts import.meta.url to a file path and takes its directory.
+const OUT_PAT_STR = patModObj.join( CUR_DIR_STR, '..', 'src', 'state', 'onboarding-stats-data.ts' ); // What: Output Path String. Why: The generated file always lands in the same place. How: This joins CUR_DIR_STR with the data file's path in src/state.
+const TRA_TAS_OBJ = ONB_TAS_ARR.find( ( curTasObj ) => curTasObj.id === 'tk_ob_trash' )!;            // What: Trash Task Object. Why: Only the weekly "Take trash out for pickup" reminder gets history, since the one-time prescription reminder hasn't been completed on a fresh install. How: This finds its definition by id. // What: Non-Null Note. Why: The onboarding samples always include the weekly trash reminder. How: The ! tells TypeScript the find returns it.
 
 // #endregion Constants
 

@@ -89,10 +89,10 @@ function lonAniFun () : string[] {
  * @summary
  * Runs inside the page from the moment it loads, as an init script, and
  * records every animation or transition that starts with a duration over 1ms
- * on window.motLisArr, naming each by its element's tag and its event's kind.
- * A transition an action sets off can finish before the check reads the page,
- * and a finished one drops out of getAnimations, so the recorder listens for
- * each motion as it starts instead. It listens in the capture phase, so
+ * on window.__motLisArr, naming each by its element's tag and its event's
+ * kind. A transition an action sets off can finish before the check reads the
+ * page, and a finished one drops out of getAnimations, so the recorder listens
+ * for each motion as it starts instead. It listens in the capture phase, so
  * nothing on the page can stop it hearing one, and reads a pseudo-element's
  * own duration when the motion runs on one. Passed to Playwright's
  * addInitScript, so it can't read anything from this file.
@@ -116,7 +116,7 @@ function motRcdFun () : void {
 	const motLisArr : string[] = []; // What: Motion List Array. Why: Each motion that starts has to be kept until the check reads it. How: This collects one name per motion.
 
 
-	Reflect.set( window, 'motLisArr', motLisArr ); // What: Motion List Global Set. Why: The check reads the list from outside the page. How: This puts the array on the window.
+	Reflect.set( window, '__motLisArr', motLisArr ); // What: Motion List Global Set. Why: The check reads the list from outside the page. How: This puts the array on the window.
 
 
 	for ( const eveTypStr of [ 'animationstart', 'transitionrun' ] ) window.addEventListener( eveTypStr, ( motEveObj ) => { // What: Motion Event Loop. Why: Animations and transitions announce themselves with different events. How: This listens for each on the window in the capture phase, catching every element's events before they reach it.
@@ -201,7 +201,7 @@ for ( const staRcdObj of ALL_STA_ARR ) { // What: State Test Loop. Why: Every ch
 		await opeStaFun( curPagObj, staRcdObj ); // What: State Open Call. Why: Entrance animations and the state's own action are the motion being checked. How: This loads the state and runs its action.
 
 
-		expect( await curPagObj.evaluate( () => Reflect.get( window, 'motLisArr' ) ) ).toEqual( [] ); // What: No Motion Started Assertion. Why: Nothing should have moved while the state opened, including transitions that already finished. How: This checks the recorder caught no motion longer than 1ms.
+		expect( await curPagObj.evaluate( () => Reflect.get( window, '__motLisArr' ) ) ).toEqual( [] ); // What: No Motion Started Assertion. Why: Nothing should have moved while the state opened, including transitions that already finished. How: This checks the recorder caught no motion longer than 1ms.
 		expect( await curPagObj.evaluate( lonAniFun ) ).toEqual( [] );                                // What: No Motion Assertion. Why: The state passes only when no animation or transition it still holds lasts longer than 1ms. How: This lists every one through lonAniFun, which should find none.
 
 

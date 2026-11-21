@@ -36,7 +36,7 @@ import { LoaCarCom    } from './regeneration-loader.tsx';           // What: Loa
 import { merOrdFun    } from './group-entries.ts';                  // What: Merge Order Function. Why: An Edit Mode drag reorders only the groups or pickers present today. How: This merges that new order back into the full saved order before it is written.
 import { norGroFun    } from '../../core/pickers.ts';               // What: Normalize Group Function. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside reqRenFun and pagColFun.
 import { NOT_NAM_OBJ  } from '../../platform/notify.ts';            // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.genNotFun() right after an auto run, its result deliberately ignored.
-import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entLooFun/cheStaFun/reaPicFun/reaGenFun/othRemFun/tutProFun.
+import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entLooFun/cheStaFun/reaPicFun/reaGenFun/othRmnFun/tutProFun.
 import { ONB_EPT_ARR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Explore-Page-Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
 import { ONB_GII_STR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Generate-Item-ID String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun/setCarFun wherever that specific card is read or resolved.
 import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own counts.
@@ -3278,7 +3278,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * Names exactly what's still missing, singular/plural and "and" both
 	 * adjusted to whichever of the two requirements (tutorials, a real
 	 * picker) is actually still outstanding, see ONB_CHE_OBJ's own
-	 * othRemFun and reaPicFun. Once nothing is missing (onbReaBoo), this
+	 * othRmnFun and reaPicFun. Once nothing is missing (onbReaBoo), this
 	 * "still missing" framing no longer applies at all, so it's a
 	 * completely separate sentence, not a 0-item case of the same
 	 * template.
@@ -3287,7 +3287,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	*/
 
-	const onbRmnNum = ONB_CHE_OBJ.othRemFun( staAppObj );                                                        // What: Onboarding Remaining Number. Why: See the doc comment just above. How: This calls ONB_CHE_OBJ.othRemFun.
+	const onbRmnNum = ONB_CHE_OBJ.othRmnFun( staAppObj );                                                        // What: Onboarding Remaining Number. Why: See the doc comment just above. How: This calls ONB_CHE_OBJ.othRmnFun.
 	const neePicBoo = ONB_CHE_OBJ.reaPicFun( staAppObj ) < 1;                                                    // What: Needs Picker Boolean. Why: See the doc comment just above. How: This checks ONB_CHE_OBJ.reaPicFun against a floor of 1.
 	const tutClaStr = onbRmnNum > 0 ? `${ onbRmnNum } more tutorial${ onbRmnNum > 1 ? 's' : '' }` : null;        // What: Tutorial Clause String. Why: This is the tutorials half of the combined "still missing" sentence, correctly pluralized. How: This formats onbRmnNum, or null when nothing is outstanding on this side.
 	const picClaStr = neePicBoo ? 'at least 1 picker' : null;                                                    // What: Picker Clause String. Why: This is the picker half of the combined sentence. How: This is a fixed phrase, or null when a real picker already exists.

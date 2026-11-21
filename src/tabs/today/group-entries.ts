@@ -341,8 +341,8 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
  *
  * @param fulOrdArr - Full Ordinal Array: The fuller, previously-saved
  *                    ordering, which may hold keys that are absent from
- *                    preNewArr entirely.
- * @param preNewArr - Previous New Array: The subset of keys that are present
+ *                    prsNewArr entirely.
+ * @param prsNewArr - Present New Array: The subset of keys that are present
  *                    today, already in their new, just-dragged relative order.
  *
  * @returns A single merged ordering array combining both inputs, per the
@@ -351,21 +351,21 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
  *
  * @example
  * ```ts
- * merOrdFun(fulOrdArr, preNewArr) // => merged ordering array
+ * merOrdFun(fulOrdArr, prsNewArr) // => merged ordering array
  * ```
  *
 */
 
-function merOrdFun ( fulOrdArr : string[] | null | undefined, preNewArr : string[] | null | undefined ) : string[] {
+function merOrdFun ( fulOrdArr : string[] | null | undefined, prsNewArr : string[] | null | undefined ) : string[] {
 
 
 	// #region Dedupe Present Keys
 
-	const preKeyArr = [];        // What: Present Key Array. Why: A synthetic day-off/charging id could otherwise be reintroduced twice by preNewArr; this collects each one only once. How: This is pushed to by the loop below, in first-seen order, which becomes the new order.
+	const prsKeyArr = [];        // What: Present Key Array. Why: A synthetic day-off/charging id could otherwise be reintroduced twice by prsNewArr; this collects each one only once. How: This is pushed to by the loop below, in first-seen order, which becomes the new order.
 	const seeKeySet = new Set(); // What: Seen Key Set. Why: The loop below needs a fast way to tell whether a key was already collected. How: This is checked and added to by that same loop.
 
 
-	for ( const curKeyStr of ( preNewArr || [] ) ) { // What: Present Key Dedupe Loop. Why: preNewArr may repeat a key; only its first occurrence should count. How: This walks every candidate key, skipping any already seen.
+	for ( const curKeyStr of ( prsNewArr || [] ) ) { // What: Present Key Dedupe Loop. Why: prsNewArr may repeat a key; only its first occurrence should count. How: This walks every candidate key, skipping any already seen.
 
 
 		if ( seeKeySet.has( curKeyStr ) ) continue; // What: Already Seen Guard. Why: A repeated key must not be collected a second time. How: This skips straight to the next candidate once curKeyStr is already in seeKeySet.
@@ -373,7 +373,7 @@ function merOrdFun ( fulOrdArr : string[] | null | undefined, preNewArr : string
 
 
 		seeKeySet.add( curKeyStr );  // What: Seen Key Record. Why: Every later occurrence of this same key must now read as a repeat. How: This adds curKeyStr to seeKeySet.
-		preKeyArr.push( curKeyStr ); // What: Present Key Collect. Why: This key's own first-seen position is exactly where it belongs in the new order. How: This appends curKeyStr to preKeyArr.
+		prsKeyArr.push( curKeyStr ); // What: Present Key Collect. Why: This key's own first-seen position is exactly where it belongs in the new order. How: This appends curKeyStr to prsKeyArr.
 
 
 	}
@@ -384,8 +384,8 @@ function merOrdFun ( fulOrdArr : string[] | null | undefined, preNewArr : string
 
 	// #region Result Seed
 
-	const preKeySet = new Set( preKeyArr ); // What: Present Key Set. Why: The splice loop below needs a fast membership check against every present key. How: This wraps preKeyArr in a Set.
-	const resKeyArr = preKeyArr.slice();    // What: Result Key Array. Why: The final merged order starts as a copy of the present keys' own new order; absent keys are spliced back into this same array below. How: This copies preKeyArr so the splices below never mutate preKeyArr itself.
+	const prsKeySet = new Set( prsKeyArr ); // What: Present Key Set. Why: The splice loop below needs a fast membership check against every present key. How: This wraps prsKeyArr in a Set.
+	const resKeyArr = prsKeyArr.slice();    // What: Result Key Array. Why: The final merged order starts as a copy of the present keys' own new order; absent keys are spliced back into this same array below. How: This copies prsKeyArr so the splices below never mutate prsKeyArr itself.
 
 	// #endregion Result Seed
 
@@ -403,7 +403,7 @@ function merOrdFun ( fulOrdArr : string[] | null | undefined, preNewArr : string
 		const basKeyStr = fulDefArr[ curIndNum ]; // What: Base Key String. Why: This is the specific saved-order key this iteration considers restoring. How: This reads fulDefArr at curIndNum.
 
 
-		if ( preKeySet.has( basKeyStr ) || resKeyArr.includes( basKeyStr ) ) continue; // What: Already Placed Guard. Why: A present key was already collected above, and an absent key already spliced back in by an earlier iteration must not be duplicated. How: This skips basKeyStr once it is already accounted for either way.
+		if ( prsKeySet.has( basKeyStr ) || resKeyArr.includes( basKeyStr ) ) continue; // What: Already Placed Guard. Why: A present key was already collected above, and an absent key already spliced back in by an earlier iteration must not be duplicated. How: This skips basKeyStr once it is already accounted for either way.
 
 
 
@@ -413,7 +413,7 @@ function merOrdFun ( fulOrdArr : string[] | null | undefined, preNewArr : string
 		for ( let bacIndNum = curIndNum - 1; bacIndNum >= 0; bacIndNum-- ) { // What: Anchor Search Loop. Why: The nearest preceding present key is found by walking backward from this position. How: This walks bacIndNum down from curIndNum - 1 until a present key is found or the start is reached.
 
 
-			if ( !preKeySet.has( fulDefArr[ bacIndNum ] ) ) continue; // What: Non-Present Skip Guard. Why: Only a PRESENT key can serve as an anchor. How: This keeps walking backward past any key that isn't in preKeySet.
+			if ( !prsKeySet.has( fulDefArr[ bacIndNum ] ) ) continue; // What: Non-Present Skip Guard. Why: Only a PRESENT key can serve as an anchor. How: This keeps walking backward past any key that isn't in prsKeySet.
 
 
 

@@ -289,17 +289,17 @@ function picWeiFun ( itePooArr : IteRcdTyp[] ) : IteRcdTyp {
 
 	const totWeiNum = itePooArr.reduce( ( sumWeiNum, curIteObj ) => sumWeiNum + ( curIteObj.weight || 1 ), 0 ); // What: Total Weight Number. Why: The random draw below needs the combined weight of the whole pool to scale against. How: This sums every item's own weight, defaulting a missing weight to 1.
 
-	let remWeiNum = Math.random() * totWeiNum; // What: Remaining Weight Number And Guard. Why: The loop below needs a running countdown to know which item the random draw landed on. How: This starts at a random point somewhere within the total weight.
+	let rmnWeiNum = Math.random() * totWeiNum; // What: Remaining Weight Number And Guard. Why: The loop below needs a running countdown to know which item the random draw landed on. How: This starts at a random point somewhere within the total weight.
 
 
-	for ( const curIteObj of itePooArr ) { // What: Weighted Draw Loop. Why: Every item in the pool must be walked in order, subtracting its own weight, until the running countdown crosses zero. How: This iterates itePooArr, returning the first item whose own weight subtraction brings remWeiNum to zero or below.
+	for ( const curIteObj of itePooArr ) { // What: Weighted Draw Loop. Why: Every item in the pool must be walked in order, subtracting its own weight, until the running countdown crosses zero. How: This iterates itePooArr, returning the first item whose own weight subtraction brings rmnWeiNum to zero or below.
 
 
-		remWeiNum -= ( curIteObj.weight || 1 ); // What: Remaining Weight Subtraction. Why: This item's own share of the total must be removed from the running countdown before checking whether it was the one drawn. How: This subtracts curIteObj's own weight (or 1, if missing) from remWeiNum.
+		rmnWeiNum -= ( curIteObj.weight || 1 ); // What: Remaining Weight Subtraction. Why: This item's own share of the total must be removed from the running countdown before checking whether it was the one drawn. How: This subtracts curIteObj's own weight (or 1, if missing) from rmnWeiNum.
 
 
 
-		if ( remWeiNum <= 0 ) return curIteObj; // What: Draw Hit Guard. Why: Once the countdown crosses zero, this is the item the weighted draw landed on. How: This returns curIteObj immediately once remWeiNum is zero or below.
+		if ( rmnWeiNum <= 0 ) return curIteObj; // What: Draw Hit Guard. Why: Once the countdown crosses zero, this is the item the weighted draw landed on. How: This returns curIteObj immediately once rmnWeiNum is zero or below.
 
 
 	}

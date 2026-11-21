@@ -89,7 +89,7 @@ type AccSynTyp = { // What: Account Sync Type. Why: The account screen shows the
 	synLasNum : number | null;                                       // What: Sync Last Number. Why: The screen says when it last synced. How: This is that time in milliseconds, or null.
 	synNowFun : () => void;                                          // What: Sync Now Function. Why: A person can sync without waiting. How: This runs a sync.
 	synStaStr : SynStaTyp;                                           // What: Sync Status String. Why: The screen shows how sync is going. How: This is the current status.
-	wipAccFun : ( cloDelBoo : boolean ) => Promise< boolean >; // What: Wipe Account Function. Why: Resetting a signed-in device signs out first, and may delete the cloud copy too. How: This does both, resolving false when it failed and nothing should be wiped.
+	wipAccFun : ( cldDelBoo : boolean ) => Promise< boolean >; // What: Wipe Account Function. Why: Resetting a signed-in device signs out first, and may delete the cloud copy too. How: This does both, resolving false when it failed and nothing should be wiped.
 
 
 };
@@ -626,7 +626,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 			const bacModObj = await import( '../platform/cloud-backend.ts' ); // What: Backend Module Object. Why: The Firestore backend loads only for a paid account. How: This imports it.
 			const begStaObj = staCurRef.current;                              // What: Begin State Object. Why: The result is applied only if the state hasn't moved since. How: This keeps the state the sync starts from.
 			const metRcdObj = reaMetFun( accRunObj.uidStr );                  // What: Meta Record Object. Why: The engine compares against the last sync. How: This reads this device's record.
-			const synBacObj = bacModObj.cloBacFun( accRunObj.uidStr );        // What: Sync Backend Object. Why: The sync reads and writes this account's copy. How: This builds its backend.
+			const synBacObj = bacModObj.cldBacFun( accRunObj.uidStr );        // What: Sync Backend Object. Why: The sync reads and writes this account's copy. How: This builds its backend.
 
 			let synMetObj : SynMetTyp | null = metRcdObj.docs ? { docs : metRcdObj.docs, rev : metRcdObj.rev || 0 } : null; // What: Sync Meta Object. Why: A device that synced before compares against that sync. How: This reads its hashes and revision, or null before a first sync.
 
@@ -1054,7 +1054,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param cloDelBoo - Cloud Delete Boolean: Whether to delete the cloud
+	 * @param cldDelBoo - Cloud Delete Boolean: Whether to delete the cloud
 	 *                    copy too.
 	 *
 	 * @returns A promise that settles true when the device may be wiped, or
@@ -1067,7 +1067,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	 *
 	*/
 
-	const wipAccFun = async ( cloDelBoo : boolean ) : Promise< boolean > => {
+	const wipAccFun = async ( cldDelBoo : boolean ) : Promise< boolean > => {
 
 
 		const accWipObj = accCurRef.current; // What: Account Wipe Object. Why: The account in use when the reset began is the one signed out. How: This reads it.
@@ -1087,7 +1087,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 			try { // What: Account Reset Try. Why: A failed deletion or sign-out must leave everything as it was. How: This deletes the copy when asked, then signs out.
 
 
-				if ( cloDelBoo ) await ( await import( '../platform/cloud-backend.ts' ) ).delCloFun( accWipObj.uidStr ); // What: Cloud Delete Call. Why: The person asked for their cloud copy to go too. How: This deletes it.
+				if ( cldDelBoo ) await ( await import( '../platform/cloud-backend.ts' ) ).delCldFun( accWipObj.uidStr ); // What: Cloud Delete Call. Why: The person asked for their cloud copy to go too. How: This deletes it.
 
 
 				await ( await staWatFun() ).sigOutFun(); // What: Sign-Out Call. Why: A reset device shouldn't stay signed in. How: This ends the session.
@@ -1102,7 +1102,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 				wipActRef.current = false; // What: Sync Unblock. Why: The reset didn't happen, so syncing carries on. How: This clears the mark.
 
-				setAccErrStr( cloDelBoo ? "Your cloud copy couldn't be deleted, so nothing was reset. Check your connection, then try again." : "Signing out didn't finish, so nothing was reset. Try again." ); // What: Failure Message. Why: The person can simply retry. How: This says what failed.
+				setAccErrStr( cldDelBoo ? "Your cloud copy couldn't be deleted, so nothing was reset. Check your connection, then try again." : "Signing out didn't finish, so nothing was reset. Try again." ); // What: Failure Message. Why: The person can simply retry. How: This says what failed.
 
 
 

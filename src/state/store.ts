@@ -209,16 +209,16 @@ const colMapFun = ( staAppObj : StaAppTyp ) : Record< string, boolean > => ( sta
  *
  * @param theModStr - Theme Mode String: 'light' or 'dark'.
  *
- * @returns The { couKeyStr, keyNamStr } slot keys.
+ * @returns The { keyNamStr, twiKeyStr } slot keys.
  *
  * @example
  * ```ts
- * cusKeyFun('dark') // => { couKeyStr, keyNamStr }
+ * cusKeyFun('dark') // => { keyNamStr, twiKeyStr }
  * ```
  *
 */
 
-const cusKeyFun = ( theModStr : string ) : { couKeyStr : 'customDark' | 'customLight', keyNamStr : 'customDark' | 'customLight' } => theModStr === 'dark' ? { couKeyStr : 'customLight', keyNamStr : 'customDark' } : { couKeyStr : 'customDark', keyNamStr : 'customLight' }; // What: Custom Key Function. Why: Renaming and saving a custom theme both write one slot and derive its counterpart. How: This picks the slot keys from theModStr.
+const cusKeyFun = ( theModStr : string ) : { keyNamStr : 'customDark' | 'customLight', twiKeyStr : 'customDark' | 'customLight' } => theModStr === 'dark' ? { keyNamStr : 'customDark', twiKeyStr : 'customLight' } : { keyNamStr : 'customLight', twiKeyStr : 'customDark' }; // What: Custom Key Function. Why: Renaming and saving a custom theme both write one slot and derive its counterpart. How: This picks the slot keys from theModStr.
 
 // #endregion cusKeyFun
 
@@ -984,7 +984,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		renCusFun : ( theModStr, newNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Custom Function. Why: A custom theme slot needs its own editable display name without switching the live theme. How: This renames theModStr's own slot and its counterpart too, unless the counterpart's name was edited directly.
 
 
-			const { couKeyStr, keyNamStr } = cusKeyFun( theModStr ); // What: Counter Key String. Why: The auto-derive step below writes onto the OPPOSITE slot from keyNamStr. How: This takes the opposite slot from cusKeyFun. // What: Key Name String. Why: The rename below is written under whichever slot this exact mode owns. How: This takes theModStr's own slot from cusKeyFun.
+			const { keyNamStr, twiKeyStr } = cusKeyFun( theModStr ); // What: Key Name String. Why: The rename below is written under whichever slot this exact mode owns. How: This takes theModStr's own slot from cusKeyFun. // What: Twin Key String. Why: The auto-derive step below writes onto the OPPOSITE slot from keyNamStr. How: This takes the opposite slot from cusKeyFun.
 
 			const sedDefObj = theModStr === 'dark' // What: Seed Defaults Object. Why: The counterpart fallback below needs plausible starting colors when it has no slot of its own yet at all. How: This picks the light-mode defaults when theModStr is 'dark' (since the counterpart would be light), else the dark-mode defaults.
 				? { accent : '#3360a8', bg : '#fcfbf9', text : '#242629' }  // What: Light Seed Branch. Why: A light slot starts from light colors. How: This is the default light palette.
@@ -1004,16 +1004,16 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			};
 
-			const couSloObj = nexAppObj[ couKeyStr ]; // What: Counter Slot Object And Guard. Why: The auto-rename check below needs to know whether the counterpart's own name was already set directly. How: This reads nexAppObj's own counterpart slot.
+			const twiSloObj = nexAppObj[ twiKeyStr ]; // What: Twin Slot Object. Why: The auto-rename check below needs to know whether the counterpart's own name was already set directly. How: This reads nexAppObj's own counterpart slot.
 
 
-			if ( !couSloObj || couSloObj.nameDerived !== false ) { // What: Auto-Rename Guard. Why: Only a counterpart whose own name is missing, or ITSELF still auto-derived, should be renamed along with this one. How: This rewrites nexAppObj's own counterpart slot only when this condition holds.
+			if ( !twiSloObj || twiSloObj.nameDerived !== false ) { // What: Auto-Rename Guard. Why: Only a counterpart whose own name is missing, or ITSELF still auto-derived, should be renamed along with this one. How: This rewrites nexAppObj's own counterpart slot only when this condition holds.
 
 
-				nexAppObj[ couKeyStr ] = { // What: Counterpart Slot Rename. Why: The counterpart needs the same name, flagged as auto-derived rather than a direct user choice. How: This spreads the prior counterpart slot (or sedDefObj) with name/nameDerived overridden.
+				nexAppObj[ twiKeyStr ] = { // What: Counterpart Slot Rename. Why: The counterpart needs the same name, flagged as auto-derived rather than a direct user choice. How: This spreads the prior counterpart slot (or sedDefObj) with name/nameDerived overridden.
 
 
-					...( couSloObj || sedDefObj ), // What: Prior Counterpart Spread. Why: The counterpart keeps its own colors, or starts from plausible defaults when it has no slot yet. How: This spreads couSloObj, falling back to sedDefObj.
+					...( twiSloObj || sedDefObj ), // What: Prior Counterpart Spread. Why: The counterpart keeps its own colors, or starts from plausible defaults when it has no slot yet. How: This spreads twiSloObj, falling back to sedDefObj.
 
 					name        : newNamStr, // What: Name. Why: The counterpart takes the same name as the slot just renamed. How: This is newNamStr.
 					nameDerived : true       // What: Name Derived. Why: This name was copied automatically, so a later direct rename of this counterpart may still replace it. How: This is true.
@@ -1109,7 +1109,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		setCusFun : ( theModStr, cusColObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Custom Function. Why: Appearance's own custom color pickers need to save a palette and make it live immediately. How: This writes the 3 colors to theModStr's own custom slot, activates it, and auto-derives the other mode's counterpart unless that one was edited directly.
 
 
-			const { couKeyStr, keyNamStr } = cusKeyFun( theModStr ); // What: Counter Key String. Why: The auto-derive step below writes onto the OPPOSITE slot from keyNamStr. How: This takes the opposite slot from cusKeyFun. // What: Key Name String. Why: Every field below is written under whichever slot this exact mode owns. How: This takes theModStr's own slot from cusKeyFun.
+			const { keyNamStr, twiKeyStr } = cusKeyFun( theModStr ); // What: Key Name String. Why: Every field below is written under whichever slot this exact mode owns. How: This takes theModStr's own slot from cusKeyFun. // What: Twin Key String. Why: The auto-derive step below writes onto the OPPOSITE slot from keyNamStr. How: This takes the opposite slot from cusKeyFun.
 
 			const savColObj = { ...cusColObj, derived : false }; // What: Saved Colors Object. Why: A directly-saved slot is by definition NOT auto-derived from its own counterpart. How: This spreads cusColObj with derived explicitly set false.
 
@@ -1125,16 +1125,16 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			};
 
-			const couSloObj = nexAppObj[ couKeyStr ]; // What: Counter Slot Object And Guard. Why: The auto-derive check below needs to know whether the counterpart slot already has a real, manually-derived value. How: This reads nexAppObj's own counterpart slot.
+			const twiSloObj = nexAppObj[ twiKeyStr ]; // What: Twin Slot Object. Why: The auto-derive check below needs to know whether the counterpart slot already has a real, manually-derived value. How: This reads nexAppObj's own counterpart slot.
 
 
-			if ( !couSloObj || couSloObj.derived !== false ) { // What: Auto-Derive Guard. Why: Only a counterpart that's missing, or ITSELF still auto-derived, should be overwritten; a real manual edit (derived:false) must never be clobbered. How: This rewrites nexAppObj's own counterpart slot only when this condition holds.
+			if ( !twiSloObj || twiSloObj.derived !== false ) { // What: Auto-Derive Guard. Why: Only a counterpart that's missing, or ITSELF still auto-derived, should be overwritten; a real manual edit (derived:false) must never be clobbered. How: This rewrites nexAppObj's own counterpart slot only when this condition holds.
 
 
-				nexAppObj[ couKeyStr ] = { // What: Counterpart Slot Write. Why: The counterpart needs its own bg/text/accent inverted from the slot that was just saved, keeping any existing name. How: This spreads the prior counterpart slot (or {}), overriding bg/text/accent via invColFun on cusColObj and flagging derived:true.
+				nexAppObj[ twiKeyStr ] = { // What: Counterpart Slot Write. Why: The counterpart needs its own bg/text/accent inverted from the slot that was just saved, keeping any existing name. How: This spreads the prior counterpart slot (or {}), overriding bg/text/accent via invColFun on cusColObj and flagging derived:true.
 
 
-					...( couSloObj || {} ), // What: Existing Name Keep Spread. Why: A counterpart slot's own name (if it had one) shouldn't be lost just because its colors are being re-derived. How: This spreads couSloObj (or {}) first, so bg/text/accent/derived below still win.
+					...( twiSloObj || {} ), // What: Existing Name Keep Spread. Why: A counterpart slot's own name (if it had one) shouldn't be lost just because its colors are being re-derived. How: This spreads twiSloObj (or {}) first, so bg/text/accent/derived below still win.
 
 					accent  : invColFun( cusColObj.accent ), // What: Accent. Why: The counterpart gets the inverted accent color. How: This calls invColFun on cusColObj.accent.
 					bg      : invColFun( cusColObj.bg ),     // What: Background. Why: The counterpart gets the inverted background color. How: This calls invColFun on cusColObj.bg.

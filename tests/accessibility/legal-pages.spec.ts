@@ -229,7 +229,7 @@ for ( const legPatStr of LEG_PAT_ARR ) { // What: Legal Page Loop. Why: Both pag
 		await opePagFun( curPagObj, legPatStr, REF_WID_NUM ); // What: Page Open Call. Why: The check reads the page at the reflow width. How: This opens and settles it at 320px.
 
 
-		const oveWidArr = await curPagObj.evaluate( () => [ document.documentElement, document.body ].map( ( eleCurObj ) => eleCurObj.scrollWidth - eleCurObj.clientWidth ) ); // What: Overflow Width Array. Why: Sideways overflow could show on the root or on the body. How: This reads how far each one's content reaches past its visible width.
+		const oveWidArr = await curPagObj.evaluate( () => [ document.documentElement, document.body ].map( ( rooCurEle ) => rooCurEle.scrollWidth - rooCurEle.clientWidth ) ); // What: Overflow Width Array. Why: Sideways overflow could show on the root or on the body. How: This reads how far each one's content reaches past its visible width.
 
 
 		expect( oveWidArr ).toEqual( [ 0, 0 ] ); // What: No Sideways Scroll Assertion. Why: Neither box may scroll sideways. How: This checks both overflow by nothing.

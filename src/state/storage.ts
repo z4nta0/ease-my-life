@@ -380,16 +380,16 @@ async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
 
 	const { pickLog : picLogArr, ...resStaObj } = appStaObj; // What: Pick Log Array. Why: The pick log and the rest of state are written to two separate object stores and must be split apart before either write happens. How: This pulls pickLog out as picLogArr. // What: Rest State Object. Why: The rest of state goes to its own store. How: This keeps every other field in resStaObj.
 
-	const cloStaObj = JSON.parse( JSON.stringify( resStaObj ) ); // What: Clone State Object. Why: Structured clone cannot take proxies or functions, and although state is meant to be plain JSON, round-tripping it here defensively means a stray non-clonable value cannot kill the whole write. How: This serializes resStaObj to JSON text and immediately parses it back into a plain object.
+	const copStaObj = JSON.parse( JSON.stringify( resStaObj ) ); // What: Copy State Object. Why: Structured clone cannot take proxies or functions, and although state is meant to be plain JSON, round-tripping it here defensively means a stray non-clonable value cannot kill the whole write. How: This serializes resStaObj to JSON text and immediately parses it back into a plain object.
 
 
-	delete cloStaObj.__mirrorNoLog; // What: Mirror Marker Strip. Why: The marker only describes one warm-mirror copy whose pickLog was left out, so IndexedDB must never keep it, not even when that copy is migrated in after a wipe. How: This deletes it from the clone before the write below.
-	delete cloStaObj.__logPartial;  // What: Partial Log Marker Strip. Why: The marker only describes a localStorage copy whose pick log may be incomplete, so IndexedDB must never keep it. How: This deletes it from the clone before the write below.
+	delete copStaObj.__mirrorNoLog; // What: Mirror Marker Strip. Why: The marker only describes one warm-mirror copy whose pickLog was left out, so IndexedDB must never keep it, not even when that copy is migrated in after a wipe. How: This deletes it from the clone before the write below.
+	delete copStaObj.__logPartial;  // What: Partial Log Marker Strip. Why: The marker only describes a localStorage copy whose pick log may be incomplete, so IndexedDB must never keep it. How: This deletes it from the clone before the write below.
 
-	cloStaObj.__savedAt = Date.now(); // What: Saved At Stamp. Why: iniStoFun compares this against the localStorage mirror's own stamp to boot from whichever copy was saved last. How: This stamps the clone with the current time in milliseconds.
+	copStaObj.__savedAt = Date.now(); // What: Saved At Stamp. Why: iniStoFun compares this against the localStorage mirror's own stamp to boot from whichever copy was saved last. How: This stamps the clone with the current time in milliseconds.
 
 
-	await reqProFun( traStoFun( STA_STO_STR, 'readwrite' ).put( cloStaObj, 'main' ) ); // What: State Store Put Call. Why: This is the actual write of the non-pickLog portion of state into its own object store. How: This awaits reqProFun wrapping a put(cloStaObj, 'main') request against the state object store.
+	await reqProFun( traStoFun( STA_STO_STR, 'readwrite' ).put( copStaObj, 'main' ) ); // What: State Store Put Call. Why: This is the actual write of the non-pickLog portion of state into its own object store. How: This awaits reqProFun wrapping a put(copStaObj, 'main') request against the state object store.
 
 	// #endregion State Store Write
 
@@ -407,7 +407,7 @@ async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
 	if ( picLogArr !== lplRefArr ) { // What: Pick Log Changed Check. Why: The pick log should only be re-serialized and rewritten when it has actually changed, not on every save. How: This compares picLogArr against the reference last written, skipping the whole block below when they are the exact same reference.
 
 
-		await reqProFun( traStoFun( PIC_LOG_STR, 'readwrite' ).put( JSON.parse( JSON.stringify( picLogArr || [] ) ), 'main' ) ); // What: Pick Log Store Put Call. Why: This is the actual write of the pick log into its own object store, JSON round-tripped for the same defensive reason as cloStaObj above. How: This awaits reqProFun wrapping a put request against the pick log object store.
+		await reqProFun( traStoFun( PIC_LOG_STR, 'readwrite' ).put( JSON.parse( JSON.stringify( picLogArr || [] ) ), 'main' ) ); // What: Pick Log Store Put Call. Why: This is the actual write of the pick log into its own object store, JSON round-tripped for the same defensive reason as copStaObj above. How: This awaits reqProFun wrapping a put request against the pick log object store.
 
 		lplRefArr = picLogArr; // What: Last-Pick-Log Reference Update. Why: The next call needs to compare against whatever was just written. How: This overwrites lplRefArr with the freshly-written picLogArr.
 
