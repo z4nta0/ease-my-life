@@ -26,7 +26,7 @@
 		<style>/* What: Card Styles. Why: The card is drawn from the app's own tokens so it looks like the app. How: This lays out the square card, its devices illustration, and its two lines of text. */
 
 
-			body { /* What: Page Body. Why: Only the card should render. How: This clears the page and centers nothing else. */
+			body { /* What: Page Body. Why: The card should fill the page with nothing around it. How: This sets the page color and clears the body's margin. */
 
 
 				background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -38,7 +38,7 @@
 
 			/* #region carSquDiv */
 
-			.carSquDiv { /* What: Card Square Div. Why: Polar shows the image square, so everything sits in one 1,200px square. How: This stacks the devices and the text in the center over the icon's own faint grid. */
+			.carSquDiv { /* What: Card Square Div. Why: The product image is a square, so everything sits in one 1,200px square. How: This stacks the devices and the text in the center over the icon's own faint grid. */
 
 
 				align-items     : center;

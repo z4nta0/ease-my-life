@@ -155,7 +155,7 @@
 
 			}
 
-			.cloLinPar { /* What: Closing Line Paragraph. Why: The card ends on what the app never asks of you. How: This sets it in the muted color at 40px, which no font step comes within 10% of, so it stays literal. */
+			.cloLinPar { /* What: Closing Line Paragraph. Why: The card ends on what the app doesn't require of you. How: This sets it in the muted color at 40px, which no font step comes within 10% of, so it stays literal. */
 
 
 				color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -193,7 +193,7 @@
 
 			}
 
-			.todLabSpa { /* What: Today Label Span. Why: The panel names itself like the app's Today tab. How: This sets a small uppercase muted label. */
+			.todLabSpa { /* What: Today Label Span. Why: The panel names itself like the app's Today tab. How: This sets a muted uppercase label. */
 
 
 				color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -242,7 +242,7 @@
 
 			}
 
-			.todCheSvg { /* What: Today Check SVG. Why: A check inside the filled box reads as done at a glance. How: This draws a white tick at the p01 step. */
+			.todCheSvg { /* What: Today Check SVG. Why: A check inside the filled box reads as done at a glance. How: This draws a tick in the page color at the p01 step. */
 
 
 				fill         : none;
@@ -305,16 +305,16 @@
 					src='../../public/assets/icon.svg'
 
 					alt=''
-				/><!-- What: Brand Mark Image Element. Why: The app's checkmark logo leads the card. How: This shows the app's icon, with an empty alt since the wordmark names the app, and the capture gives the image its own alt in the page's tags. -->
+				/><!-- What: Brand Mark Image Element. Why: The app's checkmark logo leads the card. How: This shows the app's icon, with an empty alt since the wordmark beside it names the app. -->
 
-				<span class='worLinSpa'><span class='worEasSpa'>Ease</span><span class='worLifSpa'>My Life</span></span><!-- What: Wordmark Lines Span Element. Why: The app's name reads as its wordmark. How: This stacks "Ease" over "My Life" in the brand's two faces. -->
+				<span class='worLinSpa'><span class='worEasSpa'>Ease</span><!-- What: Wordmark Ease Span Element. Why: "Ease" leads the wordmark. How: This renders the lead word in the brand's display face. --><span class='worLifSpa'>My Life</span><!-- What: Wordmark Life Span Element. Why: "My Life" completes the wordmark. How: This renders the second line in the brand's second face. --></span><!-- What: Wordmark Lines Span Element. Why: The app's name reads as its wordmark. How: This stacks "Ease" over "My Life" in the brand's two faces. -->
 
 
 			</div>
 
 			<h1 class='heaLinHea'>Pick what to do today, without deciding.</h1><!-- What: Headline Heading Element. Why: The app's promise is the card's main line. How: This sets it bold under the brand, wrapping onto two lines. -->
 
-			<p class='cloLinPar'>No account or cloud required.<br />No nagging.</p><!-- What: Closing Line Paragraph Element. Why: The card ends on what the app never asks of you. How: This sets it muted under the headline, one sentence to a line. -->
+			<p class='cloLinPar'>No account or cloud required.<br />No nagging.</p><!-- What: Closing Line Paragraph Element. Why: The card ends on what the app doesn't require of you. How: This sets it muted under the headline, one sentence to a line. -->
 
 
 		</div>
@@ -327,7 +327,7 @@
 			<div class='todRowDiv'><!-- What: Today Row Div Element. Why: A done item shows the check-off. How: This draws a filled box beside a struck name. -->
 
 
-				<span class='todBoxSpa todBoxSpa--done'><!-- What: Today Box Span Done Element. Why: A filled box marks the item done. How: This draws the accent square around its check. -->
+				<span class='todBoxSpa todBoxSpa--done'><!-- What: Today Box Span Element. Why: A filled box marks the item done. How: This draws the accent square around its check, through its todBoxSpa--done modifier. -->
 
 
 					<svg
@@ -339,7 +339,7 @@
 
 				</span>
 
-				<span class='todNamSpa todNamSpa--done'>Caramel macchiato</span><!-- What: Today Name Span Done Element. Why: The done item's name is struck through. How: This renders the name. -->
+				<span class='todNamSpa todNamSpa--done'>Caramel macchiato</span><!-- What: Today Name Span Element. Why: The done item's name is struck through. How: This renders the name, struck through by its todNamSpa--done modifier. -->
 
 
 			</div>
