@@ -588,7 +588,7 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
  *
  * @example
  * ```tsx
- * HeaLegCom({}) // => <HeaLegCom />
+ * HeaLegCom() // => <HeaLegCom />
  * ```
  *
 */

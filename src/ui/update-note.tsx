@@ -55,7 +55,7 @@ import type { JSX } from 'react'; // What: JSX. Why: The component declares the 
  *
  * @example
  * ```tsx
- * UpdNotCom({}) // => <UpdNotCom />
+ * UpdNotCom() // => <UpdNotCom />
  * ```
  *
 */

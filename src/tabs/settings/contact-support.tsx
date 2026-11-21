@@ -186,7 +186,7 @@ function detBroFun () : string {
  *
  * @example
  * ```tsx
- * ConSupCom({}) // => <ConSupCom />
+ * ConSupCom() // => <ConSupCom />
  * ```
  *
 */
