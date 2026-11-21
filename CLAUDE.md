@@ -669,7 +669,9 @@ codebase, so it applies here and nowhere else.
   Remove/Removing names (e.g. `remIdeSet`) get fixed during each
   file's own review. Decided 2026-11-20: Remapped takes `rmp` the same
   way (`migrate.ts`'s `rmpOrdObj`), since `rem` is Reminder here and
-  Phase A's `rea` already means Ready and Real. Also decided
+  Phase A's `rea` already means Ready and Real. Remote takes `rmt` and
+  Remembered takes `rmb` the same way (decided 2026-11-20, sync-docs'
+  `rmtDocObj`, sync-run's `rmbAdrStr`). Also decided
   2026-11-20: User takes `usr` (`appearance.ts`'s `usrColObj`), since
   its literal `use` would read as a hook name's prefix.
 - **A second project-scoped override, requested by the user, this
