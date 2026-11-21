@@ -236,7 +236,7 @@ function pisOptFun ( picModStr : string ) : { keyStr : string, labStr : string }
 
 // #region Components
 
-type CgcProTyp = { colValBoo : boolean, disValBoo : boolean, kicTexStr : string, onClick : () => void, sumTexStr : string, touValBoo : boolean }; // What: Category-Toggle-Component Props Type. Why: Each nested disclosure names itself, shows whether it's collapsed, and hints at what it hides. How: This types CatTogCom's props.
+type CtcProTyp = { colValBoo : boolean, disValBoo : boolean, kicTexStr : string, onClick : () => void, sumTexStr : string, touValBoo : boolean }; // What: Category-Toggle-Component Props Type. Why: Each nested disclosure names itself, shows whether it's collapsed, and hints at what it hides. How: This types CatTogCom's props.
 
 // #region CatTogCom
 
@@ -271,7 +271,7 @@ type CgcProTyp = { colValBoo : boolean, disValBoo : boolean, kicTexStr : string,
  *
 */
 
-function CatTogCom ( { colValBoo, disValBoo, kicTexStr, onClick, sumTexStr, touValBoo } : CgcProTyp ) : React.JSX.Element {
+function CatTogCom ( { colValBoo, disValBoo, kicTexStr, onClick, sumTexStr, touValBoo } : CtcProTyp ) : React.JSX.Element {
 
 
 	return (

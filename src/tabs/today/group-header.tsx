@@ -36,7 +36,7 @@ import { LogChiCom } from './day-log.tsx';         // What: Log Chip Component. 
 
 // #region Components
 
-type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, logOpeBoo? : boolean, merPenObj? : { from : string, to : string } | null, onCanMerFun? : () => void, onConMerFun? : () => void, onGriDowFun? : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onRenGroFun? : ( newValStr : string ) => void, onTogLogFun? : () => void, totCouNum : number, valNamFun? : ( rawValStr : string ) => string | null }; // What: Group-Header-Component Props Type. Why: A group header shows its progress and, in Edit Mode, renames and reorders its group, while the Reminders header uses only the basics. How: This types GroHeaCom's props, with every rename, merge, reorder, and log prop optional.
+type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, logOpeBoo? : boolean, merPenObj? : { newStr : string, oldStr : string } | null, onCanMerFun? : () => void, onConMerFun? : () => void, onGriDowFun? : ( poiEveObj : React.PointerEvent< HTMLElement > ) => void, onRenGroFun? : ( newValStr : string ) => void, onTogLogFun? : () => void, totCouNum : number, valNamFun? : ( rawValStr : string ) => string | null }; // What: Group-Header-Component Props Type. Why: A group header shows its progress and, in Edit Mode, renames and reorders its group, while the Reminders header uses only the basics. How: This types GroHeaCom's props, with every rename, merge, reorder, and log prop optional.
 
 // #region GroHeaCom
 
@@ -465,11 +465,11 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 				<div className={ cssModObj.merConDiv }>{ /* What: Merge Confirm Div Element. Why: This is the confirm-before-merging prompt's own root. How: This renders the explanatory message plus its own Cancel/Merge actions. */ }
 
 
-					<span className={ cssModObj.conMesSpa }>{ /* What: Confirm Message Span Element. Why: The user needs to understand exactly what merging will do before confirming it. How: This renders merPenObj's own to/from names inside the fixed explanatory copy. */ }
+					<span className={ cssModObj.conMesSpa }>{ /* What: Confirm Message Span Element. Why: The user needs to understand exactly what merging will do before confirming it. How: This renders merPenObj's own new and old names inside the fixed explanatory copy. */ }
 
 
-						A group named &ldquo;{ merPenObj.to }&rdquo; already exists. Merge
-						&ldquo;{ merPenObj.from }&rdquo;&rsquo;s pickers into it? This can&rsquo;t be undone.
+						A group named &ldquo;{ merPenObj.newStr }&rdquo; already exists. Merge
+						&ldquo;{ merPenObj.oldStr }&rdquo;&rsquo;s pickers into it? This can&rsquo;t be undone.
 
 
 					</span>

@@ -54,10 +54,10 @@ const UPD_MOD_STR = '/src/platform/update.ts'; // What: Update Module String. Wh
 
 // #region Helpers
 
-// #region hidArrFun
+// #region hidAriFun
 
 /**
- * hidArrFun = Hidden Arrival Function
+ * hidAriFun = Hidden Arrival Function
  *
  * @summary
  * Brings a new version in while the app is out of sight: it hides the app,
@@ -74,12 +74,12 @@ const UPD_MOD_STR = '/src/platform/update.ts'; // What: Update Module String. Wh
  *
  * @example
  * ```ts
- * await hidArrFun(page) // => Promise<void>
+ * await hidAriFun(page) // => Promise<void>
  * ```
  *
 */
 
-async function hidArrFun ( curPagObj : Page ) : Promise< void > {
+async function hidAriFun ( curPagObj : Page ) : Promise< void > {
 
 
 	await visSetFun( curPagObj, 'hidden' ); // What: Hide Call. Why: The app would reload at once if nothing were holding it back. How: This hides the app.
@@ -91,7 +91,7 @@ async function hidArrFun ( curPagObj : Page ) : Promise< void > {
 
 }
 
-// #endregion hidArrFun
+// #endregion hidAriFun
 
 
 
@@ -198,7 +198,7 @@ test( 'a new version reaching a hidden app with an editor open waits and shows t
 
 
 
-	await hidArrFun( curPagObj ); // What: Hidden Arrival Call. Why: The update has to reach the app while it's hidden, and its note shows once the person comes back. How: This hides the app, fires the control change, and shows the app again.
+	await hidAriFun( curPagObj ); // What: Hidden Arrival Call. Why: The update has to reach the app while it's hidden, and its note shows once the person comes back. How: This hides the app, fires the control change, and shows the app again.
 
 
 
@@ -232,7 +232,7 @@ test( 'a new version reaching a hidden app waits while sync is busy, then reload
 
 
 
-	await hidArrFun( curPagObj ); // What: Hidden Arrival Call. Why: The update has to reach the app while it's hidden, and its note shows once the person comes back. How: This hides the app, fires the control change, and shows the app again.
+	await hidAriFun( curPagObj ); // What: Hidden Arrival Call. Why: The update has to reach the app while it's hidden, and its note shows once the person comes back. How: This hides the app, fires the control change, and shows the app again.
 
 
 

@@ -120,7 +120,7 @@ const LOG_SPE_ARR : LogSpeTyp[] = [ // What: Log Specification Array. Why: Split
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param valAnyObj - Value Any Object: The value to serialize.
+ * @param valAny - Value Any: The value to serialize.
  *
  * @returns The value's canonical JSON text.
  *
@@ -131,22 +131,22 @@ const LOG_SPE_ARR : LogSpeTyp[] = [ // What: Log Specification Array. Why: Split
  *
 */
 
-function canJsoFun ( valAnyObj : RawSavTyp ) : string {
+function canJsoFun ( valAny : RawSavTyp ) : string {
 
 
-	if ( Array.isArray( valAnyObj ) ) return `[${ valAnyObj.map( ( arrCurObj ) => arrCurObj === undefined ? 'null' : canJsoFun( arrCurObj ) ).join( ',' ) }]`; // What: Array Guard. Why: An array keeps its order, and JSON writes an undefined entry as null. How: This serializes each entry in place.
-
-
-
-	if ( valAnyObj === null || typeof valAnyObj !== 'object' ) return JSON.stringify( valAnyObj ); // What: Plain Value Guard. Why: A string, number, boolean, or null serializes as JSON already does. How: This hands it to JSON.stringify.
+	if ( Array.isArray( valAny ) ) return `[${ valAny.map( ( arrCurObj ) => arrCurObj === undefined ? 'null' : canJsoFun( arrCurObj ) ).join( ',' ) }]`; // What: Array Guard. Why: An array keeps its order, and JSON writes an undefined entry as null. How: This serializes each entry in place.
 
 
 
-	const keyStrArr = Object.keys( valAnyObj ).filter( ( keyCurStr ) => valAnyObj[ keyCurStr ] !== undefined ).sort(); // What: Key String Array. Why: The keys are written in one fixed order, and undefined fields are dropped. How: This lists the defined keys, sorted.
+	if ( valAny === null || typeof valAny !== 'object' ) return JSON.stringify( valAny ); // What: Plain Value Guard. Why: A string, number, boolean, or null serializes as JSON already does. How: This hands it to JSON.stringify.
 
 
 
-	return `{${ keyStrArr.map( ( keyCurStr ) => `${ JSON.stringify( keyCurStr ) }:${ canJsoFun( valAnyObj[ keyCurStr ] ) }` ).join( ',' ) }}`; // What: Object Return. Why: The object serializes with its keys in sorted order. How: This joins each key and its serialized value.
+	const keyStrArr = Object.keys( valAny ).filter( ( keyCurStr ) => valAny[ keyCurStr ] !== undefined ).sort(); // What: Key String Array. Why: The keys are written in one fixed order, and undefined fields are dropped. How: This lists the defined keys, sorted.
+
+
+
+	return `{${ keyStrArr.map( ( keyCurStr ) => `${ JSON.stringify( keyCurStr ) }:${ canJsoFun( valAny[ keyCurStr ] ) }` ).join( ',' ) }}`; // What: Object Return. Why: The object serializes with its keys in sorted order. How: This joins each key and its serialized value.
 
 
 }

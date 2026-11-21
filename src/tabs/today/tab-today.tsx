@@ -1845,7 +1845,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const [ ediModBoo, setEdiModBoo ] = React.useState( false );                                         // What: Edit Mode Boolean And Setter. Why: This is the single source of truth for whether the list is currently in Edit Mode. How: This is toggled by togModFun/opeModFun/cloModFun below.
 	const [ banCloBoo, setBanCloBoo ] = React.useState( false );                                         // What: Banner Closing Boolean And Setter. Why: See the doc comment just above. How: This is set true right when Edit Mode ends and cleared once the collapse animation finishes.
-	const [ merProObj, setMerProObj ] = React.useState< { from : string, to : string } | null >( null ); // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own merPenObj prop.
+	const [ merProObj, setMerProObj ] = React.useState< { newStr : string, oldStr : string } | null >( null ); // What: Merge Prompt Object And Setter. Why: A pending group-rename that would MERGE into an existing group is held here until the user confirms. How: This is set by reqRenFun below and read by GroHeaCom's own merPenObj prop.
 
 	const groDraRef = React.useRef< HTMLDivElement | null >( null );                                             // What: Group Drag Reference. Why: groDraFun below needs a handle on the groups wrapper to scope the drag container to. How: This is attached to the .groDraDiv div's own ref prop further down.
 	const shoOrdRef = React.useRef< string[] >( [] );                                                            // What: Shown Order Reference. Why: Drop indices from REO_NAM_OBJ are DOM positions, so they must resolve against whatever order the content column was LAST rendered from, not the unpadded bloOrdArr. How: This is written just before the return JSX below and read by groDraFun's own onDroOrdFun.
@@ -1888,7 +1888,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		if ( othGroArr.includes( tarNamStr ) ) setMerProObj( { from : oldNamStr, to : tarNamStr } ); // What: Merge Stage Branch. Why: A collision with another real group means this needs confirmation before merging. How: This stages merProObj instead of renaming immediately.
+		if ( othGroArr.includes( tarNamStr ) ) setMerProObj( { newStr : tarNamStr, oldStr : oldNamStr } ); // What: Merge Stage Branch. Why: A collision with another real group means this needs confirmation before merging. How: This stages merProObj instead of renaming immediately.
 
 		else actStoObj.renGroFun( oldNamStr, tarNamStr ); // What: Direct Rename Branch. Why: No collision means the rename can commit immediately. How: This calls actStoObj.renGroFun with oldNamStr/tarNamStr.
 
@@ -4447,15 +4447,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											ediModBoo={ ediModBoo }
 											groNamStr={ curGroObj.namStr }
 											logOpeBoo={ opeLogStr === curGroObj.namStr && !ediModBoo }
-											merPenObj={ merProObj && merProObj.from === curGroObj.namStr ? merProObj : null }
+											merPenObj={ merProObj && merProObj.oldStr === curGroObj.namStr ? merProObj : null }
 											totCouNum={ curGroObj.entArr.length }
 
 											onCanMerFun={ () => setMerProObj( null ) }
 											onConMerFun={ () => { // What: On Confirm Merge Function. Why: Confirming both performs the merge and dismisses its own prompt. How: This renames the group into the existing one, then clears merProObj.
 
 
-												actStoObj.renGroFun( merProObj!.from, merProObj!.to ); // What: Merge Rename Call. Why: Confirming the merge performs the rename into the existing group. How: This calls actStoObj.renGroFun with the prompt's own from/to names. // What: Non-Null Note. Why: The merge prompt and its Confirm button only render while merProObj holds a pending merge. How: The ! tells TypeScript the merge is set here.
-												setMerProObj( null );                                  // What: Merge Prompt Clear. Why: The prompt is resolved. How: This clears merProObj.
+												actStoObj.renGroFun( merProObj!.oldStr, merProObj!.newStr ); // What: Merge Rename Call. Why: Confirming the merge performs the rename into the existing group. How: This calls actStoObj.renGroFun with the prompt's own old and new names. // What: Non-Null Note. Why: The merge prompt and its Confirm button only render while merProObj holds a pending merge. How: The ! tells TypeScript the merge is set here.
+												setMerProObj( null );                                        // What: Merge Prompt Clear. Why: The prompt is resolved. How: This clears merProObj.
 
 
 											} }
