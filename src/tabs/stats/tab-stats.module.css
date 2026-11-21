@@ -1459,9 +1459,9 @@
 
 
 
-/* #region remHeaDiv */
+/* #region sumHeaDiv */
 
-.remHeaDiv { /* What: Reminder Header Div. Why: A summary card's kicker and its headline stats share the top, wrapping when long. How: This spreads them across a wrapping baseline row. */
+.sumHeaDiv { /* What: Summary Header Div. Why: A summary card's kicker and its headline stats share the top, wrapping when long. How: This spreads them across a wrapping baseline row. */
 
 
 	align-items     : baseline;
@@ -1475,9 +1475,9 @@
 }
 
 
-/* #region remNumDiv */
+/* #region sumNumDiv */
 
-.remNumDiv { /* What: Reminder Numbers Div. Why: The headline stats sit side by side. How: This lines them up in a spaced row. */
+.sumNumDiv { /* What: Summary Numbers Div. Why: The headline stats sit side by side. How: This lines them up in a spaced row. */
 
 
 	display : flex;
@@ -1485,7 +1485,7 @@
 
 
 }
-.conSumDiv .remHeaDiv .remNumDiv { /* What: Conditional Summary Stats. Why: The Conditionals card's stats would fit beside its title but should break like the Reminders card's for consistency. How: This forces them onto their own line. */
+.conSumDiv .sumHeaDiv .sumNumDiv { /* What: Summary Numbers Div In Conditional Summary. Why: The Conditionals card's stats would fit beside its title but should break like the Reminders card's for consistency. How: This forces them onto their own line. */
 
 
 	flex-basis : 100%;
@@ -1493,7 +1493,7 @@
 
 }
 
-.remStaSpa { /* What: Reminder Stat Span. Why: Each stat is a number with a label. How: This sets the label small and muted. */
+.sumStaSpa { /* What: Summary Stat Span. Why: Each stat is a number with a label. How: This sets the label small and muted. */
 
 
 	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1514,9 +1514,9 @@
 
 }
 
-/* #endregion remNumDiv */
+/* #endregion sumNumDiv */
 
-/* #endregion remHeaDiv */
+/* #endregion sumHeaDiv */
 
 
 
@@ -2455,7 +2455,7 @@
 
 }
 
-.pieHelSpa { /* What: Pie Help Span. Why: A small circled "?" beside an N/A value explains it without competing with it. How: This draws a small muted round badge that brightens on hover. */
+.valHelSpa { /* What: Value Help Span. Why: A small circled "?" beside an N/A value explains it without competing with it. How: This draws a small muted round badge that brightens on hover. */
 
 
 	align-items     : center;
@@ -2475,7 +2475,7 @@
 
 
 }
-.pieHelSpa:hover { /* What: Hovered Help Bubble. Why: The bubble should respond to the pointer. How: This tints it with the accent color. */
+.valHelSpa:hover { /* What: Hovered Value Help Span. Why: The bubble should respond to the pointer. How: This tints it with the accent color. */
 
 
 	background   : var( --acc-tin-col ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -2487,7 +2487,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Help Bubble. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.pieHelSpa { /* What: Still Help Bubble. Why: The change should happen at once. How: This turns its transition off. */
+	.valHelSpa { /* What: Still Value Help Span. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;

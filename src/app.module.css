@@ -667,8 +667,8 @@
 
 }
 
-.appTabNav--side .braWorSpa .worResSpa,
-.appTabNav--top .braWorSpa .worResSpa { /* What: Wordmark My Life Line. Why: "My Life" completes the wordmark in the brand's second face. How: This sets it bold in Quicksand, in the text color. */
+.appTabNav--side .braWorSpa .worLifSpa,
+.appTabNav--top .braWorSpa .worLifSpa { /* What: Wordmark Life Span. Why: "My Life" completes the wordmark in the brand's second face. How: This sets it bold in Quicksand, in the text color. */
 
 
 	color          : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */

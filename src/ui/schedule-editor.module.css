@@ -317,7 +317,7 @@
 .datInlInp { /* What: Date Link Button And Inline Input. Why: The link and the input swap on click, and the swap should ease instead of snapping. How: This plays a short fade-and-settle from their left edge each time either mounts. */
 
 
-	animation        : datLinButSwapFadeIn var( --dur-ani-p01 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
+	animation        : dateSwapFadeIn var( --dur-ani-p01 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 	transform-origin : left center;
 
 
@@ -336,7 +336,7 @@
 
 
 }
-@keyframes datLinButSwapFadeIn { /* What: Date Link Button Swap Fade In. Why: A small fade and settle reads as the same control changing form. How: This fades the element in from slightly lower and smaller. */
+@keyframes dateSwapFadeIn { /* What: Date Swap Fade In. Why: A small fade and settle reads as the same control changing form. How: This fades the element in from slightly lower and smaller. */
 
 
 	from {

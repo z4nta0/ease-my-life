@@ -780,7 +780,8 @@
 
 /* #region chvDisSpa */
 
-.chvDisSpa { /* What: Chevron Disclosure Span. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
+.chvDisSpa,
+.chvDisBut { /* What: Chevron Disclosure Span And Button. Why: A disclosure shows which way it will open. How: This sets the muted icon in an inline box that turns when opened. */
 
 
 	color      : var( --tex-mut-col );                                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -789,7 +790,8 @@
 
 
 }
-.chvDisSpa[data-chevron-open-active] { /* What: Open Chevron. Why: An open disclosure points down. How: This turns the chevron a quarter turn. */
+.chvDisSpa[data-chevron-open-active],
+.chvDisBut[data-chevron-open-active] { /* What: Open Chevron Disclosure Span And Button. Why: An open disclosure points down. How: This turns the chevron a quarter turn. */
 
 
 	transform : rotate( 90deg );
@@ -799,7 +801,8 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Chevron. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.chvDisSpa { /* What: Still Chevron Disclosure Span. Why: The change should happen at once. How: This turns its transition off. */
+	.chvDisSpa,
+	.chvDisBut { /* What: Still Chevron Disclosure Span And Button. Why: The change should happen at once. How: This turns its transition off. */
 
 
 		transition : none;

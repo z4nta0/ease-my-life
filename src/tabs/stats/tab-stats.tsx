@@ -4033,17 +4033,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 						>{ /* What: Card Surface Component. Why: The Conditionals summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-							<div className={ cssModObj.remHeaDiv }>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row, sharing this class with the Reminders summary below for consistent layout. How: This wraps the kicker div and the two inline stat spans. */ }
+							<div className={ cssModObj.sumHeaDiv }>{ /* What: Summary Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row, sharing this class with the Reminders summary below for consistent layout. How: This wraps the kicker div and the two inline stat spans. */ }
 
 
 								<div className={ cssModObj.pagKicDiv }>Conditionals</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal word "Conditionals". */ }
 
-								<div className={ cssModObj.remNumDiv }>{ /* What: Reminder Stats Numbers Div Element. Why: The two inline headline stats sit side by side. How: This wraps the two remStaSpa spans. */ }
+								<div className={ cssModObj.sumNumDiv }>{ /* What: Summary Numbers Div Element. Why: The two inline headline stats sit side by side. How: This wraps the two sumStaSpa spans. */ }
 
 
-									<span className={ cssModObj.remStaSpa }><strong className={ cssModObj.staNumStr }>{ conTotObj.firNum }</strong>&nbsp;triggered</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline "N triggered" readout. How: This renders conTotObj.firNum in bold, followed by the word "triggered". */ }
+									<span className={ cssModObj.sumStaSpa }><strong className={ cssModObj.staNumStr }>{ conTotObj.firNum }</strong>&nbsp;triggered</span>{ /* What: Summary Stat Span Element. Why: The summary needs one inline "N triggered" readout. How: This renders conTotObj.firNum in bold, followed by the word "triggered". */ }
 
-									<span className={ cssModObj.remStaSpa }><strong className={ cssModObj.staNumStr }>{ conTotObj.ratNum }%</strong>&nbsp;fire rate</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline "N% fire rate" readout. How: This renders conTotObj.ratNum in bold as a percentage, followed by "fire rate". */ }
+									<span className={ cssModObj.sumStaSpa }><strong className={ cssModObj.staNumStr }>{ conTotObj.ratNum }%</strong>&nbsp;fire rate</span>{ /* What: Summary Stat Span Element. Why: The summary needs one inline "N% fire rate" readout. How: This renders conTotObj.ratNum in bold as a percentage, followed by "fire rate". */ }
 
 
 								</div>
@@ -4329,17 +4329,17 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 						>{ /* What: Card Surface Component. Why: The Reminders summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
-							<div className={ cssModObj.remHeaDiv }>{ /* What: Reminder Stats Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row. How: This wraps the kicker div and the two inline stat spans. */ }
+							<div className={ cssModObj.sumHeaDiv }>{ /* What: Summary Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row. How: This wraps the kicker div and the two inline stat spans. */ }
 
 
 								<div className={ cssModObj.pagKicDiv }>Reminders completed</div>{ /* What: Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Reminders completed". */ }
 
-								<div className={ cssModObj.remNumDiv }>{ /* What: Reminder Stats Numbers Div Element. Why: The two inline headline stats sit side by side. How: This wraps the two remStaSpa spans. */ }
+								<div className={ cssModObj.sumNumDiv }>{ /* What: Summary Numbers Div Element. Why: The two inline headline stats sit side by side. How: This wraps the two sumStaSpa spans. */ }
 
 
-									<span className={ cssModObj.remStaSpa }><strong className={ cssModObj.staNumStr }>{ remRowArr.length }</strong>&nbsp;{ ranValStr === 'all' ? 'all time' : 'in range' }</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline total readout, phrased for the active range. How: This renders remRowArr.length in bold, followed by "all time" or "in range". */ }
+									<span className={ cssModObj.sumStaSpa }><strong className={ cssModObj.staNumStr }>{ remRowArr.length }</strong>&nbsp;{ ranValStr === 'all' ? 'all time' : 'in range' }</span>{ /* What: Summary Stat Span Element. Why: The summary needs one inline total readout, phrased for the active range. How: This renders remRowArr.length in bold, followed by "all time" or "in range". */ }
 
-									<span className={ cssModObj.remStaSpa }><strong className={ cssModObj.staNumStr }>{ remWeeNum }</strong>&nbsp;this week</span>{ /* What: Rem Stat Span Element. Why: The summary needs one inline "N this week" readout. How: This renders remWeeNum in bold, followed by "this week". */ }
+									<span className={ cssModObj.sumStaSpa }><strong className={ cssModObj.staNumStr }>{ remWeeNum }</strong>&nbsp;this week</span>{ /* What: Summary Stat Span Element. Why: The summary needs one inline "N this week" readout. How: This renders remWeeNum in bold, followed by "this week". */ }
 
 
 								</div>
@@ -4841,7 +4841,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 															N/A{ ' ' }
 
 															<InfTipCom
-																className={ cssModObj.pieHelSpa }
+																className={ cssModObj.valHelSpa }
 
 																labTexStr='No full cycle has been completed yet'
 															>?</InfTipCom>{ /* What: Info Tip Component. Why: A N/A Spent value needs a small inline explanation of why there's no cycle to measure yet. How: This renders the shared "?" bubble with its own label text. */ }

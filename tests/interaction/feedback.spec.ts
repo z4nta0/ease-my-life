@@ -256,7 +256,7 @@ const TOG_TAR_ARR : TogTarTyp[] = [ // What: Toggle Target Array. Why: A switche
 		actStr : '',
 		attStr : 'data-chevron-open-active',
 		inaStr : null,
-		selStr : '[class*="chvDisSpa"]',
+		selStr : ':is([class*="chvDisSpa"], [class*="chvDisBut"])',
 		staArr : DAT_IDE_ARR
 
 

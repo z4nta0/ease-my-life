@@ -391,7 +391,14 @@
 
 
 }
-@keyframes groPilButReturnPopIn { /* What: New Group Pill Return Keyframes. Why: The pill springs back in from smaller. How: This fades it in while scaling it up to full size. */
+.groPilBut:active { /* What: Pressed Group Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+
+
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+
+
+}
+@keyframes groPilButReturnPopIn { /* What: Group Pill Button Return Pop In. Why: The pill springs back in from smaller. How: This fades it in while scaling it up to full size. */
 
 
 	from {
@@ -411,13 +418,6 @@
 
 
 	}
-
-
-}
-.groPilBut:active { /* What: Pressed Group Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
-
-
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
 
 
 }
@@ -545,7 +545,7 @@
 
 
 	align-items     : center;
-	animation       : buttonOpenPopIn var( --dur-ani-bas ) var( --mot-dec-eas ) backwards; /* Duration Animation Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Backwards Fill. Why: A both fill would hold the end frame's full opacity after the pop, hiding the disabled confirm's dimming. How: backwards keeps the buttons hidden through the delay, then hands opacity back to their own rules once the pop ends. */
+	animation       : confirmOpenPopIn var( --dur-ani-bas ) var( --mot-dec-eas ) backwards; /* Duration Animation Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Backwards Fill. Why: A both fill would hold the end frame's full opacity after the pop, hiding the disabled confirm's dimming. How: backwards keeps the buttons hidden through the delay, then hands opacity back to their own rules once the pop ends. */
 	animation-delay : var( --dur-ani-m01 );                                                /* Duration Animation Base Minus 1 ~= 119.2ms */
 	background      : var( --bac-sur-col );                                                /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	border          : var( --bor-wid-bas ) solid var( --bor-mai-col );                     /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -600,7 +600,7 @@
 
 
 }
-@keyframes buttonOpenPopIn { /* What: New Group Button Keyframes. Why: The buttons pop in beside the field. How: This fades them in while scaling them up to full size. */
+@keyframes confirmOpenPopIn { /* What: Confirm Open Pop In. Why: The buttons pop in beside the field. How: This fades them in while scaling them up to full size. */
 
 
 	from {

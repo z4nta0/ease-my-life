@@ -2473,7 +2473,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 																</span>
 
 																<button
-																	className={` ${ cssModObj.rowChvBut }   ${ cssModObj.chvDisSpa } `}
+																	className={` ${ cssModObj.rowChvBut }   ${ cssModObj.chvDisBut } `}
 
 																	data-chevron-open-active // What: Chevron Open Active Attribute. Why: This chevron only renders on an open row, so it always points down. How: This sets the presence-only attribute unconditionally.
 

@@ -307,7 +307,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 
 						<span className={ cssModObj.worEasSpa }>Ease</span>{ /* What: Ease Span Element. Why: This is the wordmark's first line of text. How: This renders the literal word "Ease" on its own line. */ }
 
-						<span className={ cssModObj.worResSpa }>My Life</span>{ /* What: Rest Span Element. Why: This is the wordmark's second line of text. How: This renders the literal words "My Life" on their own line. */ }
+						<span className={ cssModObj.worLifSpa }>My Life</span>{ /* What: Wordmark Life Span Element. Why: This is the wordmark's second line of text. How: This renders the literal words "My Life" on their own line. */ }
 
 
 					</span>

@@ -628,7 +628,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 			pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual tween, since each may have moved a different distance (or none at all). How: This computes each pill's own delta from prePosMap and plays a matching transform.
 
 
-				const oldXcoNum = prePosMap.get( pilCurEle.dataset.g! ); // What: Old X-Coordinate Number. Why: This pill's own previous position is keyed by its own group name. How: This looks up the pill's own data-g attribute in prePosMap. // What: Non-Null Note. Why: Every group pill renders with its own data-g group name. How: The ! tells TypeScript the key is set.
+				const oldXcoNum = prePosMap.get( pilCurEle.dataset.groupPillName! ); // What: Old X-Coordinate Number. Why: This pill's own previous position is keyed by its own group name. How: This looks up the pill's own data-group-pill-name attribute in prePosMap. // What: Non-Null Note. Why: Every group pill renders with its own data-group-pill-name group name. How: The ! tells TypeScript the key is set.
 
 
 				if ( oldXcoNum == null ) return; // What: New Pill Guard. Why: A pill with no recorded previous position is brand new and has nothing to tween from. How: This skips straight to the next pill.
@@ -658,7 +658,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 		const nexPosMap = new Map(); // What: Next Position Map. Why: The NEXT run of this effect needs this run's own final positions as its own "previous" baseline. How: This starts empty and is filled by the loop just below.
 
 
-		pilNodArr.forEach( ( pilCurEle ) => nexPosMap.set( pilCurEle.dataset.g, pilCurEle.offsetLeft ) ); // What: Next Map Populate. Why: Every pill's own current position must be recorded for next time. How: This records each pill's own current offsetLeft, keyed by its own group name.
+		pilNodArr.forEach( ( pilCurEle ) => nexPosMap.set( pilCurEle.dataset.groupPillName, pilCurEle.offsetLeft ) ); // What: Next Map Populate. Why: Every pill's own current position must be recorded for next time. How: This records each pill's own current offsetLeft, keyed by its own group name.
 
 		groFliRef.current = nexPosMap; // What: Group Flip Update. Why: This run's own positions must replace whatever the previous run recorded. How: This overwrites groFliRef.current with nexPosMap.
 
@@ -977,7 +977,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								className={ cssModObj.groPilBut }
 
 								data-element-name-hook='groPilBut'
-								data-g={ groCurStr }
+								data-group-pill-name={ groCurStr }
 
 								type='button'
 
