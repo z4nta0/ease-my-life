@@ -16,7 +16,7 @@ import type { JSX } from 'react'; // What: JSX. Why: The component declares the 
  * sort-select.tsx = Sort Select
  *
  * @summary
- * A small labeled select reused for every sort control on the Data tab: the
+ * A small labeled select reused for the sort controls on the Data tab: the
  * section-list sort and each section's own item-list sort.
  *
  * Sections:
@@ -39,7 +39,7 @@ type SscProTyp = { labTexStr : string, onChange : ( keyValStr : string ) => void
  * SorSelCom = Sort Select Component
  *
  * @summary
- * A small labeled select reused for every sort control on the Data
+ * A small labeled select reused for the sort controls on the Data
  * tab: the section-list sort and each section's own item-list sort.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -128,7 +128,7 @@ function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } : SscP
 
 // #region Exports
 
-export { SorSelCom }; // What: Named Export. Why: The Data tab and the reminders manager render this select for their sort controls. How: This exports SorSelCom by name.
+export { SorSelCom }; // What: Named Export. Why: The Data tab's sort controls render this select. How: This exports SorSelCom by name.
 
 // #endregion Exports
 
