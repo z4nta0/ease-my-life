@@ -651,7 +651,7 @@ const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the modul
 
 
 
-export { HOL_NAM_OBJ }; // What: Holidays Namespace Export. Why: Every consumer reaches this file's holiday engine through the one namespace object. How: This exports HOL_NAM_OBJ by name at the very end of the file.
+export { HOL_NAM_OBJ }; // What: Named Export. Why: The one namespace object carries this file's holiday engine. How: This exports HOL_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 

@@ -141,7 +141,7 @@ const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : 
 
 // #region Exports
 
-export { IcoSvgCom }; // What: Named Export. Why: Other files render icons by name through this component. How: This exports IcoSvgCom by name.
+export { IcoSvgCom }; // What: Named Export. Why: Icons are rendered by name through this component. How: This exports IcoSvgCom by name.
 
 // #endregion Exports
 

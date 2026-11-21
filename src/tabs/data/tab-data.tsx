@@ -2707,7 +2707,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 // #region Exports
 
-export { TabDatCom }; // What: Named Export. Why: app.tsx renders this as the Data tab itself. How: This exports TabDatCom by name; every other binding in this file is internal-only.
+export { TabDatCom }; // What: Named Export. Why: The Data tab is this file's one public binding. How: This exports TabDatCom by name; every other binding in this file is internal-only.
 
 // #endregion Exports
 

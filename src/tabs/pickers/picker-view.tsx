@@ -1887,7 +1887,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 // #region Exports
 
-export { PicVieCom }; // What: Named Export. Why: The Pickers tab renders this view for the selected picker. How: This exports PicVieCom by name.
+export { PicVieCom }; // What: Named Export. Why: The picker view is this file's one public binding. How: This exports PicVieCom by name.
 
 // #endregion Exports
 

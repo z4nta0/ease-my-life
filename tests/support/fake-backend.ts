@@ -157,7 +157,7 @@ function fakBacFun () : FakBacTyp {
 
 // #region Exports
 
-export { fakBacFun }; // What: Named Export. Why: The sync spec creates fakes through fakBacFun. How: This exports it by name.
+export { fakBacFun }; // What: Named Export. Why: In-memory backends are created through fakBacFun. How: This exports it by name.
 
 // #endregion Exports
 

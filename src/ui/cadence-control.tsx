@@ -906,7 +906,7 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 
 // #region Exports
 
-export { CAD_OPT_ARR, CadConCom }; // What: Named Exports. Why: The editor component and its option list are shared with other files. How: This exports the component and the option array by name.
+export { CAD_OPT_ARR, CadConCom }; // What: Named Exports. Why: The editor component and its option list are shared by name. How: This exports the component and the option array by name.
 
 // #endregion Exports
 

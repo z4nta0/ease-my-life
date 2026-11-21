@@ -344,7 +344,7 @@ async function delCldFun ( uidValStr : string ) : Promise< void > {
 
 // #region Exports
 
-export { cldBacFun, delCldFun }; // What: Named Exports. Why: Other files open an account's backend and delete its copy. How: This exports both by name.
+export { cldBacFun, delCldFun }; // What: Named Exports. Why: An account's backend is opened and its copy deleted through these. How: This exports both by name.
 
 // #endregion Exports
 

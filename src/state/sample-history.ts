@@ -138,7 +138,7 @@ const unhHisFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 // #region Exports
 
-export { hidHisFun, unhHisFun }; // What: Named Exports. Why: The Stats page tour and help mode both borrow the sample pickers. How: This exports both functions by name.
+export { hidHisFun, unhHisFun }; // What: Named Exports. Why: The sample pickers' history is hidden and unhidden through these. How: This exports both functions by name.
 
 // #endregion Exports
 

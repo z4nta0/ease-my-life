@@ -456,7 +456,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 // #region Exports
 
-export { PicStrCom }; // What: Named Export. Why: More than one file renders this strip. How: This exports PicStrCom by name.
+export { PicStrCom }; // What: Named Export. Why: The picker strip is one shared component. How: This exports PicStrCom by name.
 
 // #endregion Exports
 

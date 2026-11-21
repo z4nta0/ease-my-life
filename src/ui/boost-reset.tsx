@@ -192,7 +192,7 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 
 // #region Exports
 
-export { BooResCom }; // What: Named Export. Why: Other files show this boost control. How: This exports BooResCom by name.
+export { BooResCom }; // What: Named Export. Why: The boost control is one shared component. How: This exports BooResCom by name.
 
 // #endregion Exports
 

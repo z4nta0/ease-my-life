@@ -30,7 +30,7 @@ const EMU_PRO_STR = 'demo-ease-my-life'; // What: Emulator Project String. Why: 
 
 // #region Exports
 
-export { EMU_PRO_STR }; // What: Named Export. Why: The app, the functions, and the tests name the emulator's project the same way. How: This exports EMU_PRO_STR by name.
+export { EMU_PRO_STR }; // What: Named Export. Why: The emulator's project name is set in one place. How: This exports EMU_PRO_STR by name.
 
 // #endregion Exports
 

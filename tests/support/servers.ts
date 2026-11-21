@@ -39,7 +39,7 @@ const ROO_DIR_STR = fileURLToPath( new URL( '../..', import.meta.url ) ); // Wha
 
 // #region Exports
 
-export { PRE_URL_STR, ROO_DIR_STR }; // What: Named Exports. Why: The Playwright config and the specs that read what ships share one preview address and repo root. How: This exports them by name.
+export { PRE_URL_STR, ROO_DIR_STR }; // What: Named Exports. Why: The preview address and the repo root are set in one place. How: This exports them by name.
 
 // #endregion Exports
 

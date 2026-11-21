@@ -156,7 +156,7 @@ function logRowFun ( curStaObj : StaAppTyp, logFieObj : { date? : string, deplet
 
 // #region Exports
 
-export { logRowFun }; // What: Named Export. Why: Pick actions elsewhere build their rows through this. How: This exports logRowFun by name; the id generator and its counter stay private to this file.
+export { logRowFun }; // What: Named Export. Why: Pick-log rows are built through this one helper. How: This exports logRowFun by name; the id generator and its counter stay private to this file.
 
 // #endregion Exports
 

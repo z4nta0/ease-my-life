@@ -228,7 +228,7 @@ function verWebFun ( bodTexStr : string, reqHeaObj : Headers, webSecStr : string
 
 // #region Exports
 
-export { API_LIV_STR, API_SAN_STR, isaLivFun, type NetCotTyp, ordUidFun, type PolOrdTyp, PRO_LIV_STR, PRO_SAN_STR, verWebFun }; // What: Named Exports. Why: Other files need Polar's addresses, products, checks, and order and context types. How: This exports them by name.
+export { API_LIV_STR, API_SAN_STR, isaLivFun, type NetCotTyp, ordUidFun, type PolOrdTyp, PRO_LIV_STR, PRO_SAN_STR, verWebFun }; // What: Named Exports. Why: Polar's addresses, products, checks, and order and context types are kept in one place. How: This exports them by name.
 
 // #endregion Exports
 

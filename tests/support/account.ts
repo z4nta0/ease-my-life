@@ -313,7 +313,7 @@ async function bacUplFun ( curPagObj : Page, emaAdrStr : string, staAppObj : Sta
 
 // #region Exports
 
-export { bacUplFun, claSetFun, creAccFun, DAY_ONE_STR, freSigFun, sigLinFun, synWaiFun }; // What: Named Exports. Why: Other files create accounts, sign devices in, wait for syncs, and start their new-day flows through these. How: This exports them by name.
+export { bacUplFun, claSetFun, creAccFun, DAY_ONE_STR, freSigFun, sigLinFun, synWaiFun }; // What: Named Exports. Why: Accounts are created, devices signed in, syncs waited for, and new-day flows started through these. How: This exports them by name.
 
 // #endregion Exports
 

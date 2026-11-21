@@ -1559,7 +1559,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { RemManCom }; // What: Named Export. Why: TabDatCom renders the Reminders section. How: This exports RemManCom by name; everything else in this file stays private.
+export { RemManCom }; // What: Named Export. Why: The Reminders section is this file's one public binding. How: This exports RemManCom by name; everything else in this file stays private.
 
 // #endregion Exports
 

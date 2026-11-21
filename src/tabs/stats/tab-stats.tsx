@@ -4931,7 +4931,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 // #region Exports
 
-export { TabStaCom }; // What: Named Export. Why: This makes the Stats tab component available to other files. How: This exports TabStaCom by name.
+export { TabStaCom }; // What: Named Export. Why: The Stats tab component is this file's one public binding. How: This exports TabStaCom by name.
 
 // #endregion Exports
 

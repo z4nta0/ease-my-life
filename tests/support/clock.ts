@@ -201,7 +201,7 @@ const setClcFun = async ( curPagObj : Page, dayIsoStr : string, houValNum : numb
 
 // #region Exports
 
-export { insClcFun, locDayFun, setClcFun, TIM_ZON_STR }; // What: Named Exports. Why: The config and the suites share one timezone and fake the clock through these. How: This exports the clock helpers and the timezone by name.
+export { insClcFun, locDayFun, setClcFun, TIM_ZON_STR }; // What: Named Exports. Why: The timezone is set once here, and the clock is faked through these. How: This exports the clock helpers and the timezone by name.
 
 // #endregion Exports
 

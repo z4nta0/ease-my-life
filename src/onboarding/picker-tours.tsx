@@ -1170,7 +1170,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 // #region Exports
 
-export { PicTouCom }; // What: Named Export. Why: PicTouCom is the one binding other files import. How: This exports PicTouCom by name.
+export { PicTouCom }; // What: Named Export. Why: PicTouCom is this file's one public binding. How: This exports PicTouCom by name.
 
 // #endregion Exports
 

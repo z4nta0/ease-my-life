@@ -1136,7 +1136,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 // #region Exports
 
-export { HelOveCom }; // What: Named Export. Why: This makes the overlay available outside this file. How: This exports HelOveCom; every other binding in this file is internal-only.
+export { HelOveCom }; // What: Named Export. Why: The help overlay is this file's one public binding. How: This exports HelOveCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

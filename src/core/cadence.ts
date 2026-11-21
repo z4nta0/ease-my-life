@@ -743,7 +743,7 @@ const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: This file's cadenc
 
 
 
-export { CAD_NAM_OBJ, type CadFieTyp }; // What: Named Exports. Why: Other files reach this file's cadence logic through the namespace object, and callers type their cadence state with CadFieTyp. How: This exports CAD_NAM_OBJ and CadFieTyp by name at the very end of the file.
+export { CAD_NAM_OBJ, type CadFieTyp }; // What: Named Exports. Why: The namespace object carries this file's cadence logic, and CadFieTyp types a cadence's state. How: This exports CAD_NAM_OBJ and CadFieTyp by name at the very end of the file.
 
 // #endregion Exports
 

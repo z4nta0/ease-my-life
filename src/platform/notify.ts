@@ -457,7 +457,7 @@ const NOT_NAM_OBJ = { // What: Notification Namespace Object. Why: This bundles 
 
 
 
-export { NOT_NAM_OBJ }; // What: Named Export. Why: Callers reach every notification operation through the one namespace object. How: This exports NOT_NAM_OBJ by name at the very end of the file.
+export { NOT_NAM_OBJ }; // What: Named Export. Why: The one namespace object carries every notification operation. How: This exports NOT_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 

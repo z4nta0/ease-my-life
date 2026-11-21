@@ -2498,7 +2498,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 // #region Exports
 
-export { PicForCom }; // What: Named Export. Why: The form is rendered from outside this file, so it is exported by name. How: This exports PicForCom by name.
+export { PicForCom }; // What: Named Export. Why: The picker form is this file's one public binding. How: This exports PicForCom by name.
 
 // #endregion Exports
 

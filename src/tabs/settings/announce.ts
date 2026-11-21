@@ -151,7 +151,7 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assBoo? : boolean } ) => vo
 
 // #region Exports
 
-export { annStaFun }; // What: Named Export. Why: Settings announces backup, import and reset results to screen readers through this function. How: This exports annStaFun by name.
+export { annStaFun }; // What: Named Export. Why: Backup, import, and reset results are announced to screen readers through this function. How: This exports annStaFun by name.
 
 // #endregion Exports
 

@@ -196,6 +196,6 @@ function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, on
 
 
 
-export { IteCarCom }; // What: Named Export. Why: The picker view and the create form both open their add-item and edit-item cards with it. How: This exports IteCarCom by name.
+export { IteCarCom }; // What: Named Export. Why: The add-item and edit-item card is one shared component. How: This exports IteCarCom by name.
 
 

@@ -206,7 +206,7 @@ const UPD_NAM_OBJ = { // What: Update Namespace Object. Why: This gathers the up
 
 
 
-export { UPD_NAM_OBJ }; // What: Named Export. Why: The app's update note and the sync runner reach every update operation through this one object. How: This exports UPD_NAM_OBJ.
+export { UPD_NAM_OBJ }; // What: Named Export. Why: The one object carries every update operation. How: This exports UPD_NAM_OBJ by name.
 
 // #endregion Exports
 

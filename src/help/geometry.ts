@@ -926,7 +926,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 
 // #region Exports
 
-export { badRecFun, type BoxRecTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, type PadSidTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: Help mode's overlay and the guided tours reach the measurement math through these named exports, and type their rects, pads, and shapes with the four types. How: This exports the public helpers and the four types by name; CHR_PRI_OBJ and the badge-box and default-radius helpers stay private to this file.
+export { badRecFun, type BoxRecTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, type PadSidTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: The measurement math is shared through these, with the four types for its rects, pads, and shapes. How: This exports the public helpers and the four types by name; CHR_PRI_OBJ and the badge-box and default-radius helpers stay private to this file.
 
 // #endregion Exports
 

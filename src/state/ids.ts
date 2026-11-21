@@ -63,7 +63,7 @@ const newIdeFun = ideMakFun( 'e_' ); // What: New Identifier Function. Why: The 
 
 // #region Exports
 
-export { newIdeFun }; // What: Named Export. Why: Migration and the Today-entry actions both mint entry ids. How: This exports newIdeFun by name; its counter stays private to it.
+export { newIdeFun }; // What: Named Export. Why: Entry ids are minted through this one helper. How: This exports newIdeFun by name; its counter stays private to it.
 
 // #endregion Exports
 

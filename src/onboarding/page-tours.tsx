@@ -510,7 +510,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 
 // #region Exports
 
-export { PagTouCom }; // What: Named Export. Why: PagTouCom is the one binding other files import. How: This exports PagTouCom by name.
+export { PagTouCom }; // What: Named Export. Why: PagTouCom is this file's one public binding. How: This exports PagTouCom by name.
 
 // #endregion Exports
 

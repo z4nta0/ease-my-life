@@ -151,7 +151,7 @@ const reaFixFun = () : StaAppTyp => JSON.parse( readFileSync( fixPatFun(), 'utf8
 
 // #region Exports
 
-export { reaFixFun }; // What: Named Export. Why: The suites load the real-data backup through it. How: This exports reaFixFun by name.
+export { reaFixFun }; // What: Named Export. Why: The real-data backup is loaded through it. How: This exports reaFixFun by name.
 
 // #endregion Exports
 

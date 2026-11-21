@@ -300,7 +300,7 @@ const wriStaFun = async ( curPagObj : Page, staAppObj : StaAppTyp ) : Promise< v
 
 // #region Exports
 
-export { reaStaFun, waiStaFun, wriStaFun }; // What: Named Exports. Why: These are the helpers a suite uses to set up and check saved state. How: This exports reaStaFun, waiStaFun, and wriStaFun by name.
+export { reaStaFun, waiStaFun, wriStaFun }; // What: Named Exports. Why: These helpers set up and check saved state. How: This exports reaStaFun, waiStaFun, and wriStaFun by name.
 
 // #endregion Exports
 

@@ -180,7 +180,7 @@ async function relCheFun ( curPagObj : Page ) : Promise< void > {
 
 // #region Exports
 
-export { polSetFun, polVioFun, relCheFun }; // What: Named Exports. Why: The security specs run pages under the policy through these. How: This exports the setup, the violation reader, and the new tab link check.
+export { polSetFun, polVioFun, relCheFun }; // What: Named Exports. Why: Pages are run under the policy through these. How: This exports the setup, the violation reader, and the new tab link check.
 
 // #endregion Exports
 

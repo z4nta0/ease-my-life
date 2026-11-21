@@ -172,7 +172,7 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 
 // #region Exports
 
-export { FilRaiCom }; // What: Named Export. Why: The shared filter rail is drawn by other files. How: This exports FilRaiCom by name.
+export { FilRaiCom }; // What: Named Export. Why: The filter rail is one shared component. How: This exports FilRaiCom by name.
 
 // #endregion Exports
 

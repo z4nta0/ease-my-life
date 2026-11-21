@@ -1001,7 +1001,7 @@ function spuDroFun ( todEntArr : TodEntTyp[], iteIdeArr : string[] ) : TodEntTyp
 
 // #region Exports
 
-export { cdlAplFun, cotAplFun, enpAplFun, enpRevFun, rebPenFun, spuDroFun }; // What: Named Exports. Why: Other modules apply, revert, rework, and drop pending pick consequences through these. How: This exports the mechanism functions by name; the conditional-log id generator stays private to this file.
+export { cdlAplFun, cotAplFun, enpAplFun, enpRevFun, rebPenFun, spuDroFun }; // What: Named Exports. Why: Pending pick consequences are applied, reverted, reworked, and dropped through these. How: This exports the mechanism functions by name; the conditional-log id generator stays private to this file.
 
 // #endregion Exports
 

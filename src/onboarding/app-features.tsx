@@ -1266,7 +1266,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 // #region Exports
 
-export { APP_FEA_ARR, bloReaFun, FeaTipCom, FeaTouCom, PAG_LAB_OBJ }; // What: Named Exports. Why: This makes the catalog, page labels, blocked-reason check, and the two tour components available to other files. How: This exports all 5 bindings by name in one statement; every other binding in this file is internal-only.
+export { APP_FEA_ARR, bloReaFun, FeaTipCom, FeaTouCom, PAG_LAB_OBJ }; // What: Named Exports. Why: The catalog, page labels, blocked-reason check, and the two tour components are this file's public surface. How: This exports all 5 bindings by name in one statement; every other binding in this file is internal-only.
 
 // #endregion Exports
 

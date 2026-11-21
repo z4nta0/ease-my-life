@@ -898,7 +898,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 // #region Exports
 
-export { EntEdiCom }; // What: Named Export. Why: The shared item editor is rendered by other files. How: This exports EntEdiCom by name.
+export { EntEdiCom }; // What: Named Export. Why: The item editor is one shared component. How: This exports EntEdiCom by name.
 
 // #endregion Exports
 

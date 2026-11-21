@@ -108,7 +108,7 @@ function DatModCom ( { desIdeStr, onChange, value } : DmcProTyp ) : React.JSX.El
 
 // #region Exports
 
-export { DatModCom }; // What: Named Export. Why: Other files draw this toggle. How: This exports DatModCom by name; DAT_MOD_ARR stays private to this file.
+export { DatModCom }; // What: Named Export. Why: The date mode toggle is one shared component. How: This exports DatModCom by name; DAT_MOD_ARR stays private to this file.
 
 // #endregion Exports
 

@@ -117,7 +117,7 @@ function vioLinFun ( vioResArr : Result[] ) : string[] {
 
 // #region Exports
 
-export { AXE_TAG_ARR, REF_WID_NUM, sidOveFun, vioLinFun }; // What: Named Exports. Why: The scanning specs share one rule set, one way to report violations, one reflow width, and one overflow reading. How: This exports them by name.
+export { AXE_TAG_ARR, REF_WID_NUM, sidOveFun, vioLinFun }; // What: Named Exports. Why: The rule set, the way violations are reported, the reflow width, and the overflow reading are each written once, here. How: This exports them by name.
 
 // #endregion Exports
 

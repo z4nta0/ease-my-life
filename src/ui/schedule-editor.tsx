@@ -1651,7 +1651,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 // #region Exports
 
-export { SchEdiCom }; // What: Named Export. Why: More than one tab edits reminders with it. How: This exports SchEdiCom by name; VisNotCom, reaPhrFun, and REP_OPT_ARR stay private to this file.
+export { SchEdiCom }; // What: Named Export. Why: The reminder schedule editor is one shared component. How: This exports SchEdiCom by name; VisNotCom, reaPhrFun, and REP_OPT_ARR stay private to this file.
 
 // #endregion Exports
 

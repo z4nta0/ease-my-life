@@ -121,7 +121,7 @@ function UpdNotCom () : JSX.Element {
 
 // #region Exports
 
-export { UpdNotCom }; // What: Named Export. Why: The app root renders the note at the top of the open tab. How: This exports UpdNotCom.
+export { UpdNotCom }; // What: Named Export. Why: The update note is this file's one public binding. How: This exports UpdNotCom by name.
 
 // #endregion Exports
 

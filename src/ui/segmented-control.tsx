@@ -273,7 +273,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 
 // #region Exports
 
-export { SegConCom }; // What: Named Export. Why: Other files need this control as one shared component. How: This exports SegConCom by name.
+export { SegConCom }; // What: Named Export. Why: The segmented control is one shared component. How: This exports SegConCom by name.
 
 // #endregion Exports
 

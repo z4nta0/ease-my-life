@@ -724,7 +724,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 // #region Exports
 
-export { hydStaFun, ONB_ASP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: Other modules, including the onboarding-stats script, read this sample data by name. How: This exports the sample pickers, their combined list, tasks, id lists, card copy tables and the stats hydrator.
+export { hydStaFun, ONB_ASP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: The onboarding sample data is shared by name. How: This exports the sample pickers, their combined list, tasks, id lists, card copy tables and the stats hydrator.
 
 // #endregion Exports
 

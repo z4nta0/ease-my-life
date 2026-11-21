@@ -121,7 +121,7 @@ function FilButCom ( { isaDisBoo, labTexStr, onFilActFun } : FbcProTyp ) : React
 
 // #region Exports
 
-export { FilButCom }; // What: Named Export. Why: The shared Fill and Refill lever is rendered by other files. How: This exports FilButCom by name.
+export { FilButCom }; // What: Named Export. Why: The Fill and Refill lever is one shared component. How: This exports FilButCom by name.
 
 // #endregion Exports
 

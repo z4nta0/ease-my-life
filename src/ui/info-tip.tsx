@@ -463,7 +463,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 // #region Exports
 
-export { InfTipCom }; // What: Named Export. Why: The shared tooltip is rendered by other files. How: This exports InfTipCom by name.
+export { InfTipCom }; // What: Named Export. Why: The tooltip is one shared component. How: This exports InfTipCom by name.
 
 // #endregion Exports
 

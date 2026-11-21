@@ -63,7 +63,7 @@ type HelIteTyp = { // What: Help Item Type. Why: Every help catalog item, on eve
 
 // #region Exports
 
-export { type HelIteTyp }; // What: Named Export. Why: Every page's catalog types its items with HelIteTyp, and help mode's overlay and tip read them through it. How: This exports the item type by name.
+export { type HelIteTyp }; // What: Named Export. Why: HelIteTyp types a help catalog's items. How: This exports the item type by name.
 
 // #endregion Exports
 

@@ -198,7 +198,7 @@ async function renCarFun ( carDirStr : string, outPatStr : string ) : Promise< v
 
 // #region Exports
 
-export { opeCapFun, renCarFun }; // What: Named Exports. Why: The design render scripts share their browser setup and the square card capture. How: This exports the page opener and the card renderer by name.
+export { opeCapFun, renCarFun }; // What: Named Exports. Why: The browser setup and the square card capture are written once, here. How: This exports the page opener and the card renderer by name.
 
 // #endregion Exports
 

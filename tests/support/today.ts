@@ -72,7 +72,7 @@ const donCouFun = ( staAppObj : StaAppTyp ) : number => staAppObj.today.entries.
 
 // #region Exports
 
-export { donCouFun, ENT_CAR_STR, REM_CAR_STR }; // What: Named Exports. Why: These are the card selectors and done count the Today suites share. How: This exports them by name.
+export { donCouFun, ENT_CAR_STR, REM_CAR_STR }; // What: Named Exports. Why: These are the shared Today card selectors and done count. How: This exports them by name.
 
 // #endregion Exports
 

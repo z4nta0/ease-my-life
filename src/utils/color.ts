@@ -178,7 +178,7 @@ function invColFun ( hexColStr : string ) : string {
 
 // #region Exports
 
-export { invColFun }; // What: Named Export. Why: Other modules derive one color from another through this inversion. How: This exports invColFun by name.
+export { invColFun }; // What: Named Export. Why: One color is derived from another through this inversion. How: This exports invColFun by name.
 
 // #endregion Exports
 

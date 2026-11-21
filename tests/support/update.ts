@@ -194,7 +194,7 @@ async function visSetFun ( curPagObj : Page, visStaStr : string ) : Promise< voi
 
 // #region Exports
 
-export { conChaFun, fakWorFun, NOT_MES_STR, visSetFun }; // What: Named Exports. Why: The update specs fake a new version and the page's visibility through these, and find the note by its message. How: This exports them by name.
+export { conChaFun, fakWorFun, NOT_MES_STR, visSetFun }; // What: Named Exports. Why: A new version and the page's visibility are faked through these, and the note is found by its message. How: This exports them by name.
 
 // #endregion Exports
 

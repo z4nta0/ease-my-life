@@ -3136,7 +3136,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 // #region Exports
 
-export { TabSetCom }; // What: Named Export. Why: This makes the Settings tab available to other files. How: This exports TabSetCom; every other binding in this file is private to it.
+export { TabSetCom }; // What: Named Export. Why: The Settings tab is this file's one public binding. How: This exports TabSetCom; every other binding in this file is private to it.
 
 // #endregion Exports
 

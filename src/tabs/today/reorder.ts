@@ -702,7 +702,7 @@ const REO_NAM_OBJ = { staDraFun : staDraFun }; // What: Reorder Namespace Object
 
 
 
-export { REO_NAM_OBJ }; // What: Named Export. Why: Other files reach the drag gesture through the one namespace object. How: This exports REO_NAM_OBJ by name at the very end of the file.
+export { REO_NAM_OBJ }; // What: Named Export. Why: The one namespace object carries the drag gesture. How: This exports REO_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 

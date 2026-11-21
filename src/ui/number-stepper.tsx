@@ -156,7 +156,7 @@ function NumSteCom ( { ariLabStr, maxValNum = 99, minValNum = 1, onSetValFun, va
 
 // #region Exports
 
-export { NumSteCom }; // What: Named Export. Why: The shared stepper is rendered by other files. How: This exports NumSteCom by name.
+export { NumSteCom }; // What: Named Export. Why: The stepper is one shared component. How: This exports NumSteCom by name.
 
 // #endregion Exports
 

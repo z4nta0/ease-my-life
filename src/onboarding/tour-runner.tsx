@@ -2650,7 +2650,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 // #region Exports
 
-export { GuiTouCom, todTopFun, type TouSteTyp }; // What: Named Exports. Why: The onboarding tour modules use GuiTouCom as their shared tour engine and TouSteTyp to type their steps, and onboarding/welcome-tour.tsx calls todTopFun directly. How: This exports all three by name.
+export { GuiTouCom, todTopFun, type TouSteTyp }; // What: Named Exports. Why: GuiTouCom is the shared tour engine, TouSteTyp types its steps, and todTopFun returns a finished tour to a top-scrolled Today. How: This exports all three by name.
 
 // #endregion Exports
 

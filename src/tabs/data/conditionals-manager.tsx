@@ -1230,7 +1230,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { ConManCom }; // What: Named Export. Why: TabDatCom renders the Conditionals section. How: This exports ConManCom by name; ConEdiCom and CIS_OPT_ARR stay private to this file.
+export { ConManCom }; // What: Named Export. Why: The Conditionals section is this file's one public binding. How: This exports ConManCom by name; ConEdiCom and CIS_OPT_ARR stay private to this file.
 
 // #endregion Exports
 

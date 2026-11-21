@@ -241,7 +241,7 @@ const subHolFun = async ( curPagObj : Page, holNamStr : string, holDatStr : stri
 
 // #region Exports
 
-export { opeDayFun, opeFixFun, selTabFun, subHolFun, TIP_URL_STR }; // What: Named Exports. Why: Other files open days, open the backup, switch tabs, add holidays, and read the tip placeholder through these. How: This exports opeDayFun, opeFixFun, selTabFun, subHolFun, and TIP_URL_STR by name.
+export { opeDayFun, opeFixFun, selTabFun, subHolFun, TIP_URL_STR }; // What: Named Exports. Why: Days are opened, the backup loaded, tabs switched, holidays added, and the tip placeholder read through these. How: This exports opeDayFun, opeFixFun, selTabFun, subHolFun, and TIP_URL_STR by name.
 
 // #endregion Exports
 

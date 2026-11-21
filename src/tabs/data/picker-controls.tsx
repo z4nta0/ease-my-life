@@ -2119,7 +2119,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 // #region Exports
 
-export { PicConCom }; // What: Named Export. Why: TabDatCom renders this body inside each picker card's Controls disclosure. How: This exports PicConCom by name.
+export { PicConCom }; // What: Named Export. Why: The picker controls body is this file's one public binding. How: This exports PicConCom by name.
 
 // #endregion Exports
 

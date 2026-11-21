@@ -204,7 +204,7 @@ const isaHolFun = ( holStaObj : HolStaTyp | undefined, dayIsoStr : string ) : bo
 
 // #region Exports
 
-export { isaHolFun }; // What: Named Export. Why: The schedule checks ask whether a day is a holiday through this. How: This exports isaHolFun by name.
+export { isaHolFun }; // What: Named Export. Why: Whether a day is a holiday is checked through this. How: This exports isaHolFun by name.
 
 // #endregion Exports
 

@@ -206,7 +206,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 
 // #region Exports
 
-export { EdiFooCom }; // What: Named Export. Why: Other files render this footer. How: This exports EdiFooCom by name.
+export { EdiFooCom }; // What: Named Export. Why: The editor footer is one shared component. How: This exports EdiFooCom by name.
 
 // #endregion Exports
 

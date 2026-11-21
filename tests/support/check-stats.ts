@@ -249,7 +249,7 @@ const expStaFun = ( staAppObj : StaAppTyp, todIsoStr : string, ranDayNum : numbe
 
 // #region Exports
 
-export { expStaFun }; // What: Named Export. Why: The simulation compares the Stats tab with these figures. How: This exports expStaFun by name.
+export { expStaFun }; // What: Named Export. Why: The Stats tab's expected figures are worked out through this. How: This exports expStaFun by name.
 
 // #endregion Exports
 

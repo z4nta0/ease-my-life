@@ -131,7 +131,7 @@ function useDelConFun () : { canConFun : () => void, conDelStr : string | null, 
 
 // #region Exports
 
-export { useDelConFun }; // What: Named Export. Why: The Pickers tab's view and create form share one delete confirmation. How: This exports useDelConFun by name.
+export { useDelConFun }; // What: Named Export. Why: The delete confirmation is one shared hook. How: This exports useDelConFun by name.
 
 // #endregion Exports
 

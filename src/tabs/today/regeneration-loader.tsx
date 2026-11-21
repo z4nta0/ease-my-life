@@ -259,7 +259,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { type GenSloTyp, LoaCarCom }; // What: Named Exports. Why: The Today tab needs the loader card and the slot type. How: This exports LoaCarCom and the slot type by name; LoaReeCom stays private to this file.
+export { type GenSloTyp, LoaCarCom }; // What: Named Exports. Why: The loader card and its slot type are this file's public surface. How: This exports LoaCarCom and the slot type by name; LoaReeCom stays private to this file.
 
 // #endregion Exports
 

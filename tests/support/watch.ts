@@ -190,7 +190,7 @@ const watErrFun = ( curPagObj : Page ) : string[] => { // What: Watch Errors Fun
 
 // #region Exports
 
-export { rcdAniFun, seeAniFun, watErrFun }; // What: Named Exports. Why: The suites watch for errors and animations through these. How: This exports them by name.
+export { rcdAniFun, seeAniFun, watErrFun }; // What: Named Exports. Why: Errors and animations are watched for through these. How: This exports them by name.
 
 // #endregion Exports
 

@@ -1370,7 +1370,7 @@ const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: Consumers import thi
 
 
 
-export { TAS_NAM_OBJ, type TodVisTyp }; // What: Named Exports. Why: Callers reach this file's reminders engine through the one namespace object, and type todVisFun's result with TodVisTyp. How: This exports both by name at the very end of the file.
+export { TAS_NAM_OBJ, type TodVisTyp }; // What: Named Exports. Why: The one namespace object carries this file's reminders engine, and TodVisTyp types todVisFun's result. How: This exports both by name at the very end of the file.
 
 // #endregion Exports
 

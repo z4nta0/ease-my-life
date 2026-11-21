@@ -532,7 +532,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 // #region Exports
 
-export { GroHeaCom }; // What: Named Export. Why: The Today tab shows this header with a group's rows. How: This exports GroHeaCom by name.
+export { GroHeaCom }; // What: Named Export. Why: The group header is this file's one public binding. How: This exports GroHeaCom by name.
 
 // #endregion Exports
 

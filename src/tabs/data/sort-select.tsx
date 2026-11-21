@@ -128,7 +128,7 @@ function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } : SscP
 
 // #region Exports
 
-export { SorSelCom }; // What: Named Export. Why: The Data tab's sort controls render this select. How: This exports SorSelCom by name.
+export { SorSelCom }; // What: Named Export. Why: The sort select is this file's one public binding. How: This exports SorSelCom by name.
 
 // #endregion Exports
 

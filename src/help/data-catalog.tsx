@@ -1093,7 +1093,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 // #region Exports
 
-export { DAT_HEL_ARR }; // What: Named Export. Why: This makes the catalog available to whichever tab renders its help. How: This exports the catalog by name.
+export { DAT_HEL_ARR }; // What: Named Export. Why: This catalog is the file's one public binding. How: This exports the catalog by name.
 
 // #endregion Exports
 

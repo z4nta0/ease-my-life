@@ -209,7 +209,7 @@ function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, v
 
 // #region Exports
 
-export { StyRadCom }; // What: Named Export. Why: The Settings tab renders this list for its style pickers. How: This exports StyRadCom by name.
+export { StyRadCom }; // What: Named Export. Why: The style radio list is this file's one public binding. How: This exports StyRadCom by name.
 
 // #endregion Exports
 

@@ -231,7 +231,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 
 // #region Exports
 
-export { IntModCom }; // What: Named Export. Why: This makes the intro modal available to every tour that opens with it. How: This exports IntModCom by name.
+export { IntModCom }; // What: Named Export. Why: The intro modal is this file's one public binding. How: This exports IntModCom by name.
 
 // #endregion Exports
 

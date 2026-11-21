@@ -83,7 +83,7 @@ function UnmWatCom ( { onUnmWatFun } : UwcProTyp ) : null {
 
 // #region Exports
 
-export { UnmWatCom }; // What: Named Export. Why: The Data tab's item and reminder rows both commit their drafts when they disappear. How: This exports UnmWatCom by name.
+export { UnmWatCom }; // What: Named Export. Why: A row commits its draft when it disappears through this watcher. How: This exports UnmWatCom by name.
 
 // #endregion Exports
 

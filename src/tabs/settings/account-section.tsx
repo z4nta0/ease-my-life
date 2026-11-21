@@ -701,7 +701,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 // #region Exports
 
-export { AccSecCom }; // What: Named Export. Why: The Settings tab renders the Account section through it. How: This exports AccSecCom by name.
+export { AccSecCom }; // What: Named Export. Why: The Account section is this file's one public binding. How: This exports AccSecCom by name.
 
 // #endregion Exports
 

@@ -82,7 +82,7 @@ const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr 
 
 // #region Exports
 
-export { PilTagCom }; // What: Named Export. Why: More than one tab tags modes and statuses with this pill. How: This exports PilTagCom by name.
+export { PilTagCom }; // What: Named Export. Why: Modes and statuses are tagged with this one shared pill. How: This exports PilTagCom by name.
 
 // #endregion Exports
 

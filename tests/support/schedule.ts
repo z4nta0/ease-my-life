@@ -416,7 +416,7 @@ const fulPerFun = ( picRcdObj : PicRcdTyp, picLogArr : PclRowTyp[], dayIsoStr : 
 
 // #region Exports
 
-export { fulPerFun, perStaFun, remVisFun }; // What: Named Exports. Why: The generation and reminder checks predict schedules through these. How: This exports the schedule helpers by name.
+export { fulPerFun, perStaFun, remVisFun }; // What: Named Exports. Why: Schedules are predicted through these. How: This exports the schedule helpers by name.
 
 // #endregion Exports
 

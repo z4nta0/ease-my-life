@@ -118,7 +118,7 @@ function useModIneFun ( insEleRef : React.RefObject< HTMLElement | null >, isaOp
 
 // #region Exports
 
-export { useModIneFun }; // What: Named Export. Why: Every modal dialog keeps focus inside itself through this hook. How: This exports useModIneFun by name.
+export { useModIneFun }; // What: Named Export. Why: A modal dialog keeps focus inside itself through this hook. How: This exports useModIneFun by name.
 
 // #endregion Exports
 

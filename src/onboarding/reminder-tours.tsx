@@ -637,7 +637,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 
 // #region Exports
 
-export { RemTouCom }; // What: Named Export. Why: tab-today.tsx renders this as the Reminders section's own guided tour. How: This re-exports RemTouCom; every other binding in this file is internal-only.
+export { RemTouCom }; // What: Named Export. Why: The Reminders section's guided tour is this file's one public binding. How: This re-exports RemTouCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

@@ -1025,7 +1025,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 // #region Exports
 
-export { CodConCom, conDraFun }; // What: Named Exports. Why: Other files render this editor and start a brand-new conditional from its draft builder. How: This exports CodConCom (the editor component) and conDraFun (the default-draft builder) by name.
+export { CodConCom, conDraFun }; // What: Named Exports. Why: This file offers the conditional editor and the draft builder that starts a brand-new conditional. How: This exports CodConCom (the editor component) and conDraFun (the default-draft builder) by name.
 
 // #endregion Exports
 

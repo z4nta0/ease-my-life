@@ -1688,7 +1688,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 // #region Exports
 
-export { RemSecCom }; // What: Named Export. Why: TabTodCom renders the reminders section atop Today. How: This exports RemSecCom by name; RemCarCom and InlEdiCom stay private to this file.
+export { RemSecCom }; // What: Named Export. Why: The reminders section is this file's one public binding. How: This exports RemSecCom by name; RemCarCom and InlEdiCom stay private to this file.
 
 // #endregion Exports
 

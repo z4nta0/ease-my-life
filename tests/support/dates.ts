@@ -250,7 +250,7 @@ const addDayFun = ( dayIsoStr : string, addValNum : number ) : string => serDayF
 
 // #region Exports
 
-export { addDayFun, difDayFun, dimValFun, dowValFun, isoParFun, nthDayFun, parIsoFun }; // What: Named Exports. Why: The checker's schedule and holiday rules build on these. How: This exports the date helpers by name.
+export { addDayFun, difDayFun, dimValFun, dowValFun, isoParFun, nthDayFun, parIsoFun }; // What: Named Exports. Why: Date math is written once, in these helpers. How: This exports the date helpers by name.
 
 // #endregion Exports
 

@@ -530,7 +530,7 @@ function PicAniCom ( { repTokNum, styKeyStr } : PacProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { CelPreCom, PicAniCom }; // What: Named Exports. Why: These are the two preview stages other files render. How: This exports the 2 components declared above by name.
+export { CelPreCom, PicAniCom }; // What: Named Exports. Why: These are the two preview stages. How: This exports the 2 components declared above by name.
 
 // #endregion Exports
 

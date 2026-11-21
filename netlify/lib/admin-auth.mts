@@ -138,7 +138,7 @@ function admAutFun () : Auth {
 
 // #region Exports
 
-export { admAutFun }; // What: Named Export. Why: The Netlify functions reach Firebase's admin auth through it. How: This exports admAutFun by name.
+export { admAutFun }; // What: Named Export. Why: Firebase's admin auth is reached through this one helper. How: This exports admAutFun by name.
 
 // #endregion Exports
 

@@ -421,7 +421,7 @@ const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 // #region Exports
 
-export { clePicFun, cleTasFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: A page's help toggle seeds and clears its own slice of help-mode sample data through these functions. How: This exports all 4 seed and clear functions by name.
+export { clePicFun, cleTasFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: Help mode's sample data is seeded and cleared one page's slice at a time through these functions. How: This exports all 4 seed and clear functions by name.
 
 // #endregion Exports
 

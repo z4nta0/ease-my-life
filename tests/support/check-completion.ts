@@ -687,7 +687,7 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entIdeStr : st
 
 // #region Exports
 
-export { cheDonFun, cheRemFun, cheUndFun }; // What: Named Exports. Why: Other files check check-offs, undos, and reminder completions through these. How: This exports them by name.
+export { cheDonFun, cheRemFun, cheUndFun }; // What: Named Exports. Why: Check-offs, undos, and reminder completions are checked through these. How: This exports them by name.
 
 // #endregion Exports
 

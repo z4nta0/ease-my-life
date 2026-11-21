@@ -70,7 +70,7 @@ const TIP_URL_STR = import.meta.env.VITE_TIP_URL || null; // What: Tip URL Strin
 
 // #region Exports
 
-export { APP_VER_STR, EUR_WAR_STR, SYN_PRI_STR, TIP_URL_STR }; // What: Named Exports. Why: Other files read the build version, the tip page's address, the sync price, and the ease-up warning. How: This exports all four constants by name.
+export { APP_VER_STR, EUR_WAR_STR, SYN_PRI_STR, TIP_URL_STR }; // What: Named Exports. Why: The build version, the tip page's address, the sync price, and the ease-up warning are set once for the whole app. How: This exports all four constants by name.
 
 // #endregion Exports
 

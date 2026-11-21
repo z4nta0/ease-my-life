@@ -305,7 +305,7 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 
 // #region Exports
 
-export { AppFeaCom }; // What: Named Export. Why: The Today tab renders one card per app feature. How: This exports AppFeaCom by name.
+export { AppFeaCom }; // What: Named Export. Why: The app feature card is this file's one public binding. How: This exports AppFeaCom by name.
 
 // #endregion Exports
 

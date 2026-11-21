@@ -645,7 +645,7 @@ async function keyProFun ( curPagObj : Page, engNamStr : string, popSelStr : str
 
 // #region Exports
 
-export { keyProFun, namProFun }; // What: Named Exports. Why: The app's scripted spec and the legal pages' spec run the same name and keyboard checks. How: This exports both checks by name.
+export { keyProFun, namProFun }; // What: Named Exports. Why: The name and keyboard checks are written once, here. How: This exports both checks by name.
 
 // #endregion Exports
 

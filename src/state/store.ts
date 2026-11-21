@@ -3999,7 +3999,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 // #region Exports
 
-export { type ActStoTyp, colMapFun, type EntDesTyp, useAppStaFun }; // What: Named Exports. Why: These make the state hook, the collapse map helper, and the action and entry-descriptor types available to other files. How: This exports the hook, the collapse map helper, and the action and entry-descriptor types by name.
+export { type ActStoTyp, colMapFun, type EntDesTyp, useAppStaFun }; // What: Named Exports. Why: The state hook, the collapse map helper, and the action and entry-descriptor types are this module's public surface. How: This exports the hook, the collapse map helper, and the action and entry-descriptor types by name.
 
 // #endregion Exports
 

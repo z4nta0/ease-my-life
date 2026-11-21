@@ -509,7 +509,7 @@ function TheSecCom ( { actStoObj, staAppObj } : TscProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { TheSecCom }; // What: Named Export. Why: TabSetCom renders the theme cards in its Appearance section. How: This exports TheSecCom by name; TheCusCom, TheRowCom, and the theme key arrays stay private to this file.
+export { TheSecCom }; // What: Named Export. Why: The theme section is this file's one public binding. How: This exports TheSecCom by name; TheCusCom, TheRowCom, and the theme key arrays stay private to this file.
 
 // #endregion Exports
 

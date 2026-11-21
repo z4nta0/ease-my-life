@@ -1107,7 +1107,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 
 // #region Exports
 
-export { EntCarCom }; // What: Named Export. Why: The Today tab renders one card per entry. How: This exports EntCarCom by name.
+export { EntCarCom }; // What: Named Export. Why: The entry card is this file's one public binding. How: This exports EntCarCom by name.
 
 // #endregion Exports
 

@@ -620,7 +620,7 @@ const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the s
 
 
 
-export { CON_NAM_OBJ }; // What: Named Export. Why: Other files reach this file's conditional logic through the namespace object. How: This exports CON_NAM_OBJ by name at the very end of the file.
+export { CON_NAM_OBJ }; // What: Named Export. Why: The namespace object carries this file's conditional logic. How: This exports CON_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 

@@ -277,7 +277,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 // #region Exports
 
-export { PagTouCom }; // What: Named Export. Why: The Today tab renders one card per page tour. How: This exports PagTouCom by name.
+export { PagTouCom }; // What: Named Export. Why: The page tour card is this file's one public binding. How: This exports PagTouCom by name.
 
 // #endregion Exports
 

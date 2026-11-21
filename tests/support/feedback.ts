@@ -631,7 +631,7 @@ const valSigFun = ( snaRcdArr : SnaRcdTyp[] ) : string => JSON.stringify( snaRcd
 
 // #region Exports
 
-export { aniFinFun, cliBloFun, CON_PRO_ARR, FOC_PRO_ARR, MIN_DUR_NUM, movProFun, snaEleFun, snaProFun, valSigFun }; // What: Named Exports. Why: The probe's shared pieces live apart from the spec that reads them. How: This exports the property lists, the minimum duration, the settle, snapshot, and comparison helpers, and the click block.
+export { aniFinFun, cliBloFun, CON_PRO_ARR, FOC_PRO_ARR, MIN_DUR_NUM, movProFun, snaEleFun, snaProFun, valSigFun }; // What: Named Exports. Why: The feedback probe's shared pieces are kept in one module. How: This exports the property lists, the minimum duration, the settle, snapshot, and comparison helpers, and the click block.
 
 // #endregion Exports
 

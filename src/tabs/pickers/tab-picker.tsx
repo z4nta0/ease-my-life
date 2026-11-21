@@ -939,7 +939,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 // #region Exports
 
-export { TabPicCom }; // What: Named Export. Why: app.tsx renders this as the Pickers tab itself. How: This exports TabPicCom by name; every other binding in this file is internal-only.
+export { TabPicCom }; // What: Named Export. Why: The Pickers tab is this file's one public binding. How: This exports TabPicCom by name; every other binding in this file is internal-only.
 
 // #endregion Exports
 

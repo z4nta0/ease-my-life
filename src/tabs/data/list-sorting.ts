@@ -385,7 +385,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 // #region Exports
 
-export { freEdiFun, sorEntFun, type SorRowTyp }; // What: Named Exports. Why: The Data tab and the reminders manager sort their lists with these helpers. How: This exports sorEntFun, freEdiFun, and the sort row type by name.
+export { freEdiFun, sorEntFun, type SorRowTyp }; // What: Named Exports. Why: These are the list sorting helpers and the sort row's type. How: This exports sorEntFun, freEdiFun, and the sort row type by name.
 
 // #endregion Exports
 

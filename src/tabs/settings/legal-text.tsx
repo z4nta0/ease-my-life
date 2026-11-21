@@ -674,7 +674,7 @@ function TerSerCom () : React.JSX.Element {
 
 // #region Exports
 
-export { PriPolCom, TerSerCom }; // What: Named Exports. Why: The Settings modal and the standalone legal pages both render these documents. How: This exports both components by name.
+export { PriPolCom, TerSerCom }; // What: Named Exports. Why: The privacy policy and terms are written once, as these components. How: This exports both components by name.
 
 // #endregion Exports
 

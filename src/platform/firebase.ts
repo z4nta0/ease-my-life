@@ -411,7 +411,7 @@ function watUsrFun ( usrCalFun : ( accUsrObj : AccUsrTyp | null ) => void ) : ()
 
 // #region Exports
 
-export { type AccUsrTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, tokGetFun, watUsrFun }; // What: Named Exports. Why: Other files sign in, sign out, follow the account, and read the database through these. How: This exports them by name.
+export { type AccUsrTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, tokGetFun, watUsrFun }; // What: Named Exports. Why: Signing in and out, following the account, and reading the database go through these. How: This exports them by name.
 
 // #endregion Exports
 
