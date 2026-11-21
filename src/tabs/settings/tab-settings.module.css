@@ -5,17 +5,14 @@
  * tab-settings.module.css = Settings Tab Module
  *
  * @summary
- * Styles for TabSetCom, the Settings tab: its header, the section rail
- * (a sticky column on wide screens, a sticky scrolling pill bar with edge
- * fades on narrow ones), and every section's rows, from the Appearance
- * subsections and switches to the storage panel's chips, the import and
- * reset confirms, and the About block. The selected rail button keys off
- * data-rail-select-active, a switch off its own aria-pressed, the manual
- * run-time row off data-row-disabled-active, result messages off
- * data-message-ok-active, data-message-error-active, and
- * data-message-warn-active, and the storage chips off data-chip-ok-active
- * and data-chip-warn-active. Each data row hands the segmented control and
- * the button their no-shrink, no-wrap sizing through custom properties.
+ * Styles for TabSetCom, the Settings tab: its header, the section rail (a
+ * sticky column on wide screens, a sticky scrolling pill bar with edge fades
+ * on narrow ones), and the sections' rows, from the Appearance subsections and
+ * switches to the storage panel's chips and the About block. Selected,
+ * disabled, scrolled, result, and chip states key off data-*-active
+ * attributes, and a switch off its own aria-pressed. Each data row hands the
+ * segmented control and the button their no-shrink, no-wrap sizing through
+ * custom properties.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -220,7 +217,7 @@
 @container appRooDiv ( max-width : 560px ) { /* What: Narrow Page Title Heading. Why: A narrow app needs a smaller heading to keep it from wrapping awkwardly. How: This applies only when the app is 560px wide or less. */
 
 
-	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to the extra large 2 font size. */
+	.pagTitHea { /* What: Smaller Page Title Heading. Why: The heading has less room. How: This drops it one step, to font size base plus 3. */
 
 
 		font-size : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
@@ -352,7 +349,7 @@
 
 
 }
-.setRaiAsi::-webkit-scrollbar { /* What: Settings Rail Aside Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
+.setRaiAsi::-webkit-scrollbar { /* What: Settings Rail Aside Scrollbar. Why: The rail's scrollbar should stay hidden. How: This hides its WebKit scrollbar. */
 
 
 	display : none;
@@ -467,7 +464,7 @@
 
 	}
 
-	.raiScrDiv::-webkit-scrollbar { /* What: Narrow Rail Scroll Div Scrollbar. Why: WebKit ignores scrollbar-width. How: This hides its scrollbar. */
+	.raiScrDiv::-webkit-scrollbar { /* What: Narrow Rail Scroll Div Scrollbar. Why: The wrapper's scrollbar should stay hidden. How: This hides its WebKit scrollbar. */
 
 
 		display : none;
@@ -602,7 +599,7 @@
 
 }
 
-.raiNamSpa { /* What: Rail Name Span. Why: A long section name should wrap evenly. How: This balances its line breaks. */
+.raiNamSpa { /* What: Rail Name Span. Why: A long section name should wrap without a lone last word. How: This sets its text wrapping to pretty. */
 
 
 	text-wrap : pretty;
@@ -665,7 +662,7 @@
 
 }
 
-.secSubPar { /* What: Section Sub Paragraph. Why: Each section and subsection explains itself in muted copy. How: This sets it muted at the large font size with no margin. */
+.secSubPar { /* What: Section Sub Paragraph. Why: Each section and subsection explains itself in muted copy. How: This sets it muted at the body font size with no margin. */
 
 
 	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -865,7 +862,7 @@
 
 }
 
-.setSubSpa { /* What: Settings Sub Span. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with balanced line breaks. */
+.setSubSpa { /* What: Settings Sub Span. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with text wrapping set to pretty. */
 
 
 	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -875,14 +872,14 @@
 
 
 }
-.insRowDiv--note .setSubSpa { /* What: Settings Sub Span In Install Row Div Note. Why: An install note reads as prose, not a one-line description. How: This caps its line length at 60ch. */
+.insRowDiv--note .setSubSpa { /* What: Settings Sub Span In Install Row Div Note. Why: An install note reads as prose, not a one-line description. How: This caps its line length at the small text width. */
 
 
 	max-width : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
 
 
 }
-.insRowDiv--note .setSubSpa + .setSubSpa { /* What: Following Settings Sub Span In Install Row Div Note. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one extra small 1 vertical spacing down. */
+.insRowDiv--note .setSubSpa + .setSubSpa { /* What: Following Settings Sub Span In Install Row Div Note. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one down by Spacing Vertical Base Minus 2. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
@@ -893,7 +890,7 @@
 .setSubSpa--fade { /* What: Settings Sub Span Fade. Why: A description that changes with its setting should fade in the new wording. How: This plays the shared fade each time the keyed element remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other live explanation lines, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -921,7 +918,7 @@
 @container appRooDiv ( max-width : 500px ) { /* What: Narrow Settings Sub Span Layout In Settings Row Div Stack. Why: Once its row stacks, the description no longer shares its line with the control. How: This applies only when the app is 500px wide or less. */
 
 
-	.setRowDiv--stack .setSubSpa--layout { /* What: Narrow Settings Sub Span Layout In Settings Row Div Stack. Why: The stacked description can use the row's full width. How: This lifts the 190px cap. */
+	.setRowDiv--stack .setSubSpa--layout { /* What: Uncapped Settings Sub Span Layout In Settings Row Div Stack. Why: The stacked description can use the row's full width. How: This lifts its cap. */
 
 
 		max-width : none;
@@ -1192,7 +1189,7 @@
 .rowConDiv { /* What: Row Confirm Div. Why: A destructive action's Cancel and confirm buttons swap in for its single button. How: This lines them up in a row that keeps its size and plays the shared footer swap-in. */
 
 
-	animation : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with the editor footers, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display   : flex;
 	flex      : 0 0 auto;
 	gap       : var( --spa-hor-m02 );                                                      /* Spacing Horizontal Base Minus 2 ~= 8.304px */
@@ -1202,7 +1199,7 @@
 .rowConDiv--leaving { /* What: Row Confirm Div Leaving. Why: A cancelled confirm swaps back out before it unmounts. How: This plays the shared footer swap-out. */
 
 
-	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with other editor footers, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -1210,7 +1207,7 @@
 
 
 	.rowConDiv,
-	.rowConDiv--leaving { /* What: Still Row Confirm Div And Row Confirm Div Leaving. Why: The pair should swap at once, and JS already skips the leave delay. How: This turns its animation off. */
+	.rowConDiv--leaving { /* What: Still Row Confirm Div And Row Confirm Div Leaving. Why: The pair should swap at once. How: This turns its animation off. */
 
 
 		animation : none;
