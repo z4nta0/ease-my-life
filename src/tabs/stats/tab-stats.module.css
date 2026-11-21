@@ -1966,7 +1966,7 @@
 
 
 }
-.ranLisUno--cold .ranNumSpa { /* What: Cold Rank Count. Why: The coldest items' counts read fainter still. How: This fades the muted color. */
+.ranLisUno--rare .ranNumSpa { /* What: Rank Number Span In Rank List Unordered Rare. Why: The least-picked items' counts read fainter still. How: This fades the muted color. */
 
 
 	color : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */

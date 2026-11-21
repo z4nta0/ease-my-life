@@ -387,7 +387,7 @@ const STA_HEL_ARR : HelIteTyp[] = [ // What: Stats Help Array. Why: This is the 
 		ideStr    : 'statColdest',
 		padXcoNum : 4,
 		padYcoNum : 4,
-		selStr    : '[data-element-name-hook~="colIteDiv"]',
+		selStr    : '[data-element-name-hook~="rarIteDiv"]',
 		titStr    : 'Picker Items Least Picked'
 
 

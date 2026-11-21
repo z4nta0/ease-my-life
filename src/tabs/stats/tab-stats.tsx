@@ -737,7 +737,7 @@ function PagNavCom ( { alwShoBoo = false, curPagNum, onChange, pagSizNum, totIte
 
 
 
-type RacProTyp = { 'data-element-name-hook' : string, colRanBoo? : boolean, empMesStr : string, kicTexStr : string, ranIteArr : { couNum : number, namStr : string }[] }; // What: Ranking-Card-Component Props Type. Why: Each ranking card names its own kicker, items, and empty message. How: This types RanCarCom's props.
+type RacProTyp = { 'data-element-name-hook' : string, empMesStr : string, kicTexStr : string, ranIteArr : { couNum : number, namStr : string }[], rarRanBoo? : boolean }; // What: Ranking-Card-Component Props Type. Why: Each ranking card names its own kicker, items, and empty message. How: This types RanCarCom's props.
 
 // #region RanCarCom
 
@@ -747,21 +747,21 @@ type RacProTyp = { 'data-element-name-hook' : string, colRanBoo? : boolean, empM
  * @summary
  * Renders one ranking card: its kicker, then a list of items with each
  * one's name and pick count, or an empty message when there are none. The
- * coldest list takes its own modifier.
+ * least-picked list takes its own modifier.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.data-element-name-hook - Data Element Name Hook: The card's
  *                                       own identity hook, forwarded onto it.
- * @param props.colRanBoo              - Cold Ranking Boolean: Whether the
- *                                       list is the coldest one, defaulting
- *                                       to false.
  * @param props.empMesStr              - Empty Message String: The message
  *                                       shown when there are no items.
  * @param props.kicTexStr              - Kicker Text String: The card's own
  *                                       kicker text.
  * @param props.ranIteArr              - Ranking Item Array: The items in
  *                                       ranked order.
+ * @param props.rarRanBoo              - Rare Ranking Boolean: Whether the
+ *                                       list is the least-picked one,
+ *                                       defaulting to false.
  *
  * @returns The ranking card.
  *
@@ -772,7 +772,7 @@ type RacProTyp = { 'data-element-name-hook' : string, colRanBoo? : boolean, empM
  *
 */
 
-function RanCarCom ( { 'data-element-name-hook' : hooNamStr, colRanBoo = false, empMesStr, kicTexStr, ranIteArr } : RacProTyp ) : React.JSX.Element {
+function RanCarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexStr, ranIteArr, rarRanBoo = false } : RacProTyp ) : React.JSX.Element {
 
 
 	return (
@@ -787,7 +787,7 @@ function RanCarCom ( { 'data-element-name-hook' : hooNamStr, colRanBoo = false, 
 			{ ranIteArr.length ? ( // What: Ranking List Visibility Check. Why: An empty ranking needs its own message instead of a bare empty list. How: This renders the real list only while ranIteArr has at least one entry, the empty state otherwise.
 
 
-				<ul className={` ${ cssModObj.ranLisUno }   ${ colRanBoo ? cssModObj.ranLisUnoCold : '' } `}>{ /* What: Ranking List Unordered Element. Why: This is the actual ranked list. How: This maps ranIteArr to one list item per item. */ }
+				<ul className={` ${ cssModObj.ranLisUno }   ${ rarRanBoo ? cssModObj.ranLisUnoRare : '' } `}>{ /* What: Ranking List Unordered Element. Why: This is the actual ranked list. How: This maps ranIteArr to one list item per item. */ }
 
 
 					{ ranIteArr.map( ( iteCurObj, iteIndNum ) => ( // What: Ranking Row Render. Why: Every ranked item needs its own row showing its name and count. How: This maps ranIteArr to one list item per entry, keyed by its own iteIndNum.
@@ -1816,7 +1816,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	), [ picCouMap ] ); // What: Memo Dependency Array. Why: This top-5 list only ever needs resorting when the underlying count map changes. How: picCouMap is the sole source the filter/sort above reads from.
 
 
-	const colIteArr = React.useMemo( () => { // What: Cold Item Array Memo. Why: The "Coldest items" card needs the 5 lowest-count LIVE items (not deleted ones), including ones never picked at all. How: This starts from staAppObj.items rather than picCouMap, so a zero-pick item still appears.
+	const rarIteArr = React.useMemo( () => { // What: Rare Item Array Memo. Why: The "Coldest items" card needs the 5 lowest-count LIVE items (not deleted ones), including ones never picked at all. How: This starts from staAppObj.items rather than picCouMap, so a zero-pick item still appears.
 
 
 		const livIteArr = ( staAppObj.items || [] ).filter( ( iteCurObj ) => { // What: Live Item Array. Why: Only an item that's actually live, in scope, and not on vacation belongs in this ranking. How: This filters staAppObj.items by hidden-picker exclusion, scope, and its own vacation flag.
@@ -1837,8 +1837,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		return livIteArr // What: Cold Item Return. Why: This is the finished bottom-5 ranking. How: This maps, sorts, and slices livIteArr in the chain below.
-			.map( ( iteCurObj ) => ( { // What: Cold Item Mapping. Why: Each live item needs just its own name and its (possibly zero) pick count for this ranking. How: This looks up iteCurObj's own id in picCouMap, defaulting to a zero count.
+		return livIteArr // What: Rare Item Return. Why: This is the finished bottom-5 ranking. How: This maps, sorts, and slices livIteArr in the chain below.
+			.map( ( iteCurObj ) => ( { // What: Rare Item Mapping. Why: Each live item needs just its own name and its (possibly zero) pick count for this ranking. How: This looks up iteCurObj's own id in picCouMap, defaulting to a zero count.
 
 
 				couNum : ( picCouMap.get( iteCurObj.id ) || {} ).couNum || 0, // What: Count Number. Why: The ranking sorts by how often each item was picked. How: This reads the item's own tally from picCouMap, defaulting to zero when it was never picked.
@@ -1846,8 +1846,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 			} ) )
-			.sort( ( iteOneObj, iteTwoObj ) => iteOneObj.couNum - iteTwoObj.couNum || iteOneObj.namStr.localeCompare( iteTwoObj.namStr ) ) // What: Cold Sort. Why: The coldest (least-picked) items should list first, tied items breaking alphabetically for a stable order. How: This sorts ascending by count, falling back to a name comparison.
-			.slice( 0, 5 ); // What: Cold Slice. Why: Only the 5 coldest items are shown. How: This takes the first 5 entries of the sorted array.
+			.sort( ( iteOneObj, iteTwoObj ) => iteOneObj.couNum - iteTwoObj.couNum || iteOneObj.namStr.localeCompare( iteTwoObj.namStr ) ) // What: Rare Sort. Why: The coldest (least-picked) items should list first, tied items breaking alphabetically for a stable order. How: This sorts ascending by count, falling back to a name comparison.
+			.slice( 0, 5 ); // What: Rare Slice. Why: Only the 5 coldest items are shown. How: This takes the first 5 entries of the sorted array.
 
 
 	}, [ staAppObj.items, scoValStr, picCouMap, hidPicSet ] ); // What: Memo Dependency Array. Why: This ranking only ever needs recomputing when the live item list, the active scope, the pick counts, or the hidden-picker set changes. How: Each dependency feeds one part of the filter/map/sort above.
@@ -4436,13 +4436,13 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 							<RanCarCom
-								data-element-name-hook='colIteDiv'
+								data-element-name-hook='rarIteDiv'
 
-								colRanBoo
 								empMesStr='No items in this scope.'
 								kicTexStr='Coldest items'
-								ranIteArr={ colIteArr }
-							/>{ /* What: Ranking Card Component. Why: This is the Coldest items ranking, the 5 lowest-count live items. How: This renders colIteArr with the cold list's modifier, or a message when the scope has no items. Its data-element-name-hook is read by help mode's Stats catalog. */ }
+								ranIteArr={ rarIteArr }
+								rarRanBoo
+							/>{ /* What: Ranking Card Component. Why: This is the Coldest items ranking, the 5 lowest-count live items. How: This renders rarIteArr with the rare list's modifier, or a message when the scope has no items. Its data-element-name-hook is read by help mode's Stats catalog. */ }
 
 
 						</div>
