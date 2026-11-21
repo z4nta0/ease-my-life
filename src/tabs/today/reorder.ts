@@ -116,7 +116,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	} = draConObj;
 
 
-	const capTarEle = griIcoEle || hanDraEle; // What: Capture Target Element. Why: The pointer capture and every move/up listener must attach to whichever element actually received the pointerdown. How: This prefers griIcoEle, falling back to hanDraEle when no separate grip was given.
+	const capTarEle = griIcoEle || hanDraEle; // What: Capture Target Element. Why: The pointer capture and the grip's own move/up listeners must attach to whichever element actually received the pointerdown. How: This prefers griIcoEle, falling back to hanDraEle when no separate grip was given.
 
 	// #endregion Drag Configuration
 
@@ -662,7 +662,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 			ordIndArr.splice( finTarNum, 0, movIndNum ); // What: Moved Index Reinsert. Why: This is what actually produces the final reordered index array. How: This reinserts movIndNum at finTarNum without removing anything else.
 
-			if ( onDroOrdFun ) onDroOrdFun( ordIndArr ); // What: On Drop Callback Guard. Why: The caller's own onDroOrdFun is optional, same as onStaDraFun/onEndDraFun. How: This calls onDroOrdFun only when the caller actually provided one, passing the freshly-built order.
+			if ( onDroOrdFun ) onDroOrdFun( ordIndArr ); // What: On Drop Callback Guard. Why: The gesture must not throw when no drop callback was passed. How: This calls onDroOrdFun only when one was given, passing the freshly-built order.
 
 
 		}
@@ -698,11 +698,11 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 // #region Exports
 
-const REO_NAM_OBJ = { staDraFun : staDraFun }; // What: Reorder Namespace Object. Why: This is the single public entry point tab-today.tsx imports by name. How: This maps this file's own internal staDraFun name directly onto its own matching external property name.
+const REO_NAM_OBJ = { staDraFun : staDraFun }; // What: Reorder Namespace Object. Why: This is the file's single public entry point. How: This maps this file's own internal staDraFun name directly onto its own matching external property name.
 
 
 
-export { REO_NAM_OBJ }; // What: Reorder Namespace Object Export. Why: tab-today.tsx reaches the drag gesture through the one namespace object. How: This exports REO_NAM_OBJ by name at the very end of the file.
+export { REO_NAM_OBJ }; // What: Named Export. Why: Other files reach the drag gesture through the one namespace object. How: This exports REO_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 
