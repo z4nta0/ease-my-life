@@ -10,22 +10,22 @@ import React     from 'react';                    // What: React. Why: PicVieCom
 import { ButBasCom    } from '../../ui/button.tsx';       // What: Button Base Component. Why: Pick One, Re-roll, Done and the pool actions need consistently-styled controls. How: This is rendered for each of those actions.
 import { durMilFun    } from '../../utils/rhythm.ts';     // What: Duration Millisecond Function. Why: Exit timers must end with the animation they wait on. How: This returns a duration step's length in milliseconds.
 import { IcoSvgCom    } from '../../ui/icon.tsx';         // What: Icon SVG Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
-import { InfTipCom    } from '../../ui/info-tip.tsx';     // What: Info Tip Component. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the weight/value pills and the disabled Send/Delete buttons, given the tooltip's own label text.
+import { InfTipCom    } from '../../ui/info-tip.tsx';     // What: Info Tip Component. Why: Several controls need an explanatory tooltip on hover/focus. How: This wraps the row's value and weight pills and the stand-ins for unavailable buttons, given the tooltip's own label text.
 import { isaTruFun    } from '../../utils/guard.ts';      // What: Is-A Truthy Function. Why: Entries without an item drop out of the Today id set. How: This filters them so the set holds only real ids.
 import { IteCarCom    } from './item-card.tsx';           // What: Item Card Component. Why: Adding or editing a pool item opens the shared item card, holding the same weight/ease editor the Today tab uses. How: This is rendered below the pool list, wired to either the real store actions or the local draft-item actions.
-import { PIC_NAM_OBJ  } from '../../core/pickers.ts';     // What: Pickers Namespace Object. Why: This is the namespace of pure picking-engine functions this file drives every actual pick through. How: This is called throughout for PIC_NAM_OBJ.picIteFun/reaValFun/modEliFun/aveEasFun, and read for THR_VAL_NUM and DEF_EAS_OBJ.
+import { PIC_NAM_OBJ  } from '../../core/pickers.ts';     // What: Pickers Namespace Object. Why: This is the namespace of pure picking-engine functions this file drives each pick through. How: This is called for the pick engine's functions and read for its default values.
 import { PicForCom    } from './picker-form.tsx';         // What: Picker Form Component. Why: Editing a picker's details reuses the create form's Details step. How: This is rendered in place of the view while ediOpeBoo is on.
 import { PicStrCom    } from '../../ui/picker-strip.tsx'; // What: Picker Strip Component. Why: Pick One plays the shared reel, spotlight, or dissolve reveal before showing its result. How: This is rendered in the run stage while a pick is cycling.
-import { PilTagCom    } from '../../ui/pill-tag.tsx';     // What: Pill Tag Component. Why: Small status labels need a consistent pill styling. How: This wraps the mode name, the 'inactive' tag, and the 'not yet'/'spent' tag.
+import { PilTagCom    } from '../../ui/pill-tag.tsx';     // What: Pill Tag Component. Why: Small status labels need a consistent pill styling. How: This wraps the mode name and the row status tags.
 import { ProBarCom    } from './progress-bar.tsx';        // What: Progress Bar Component. Why: A pool item's drift value needs a visual readiness bar, not just a raw number. How: This is rendered inside the pool row's InfTipCom alongside the raw value.
 import { ranIdeFun    } from '../../utils/random-id.ts';  // What: Random Identifier Function. Why: A new draft item needs a stable id before it's committed. How: This mints an 'it_' id.
-import { redMotFun    } from '../../utils/motion.ts';     // What: Reduced Motion Function. Why: Several exit/scroll animations must be skipped for a user who prefers reduced motion. How: This is checked before every animated scroll, exit delay, or the reel/spotlight/dissolve cycle itself.
+import { redMotFun    } from '../../utils/motion.ts';     // What: Reduced Motion Function. Why: The buttons' exit delay must be skipped for a user who prefers reduced motion. How: This is checked before the exit delay, so the action runs at once.
 import { rhyPixFun    } from '../../utils/rhythm.ts';     // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../../utils/motion.ts';     // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { SED_NAM_OBJ  } from '../../state/seed.ts';       // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { selAllFun    } from '../../utils/input.ts';      // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This is the name field's ref callback, selecting its text once as it mounts.
 import { useDelConFun } from './delete-confirm.ts';       // What: Use Delete Confirm Function. Why: A pool row's inline delete confirmation is shared with the other pool on this tab. How: This is called once for the confirm state and its Cancel handler.
-import { useEmlTouFun } from '../../state/tour-bus.ts';   // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
+import { useEmlTouFun } from '../../state/tour-bus.ts';   // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once to subscribe to the tour bus's phase, tour ID, step, and nonces.
 import { useIteDraFun } from '../../ui/record-draft.ts';  // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
 
 
@@ -104,11 +104,11 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region Tour Gating
 
-	const touBusObj = useEmlTouFun();                 // What: Tour Bus Object. Why: Several buttons on this view must narrow or disable themselves while a guided tour is walking through this exact screen. How: This subscribes to the shared tour event bus, read via its own touPhaStr/touIdeStr/touSteNum fields below.
+	const touBusObj = useEmlTouFun();                 // What: Tour Bus Object. Why: Several buttons on this view must narrow or disable themselves while a guided tour is walking through this exact screen. How: This subscribes to the shared tour event bus, read through its own fields below.
 	const isaTouBoo = touBusObj.touPhaStr === 'tour'; // What: Is-A Tour Boolean. Why: Every gate below needs to know a tour is actually running before it even checks which one. How: This is reused as the shared first operand of every tour-gating boolean that follows.
 
 	const intSenBoo = isaTouBoo && touBusObj.touIdeStr === 'page-explore_pickers' && touBusObj.touSteNum === 7;                         // What: Intercept Send Boolean. Why: The Pickers page tour's own "Add to Todo List" step wants the real Send to Today -> Sent! animation to play, so the user sees what the button actually does, but explicitly does NOT want a real entry landing on Today from it, since this is a tutorial pick on a disposable sample picker, not something the user meant to act on. How: This gates on the exact tour id and step that step is shown at.
-	const disDonBoo = intSenBoo || ( isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 3 ); // What: Disable Done Boolean. Why: Done needs the same visual and functional disabling during App Features' own "Make your first manual pick" tour's equivalent step (buiTesFun, feat_manual_pick's Step 4, index 3: Step 1 is the shared nav-click, Step 2 is Picker Selection, Step 3 is Manual Generation), since leaving would discard the very pick that tour just walked the user through making, and would also make the step's own target (this whole done/sent view) vanish. How: Re-roll is deliberately NOT included here, unlike intSenBoo above: App Features wants Re-roll to stay genuinely usable without counting as this step's own advancing click; this is deliberately a SEPARATE flag from intSenBoo, since that one also skips the real actions.addEntFun call in senTodFun below, which is correct for the page tour's disposable sample pick but wrong here.
+	const disDonBoo = intSenBoo || ( isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 3 ); // What: Disable Done Boolean. Why: Done needs the same visual and functional disabling during App Features' own "Make your first manual pick" tour's equivalent step, since leaving would discard the very pick that tour just walked the user through making, and would also make the step's own target (this whole done/sent view) vanish. How: Re-roll is deliberately NOT included here, unlike intSenBoo above: App Features wants Re-roll to stay genuinely usable without counting as this step's own advancing click; this is deliberately a SEPARATE flag from intSenBoo, since that one also skips the real actions.addEntFun call in senTodFun below, which is correct for the page tour's disposable sample pick but wrong here.
 	const disIteBoo = isaTouBoo && touBusObj.touIdeStr === 'page-explore_pickers' && touBusObj.touSteNum === 8;                         // What: Disable Item Boolean. Why: Step 9 ("Picker Items") highlights the pool's per-item Send to Today/Edit/Delete buttons but explicitly doesn't want any of them actually usable from there, since narrating what they do is the point, not inviting the user to act on a disposable tutorial picker's real items. How: This gates on the exact tour id and step that step is shown at.
 	const disEdiBoo = disIteBoo || ( isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 4 ); // What: Disable Edit Boolean. Why: App Features' own "Make your first manual pick" tour reaches this same pool at its own Step 5 (index 4), but unlike the page tour above, Send to Today should stay genuinely usable there (real data, a second valid way to land a pick besides Manual Generation), only Edit/Delete stay narrated-not-usable. How: This deliberately only gates the pooEdiBut/pooDelBut buttons below, NOT pooSenBut's own disabled prop (still disIteBoo alone, naturally unaffected/enabled during this tour).
 	const higSenBoo = isaTouBoo && touBusObj.touIdeStr === 'appfeature-feat_manual_pick' && touBusObj.touSteNum === 4;                  // What: Highlight Send Boolean. Why: The same fading-outline pulse (here pooSenBut--tour) tab-data.tsx's own Edit Item tour uses on its own per-element targets draws the eye to the still-genuinely-usable Send to Today buttons specifically, not just the whole pooIteDiv box the step's own coach already frames. How: This is only ever applied to the real, enabled button below, since disIteBoo is false here and this never touches the sent or disabled Send branches.
@@ -121,9 +121,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	// #region Pick Run State
 
 	const [ busPicBoo, setBusPicBoo ] = React.useState( false );                    // What: Busy Picking Boolean And Setter. Why: The Pick One button must disable itself and show a busy label while the cycle animation is actually running. How: This is set true by runPicFun and cleared once onAniDonFun fires.
-	const [ picResObj, setPicResObj ] = React.useState< PicResTyp | null >( null ); // What: Pick Result Object And Setter. Why: The stage and action buttons both need the most recent PIC_NAM_OBJ.picIteFun() outcome to render from. How: This is written by runPicFun/rerActFun and read throughout the render below.
+	const [ picResObj, setPicResObj ] = React.useState< PicResTyp | null >( null ); // What: Pick Result Object And Setter. Why: The stage and action buttons both need the most recent PIC_NAM_OBJ.picIteFun() outcome to render from. How: This is set by each pick run, replaced by the tour redo effect, cleared when the view returns to idle, and read throughout the render below.
 	const [ runCouNum, setRunCouNum ] = React.useState( 0 );                        // What: Run Count Number And Setter. Why: Every pick run needs a fresh cycle animation, even a Re-Roll that starts straight from a settled pick without passing through idle. How: runPicFun increments it, and the strip is keyed by it so each run remounts it.
-	const [ runPhaStr, setRunPhaStr ] = React.useState( 'idle' );                   // What: Run Phase String And Setter. Why: Every part of this view's stage and action row renders differently depending on where the current run actually is. How: This starts on 'idle' and is advanced by runPicFun, onAniDonFun, senTodFun, and the tour-driven effect below. // What: Run Phase Values Note. Why: The phase drives every stage render, so its possible values are worth listing. How: It is one of 'idle', 'running', 'done', 'sent' or 'empty'.
+	const [ runPhaStr, setRunPhaStr ] = React.useState( 'idle' );                   // What: Run Phase String And Setter. Why: Every part of this view's stage and action row renders differently depending on where the current run actually is. How: This starts on 'idle' and is advanced by the run, settle, send, and Done actions and by the tour effects. // What: Run Phase Values Note. Why: The phase drives every stage render, so its possible values are worth listing. How: It is one of 'idle', 'running', 'done', 'sent' or 'empty'.
 
 
 	React.useEffect( () => { // What: Tour Reset Effect. Why: Resets this view back to idle whenever the Pickers page tour's own onBacTouFun bumps touBusObj.resNonNum: a Back from its "Add to Todo List" step to "Manual Generation" needs Pick One showing again, not whatever real Send to Today/Re-roll/Done state a completed pick left behind. How: This is guarded on truthiness (not just present in the deps array) so the unset/0 starting value doesn't also reset on every fresh mount, only a genuine bump does anything.
@@ -133,7 +133,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 
-		setBusPicBoo( false ); setPicResObj( null ); setRunPhaStr( 'idle' ); // What: Reset Call. Why: The tour's own Back navigation needs this view showing its pre-pick state again. How: This clears every piece of in-progress pick state back to idle.
+		setBusPicBoo( false ); setPicResObj( null ); setRunPhaStr( 'idle' ); // What: Reset Call. Why: The tour's own Back navigation needs this view showing its pre-pick state again. How: This clears the busy flag, the pick result, and the run phase back to idle.
 
 
 	}, [ touBusObj.resNonNum ] ); // What: Effect Dependency Array. Why: Only a genuine bump of this exact nonce should re-run this reset. How: touBusObj.resNonNum is the sole trigger; deliberately excluded from a broader deps list since this must NOT re-run for any other reason.
@@ -144,7 +144,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region Button Exit Animation
 
-	const [ butLeaBoo, setButLeaBoo ] = React.useState( false ); // What: Button Leaving Boolean And Setter. Why: Re-roll and Done both need their own out-animation to play for a beat before the real state transition happens underneath them. How: This is flipped true by aftExiFun and cleared 180ms later, right before the real action actually runs.
+	const [ butLeaBoo, setButLeaBoo ] = React.useState( false ); // What: Button Leaving Boolean And Setter. Why: Re-roll and Done both need their own out-animation to play for a beat before the real state transition happens underneath them. How: This is flipped true by aftExiFun and cleared once the exit's own p01 duration step has passed, right before the real action actually runs.
 
 
 	// #region aftExiFun
@@ -174,7 +174,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	*/
 
-	const aftExiFun = ( runActFun : () => void ) => { // What: After Exit Function. Why: Re-roll/Done need a shared helper that plays the exit animation (unless reduced motion applies) before running whatever the caller actually wants to happen. How: This either runs runActFun immediately, or stages butLeaBoo for 180ms first.
+	const aftExiFun = ( runActFun : () => void ) => { // What: After Exit Function. Why: Re-roll/Done need a shared helper that plays the exit animation (unless reduced motion applies) before running whatever the caller actually wants to happen. How: This either runs runActFun immediately, or stages butLeaBoo for the exit's own p01 duration step first.
 
 
 		if ( redMotFun() ) { runActFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion shouldn't wait through a skipped animation. How: This runs the caller's action immediately and returns, skipping the staged delay below.
@@ -203,13 +203,13 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region Pool Row State
 
-	const [ shoDriBoo, setShoDriBoo ] = React.useState( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ); // What: Show Drift Boolean And Setter. Why: A non-random/weighted picker's pool rows can optionally reveal each item's own drift/readiness bar, hidden by default to keep the list simple. How: This starts true whenever the picker's mode isn't 'random' or 'weighted', and is toggled by the pool header's own "Show/Hide drift" link.
+	const [ shoDriBoo, setShoDriBoo ] = React.useState( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ); // What: Show Drift Boolean And Setter. Why: A non-random/weighted picker's pool rows can reveal each item's drift/readiness bar, which the pool header's own toggle shows or hides. How: This starts true whenever the picker's mode isn't 'random' or 'weighted', and is toggled by the pool header's own "Show/Hide drift" link.
 	const [ newDraObj, setNewDraObj ] = React.useState< IteRcdTyp | null >( null );                                     // What: New Draft Object And Setter. Why: Adding a new pool item is held as a LOCAL draft, not committed to the store, until Save, so a reload or tab-switch discards an in-progress item, matching the new-picker create flow. How: This is the editing item; patNewFun (below) edits it locally, and cmtNewFun commits it via the real store actions on Save.
 	const [ insSavStr, setInsSavStr ] = React.useState< string | null >( null );                                        // What: Insert Saved String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set by cmtNewFun and cleared once the row's own insert keyframe finishes.
 
 	const { canConFun, conDelStr, conLeaStr, setConDelStr } = useDelConFun(); // What: Cancel Confirm Function. Why: Cancel backs out of a pending delete. How: This plays the confirm row's leaving animation, then clears it. // What: Confirm Delete String. Why: A pool row asks before deleting, in place of its normal content. How: This holds the id showing its delete-confirm row. // What: Confirm Leaving String. Why: The confirm row plays an out-animation after Cancel. How: This holds the id playing it. // What: Set Confirm Delete String. Why: The delete button starts a row's confirmation, and the confirmed delete ends it. How: This sets conDelStr.
 
-	const penEdiRef = React.useRef< string | null >( null ); // What: Pending Edit Reference. Why: Set by staEdiFun when it has to close an in-progress new-item draft OR another item's open editor out of the way first, this is picked back up once that draft's/editor's own closing animation ends, so the edit opens right after instead of being silently dropped. How: This holds the target item id to reopen, consumed by the relevant onAnimationEnd handler below.
+	const penEdiRef = React.useRef< string | null >( null ); // What: Pending Edit Reference. Why: Set by staEdiFun when it has to close an in-progress new-item draft OR another item's open editor out of the way first, this is picked back up once that draft's/editor's own closing animation ends, so the edit opens right after instead of being silently dropped. How: This holds the target item id to reopen, consumed by opePenFun once a closing editor's onCloEndFun runs.
 
 	// #endregion Pool Row State
 
@@ -285,7 +285,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region New Item Draft
 
-	const [ newCloStr, setNewCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: New Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down, distinguishing a Save close from a Cancel close. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below.
+	const [ newCloStr, setNewCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: New Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down, distinguishing a Save close from a Cancel close. How: This holds 'save', 'cancel', or false, consumed by the new-item editor's onCloEndFun handler below.
 
 	const addWraRef = React.useRef< HTMLDivElement | null >( null );                  // What: Add Wrap Reference. Why: Both the new-item and edit-item flows render into this same below-the-list slot, which needs a stable handle so it can be scrolled into view. How: This is attached to the iteAddDiv div's own ref prop, below.
 	const useWeiBoo = picDatObj.mode === 'weighted' || picDatObj.mode === 'dynamic';  // What: Use Weight Boolean. Why: Only these two modes treat an item's weight as a real lever; the others ignore it entirely. How: This gates whether weight fields are carried over/shown throughout this view.
@@ -338,8 +338,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		if ( isaEasBoo ) { // What: Ease Patch Guard. Why: The drift band and starting charge only matter for ease-up/ease-down modes. How: This adds the draft's own easeMin/easeMax/value into patIteObj only when isaEasBoo is true.
 
 
-			patIteObj.easeMin = draIteObj.easeMin; // What: Ease Minimum Copy. Why: An ease item keeps the soonest end of its drift band. How: This copies easeMin from the draft.
-			patIteObj.easeMax = draIteObj.easeMax; // What: Ease Maximum Copy. Why: An ease item keeps the latest end of its drift band. How: This copies easeMax from the draft.
+			patIteObj.easeMin = draIteObj.easeMin; // What: Ease Minimum Copy. Why: An ease item keeps the latest end of its drift band. How: This copies easeMin from the draft.
+			patIteObj.easeMax = draIteObj.easeMax; // What: Ease Maximum Copy. Why: An ease item keeps the soonest end of its drift band. How: This copies easeMax from the draft.
 			patIteObj.value = draIteObj.value;     // What: Value Copy. Why: An ease item keeps its starting charge. How: This copies value from the draft.
 
 
@@ -393,11 +393,11 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	const revSloFun = () => { // What: Reveal Slot Function. Why: The new-item draft and the item editor open in the same below-the-list slot, which can be well out of view. How: This scrolls the slot into view after two frames.
 
 
-		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: The just-opened slot can be well out of view from wherever in a long pool its button was. How: This waits two animation frames for layout to settle, then scrolls the shared .main container just enough to bring the slot fully into view.
+		requestAnimationFrame( () => requestAnimationFrame( () => { // What: Scroll Into View Call. Why: The just-opened slot can be well out of view from wherever in a long pool its button was. How: This waits two animation frames for layout to settle, then scrolls the app's main content container (hook appConMai) just enough to bring the slot fully into view.
 
 
 			const addWraEle = addWraRef.current;                                                         // What: Add Wrap Element. Why: The scroll calculation needs the actual DOM node, not just the ref object. How: This reads addWraRef.current once and reuses it below.
-			const scrConEle = addWraEle && addWraEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest .main ancestor.
+			const scrConEle = addWraEle && addWraEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scrollable container is what actually needs to move, not the slot itself. How: This walks up from addWraEle to the nearest ancestor carrying the appConMai hook.
 
 
 			if ( !addWraEle || !scrConEle ) return; // What: Missing Element Guard. Why: Either element may not exist yet if this fires after an unrelated unmount. How: This bails out of the scroll calculation entirely when either is missing.
@@ -407,7 +407,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 			const oveBelNum = addWraEle.getBoundingClientRect().bottom - scrConEle.getBoundingClientRect().bottom + rhyPixFun( 'p07' ); // What: Overflow Below Number. Why: This is how far below the visible fold the slot actually sits, plus a small comfort margin. How: This subtracts the container's own bottom edge from the slot's own bottom edge. // Vertical Rhythm Base Plus 7 ~= 104.323px
 
 
-			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only an actually-overflowing slot needs to be scrolled into view at all. How: This scrolls the container down by exactly the overflow amount.
+			if ( oveBelNum > 0 ) scrConEle.scrollTo({ // What: Scroll Adjust Guard. Why: Only a slot that overflows the container's bottom edge, or sits within the comfort margin of it, needs to be scrolled into view. How: This scrolls the container down by oveBelNum.
 
 
 				behavior : scrBehFun(),                    // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
@@ -488,7 +488,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	// #region Item Editor
 
 	const [ ediIteStr, setEdiIteStr ] = React.useState< string | null >( null ); // What: Editing Item String And Setter. Why: An existing pool item's own edit slot reuses the exact same below-the-list interface as "+ Add Item", just populated from a real item and wired to the REAL actions instead of a draft. How: This holds the id of whichever existing item currently has its editor open, or null.
-	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false );                 // What: Editing Closing Boolean And Setter. Why: Closing an existing item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation and consumed by the editor's own onAnimationEnd handler below.
+	const [ ediCloBoo, setEdiCloBoo ] = React.useState( false );                 // What: Editing Closing Boolean And Setter. Why: Closing an existing item's editor needs its own out-animation before it's actually torn down. How: This is flipped true to start that animation and consumed by the editor's onCloEndFun handler below.
 
 	const ediOpeObj = ediIteStr && !ediCloBoo ? staAppObj.items.find( ( iteCurObj ) => iteCurObj.id === ediIteStr ) || null : null; // What: Editing Open Object. Why: Only an editor that's open, not one playing its closing animation, has a draft. How: This looks up the edited item while the editor is open and not closing, else null.
 
@@ -633,9 +633,9 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		if ( ediIteStr ) { // What: Other Editor Open Branch. Why: Another item's editor is already open and must be closed, dropping its unsaved draft, before this one can open. How: This stages tarIdeStr and starts that editor's own closing animation.
 
 
-			penEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the current one finishes closing. How: This stores tarIdeStr for the closing editor's own onAnimationEnd handler to pick up.
+			penEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the current one finishes closing. How: This stores tarIdeStr for opePenFun to pick up once the closing editor's onCloEndFun runs.
 
-			setEdiCloBoo( true ); // What: Start Closing Call. Why: This is what actually plays the current editor's own out-animation. How: This flips ediCloBoo, consumed by the editor's own onAnimationEnd handler below.
+			setEdiCloBoo( true ); // What: Start Closing Call. Why: This is what actually plays the current editor's own out-animation. How: This flips ediCloBoo, consumed by the editor's onCloEndFun handler below.
 
 
 
@@ -649,7 +649,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		if ( newDraObj ) { // What: New Draft Open Branch. Why: A new-item draft is in progress and must be closed (without saving) instead of silently no-oping, since the reverse never needs this: the "+ Add Item" button that starts a new draft isn't rendered while an existing item's edit form is open. How: This stages tarIdeStr and starts the draft's own closing animation.
 
 
-			penEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the draft finishes closing. How: This stores tarIdeStr for the draft wrap's own onAnimationEnd handler to pick up.
+			penEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the draft finishes closing. How: This stores tarIdeStr for opePenFun to pick up once the draft's onCloEndFun runs.
 
 			setNewCloStr( 'cancel' ); // What: Cancel Draft Call. Why: Switching away from an in-progress new-item draft discards it rather than silently saving it. How: This starts the draft wrap's own closing animation in its 'cancel' shape.
 
@@ -728,7 +728,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	}, [ staAppObj.pickers ] ); // What: Memo Dependency Array. Why: The group list only needs recomputing when the pickers list itself changes. How: staAppObj.pickers is what the loop above actually reads.
 
 
-	const ediIniObj = { // What: Edit Initial Object. Why: PicForCom's own edit mode needs every one of this picker's current settings prefilled, so Save can round-trip them through savEdiFun unchanged unless the user actually edits a field. How: This maps every relevant picker field onto the same shape PicForCom's own initial prop expects. // What: Deliberately Omitted Group Field. Why: `group` specifically means "prefill the inline ADD-A-NEW-GROUP sub-form" (see PicForCom's own addGroBoo/newGroStr state), which would be wrong here: this picker's group already exists (it's necessarily in ediGroArr, since that list is derived from staAppObj.pickers including this picker itself), so it should land on that EXISTING pill instead. How: iniGroStr (passed at the return below) is the prop that does that, same as the create flow's own group-filter prefill.
+	const ediIniObj = { // What: Edit Initial Object. Why: PicForCom's own edit mode needs this picker's current settings prefilled, so Save can round-trip them through savEdiFun unchanged unless the user actually edits a field. How: This maps the picker's fields onto the same shape PicForCom's own initial prop expects. // What: Deliberately Omitted Group Field. Why: `group` specifically means "prefill the inline ADD-A-NEW-GROUP sub-form" (see PicForCom's own addGroBoo/newGroStr state), which would be wrong here: this picker's group already exists (it's necessarily in ediGroArr, since that list is derived from staAppObj.pickers including this picker itself), so it should land on that EXISTING pill instead. How: iniGroStr (passed at the return below) is the prop that does that, same as the create flow's own group-filter prefill.
 
 
 		anchorDay       : picDatObj.anchorDay,                                                                 // What: Anchor Day. Why: A yearly date-mode picker prefills its day. How: This copies picDatObj.anchorDay.
@@ -790,7 +790,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		// #region Pick Computation
 
 		const iteSnaArr = staAppObj.items;                                                                            // What: Item Snapshot Array. Why: The pick engine needs a stable snapshot of items to compute against. How: This is just staAppObj.items, captured under a clearer local name for the call below.
-		const runResObj = PIC_NAM_OBJ.picIteFun( picDatObj, iteSnaArr, { excIdeSet : todIdeSet, forNewBoo : true } ); // What: Run Result Object. Why: This is the actual computed outcome the rest of this function and the stage below render from. How: This calls the shared picking engine with this picker's own current pool. // What: Force New Note. Why: This button is a manual "pick/roll again" action, so for ease-down it should offer a real choice, not just re-confirm whatever item is already active; abandoning it recharges it, same as re-roll. How: forNewBoo is passed through to PIC_NAM_OBJ.picIteFun below.
+		const runResObj = PIC_NAM_OBJ.picIteFun( picDatObj, iteSnaArr, { excIdeSet : todIdeSet, forNewBoo : true } ); // What: Run Result Object. Why: This is the actual computed outcome the rest of this function and the stage below render from. How: This calls the shared picking engine with this picker's own current pool. // What: Force New Note. Why: This button is a manual "pick/roll again" action, so for ease-down it should offer a real choice, not just re-confirm whatever item is already active; abandoning it recharges it, same as re-roll. How: forNewBoo is passed to PIC_NAM_OBJ.picIteFun in this call.
 
 
 		if ( !runResObj.picObj ) { // What: Nothing Picked Guard. Why: An exhausted or empty pool has nothing left to cycle through. How: This stores the empty result and switches straight to the 'empty' stage, skipping the cycle animation entirely.
@@ -973,7 +973,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 
-		setRunPhaStr( 'sent' ); // What: Sent Phase Call. Why: The stage and button both need to show their own "sent" confirmation state. How: This writes 'sent' into runPhaStr. // What: Confirmation Beat Note. Why: The stage swaps to an "Added to Today" checkmark and the button morphs to "Sent!", then the picker resets to idle so it's ready for the next pick. How: setRunPhaStr('sent') below drives that swap; the timeout resets everything 1500ms later.
+		setRunPhaStr( 'sent' ); // What: Sent Phase Call. Why: The stage and button both need to show their own "sent" confirmation state. How: This writes 'sent' into runPhaStr. // What: Confirmation Beat Note. Why: The stage swaps to an "Added to Today" checkmark and the button morphs to "Sent!", then the picker resets to idle so it's ready for the next pick. How: The setRunPhaStr( 'sent' ) call on this line drives that swap; the timeout below resets everything 1,500ms later.
 
 		setTimeout( () => { // What: Delayed Reset Call. Why: The confirmation must not linger forever before the view is ready for another pick. How: This resets both runPhaStr and picResObj 1500ms later.
 
@@ -1000,7 +1000,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 			<PicForCom
-				conObjArr={ staAppObj.conditionals || [] }
+				conObjArr={ staAppObj.conditionals || [] } // What: Conditional Object Array. Why: The edit form lists the conditionals a picker can attach to. How: This passes staAppObj.conditionals, or an empty list when there are none.
 				exiGroArr={ ediGroArr }
 				iniForObj={ ediIniObj }
 				iniGroStr={ picDatObj.group }
@@ -1035,19 +1035,19 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		>{ /* What: Picker View Div Element. Why: This is PicVieCom's own root, holding the header, the run stage/actions, and the pool. How: This wraps every piece of the selected picker's own live view. Its data-element-name-hook is read by help mode's Pickers catalog. */ }
 
 
-			<header className={ cssModObj.picHeaHed }>{ /* What: Picker Header Element. Why: The picker's own name/mode and its Edit button both belong in one header row. How: This wraps the title block and the Edit button. */ }
+			<header className={ cssModObj.picHeaHed }>{ /* What: Picker Header Header Element. Why: The picker's own name/mode and its Edit button both belong in one header row. How: This wraps the title block and the Edit button. */ }
 
 
-				<div className={ cssModObj.heaTitDiv }>{ /* What: Title Block Div Element. Why: The kicker, name, and mode pill read as one grouped title. How: This wraps those three pieces so the header's own flex layout can place the Edit button beside them. */ }
+				<div className={ cssModObj.heaTitDiv }>{ /* What: Header Title Div Element. Why: The kicker, name, and mode pill read as one grouped title. How: This wraps those three pieces so the header's own flex layout can place the Edit button beside them. */ }
 
 
-					<div className={ cssModObj.picKicDiv }>Picker</div>{ /* What: Kicker Div Element. Why: A small eyebrow label orients the reader before the picker's own name. How: This renders the literal word "Picker". */ }
+					<div className={ cssModObj.picKicDiv }>Picker</div>{ /* What: Picker Kicker Div Element. Why: A small eyebrow label orients the reader before the picker's own name. How: This renders the literal word "Picker". */ }
 
 					<h2
 						className={ cssModObj.picTitHea }
 
 						data-element-name-hook='picTitHea'
-					>{ picDatObj.name }</h2>{ /* What: Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
+					>{ picDatObj.name }</h2>{ /* What: Picker Title Heading Element. Why: The picker's own name is this view's main heading. How: This renders picker.name. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
 
 
 
@@ -1088,7 +1088,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 						className={ cssModObj.picHinPar }
 
 						data-element-name-hook='picHinPar'
-					>{ parTexStr }</p> // What: Hint Paragraph Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
+					>{ parTexStr }</p> // What: Picker Hint Paragraph Element. Why: Each paragraph renders as its own hint line. How: This renders parTexStr, keyed by its index. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
 
 
 				) )
@@ -1100,7 +1100,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 						className={ cssModObj.picHinPar }
 
 						data-element-name-hook='picHinPar'
-					>{ modInfObj.hinArr }</p> // What: Hint Paragraph Element. Why: A single-paragraph hint renders as one hint line. How: This renders modInfObj.hinArr directly. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
+					>{ modInfObj.hinArr }</p> // What: Picker Hint Paragraph Element. Why: A single-paragraph hint renders as one hint line. How: This renders modInfObj.hinArr directly. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog.
 
 
 				)
@@ -1112,7 +1112,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 				className={ cssModObj.picHinPar }
 
 				data-element-name-hook='picHinPar'
-			>Please note that any items in this picker&rsquo;s pool that are already included in the Today tab will be excluded from being selected.</p>{ /* What: Exclusion Hint Paragraph Element. Why: The pool's own eligible count can otherwise look wrong to someone who doesn't know Today-listed items are excluded from picking. How: This renders a fixed explanatory sentence under every mode's own hint. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
+			>Please note that any items in this picker&rsquo;s pool that are already included in the Today tab will be excluded from being selected.</p>{ /* What: Picker Hint Paragraph Element. Why: This one is the exclusion note: the pool's own eligible count can otherwise look wrong to someone who doesn't know Today-listed items are excluded from picking. How: This renders a fixed explanatory sentence under every mode's own hint. Its data-element-name-hook is read by help mode's Stats catalog and help mode's Pickers catalog. */ }
 
 
 
@@ -1120,21 +1120,21 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 				className={ cssModObj.picRunDiv }
 
 				data-element-name-hook='picRunDiv'
-			>{ /* What: Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picStaDiv and picActDiv together. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
+			>{ /* What: Picker Run Div Element. Why: The stage and its action buttons form one visual unit. How: This wraps picStaDiv and picActDiv together. Its data-element-name-hook is read by the Pickers page tour, the App Features tours, and help mode's Pickers catalog. */ }
 
 
-				<div className={ cssModObj.picStaDiv }>{ /* What: Stage Div Element. Why: Exactly one of five states (idle/running-or-done/sent/empty) is showing at any moment. How: This wraps whichever of the branches below currently matches runPhaStr. */ }
+				<div className={ cssModObj.picStaDiv }>{ /* What: Picker Stage Div Element. Why: One of four states (idle, running-or-done, sent, or empty) shows at a time. How: This wraps whichever of the branches below currently matches runPhaStr. */ }
 
 
 					{ runPhaStr === 'idle' && ( // What: Idle Stage Check. Why: The idle state shows a simple eligible-count readout. How: This renders only while runPhaStr is 'idle'.
 
 
-						<div className={ cssModObj.staIdlDiv }>{ /* What: Idle Stage Div Element. Why: This groups the eligible count and its own label. How: This wraps staNumDiv and staLabDiv. */ }
+						<div className={ cssModObj.staIdlDiv }>{ /* What: Stage Idle Div Element. Why: This groups the eligible count and its own label. How: This wraps staNumDiv and staLabDiv. */ }
 
 
-							<div className={ cssModObj.staNumDiv }>{ eliIteArr.filter( ( iteCurObj ) => !todIdeSet.has( iteCurObj.id ) ).length }</div>{ /* What: Idle Number Div Element. Why: The user needs to see how many items are actually eligible right now. How: This counts eliIteArr minus whatever's already on Today. */ }
+							<div className={ cssModObj.staNumDiv }>{ eliIteArr.filter( ( iteCurObj ) => !todIdeSet.has( iteCurObj.id ) ).length }</div>{ /* What: Stage Number Div Element. Why: In the idle stage, the user needs to see how many items are actually eligible right now. How: This counts eliIteArr minus whatever's already on Today. */ }
 
-							<div className={ cssModObj.staLabDiv }>items in the pool</div>{ /* What: Idle Label Div Element. Why: The bare number above needs a caption. How: This renders the fixed literal text. */ }
+							<div className={ cssModObj.staLabDiv }>items in the pool</div>{ /* What: Stage Label Div Element. Why: In the idle stage, the bare number above needs a caption. How: This renders the fixed literal text. */ }
 
 
 						</div>
@@ -1165,7 +1165,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 					{ runPhaStr === 'sent' && picResObj && picResObj.picObj && ( // What: Sent Stage Check. Why: A brief confirmation replaces the stage right after Send to Today commits. How: This renders only while runPhaStr is 'sent' and a real pick result still exists.
 
 
-						<div className={ cssModObj.staSenDiv }>{ /* What: Sent Stage Div Element. Why: The checkmark, the sent item's own name, and its caption read as one confirmation block. How: This wraps those three pieces. */ }
+						<div className={ cssModObj.staSenDiv }>{ /* What: Stage Sent Div Element. Why: The checkmark, the sent item's own name, and its caption read as one confirmation block. How: This wraps those three pieces. */ }
 
 
 							<div className={ cssModObj.senCheDiv }>{ /* What: Sent Check Div Element. Why: A checkmark icon needs its own small badge to sit in. How: This wraps a single IcoSvgCom. */ }
@@ -1181,7 +1181,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 							<div className={ cssModObj.senNamDiv }>{ picResObj.picObj.name }</div>{ /* What: Sent Name Div Element. Why: The user should see exactly which item just landed on Today. How: This renders picResObj.picObj.name. */ }
 
-							<div className={ cssModObj.staLabDiv }>Added to Today</div>{ /* What: Sent Label Div Element. Why: The confirmation needs a short caption. How: This renders the fixed literal text. */ }
+							<div className={ cssModObj.staLabDiv }>Added to Today</div>{ /* What: Sent Label Div Element. Why: In the sent stage, the confirmation needs a short caption. How: This renders the fixed literal text. */ }
 
 
 						</div>
@@ -1193,12 +1193,12 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 					{ runPhaStr === 'empty' && ( // What: Empty Stage Check. Why: A pool with nothing eligible needs its own explanatory state instead of a blank stage. How: This renders only while runPhaStr is 'empty'.
 
 
-						<div className={ cssModObj.staEmpDiv }>{ /* What: Empty Stage Div Element. Why: The placeholder number, its explanation, and (for Ease Down) a Refill button read as one block. How: This wraps those pieces. */ }
+						<div className={ cssModObj.staEmpDiv }>{ /* What: Stage Empty Div Element. Why: The placeholder number, its explanation, and (for Ease Down) a Refill button read as one block. How: This wraps those pieces. */ }
 
 
-							<div className={ cssModObj.staNumDiv }>&mdash;</div>{ /* What: Empty Number Div Element. Why: A dash stands in for "nothing to count" in the same slot the idle count normally uses. How: This renders a literal em dash glyph, the documented display-character exception to the no-em-dash copy rule. */ }
+							<div className={ cssModObj.staNumDiv }>&mdash;</div>{ /* What: Stage Number Div Element. Why: In the empty stage, a dash stands in for "nothing to count" in the same slot the idle count normally uses. How: This renders a literal em dash glyph, the documented display-character exception to the no-em-dash copy rule. */ }
 
-							<div className={ cssModObj.staLabDiv }>{ /* What: Empty Label Div Element. Why: Each mode empties out for a different reason and needs its own explanation. How: This picks one of three fixed sentences based on picDatObj.mode. */ }
+							<div className={ cssModObj.staLabDiv }>{ /* What: Empty Label Div Element. Why: In the empty stage, each mode empties out for a different reason and needs its own explanation. How: This picks one of three fixed sentences based on picDatObj.mode. */ }
 
 
 								{ picDatObj.mode === 'ease-up' // What: Ease Up Check. Why: An ease-up picker empties because nothing has drifted to eligibility yet. How: This picks the ease-up sentence when the mode matches.
@@ -1238,7 +1238,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 
-				<div className={ cssModObj.picActDiv }>{ /* What: Actions Div Element. Why: Exactly one action row (the done/sent trio, or the single Pick One button) shows at a time. How: This wraps whichever branch below currently matches runPhaStr. */ }
+				<div className={ cssModObj.picActDiv }>{ /* What: Picker Actions Div Element. Why: Exactly one action row (the done/sent trio, or the single Pick One button) shows at a time. How: This wraps whichever branch below currently matches runPhaStr. */ }
 
 
 					{ ( runPhaStr === 'done' || runPhaStr === 'sent' ) ? ( // What: Done-Or-Sent Actions Check. Why: Send to Today, Re-Roll, and Done only make sense once a pick has actually settled. How: This renders that trio while runPhaStr is 'done' or 'sent', otherwise the single Pick One button below.
@@ -1266,7 +1266,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 									key={ runPhaStr === 'sent' ? 'sent' : 'send' }
 
 									className={` ${ cssModObj.senLabSpa }   ${ cssModObj.senLabSpaFade } `}
-								>{ /* What: Send Label Span Element. Why: The label itself needs to cross-fade between its two states. How: This is re-keyed by runPhaStr so React replays the fade on every change. */ }
+								>{ /* What: Send Label Span Element. Why: The label itself needs to cross-fade between its two states. How: This is keyed by whether runPhaStr is 'sent', so React remounts it and replays the fade when the label changes. */ }
 
 
 									{ runPhaStr === 'sent' ? 'Sent!' : 'Send to Today' }{ /* What: Send Label Expression. Why: The label confirms the send once it happens. How: This reads 'Sent!' while runPhaStr is 'sent', otherwise 'Send to Today'. */ }
@@ -1292,7 +1292,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								kinValStr='ghost'
 
 								onClick={ () => aftExiFun( rerActFun ) }
-							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Hook Design Note. Why: The picRerBut hook lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding/app-features.tsx) without also matching Send to Today or Done. How: disabled and data-tour-disabled-active below still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. Its data-element-name-hook is read by the App Features tours. */ }
+							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Hook Design Note. Why: The picRerBut hook lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding/app-features.tsx) without also matching Send to Today or Done. How: disabled and data-tour-disabled-active above still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. Its data-element-name-hook is read by the App Features tours. */ }
 
 
 
@@ -1334,7 +1334,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 							kinValStr='primary'
 
 							onClick={ runPicFun }
-						>{ busPicBoo ? 'Picking…' : 'Pick One' }</ButBasCom> // What: Button Base Component. Why: This is the sole entry point into a fresh cycle. How: This calls runPicFun, disabling and relabeling itself while busPicBoo is true. Its data-element-name-hook is read by the Pickers page tour and the App Features tours.
+						>{ busPicBoo ? 'Picking…' : 'Pick One' }</ButBasCom> // What: Button Base Component. Why: This is the way into a first cycle from the idle stage. How: This calls runPicFun, disabling and relabeling itself while busPicBoo is true. Its data-element-name-hook is read by the Pickers page tour and the App Features tours.
 
 
 					) }
@@ -1347,7 +1347,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 
-			<div className={ cssModObj.picPooDiv }>{ /* What: Pool Div Element. Why: The item list and the add/edit slot below it form one visual section. How: This wraps pooIteDiv and iteAddDiv. */ }
+			<div className={ cssModObj.picPooDiv }>{ /* What: Picker Pool Div Element. Why: The item list and the add/edit slot below it form one visual section. How: This wraps pooIteDiv and iteAddDiv. */ }
 
 
 				<div
@@ -1360,7 +1360,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 					<div className={ cssModObj.pooHeaDiv }>{ /* What: Pool Header Div Element. Why: The eligible-count kicker and the drift-toggle link sit on one row. How: This wraps those two pieces. */ }
 
 
-						<span className={ cssModObj.pooKicSpa }>Pool &middot; { eliIteArr.filter( ( iteCurObj ) => !todIdeSet.has( iteCurObj.id ) && PIC_NAM_OBJ.modEliFun( iteCurObj, picDatObj ) ).length } of { picIteArr.length } eligible</span>{ /* What: Kicker Span Element. Why: The user needs a quick sense of how many of the pool's own items are actually pickable right now. How: This renders both the mode-eligible-and-not-on-Today count and the pool's own total size. */ }
+						<span className={ cssModObj.pooKicSpa }>Pool &middot; { eliIteArr.filter( ( iteCurObj ) => !todIdeSet.has( iteCurObj.id ) && PIC_NAM_OBJ.modEliFun( iteCurObj, picDatObj ) ).length } of { picIteArr.length } eligible</span>{ /* What: Pool Kicker Span Element. Why: The user needs a quick sense of how many of the pool's own items are actually pickable right now. How: This renders both the mode-eligible-and-not-on-Today count and the pool's own total size. */ }
 
 						{ ( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ) && ( // What: Drift Toggle Check. Why: Only a mode that actually tracks a drifting value has anything to show or hide here. How: This renders the Show/Hide drift link only for those modes.
 
@@ -1398,7 +1398,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 							const reaValNum = PIC_NAM_OBJ.reaValFun( curIteObj, picDatObj.mode, picDatObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ); // What: Readiness Value Number. Why: The drift bar (when shown) needs a normalized 0..1 progress value. How: This calls the shared readiness helper for this exact item/mode/threshold.
 							const eliHerBoo = PIC_NAM_OBJ.modEliFun( curIteObj, picDatObj );                                                      // What: Eligible Here Boolean. Why: The row needs to know whether this item is currently pickable under this picker's own mode rules. How: This calls the shared mode-eligibility helper.
-							const weiValNum = curIteObj.weight;                                                                                   // What: Weight Value Number. Why: The tooltip text needs the item's own current weight. How: This is read directly off curIteObj.weight. // What: Weight Tooltip String. Why: The wN pill (itself fixed, it never drifts) benefits from a plain-language hover explanation of what the number means. How: This is computed from curIteObj's own weight below.
+							const weiValNum = curIteObj.weight;                                                                                   // What: Weight Value Number. Why: The tooltip text needs the item's own current weight. How: This is read directly off curIteObj.weight.
 
 
 							const weiTipStr = weiValNum === 1 // What: Weight Tip String. Why: The weight pill's tooltip explains what this item's weight means. How: This picks the baseline sentence for w1, otherwise a multiplier sentence.
@@ -1406,7 +1406,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								: `Weight ${ weiValNum }, ${ weiValNum }× as likely to be picked as a w1 item.`; // What: Multiplied Weight Branch. Why: A heavier item is picked proportionally more often. How: This names the weight as a multiple of w1.
 
 
-							const thrValNum = picDatObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Two of the three explanations below need to quote the picker's own threshold. How: This falls back to PIC_NAM_OBJ.THR_VAL_NUM when the picker has no explicit threshold set. // What: Value Tooltip String. Why: The drifting `value` shown beside wN changes run-to-run, and what it means depends entirely on the picker's own mode. How: This picks one of three explanations, or an empty string for modes with no such meaning.
+							const thrValNum = picDatObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Two of the three explanations below need to quote the picker's own threshold. How: This falls back to PIC_NAM_OBJ.THR_VAL_NUM when the picker has no explicit threshold set.
 
 
 							const valTipStr = picDatObj.mode === 'dynamic' // What: Value Tip String. Why: The value pill's tooltip explains what the drifting number means for this picker's mode. How: This picks one sentence per mode, empty for modes with no drifting value.
@@ -1448,18 +1448,18 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 									} }
-								>{ /* What: Row Div Element. Why: Every pool item needs one row, whichever of its own name/meta/actions or delete-confirm content currently applies. How: This carries every one of this row's own transient animation classes, and commits the real delete/removal once its own leaving keyframe finishes. */ }
+								>{ /* What: Pool Row Div Element. Why: Every pool item needs one row, whichever of its own name/meta/actions or delete-confirm content currently applies. How: This carries every one of this row's own transient animation classes, and commits the real delete/removal once its own leaving keyframe finishes. */ }
 
 
 									{ conDelStr === curIteObj.id ? ( // What: Delete Confirm Check. Why: A row pending delete confirmation replaces its own normal content entirely. How: This renders the confirm row while conDelStr matches this item, otherwise the row's real content below.
 
 
-										<div className={` ${ cssModObj.delConDiv }   ${ conLeaStr === curIteObj.id ? cssModObj.delConDivLeaving : '' } `}>{ /* What: Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps delMesSpa and delActDiv. */ }
+										<div className={` ${ cssModObj.delConDiv }   ${ conLeaStr === curIteObj.id ? cssModObj.delConDivLeaving : '' } `}>{ /* What: Delete Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps delMesSpa and delActDiv. */ }
 
 
-											<span className={ cssModObj.delMesSpa }>Delete <strong>{ curIteObj.name }</strong>?</span>{ /* What: Confirm Message Span Element. Why: The user must see exactly which item they're about to delete. How: This renders curIteObj.name inside the fixed question text. */ }
+											<span className={ cssModObj.delMesSpa }>Delete <strong>{ curIteObj.name }</strong>?</span>{ /* What: Delete Message Span Element. Why: The user must see exactly which item they're about to delete. How: This renders curIteObj.name inside the fixed question text. */ }
 
-											<div className={ cssModObj.delActDiv }>{ /* What: Confirm Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
+											<div className={ cssModObj.delActDiv }>{ /* What: Delete Actions Div Element. Why: Cancel and Delete need to sit side by side. How: This wraps those two buttons. */ }
 
 
 												<ButBasCom
@@ -1499,10 +1499,10 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 										<React.Fragment>{ /* What: Row Content Fragment Element. Why: The name/meta block and the send/edit/delete actions below are true siblings with no shared wrapper of their own. How: This groups all of this row's own real content without adding an extra DOM node. */ }
 
 
-											<div className={ cssModObj.pooNamDiv }>{ /* What: Name Div Element. Why: The item's own name and its status pills (inactive/not yet/spent) belong together. How: This wraps the name span and its conditional pills. */ }
+											<div className={ cssModObj.pooNamDiv }>{ /* What: Pool Name Div Element. Why: The item's own name and its status pills (inactive/not yet/spent) belong together. How: This wraps the name span and its conditional pills. */ }
 
 
-												<span className={ cssModObj.iteNamSpa }>{ curIteObj.name }</span>{ /* What: Name Span Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
+												<span className={ cssModObj.iteNamSpa }>{ curIteObj.name }</span>{ /* What: Item Name Span Element. Why: Every row needs its own visible item name. How: This renders curIteObj.name. */ }
 
 
 
@@ -1515,7 +1515,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 											</div>
 
-											<div className={ cssModObj.pooMetDiv }>{ /* What: Meta Div Element. Why: The optional drift bar and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
+											<div className={ cssModObj.pooMetDiv }>{ /* What: Pool Meta Div Element. Why: The optional drift bar and the optional weight pill sit side by side. How: This wraps both, each independently gated. */ }
 
 
 												{ shoDriBoo && reaValNum != null && ( // What: Drift Bar Check. Why: The drift bar only makes sense once the toggle is on and this mode actually has a readiness value at all. How: This renders the InfTipCom-wrapped bar only when both conditions hold.
@@ -1536,7 +1536,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 
-														<span className={ cssModObj.pooValSpa }>{ Math.round( curIteObj.value ) }</span>{ /* What: Value Span Element. Why: The exact underlying number is still useful alongside the bar. How: This renders curIteObj.value, rounded. */ }
+														<span className={ cssModObj.pooValSpa }>{ Math.round( curIteObj.value ) }</span>{ /* What: Pool Value Span Element. Why: The exact underlying number is still useful alongside the bar. How: This renders curIteObj.value, rounded. */ }
 
 
 													</InfTipCom>
@@ -1553,7 +1553,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 														className={ cssModObj.pooWeiSpa }
 
 														labTexStr={ weiTipStr }
-													>w{ curIteObj.weight }</InfTipCom> // What: Info Tip Component. Why: The weight number benefits from the same hover explanation every other tooltip in this row gets. How: This renders "w" plus the raw weight, tipped with weiTipStr.
+													>w{ curIteObj.weight }</InfTipCom> // What: Info Tip Component. Why: The weight number benefits from a hover explanation of what it means. How: This renders "w" plus the raw weight, tipped with weiTipStr.
 
 
 												) }
@@ -1574,7 +1574,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 													aria-label={ `${ curIteObj.name } sent to Today` }
 													title='Sent to Today'
-												>{ /* What: Sent Pool Button Element. Why: A brief, disabled confirmation reads clearer than the button just vanishing. How: This is disabled and shows a checkmark instead of the calendar glyph. */ }
+												>{ /* What: Pool Send Button Element. Why: In its sent variant, a brief, disabled confirmation reads clearer than the button just vanishing. How: This is disabled and shows a checkmark instead of the calendar glyph. */ }
 
 
 													<IcoSvgCom
@@ -1622,7 +1622,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 													title='Send to Today'
 
 													onClick={ () => senIteFun( curIteObj.id ) }
-												>{ /* What: Send Pool Button Element. Why: This is the actual per-item Send to Today action. How: This calls senIteFun with this row's own item id. */ }
+												>{ /* What: Pool Send Button Element. Why: This is the actual per-item Send to Today action. How: This calls senIteFun with this row's own item id. */ }
 
 
 													<IcoSvgCom
@@ -1648,7 +1648,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 												title='Edit'
 
 												onClick={ () => staEdiFun( curIteObj.id ) }
-											>{ /* What: Edit Pool Button Element. Why: Every row needs a way to open its own item in the shared editor slot below. How: This calls staEdiFun with this row's own item id. */ }
+											>{ /* What: Pool Edit Button Element. Why: Every row needs a way to open its own item in the shared editor slot below. How: This calls staEdiFun with this row's own item id. */ }
 
 
 												<IcoSvgCom
@@ -1661,7 +1661,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 
-											{ picIteArr.length <= 2 ? ( // What: Delete Guard Check. Why: A picker must always keep at least 2 items, so the last two rows can't offer a real delete button at all. How: This renders a disabled, explanatory InfTipCom instead of a working Delete button whenever the pool is at that floor.
+											{ picIteArr.length <= 2 ? ( // What: Delete Guard Check. Why: A picker needs at least 2 items, so no row offers a real Delete button while the pool has 2 or fewer. How: This renders a disabled, explanatory InfTipCom instead of a working Delete button whenever the pool is at that floor.
 
 
 												<InfTipCom
@@ -1693,7 +1693,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 													aria-label={ `Delete ${ curIteObj.name }` }
 
 													onClick={ () => setConDelStr( curIteObj.id ) }
-												>{ /* What: Delete Pool Button Element. Why: This starts this row's own delete-confirm flow. How: This writes curIteObj.id into conDelStr. */ }
+												>{ /* What: Pool Delete Button Element. Why: This starts this row's own delete-confirm flow. How: This writes curIteObj.id into conDelStr. */ }
 
 
 													<IcoSvgCom
@@ -1736,7 +1736,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 					className={ cssModObj.iteAddDiv }
 
 					data-element-name-hook='iteAddDiv'
-				>{ /* What: Add Item Wrap Div Element. Why: The new-item form, the existing-item editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
+				>{ /* What: Item Add Div Element. Why: The new-item form, the existing-item editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the picker mini-tours. */ }
 
 
 					{ ( () => { // What: Additem Slot Render. Why: Exactly one of three things belongs in this slot at a time (an open existing-item editor, an open new-item draft editor, or the plain add button), and that choice is easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then newDraObj, falling back to the plain button.
@@ -1748,7 +1748,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 							const ediLivObj = staAppObj.items.find( ( iteCurObj ) => iteCurObj.id === ediIteStr ); // What: Editing Live Object. Why: The editor slot needs the real item, both to fall back on while closing and to notice it was deleted. How: This looks up ediIteStr fresh in staAppObj.items on every render.
 
 
-							if ( !ediLivObj ) return null; // What: Vanished Item Guard. Why: The item may have been deleted via the row's own trash icon while this was open; that confirm flow already owns closing this out. How: This renders nothing rather than crashing against a missing item.
+							if ( !ediLivObj ) return null; // What: Vanished Item Guard. Why: The item may have been deleted via the row's own trash icon while this was open, and the Deleted-Under-Editor Effect above then clears ediIteStr. How: This renders nothing rather than crashing against a missing item.
 
 
 
@@ -1853,7 +1853,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 								} }
 								onNamChaFun={ ( namValStr ) => patNewFun( { name : namValStr } ) }
-								onNamCmtFun={ ( namValStr ) => patNewFun( { name : namValStr } ) } // What: On Name Commit Function. Why: Leaving the name field commits a tidied name. How: This writes the trimmed name into the draft through patNewFun.
+								onNamCmtFun={ ( namValStr ) => patNewFun( { name : namValStr } ) } // What: On Name Commit Function. Why: Leaving the name field commits its final name. How: This writes the committed name into the draft through patNewFun.
 								onPatIteFun={ patNewFun }
 								onSavEdiFun={ () => setNewCloStr( 'save' ) }
 							/> // What: Item Card Component. Why: This is the whole new-item draft editor slot, playing its own closing animation before actually committing or discarding. How: This is passed the draft and its local patch function, commits the draft via cmtNewFun only when newCloStr is 'save', then reopens whatever staEdiFun staged in penEdiRef.
