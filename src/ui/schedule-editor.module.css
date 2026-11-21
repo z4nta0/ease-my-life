@@ -101,7 +101,7 @@
 
 
 	--seg-gri-fle : 100%; /* What: Segment Grid Flex. Why: The Repeat control always takes its own full-width line under the label, so every browser lays it out the same way. How: The Repeat segmented control reads this as its flex basis. */
-	--seg-max-wid : 100%; /* What: Segment Max Width. Why: A segmented control in a row must never grow past the row. How: The segmented control reads this as its max width. */
+	--seg-max-wid : 100%; /* What: Segment Maximum Width. Why: A segmented control in a row must never grow past the row. How: The segmented control reads this as its max width. */
 
 	align-items     : center;
 	border-bottom   : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

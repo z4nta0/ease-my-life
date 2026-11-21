@@ -25,7 +25,7 @@ import { scrBehFun    } from '../../utils/motion.ts';     // What: Scroll Behavi
 import { SED_NAM_OBJ  } from '../../state/seed.ts';       // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
 import { selAllFun    } from '../../utils/input.ts';      // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This is the name field's ref callback, selecting its text once as it mounts.
 import { useDelConFun } from './delete-confirm.ts';       // What: Use Delete Confirm Function. Why: A pool row's inline delete confirmation is shared with the other pool on this tab. How: This is called once for the confirm state and its Cancel handler.
-import { useEmlTouFun } from '../../state/tour-bus.ts';   // What: Use Ease My Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
+import { useEmlTouFun } from '../../state/tour-bus.ts';   // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the picker mini-tour's nonces, the page tour's gating, and the empty-state create prefill.
 import { useIteDraFun } from '../../ui/record-draft.ts';  // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
 
 
@@ -338,8 +338,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		if ( isaEasBoo ) { // What: Ease Patch Guard. Why: The drift band and starting charge only matter for ease-up/ease-down modes. How: This adds the draft's own easeMin/easeMax/value into patIteObj only when isaEasBoo is true.
 
 
-			patIteObj.easeMin = draIteObj.easeMin; // What: Ease Min Copy. Why: An ease item keeps the soonest end of its drift band. How: This copies easeMin from the draft.
-			patIteObj.easeMax = draIteObj.easeMax; // What: Ease Max Copy. Why: An ease item keeps the latest end of its drift band. How: This copies easeMax from the draft.
+			patIteObj.easeMin = draIteObj.easeMin; // What: Ease Minimum Copy. Why: An ease item keeps the soonest end of its drift band. How: This copies easeMin from the draft.
+			patIteObj.easeMax = draIteObj.easeMax; // What: Ease Maximum Copy. Why: An ease item keeps the latest end of its drift band. How: This copies easeMax from the draft.
 			patIteObj.value = draIteObj.value;     // What: Value Copy. Why: An ease item keeps its starting charge. How: This copies value from the draft.
 
 
@@ -463,8 +463,8 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 		setNewDraObj( { // What: New Draft Seed Call. Why: The freshly-opened editor needs a complete, sensible default item shape to start from. How: This seeds a full charge default for Ease Down (matching addPicFun's own iniValNum) and a zeroed one otherwise. // What: Type Assertion Note. Why: The draft lacks the fields only a saved item has. How: It's read as an item, since the store fills those in when the draft is committed.
 
 
-			easeMax  : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax,                                                         // What: Ease Max. Why: Ease items start with a default upper drift, their soonest end. How: This is the pickers' default band's, DEF_EAS_OBJ.
-			easeMin  : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin,                                                         // What: Ease Min. Why: Ease items start with a default lower drift, their latest end. How: This is the pickers' default band's, DEF_EAS_OBJ.
+			easeMax  : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax,                                                         // What: Ease Maximum. Why: Ease items start with a default upper drift, their soonest end. How: This is the pickers' default band's, DEF_EAS_OBJ.
+			easeMin  : PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin,                                                         // What: Ease Minimum. Why: Ease items start with a default lower drift, their latest end. How: This is the pickers' default band's, DEF_EAS_OBJ.
 			id       : newIdeStr,                                                                               // What: ID. Why: The draft needs its own id before it's saved. How: This uses newIdeStr.
 			name     : 'New item',                                                                              // What: Name. Why: The editor opens with a placeholder name. How: This is the literal 'New item'.
 			vacation : false,                                                                                   // What: Vacation. Why: A new item starts active. How: This is false.

@@ -76,8 +76,8 @@ type ConRcdTyp = { // What: Conditional Record Type. Why: A conditional is the d
 	cardText     : string;                                                                                // What: Card Text. Why: A triggered conditional shows a day-off card on Today. How: This is that card's own text.
 	chargedToday : boolean;                                                                               // What: Charged Today. Why: An ease conditional charges at most once per day. How: This is true once today's first dependent completion has charged it.
 	chargeStep?  : number;                                                                                // What: Charge Step. Why: The ease modes move a conditional by a fixed planned step each cycle. How: This holds that step, absent until one is rolled.
-	easeMax      : number;                                                                                // What: Ease Max. Why: The ease modes need an upper drift bound. How: This is the largest step a cycle can roll.
-	easeMin      : number;                                                                                // What: Ease Min. Why: The ease modes need a lower drift bound. How: This is the smallest step a cycle can roll.
+	easeMax      : number;                                                                                // What: Ease Maximum. Why: The ease modes need an upper drift bound. How: This is the largest step a cycle can roll.
+	easeMin      : number;                                                                                // What: Ease Minimum. Why: The ease modes need a lower drift bound. How: This is the smallest step a cycle can roll.
 	id           : string;                                                                                // What: ID. Why: Pickers and log rows refer to a conditional by it. How: This is its stable identifier.
 	mode         : ModNamTyp;                                                                             // What: Mode. Why: A conditional decides whether to trigger in one of the five picker ways. How: This names which.
 	name         : string;                                                                                // What: Name. Why: The conditional is listed and logged by name. How: This is the user's own label for it.
@@ -151,8 +151,8 @@ type IteRcdTyp = { // What: Item Record Type. Why: An item is one choice in a pi
 
 
 	chargeStep? : number;        // What: Charge Step. Why: An ease item charges or drains by a fixed planned step. How: This holds that step, absent until one is rolled.
-	easeMax?    : number;        // What: Ease Max. Why: An ease item has its own drift band. How: This is the band's upper bound, absent outside the ease modes.
-	easeMin?    : number;        // What: Ease Min. Why: An ease item has its own drift band. How: This is the band's lower bound, absent outside the ease modes.
+	easeMax?    : number;        // What: Ease Maximum. Why: An ease item has its own drift band. How: This is the band's upper bound, absent outside the ease modes.
+	easeMin?    : number;        // What: Ease Minimum. Why: An ease item has its own drift band. How: This is the band's lower bound, absent outside the ease modes.
 	id          : string;        // What: ID. Why: Today entries and log rows refer to an item by it. How: This is its stable identifier.
 	lastPicked  : string | null; // What: Last Picked. Why: Ties break toward the item picked longest ago. How: This is the last pick's ISO timestamp, or null if never picked.
 	name        : string;        // What: Name. Why: The item is shown and logged by name. How: This is the user's own label for it.
@@ -236,8 +236,8 @@ type PicRcdTyp = { // What: Picker Record Type. Why: A picker is a pool of items
 	createdFromSample? : string;        // What: Created From Sample. Why: A tour's replay has to find the picker it made before. How: This is the sample's id, absent on the user's own pickers.
 	dateMode?          : DatModTyp;     // What: Date Mode. Why: A monthly or yearly picker falls on a day of the month or on the Nth weekday. How: This names which, absent meaning a day of the month.
 	daysOfWeek         : number[];      // What: Days Of Week. Why: A picker can be limited to certain weekdays. How: This lists them, 0 for Sunday.
-	easeMax            : number;        // What: Ease Max. Why: New ease items take the picker's default drift band. How: This is the band's upper bound.
-	easeMin            : number;        // What: Ease Min. Why: New ease items take the picker's default drift band. How: This is the band's lower bound.
+	easeMax            : number;        // What: Ease Maximum. Why: New ease items take the picker's default drift band. How: This is the band's upper bound.
+	easeMin            : number;        // What: Ease Minimum. Why: New ease items take the picker's default drift band. How: This is the band's lower bound.
 	group              : string;        // What: Group. Why: Today clusters pickers into groups. How: This is the group's label.
 	hidden             : boolean;       // What: Hidden. Why: Sample pickers stay saved but out of sight until a tour shows them. How: This is true while hidden.
 	id                 : string;        // What: ID. Why: Items, entries, and log rows refer to a picker by it. How: This is its stable identifier.

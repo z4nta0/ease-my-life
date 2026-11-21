@@ -16,7 +16,7 @@ import { ordSufFun   } from '../utils/date.ts';        // What: Ordinal Suffix F
 import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control Component. Why: The top-level cadence picker uses the shared animated segmented control. How: This is rendered once for the cadence choice.
 
 
-import type { CadFieTyp } from '../core/cadence.ts';    // What: Cadence Fields Type. Why: The editor reads and patches a picker's cadence fields. How: This types CccProTyp's value and patches.
+import type { CadFieTyp } from '../core/cadence.ts';    // What: Cadence Field Type. Why: The editor reads and patches a picker's cadence fields. How: This types CccProTyp's value and patches.
 import type { CadNamTyp } from '../core/data-model.ts'; // What: Cadence Name Type. Why: Each cadence option's key is one of the fixed cadences. How: This types CAD_OPT_ARR's keys, so the cadence picker hands back a real cadence.
 import type { JSX       } from 'react';                 // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.
 

@@ -25,7 +25,7 @@ import { STA_HEL_ARR  } from '../../help/stats-catalog.tsx';  // What: Stats Hel
 import { TAS_NAM_OBJ  } from '../../core/tasks.ts';           // What: Tasks Namespace Object. Why: Which reminder types actually opt into Stats is a persisted, normalized setting. How: This is called via TAS_NAM_OBJ.norOptFun on the raw persisted reminderOpts.
 import { togFadFun    } from '../../ui/edge-fade.ts';         // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { unhHisFun    } from '../../state/sample-history.ts'; // What: Unhide History Function. Why: Help mode borrows the real hidden sample pickers so the heatmap and breakdown have genuine history to show. How: This is called whenever helModBoo turns true, as long as the page tour doesn't already own the same samples.
-import { useEmlTouFun } from '../../state/tour-bus.ts';       // What: Use Ease My Life Tour Function. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's resTopNum field.
+import { useEmlTouFun } from '../../state/tour-bus.ts';       // What: Use Ease-My-Life Tour Function. Why: The Welcome Tour needs to reserve top space above this page's content when its own coach card doesn't fit. How: This is called once to read the shared tour event bus's resTopNum field.
 
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The Stats tab changes its saved filters through the store's actions. How: This types TtcProTyp's actStoObj.
@@ -2452,8 +2452,8 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-		const easMinNum = iteCurObj.easeMin ?? scoPicObj.easeMin ?? 1; // What: Ease Min Number. Why: The band's own upper bound (latest) is derived from the smaller drift value. How: This reads the item's own easeMin, falling back to the picker's own default, then 1.
-		const easMaxNum = iteCurObj.easeMax ?? scoPicObj.easeMax ?? 1; // What: Ease Max Number. Why: The band's own lower bound (soonest) is derived from the larger drift value. How: This reads the item's own easeMax, falling back to the picker's own default, then 1.
+		const easMinNum = iteCurObj.easeMin ?? scoPicObj.easeMin ?? 1; // What: Ease Minimum Number. Why: The band's own upper bound (latest) is derived from the smaller drift value. How: This reads the item's own easeMin, falling back to the picker's own default, then 1.
+		const easMaxNum = iteCurObj.easeMax ?? scoPicObj.easeMax ?? 1; // What: Ease Maximum Number. Why: The band's own lower bound (soonest) is derived from the larger drift value. How: This reads the item's own easeMax, falling back to the picker's own default, then 1.
 		const sooDayNum = PIC_NAM_OBJ.driDayFun( easMaxNum );          // What: Soonest Day Number. Why: The fastest a full drift cycle can complete is governed by the larger (max) drift value. How: This divides the threshold by easMaxNum, floored at 1 day.
 		const latDayNum = PIC_NAM_OBJ.driDayFun( easMinNum );          // What: Latest Day Number. Why: The slowest a full drift cycle can complete is governed by the smaller (min) drift value. How: This divides the threshold by easMinNum, floored at 1 day.
 

@@ -37,7 +37,7 @@
 	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
 	justify-content : space-between;
 	margin-bottom   : var( --seg-bot-mar, 0 );                         /* Segment Bottom Margin, set by its parent, falling back to 0 */ /* What: Segment Bottom Margin. Why: The cadence editor wants room below its controls. How: A parent sets --seg-bot-mar, falling back to none. */
-	max-width       : var( --seg-max-wid, none );                      /* Segment Max Width, set by its parent, falling back to none */ /* What: Segment Max Width. Why: In the schedule editor's rows layout no control may outgrow its row. How: A parent sets --seg-max-wid, falling back to no limit. */
+	max-width       : var( --seg-max-wid, none );                      /* Segment Max Width, set by its parent, falling back to none */ /* What: Segment Maximum Width. Why: In the schedule editor's rows layout no control may outgrow its row. How: A parent sets --seg-max-wid, falling back to no limit. */
 	padding         : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
 	position        : relative;
 

@@ -2,10 +2,10 @@
 
 
 
-<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><!-- What: Url Set Element. Why: A sitemap lists a site's pages inside one url set. How: This uses the sitemaps.org namespace crawlers recognize. --><!-- The app is one page, and its legal documents each have a page of their own. -->
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><!-- What: URL Set Element. Why: A sitemap lists a site's pages inside one url set. How: This uses the sitemaps.org namespace crawlers recognize. --><!-- The app is one page, and its legal documents each have a page of their own. -->
 
 
-	<url><!-- What: Home Url Element. Why: The app's only page is its root. How: This wraps the root's address and its crawl hints. -->
+	<url><!-- What: Home URL Element. Why: The app's only page is its root. How: This wraps the root's address and its crawl hints. -->
 
 
 		<loc>https://easemylife.app/</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the root's absolute URL. -->
@@ -19,7 +19,7 @@
 
 	</url>
 
-	<url><!-- What: Privacy Url Element. Why: The privacy policy has a fixed page of its own. How: This wraps its address and its crawl hints. -->
+	<url><!-- What: Privacy URL Element. Why: The privacy policy has a fixed page of its own. How: This wraps its address and its crawl hints. -->
 
 
 		<loc>https://easemylife.app/privacy</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the policy's absolute URL. -->
@@ -33,7 +33,7 @@
 
 	</url>
 
-	<url><!-- What: Terms Url Element. Why: The terms have a fixed page of their own. How: This wraps their address and their crawl hints. -->
+	<url><!-- What: Terms URL Element. Why: The terms have a fixed page of their own. How: This wraps their address and their crawl hints. -->
 
 
 		<loc>https://easemylife.app/terms</loc><!-- What: Location Element. Why: Every entry needs the page's address. How: This gives the terms' absolute URL. -->

@@ -4,7 +4,7 @@
 // #region Imports
 
 import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: A sample picker keeps its launcher card only until its tutorial is done. How: This is called via ONB_CHE_OBJ.entLooFun.
-import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: Sample pickers get launcher cards instead of picked entries. How: This is checked with .includes for each picker.
+import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: Sample pickers get launcher cards instead of picked entries. How: This is checked with .includes for each picker.
 
 
 import type { EntKinTyp } from '../../core/data-model.ts'; // What: Entry Kind Type. Why: A row's entry kind extends the saved kinds with a tutorial launcher. How: This types TodRowTyp's kind.

@@ -3,8 +3,8 @@
 
 // #region Imports
 
-import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-IDs Array. Why: This module needs every seeded sample picker's own id to list its own checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun and tutProFun below, and spread into CHE_IDE_ARR.
-import { ONB_STI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Task-IDs Array. Why: This module needs every seeded sample task's own id to list its own checklist entries below. How: This is spread into CHE_IDE_ARR below and read by tutProFun.
+import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: This module needs every seeded sample picker's own id to list its own checklist entries below and to tell a real, user-created picker apart from a sample one. How: This is read directly by reaPicFun and tutProFun below, and spread into CHE_IDE_ARR.
+import { ONB_STI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Identifiers Array. Why: This module needs every seeded sample task's own id to list its own checklist entries below. How: This is spread into CHE_IDE_ARR below and read by tutProFun.
 
 
 import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: Every checklist entry records how its item was resolved. How: This types entLooFun's returned entry.

@@ -13,7 +13,7 @@ import { clePicFun    } from '../../help/sample-data.ts';           // What: Cle
 import { cleTasFun    } from '../../help/sample-data.ts';           // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helOpeBoo turns off and on TabDatCom's own unmount cleanup.
 import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: Picker cards, their Controls and Items disclosures, and item rows share the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
 import { colMapFun    } from '../../state/store.ts';                // What: Collapsed Map Function. Why: The saved section collapse state may be missing on an old save. How: This is called with the app state to read the collapse map, empty when there is none.
-import { ConManCom    } from './conditionals-manager.tsx';          // What: Conditional Manager Component. Why: The Data tab lists every conditional in its own section above the picker cards. How: This is rendered once in TabDatCom whenever the Conditionals scope is shown.
+import { ConManCom    } from './conditionals-manager.tsx';          // What: Conditionals Manager Component. Why: The Data tab lists every conditional in its own section above the picker cards. How: This is rendered once in TabDatCom whenever the Conditionals scope is shown.
 import { DAT_HEL_ARR  } from '../../help/data-catalog.tsx';         // What: Data Help Array. Why: Help mode needs this tab's own catalog of labeled elements to badge. How: This is passed straight through to HelOveCom's own items prop.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EntEdiCom    } from '../../ui/entry-editor.tsx';           // What: Entry Editor Component. Why: A picker's own item editor must stay an exact copy of Today's, so this file reuses it rather than a second implementation. How: This is aliased to IteEdiCom and rendered once per open item row.
@@ -39,7 +39,7 @@ import { sorEntFun    } from './list-sorting.ts';                   // What: Sor
 import { SorSelCom    } from './sort-select.tsx';                   // What: Sort Select Component. Why: Every sortable list in this tab needs the same sort control. How: This is rendered for sections and each picker's own item list.
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { UnmWatCom    } from './unmount-watcher.ts';                // What: Unmount Watcher Component. Why: An open row that disappears some other way than its own chevron or Save still keeps its edits. How: This is rendered inside the open row's editor.
-import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease My Life Tour Function. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's touPhaStr/touIdeStr/touSteNum fields.
+import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease-My-Life Tour Function. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's touPhaStr/touIdeStr/touSteNum fields.
 import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use Item Draft Function. Why: The open item row edits a local draft, committed when the row closes. How: This is called once with whichever item's row is open.
 
 
@@ -827,8 +827,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 			avoidDuplicates : false,                                         // What: Avoid Duplicates. Why: A new picker allows duplicates until told otherwise. How: This is false.
 			conditionalId   : filConStr !== 'all' ? filConStr : null,        // What: Conditional ID. Why: An active Conditionals filter pre-attaches that conditional. How: This uses filConStr unless it's 'all'.
 			daysOfWeek      : [ 0, 1, 2, 3, 4, 5, 6 ],                       // What: Days Of Week. Why: A new picker runs every day until narrowed. How: This lists all 7 weekdays.
-			easeMax         : 20,                                            // What: Ease Max. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 20.
-			easeMin         : 10,                                            // What: Ease Min. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 10.
+			easeMax         : 20,                                            // What: Ease Maximum. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 20.
+			easeMin         : 10,                                            // What: Ease Minimum. Why: The picker-level drift band is only its items' fallback span. How: This is addPicFun's own default, 10.
 			group           : filGroStr !== 'all' ? filGroStr : '',          // What: Group. Why: An active Group filter pre-fills the group. How: This uses filGroStr unless it's 'all'.
 			id              : ranIdeFun( 'pkr_' ),                           // What: ID. Why: The draft's card and its items need a stable id, kept when the picker is created. How: This mints a random 'pkr_' id.
 			includeInDaily  : true,                                          // What: Include In Daily. Why: A new picker joins the daily generator unless told otherwise. How: This is true.
@@ -1977,7 +1977,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					const iteEntFun = ( iteCurObj : IteRcdTyp ) : SorRowTyp => { // What: Item Entry Function. Why: Every item needs the same comparable shape before sorEntFun can sort them. How: This builds an { actBoo, booNum, couNum, groStr, namStr, ranNum, typStr } entry per item, mode-dependent per pisOptFun.
 
 
-						const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax; // What: Ease Max Number. Why: The Range field below needs this item's own (or the fallback) ease-max value. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMax, the engine's own default band.
+						const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax; // What: Ease Maximum Number. Why: The Range field below needs this item's own (or the fallback) ease-max value. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMax, the engine's own default band.
 
 
 
@@ -2386,8 +2386,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 												const iteOpeBoo = opeIteStr === iteCurObj.id;                                                 // What: Item Open Boolean. Why: This specific row needs to know whether IT is the currently-open one. How: This compares iteCurObj.id against opeIteStr.
-												const easMinNum = iteCurObj.easeMin ?? falEasObj?.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin; // What: Ease Min Number. Why: The meta text below needs this item's own (or the fallback) ease-min value, same fallback the picking engine itself uses. How: This reads iteCurObj.easeMin, falling back to falEasObj's own easeMin, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMin, the engine's own default band.
-												const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax; // What: Ease Max Number. Why: Same reasoning as easMinNum, for the max end. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMax, the engine's own default band.
+												const easMinNum = iteCurObj.easeMin ?? falEasObj?.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin; // What: Ease Minimum Number. Why: The meta text below needs this item's own (or the fallback) ease-min value, same fallback the picking engine itself uses. How: This reads iteCurObj.easeMin, falling back to falEasObj's own easeMin, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMin, the engine's own default band.
+												const easMaxNum = iteCurObj.easeMax ?? falEasObj?.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax; // What: Ease Maximum Number. Why: Same reasoning as easMinNum, for the max end. How: This reads iteCurObj.easeMax, falling back to falEasObj's own easeMax, then PIC_NAM_OBJ.DEF_EAS_OBJ's easeMax, the engine's own default band.
 												const sooValNum = PIC_NAM_OBJ.driDayFun( easMaxNum );                                         // What: Soonest Value Number. Why: The meta text's own day-band needs its own near end. How: This converts easMaxNum into a day count.
 												const latValNum = PIC_NAM_OBJ.driDayFun( easMinNum );                                         // What: Latest Value Number. Why: Same reasoning as sooValNum, for the far end. How: This converts easMinNum into a day count.
 

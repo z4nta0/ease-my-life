@@ -387,8 +387,8 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 		onPatIteFun({ // What: Patch Item Call. Why: Raising easeMax can push it below the existing easeMin, which would invert the band. How: This writes the new easeMax into the draft, clamping easeMin down to match if it would otherwise exceed the new easeMax.
 
 
-			easeMax : newMaxNum,                       // What: Ease Max. Why: This is the new upper drift bound the user just typed. How: This writes newMaxNum.
-			easeMin : Math.min( easMinNum, newMaxNum ) // What: Ease Min. Why: The band must never invert. How: This keeps the current easeMin unless it now exceeds newMaxNum.
+			easeMax : newMaxNum,                       // What: Ease Maximum. Why: This is the new upper drift bound the user just typed. How: This writes newMaxNum.
+			easeMin : Math.min( easMinNum, newMaxNum ) // What: Ease Minimum. Why: The band must never invert. How: This keeps the current easeMin unless it now exceeds newMaxNum.
 
 
 		});
@@ -431,8 +431,8 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 		onPatIteFun({ // What: Patch Item Call. Why: Lowering easeMin can push it above the existing easeMax, which would invert the band. How: This writes the new easeMin into the draft, clamping easeMax up to match if it would otherwise fall under the new easeMin.
 
 
-			easeMax : Math.max( easMaxNum, newMinNum ), // What: Ease Max. Why: The band must never invert. How: This keeps the current easeMax unless it now falls under newMinNum.
-			easeMin : newMinNum                         // What: Ease Min. Why: This is the new lower drift bound the user just typed. How: This writes newMinNum.
+			easeMax : Math.max( easMaxNum, newMinNum ), // What: Ease Maximum. Why: The band must never invert. How: This keeps the current easeMax unless it now falls under newMinNum.
+			easeMin : newMinNum                         // What: Ease Minimum. Why: This is the new lower drift bound the user just typed. How: This writes newMinNum.
 
 
 		});

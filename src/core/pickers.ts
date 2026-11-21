@@ -353,8 +353,8 @@ function aveEasFun ( iteAllArr : IteRcdTyp[], picIdeStr : string | undefined ) :
 	return { // What: Averaged Ease Return. Why: The caller needs a real, rounded, at-least-1 band, not a raw (possibly fractional or zero) average. How: This rounds and floors-at-1 both aveKeyFun results.
 
 
-		easeMax : Math.max( 1, Math.round( aveKeyFun( 'easeMax' ) ) ), // What: Ease Max. Why: This is the averaged fastest end of the band. How: This rounds aveKeyFun's own easeMax average and floors it at 1.
-		easeMin : Math.max( 1, Math.round( aveKeyFun( 'easeMin' ) ) )  // What: Ease Min. Why: This is the averaged slowest end of the band. How: This rounds aveKeyFun's own easeMin average and floors it at 1.
+		easeMax : Math.max( 1, Math.round( aveKeyFun( 'easeMax' ) ) ), // What: Ease Maximum. Why: This is the averaged fastest end of the band. How: This rounds aveKeyFun's own easeMax average and floors it at 1.
+		easeMin : Math.max( 1, Math.round( aveKeyFun( 'easeMin' ) ) )  // What: Ease Minimum. Why: This is the averaged slowest end of the band. How: This rounds aveKeyFun's own easeMin average and floors it at 1.
 
 
 	};

@@ -96,7 +96,7 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 	// #region Vertical Placement
 
-	let maxHeiNum; // What: Max Height Number. Why: Exactly one of the branches below assigns the tip's own scroll cap. How: This is returned as-is once that branch has run.
+	let maxHeiNum; // What: Maximum Height Number. Why: Exactly one of the branches below assigns the tip's own scroll cap. How: This is returned as-is once that branch has run.
 	let tipClaStr; // What: Tip Class String. Why: Exactly one of the branches below picks the arrow direction class. How: This is returned as-is once that branch has run.
 	let topTipNum; // What: Top Tip Number. Why: Exactly one of the branches below assigns the tip's own top. How: This is returned as-is once that branch has run.
 
@@ -120,7 +120,7 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 		topTipNum = tarRecObj.bottom + rhyPixFun( 'bas' ); // What: Below Top Set. Why: The below branch places the tip a fixed base step under the target, whether it always sits below or has the room there. How: This sets topTipNum to the target's own bottom plus the base step. // Vertical Rhythm Base ~= 14.572px
 		tipClaStr = 'helTipDiv--up';                       // What: Up Arrow Set. Why: A tip below the target points its arrow up at it. How: This sets tipClaStr to the up-pointing arrow class.
-		maxHeiNum = vieHeiNum - topTipNum - edgMarNum;     // What: Max Height Cap. Why: A below-placed tip must still not overflow past the bottom of the viewport. How: This subtracts topTipNum and the edge margin from the viewport's own height.
+		maxHeiNum = vieHeiNum - topTipNum - edgMarNum;     // What: Maximum Height Cap. Why: A below-placed tip must still not overflow past the bottom of the viewport. How: This subtracts topTipNum and the edge margin from the viewport's own height.
 
 
 	}
@@ -130,7 +130,7 @@ function plaTipFun ( tarRecObj : HelRecTyp, tipWidNum : number, tipHeiNum : numb
 
 		topTipNum = Math.max( edgMarNum, aboAncNum - gapAboNum - tipHeiNum ); // What: Above Top Set. Why: The flip-above branch places the tip so its own bottom edge clears aboAncNum by gapAboNum, capped to never rise above the edge margin. How: This sets topTipNum via Math.max against edgMarNum.
 		tipClaStr = 'helTipDiv--down';                                        // What: Down Arrow Set. Why: A tip above the target points its arrow down at it. How: This sets tipClaStr to the down-pointing arrow class.
-		maxHeiNum = spaAboNum;                                                // What: Above Max Height. Why: An above-placed tip's own ceiling is the target itself, not the viewport's own bottom edge (reusing the "below" formula here let a clamped top overflow back down through the target). How: This bounds maxHeiNum by spaAboNum instead.
+		maxHeiNum = spaAboNum;                                                // What: Above Maximum Height. Why: An above-placed tip's own ceiling is the target itself, not the viewport's own bottom edge (reusing the "below" formula here let a clamped top overflow back down through the target). How: This bounds maxHeiNum by spaAboNum instead.
 
 
 	}
@@ -206,7 +206,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 	const tipEleRef                   = React.useRef< HTMLDivElement | null >( null );        // What: Tip Element Reference. Why: The layout effect below needs a handle on the real tip DOM node to measure and position it. How: This is attached to the root coach div's own ref prop below.
 	const [ tipStyObj, setTipStyObj ] = React.useState< React.CSSProperties | null >( null ); // What: Tip Style Object And Setter. Why: The tip's own absolute position is not known until after its first mount/measure. How: This starts null (rendered off-screen) and is written by the layout effect below.
 	const [ arrClaStr, setArrClaStr ] = React.useState( 'helTipDiv--up' );                    // What: Arrow Class String And Setter. Why: The tip's own arrow direction depends on whether it landed above or below the target. How: This starts pointing up (the "below target" case) and is written by the layout effect below.
-	const [ scrMaxNum, setScrMaxNum ] = React.useState< number | null >( null );              // What: Scroll Max Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
+	const [ scrMaxNum, setScrMaxNum ] = React.useState< number | null >( null );              // What: Scroll Maximum Number And Setter. Why: A scrollable tip needs its own inner cap recomputed alongside its position. How: This starts null (uncapped) and is written by the layout effect below.
 
 	const widStyObj = tipIteObj.mtwBoo && tarRecObj.tipWidNum != null ? { width : tarRecObj.tipWidNum } : null; // What: Width Style Object. Why: Only a tip whose own catalog item opts in, AND whose target actually computed a tipWidNum, should override the usual fixed 280px. How: This reads tarRecObj.tipWidNum only under that combined condition, otherwise falls through to no override at all.
 
@@ -243,7 +243,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 
 
 		setArrClaStr( tipClaStr );                                                    // What: Arrow Class Update. Why: The rendered tip needs its own up/down arrow modifier class. How: This writes tipClaStr into arrClaStr.
-		setScrMaxNum( tipIteObj.scrBoo ? maxHeiNum - rhyPixFun( 'bas' ) * 2 : null ); // What: Scroll Max Update. Why: A scrollable tip's own inner wrapper must leave room for .helTipDiv's own top and bottom padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all. // Vertical Rhythm Base ~= 14.572px
+		setScrMaxNum( tipIteObj.scrBoo ? maxHeiNum - rhyPixFun( 'bas' ) * 2 : null ); // What: Scroll Maximum Update. Why: A scrollable tip's own inner wrapper must leave room for .helTipDiv's own top and bottom padding. How: This writes maxHeiNum minus that padding, or null when this item is not scrollable at all. // Vertical Rhythm Base ~= 14.572px
 
 		// #endregion Placement State Updates
 

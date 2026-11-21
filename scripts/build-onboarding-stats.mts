@@ -126,8 +126,8 @@ const buiIteFun = () : Partial< IteRcdTyp >[] => ONB_ASP_ARR.flatMap( ( curPicOb
 		...( isaEasBoo ? { // What: Ease Drift Spread. Why: Only an ease item carries soonest and latest drift. How: This adds both, with the app's defaults, for an ease item only.
 
 
-			easeMax : curIteObj.easeMax ?? 14, // What: Ease Max. Why: The latest drift defaults to 14 days. How: This keeps the definition's value or falls back.
-			easeMin : curIteObj.easeMin ?? 7   // What: Ease Min. Why: The soonest drift defaults to 7 days. How: This keeps the definition's value or falls back.
+			easeMax : curIteObj.easeMax ?? 14, // What: Ease Maximum. Why: The latest drift defaults to 14 days. How: This keeps the definition's value or falls back.
+			easeMin : curIteObj.easeMin ?? 7   // What: Ease Minimum. Why: The soonest drift defaults to 7 days. How: This keeps the definition's value or falls back.
 
 
 		} : {} )
@@ -169,8 +169,8 @@ const buiPicFun = () : Partial< PicRcdTyp >[] => ONB_ASP_ARR.map( ( curPicObj ) 
 
 
 	daysOfWeek : [ 0, 1, 2, 3, 4, 5, 6 ], // What: Days Of Week. Why: The sample pickers run every day. How: This lists all seven weekdays.
-	easeMax    : 20,                      // What: Ease Max. Why: Every new picker starts with the default latest drift. How: This mirrors addPicFun's default.
-	easeMin    : 10,                      // What: Ease Min. Why: Every new picker starts with the default soonest drift. How: This mirrors addPicFun's default.
+	easeMax    : 20,                      // What: Ease Maximum. Why: Every new picker starts with the default latest drift. How: This mirrors addPicFun's default.
+	easeMin    : 10,                      // What: Ease Minimum. Why: Every new picker starts with the default soonest drift. How: This mirrors addPicFun's default.
 	group      : curPicObj.group,         // What: Group. Why: Each sample picker keeps its own group. How: This copies it from the definition.
 	id         : curPicObj.id,            // What: ID. Why: Each sample picker keeps its own id, which its items point at. How: This copies it from the definition.
 	mode       : curPicObj.mode,          // What: Mode. Why: Each sample picker keeps its own picking mode. How: This copies it from the definition.

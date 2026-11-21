@@ -8,13 +8,13 @@ import React     from 'react';                    // What: React. Why: This is t
 
 
 import { createPortal } from 'react-dom';            // What: Create Portal. Why: The dim layer, spotlight and coach card must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with GuiTouCom's own JSX and document.body inside the porBodFun helper below.
-import { emlTouObj    } from '../state/tour-bus.ts'; // What: Ease My Life Tour Object. Why: This publishes the running tour's touPhaStr/touSteNum/touIdeStr/resTopNum/wanRaiBoo fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
+import { emlTouObj    } from '../state/tour-bus.ts'; // What: Ease-My-Life Tour Object. Why: This publishes the running tour's touPhaStr/touSteNum/touIdeStr/resTopNum/wanRaiBoo fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
 import { finTarFun    } from '../help/geometry.ts';  // What: Find Targets Function. Why: A step's selector list resolves to its visible targets the same way help mode's items do. How: This is called with the step's own selector list, trying each alternative in turn.
 import { InfTipCom    } from '../ui/info-tip.tsx';   // What: Info Tip Component. Why: A cirBoo step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
 import { rhyPixFun    } from '../utils/rhythm.ts';   // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../utils/motion.ts';   // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { uniRecFun    } from '../help/geometry.ts';  // What: Union Rect Function. Why: A step's highlight and coach placement are measured against the one box enclosing every target, each clipped against its scrollable rows first. How: This is called with the step's matched elements.
-import { useEmlTouFun } from '../state/tour-bus.ts'; // What: Use Ease My Life Tour Function. Why: GuiTouCom needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own draActBoo field.
+import { useEmlTouFun } from '../state/tour-bus.ts'; // What: Use Ease-My-Life Tour Function. Why: GuiTouCom needs to know whether a drag gesture is in progress elsewhere in the app, so it can hide its own coach card during one. How: This is called once to subscribe to the shared tour bus and read its own draActBoo field.
 
 
 import type { ActStoTyp } from '../state/store.ts';   // What: Action Store Type. Why: The tour records its progress through the store's actions. How: This types GtcProTyp's actStoObj.
@@ -1718,7 +1718,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			const padTopNum = rhyPixFun( 'p06' );                                                      // What: Pad Top Number. Why: This is the ordinary top breathing-room margin used by the pad-based branch below. How: This is a fixed pixel constant tuned for the coach card's own typical size. // Vertical Rhythm Base Plus 6 ~= 78.750px
 			const padBotNum = rhyPixFun( 'p08' );                                                      // What: Pad Bottom Number. Why: Same reasoning as padTopNum above, for the bottom margin. How: This is a fixed pixel constant tuned for the coach card's own typical size. // Vertical Rhythm Base Plus 8 ~= 138.199px
-			const minTopNum = Math.max( scrRecObj.top + padTopNum, safTopFun() + rhyPixFun( 'm01' ) ); // What: Min Top Number. Why: The top boundary also cannot sit above safTopFun(), since a fixed pad alone assumes Today's own sticky header (plus, when present, the Edit Mode banner) is shorter than it actually is, which on a short enough viewport (or once the banner adds its own height) lets a target that "fits" by the pad's math alone still land partly behind that chrome, with briTarFun then seeing no need to scroll further. How: This takes whichever floor is higher between the plain pad math and the safe-chrome floor. // Vertical Rhythm Base Minus 1 = 11px
+			const minTopNum = Math.max( scrRecObj.top + padTopNum, safTopFun() + rhyPixFun( 'm01' ) ); // What: Minimum Top Number. Why: The top boundary also cannot sit above safTopFun(), since a fixed pad alone assumes Today's own sticky header (plus, when present, the Edit Mode banner) is shorter than it actually is, which on a short enough viewport (or once the banner adds its own height) lets a target that "fits" by the pad's math alone still land partly behind that chrome, with briTarFun then seeing no need to scroll further. How: This takes whichever floor is higher between the plain pad math and the safe-chrome floor. // Vertical Rhythm Base Minus 1 = 11px
 
 			let preTopNum = null; // What: Predicted Top Number. Why: A target too tall to fit alongside the coach no matter where it is scrolled to needs reserve space, decided HERE using a PREDICTED landing position (wherever the branch just below is about to place it) rather than an OBSERVED post-scroll one, so it can be applied before this step's very first scroll instead of discovered only after that scroll already settled. How: preTopNum mirrors whichever of the two branches below will actually fire; null (no scroll needed at all) is deliberately left unhandled, since a target that already fits without scrolling was never going to need reserve either.
 
@@ -1770,7 +1770,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( tarRecObj.top < minTopNum ) scrAmoFun( curScrEle, -( minTopNum - tarRecObj.top ) ); // What: Scroll Up To Min Top. Why: A target above the safe floor must be scrolled down until it clears it. How: This calls scrAmoFun with the negative gap between minTopNum and the target's own top.
+			if ( tarRecObj.top < minTopNum ) scrAmoFun( curScrEle, -( minTopNum - tarRecObj.top ) ); // What: Scroll Up To Minimum Top. Why: A target above the safe floor must be scrolled down until it clears it. How: This calls scrAmoFun with the negative gap between minTopNum and the target's own top.
 
 			else if ( tarRecObj.bottom > scrRecObj.bottom - padBotNum ) scrAmoFun( curScrEle, tarRecObj.bottom - ( scrRecObj.bottom - padBotNum ) ); // What: Scroll Down To Pad Bottom. Why: A target overflowing the bottom pad boundary must be scrolled up until it clears it. How: This calls scrAmoFun with the gap between the target's own bottom and the pad boundary.
 
@@ -1832,8 +1832,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			const minTopNum = safTopFun() + spoPadNum;                 // What: Min Top Number. Why: The clamp needs to account for the spot's own padding too, so the padded box drawn below never overlaps that chrome even by that margin. How: This adds spoPadNum onto the safe-top floor.
-			const maxBotNum = safBotFun() - spoPadNum;                 // What: Max Bottom Number. Why: Same reasoning as minTopNum, but for the opposite edge. How: This subtracts spoPadNum from the safe-bottom ceiling.
+			const minTopNum = safTopFun() + spoPadNum;                 // What: Minimum Top Number. Why: The clamp needs to account for the spot's own padding too, so the padded box drawn below never overlaps that chrome even by that margin. How: This adds spoPadNum onto the safe-top floor.
+			const maxBotNum = safBotFun() - spoPadNum;                 // What: Maximum Bottom Number. Why: Same reasoning as minTopNum, but for the opposite edge. How: This subtracts spoPadNum from the safe-bottom ceiling.
 			const claTopNum = Math.max( curRecObj.top, minTopNum );    // What: Clamp Top Number. Why: The rect's own top edge must never rise above minTopNum. How: This takes whichever is lower between curRecObj.top and minTopNum.
 			const claBotNum = Math.min( curRecObj.bottom, maxBotNum ); // What: Clamp Bottom Number. Why: The rect's own bottom edge must never sink below maxBotNum. How: This takes whichever is higher between curRecObj.bottom and maxBotNum.
 			const claHeiNum = claBotNum - claTopNum;                   // What: Clamp Height Number. Why: The clamped rect's own height must match its clamped edges. How: This subtracts claTopNum from claBotNum.
