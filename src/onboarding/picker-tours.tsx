@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This file's own PicTouCom component needs React in scope to compile its JSX and to call React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
+import React from 'react'; // What: React. Why: This file's own PicTouCom component calls React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
 import { emlTouObj   } from '../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in buiNewFun's/buiAddFun's own runFun() and cloTouFun below, and read via .get() inside GuiTouCom's own onBacTouFun handler.
@@ -30,7 +30,7 @@ import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type.
  * @summary
  * Content for the picker mini-tours ("Set up a {picker name} picker"),
  * launched by Play on each still-hidden sample picker's own launcher
- * card (see tab-today.tsx's own EntCarCom, whose tutorial card
+ * card (see entry-card.tsx's own EntCarCom, whose tutorial card
  * calls onPlaTutFun). Every one of these tours shares
  * the exact same intro-modal structure and first paragraph (FIR_PAR_ELE
  * below); only the title (the picker's own name) and the second
@@ -363,9 +363,9 @@ const GRO_STE_OBJ = { // What: Group Step Object. Why: This step highlights the 
  * auto-clamps the still-scrolled-to-the-bottom-of-the-old-content scroll
  * position down to whatever is now valid, synchronously and completely
  * unanimatably, before buiAddFun's own tour effect ever runs (confirmed live:
- * .main.scrollTop dropped from roughly 2960 to 1060 within 50ms of the click,
- * with zero scroll calls of ours in between). By the time buiAddFun's own
- * briTarFun checks, the "+ Add Item" target is usually already sitting
+ * appConMai's scrollTop dropped from roughly 2,960 to 1,060 within 50ms of the
+ * click, with zero scroll calls of ours in between). By the time buiAddFun's
+ * own briTarFun checks, the "+ Add Item" target is usually already sitting
  * wherever that clamp landed, so no scroll fires and the whole transition
  * reads as an unexplained jump instead of the tour visibly navigating there.
  * Resetting to the top HERE, before the native click's own handler swaps the
@@ -395,7 +395,7 @@ const ITE_STE_OBJ = { // What: Items Step Object. Why: This step highlights the 
 
 	bodEle : <>The picker options are all done, you just need to <b>add some items for the picker to choose from</b>. Go ahead and click the "Add Items" button now.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuiTouCom renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
-	runFun : () => { // What: Run Function. Why: The scroll position must be reset to the top before the native click swaps the form's own content, so the clamp described above never gets a chance to fire. How: This zeroes .main's own scrollTop when it exists.
+	runFun : () => { // What: Run Function. Why: The scroll position must be reset to the top before the native click swaps the form's own content, so the clamp described above never gets a chance to fire. How: This zeroes appConMai's own scrollTop when it exists.
 
 
 		const scrConEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: This is the app's own shared scroll container whose position needs resetting. How: This looks it up fresh, since it may not exist on every layout.
@@ -612,13 +612,13 @@ const buiAddFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Add Fu
 
 	bodEle : <>Pickers need a <b>list of items to choose from</b> when it is run, whether manually or via the auto generation feature. Go ahead and click the "Add Item" button now to add a new item to this picker's list of items.</>, // What: Body Element. Why: This step's own coach card needs a plain description of what the button does. How: GuiTouCom renders this as the step's own descriptive paragraph, written as JSX so specific phrases can be bolded.
 
-	runFun : () => { // What: Run Function. Why: This item's own prefill data needs staging onto the bus before the real click opens the inline item editor. How: This looks up this sample's own copy, then converts its own sooNum/latNum days into the drift values tab-picker.tsx's own editor expects.
+	runFun : () => { // What: Run Function. Why: This item's own prefill data needs staging onto the bus before the real click opens the inline item editor. How: This looks up this sample's own copy, then converts its own sooNum/latNum days into the drift values the item editor expects.
 
 
 		const picCopObj = PIC_COP_OBJ[ picIdeStr ]; // What: Picker Copy Object. Why: This item's own prefill name and Soonest/Latest overrides live here. How: This looks up PIC_COP_OBJ by picIdeStr.
 
 
-		emlTouObj.set({ // What: Item Prefill Publish Call. Why: tab-picker.tsx's own addDraFun reads this to prefill the real inline item editor. How: This builds the prefill shape from picCopObj above.
+		emlTouObj.set({ // What: Item Prefill Publish Call. Why: picker-form.tsx's own addDraFun reads this to prefill the real inline item editor. How: This builds the prefill shape from picCopObj above.
 
 
 			iteMaxNum : picCopObj.sooNum ? PIC_NAM_OBJ.dayDriFun( picCopObj.sooNum ) : null, // What: Item Maximum Number. Why: The editor stores a drift value, the inverse of the drift-to-days conversion it shows. How: This converts picCopObj's own sooNum into a drift value through PIC_NAM_OBJ.dayDriFun, or null when this sample has no override.
@@ -690,12 +690,12 @@ const buiLatFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Latest
  * @summary
  * Highlights ONLY the sample's own mode option,
  * modOptLab[data-mode-option-key="..."] (the data-mode-option-key attribute
- * exists purely for this), rather than the whole modRadDiv list. Deliberately
- * narrow: the click-guard blocks clicks outside a step's own target for
- * non-cirBoo steps too, so scoping to just this one mode also prevents
- * switching to a different type here, which would break the mode-specific
- * copy/targets later steps assume (Soonest/Latest wording, the Weight/Boost
- * rows, etc. are all mode-specific; see PicTouCom's own
+ * lets the selector single out one option), rather than the whole modRadDiv
+ * list. Deliberately narrow: the click-guard blocks clicks outside a step's
+ * own target for non-cirBoo steps too, so scoping to just this one mode also
+ * prevents switching to a different type here, which would break the
+ * mode-specific copy/targets later steps assume (Soonest/Latest wording, the
+ * Weight/Boost rows, etc. are all mode-specific; see PicTouCom's own
  * isaEasBoo/useWeiBoo/isaDynBoo checks below).
  *
  * catBoo exists since a single mode option (label + description) can be tall
@@ -983,7 +983,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 
 
-	const onbStaObj = staAppObj.onboarding;                                                                                      // What: Onboarding State Object. Why: A reload lands here with app.tsx already having re-derived actPicStr from the SAME persisted activeTour, so this just decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, which migStaFun guarantees on every state.
+	const onbStaObj = staAppObj.onboarding;                                                                                      // What: Onboarding State Object. Why: A reload restores the persisted activeTour, so this decides whether to skip the intro modal and which (resBoo) step to land on. How: This reads staAppObj.onboarding, which migStaFun guarantees on every state.
 	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `picker-${ picIdeStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.tsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this picker's own tour id, otherwise null.
 
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
@@ -1001,11 +1001,10 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	 * Ends this picker mini-tour however it ends, recording how in the
 	 * sample's own checklist entry. It clears every prefill field this tour
 	 * published on the shared bus, since tab-picker.tsx prefills its create
-	 * form from
- * prePayObj whenever one is present, so a leftover value would fill the next
- * picker the user creates with stale sample data. It then updates this
- * sample's own launcher card status and calls onCloTouFun so app.tsx unmounts
- * the tour.
+	 * form from prePayObj whenever one is present, so a leftover value would
+	 * fill the next picker the user creates with stale sample data. It then
+	 * updates this sample's own launcher card status and calls onCloTouFun so
+	 * app.tsx unmounts the tour.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1064,7 +1063,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 				pilLabArr={ [ 'pickers', modLabStr, ( picRcdObj.group || '' ).toLowerCase() ] } // What: Pill Label Array Attribute. Why: A picker without a group still needs a valid pill entry. How: This lists the pickers pill, the mode label, and the lower-cased group, falling back to an empty string.
 				titHeaStr={ `${ picRcdObj.name } Picker` }
 
-				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
+				onBegTouFun={ () => setTouPhaStr( 'tour' ) } // What: On Begin Tour Function. Why: Accepting the intro modal must start the spotlight tour. How: This sets touPhaStr to 'tour'.
 				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Tour Function. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample picker. How: This calls cloTouFun with 'cancelled'.
 			/> // What: Intro Modal Component. Why: This is this sample's own opening screen, shown before any spotlight step ever does. How: This is passed this sample's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
@@ -1143,10 +1142,10 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 				}
 
-				else if ( tarSteNum === steObjArr.length - 2 ) { // What: Reopen Item Nonce Check. Why: Back from CRE_STE_OBJ's own step to SAV_STE_OBJ's own step has no real DOM control, since SAV_STE_OBJ's own Save already committed the item into the real list for good (see tab-picker.tsx's own comment on this); steObjArr.length - 2 rather than a hardcoded index, since how many steps come before these last two varies by picker mode, but SAV_STE_OBJ's own step is always exactly 2 before the end. How: This publishes a bus nonce, the same reasoning as the Pickers page tour's own onBacTouFun uses for its own no-real-control Back cases.
+				else if ( tarSteNum === steObjArr.length - 2 ) { // What: Reopen Item Nonce Check. Why: Back from CRE_STE_OBJ's own step to SAV_STE_OBJ's own step has no real DOM control, since SAV_STE_OBJ's own Save already committed the item into the real list for good (see picker-form.tsx's own Reopen Tour Item Effect comment); steObjArr.length - 2 rather than a hardcoded index, since how many steps come before these last two varies by picker mode, but SAV_STE_OBJ's own step is always exactly 2 before the end. How: This publishes a bus nonce, the same reasoning as the Pickers page tour's own onBacTouFun uses for its own no-real-control Back cases.
 
 
-					emlTouObj.set( { reoNonNum : ( emlTouObj.get().reoNonNum || 0 ) + 1 } ); // What: Reopen Item Nonce Publish. Why: tab-picker.tsx's own effect watches this field to reopen the just-saved item's own editor. How: This increments the bus's own current reoNonNum by 1.
+					emlTouObj.set( { reoNonNum : ( emlTouObj.get().reoNonNum || 0 ) + 1 } ); // What: Reopen Item Nonce Publish. Why: picker-form.tsx's own effect watches this field to reopen the just-saved item's own editor. How: This increments the bus's own current reoNonNum by 1.
 
 
 				}
@@ -1171,7 +1170,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 // #region Exports
 
-export { PicTouCom }; // What: Named Export. Why: app.tsx renders this as the Pickers page's own guided tour. How: This re-exports PicTouCom; every other binding in this file is internal-only.
+export { PicTouCom }; // What: Named Export. Why: PicTouCom is the one binding other files import. How: This exports PicTouCom by name.
 
 // #endregion Exports
 

@@ -52,8 +52,8 @@ import type { TouSteTyp } from './tour-runner.tsx'; // What: Tour Step Type. Why
  * own disGroBoo/disShoBoo, the same touIdeStr plus touSteNum gating pattern as
  * tab-picker.tsx), narrating what they do is the point, and changing
  * filGroStr/curScoStr mid-tour would otherwise leave a LATER step's own target
- * (rmsObj, which only shows at scope 'all') unable to find anything, since
- * nothing here resets it back afterward.
+ * (rmsObj, which shows at scope 'all' or 'reminders') unable to find anything,
+ * since nothing here resets it back afterward.
  *
  * 2 of these fields carry the exact same boilerplate What/Why/How
  * wherever they appear, so none of the entries below repeat it on
@@ -312,10 +312,9 @@ const PRE_PIC_STR = ONB_EXA_OBJ.id; // What: Preselect Picker String. Why: The S
  * @summary
  * Target and description catalog for the Settings page's OWN interior
  * elements, same shape/reasoning as PIC_TAR_OBJ above. One step per
- * section, each a fixed-content reference blurb (no interaction to
- * drive, unlike the Pickers tour), every Settings section is always
- * mounted (a scroll-spy sidebar, not a disclosure), so GuiTouCom's own
- * scroll-into-view handles reaching each one without any runFun staging.
+ * covered section, each a fixed-content reference blurb (no interaction to
+ * drive, unlike the Pickers tour), so GuiTouCom's own scroll-into-view
+ * reaches each target without any runFun staging.
  *
  * 2 of these fields carry the exact same boilerplate What/Why/How
  * wherever they appear, so none of the entries below repeat it on
@@ -523,12 +522,8 @@ const STA_TAR_OBJ = { // What: Stats Target Object. Why: buiTesFun below spreads
  * Target and description catalog for the Today page's OWN interior
  * elements (as opposed to NAV_TAR_OBJ, which only covers the nav bar
  * buttons), same shape/reasoning as PIC_TAR_OBJ above. Kept here
- * rather than moved into onboarding/targets.tsx for now (nothing
- * outside this file reads it yet), but is exactly what a future on-
- * demand multi-highlight help mode would pull from by id, see the
- * onboarding-engine-reuse-design memory. Extract into its own module
- * alongside NAV_TAR_OBJ if/when that help mode actually gets built and
- * needs to reference these same targets.
+ * rather than in onboarding/targets.tsx, since nothing outside this
+ * file reads it.
  *
  * 2 of these fields carry the exact same boilerplate What/Why/How
  * wherever they appear, so none of the entries below repeat it on
@@ -621,10 +616,10 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
  * pgtNamStr = Page-Tours Name String
  *
  * @summary
- * The Page Tours group's real name at the moment the rgiObj step (see
- * TOD_TAR_OBJ above) opens its rename input, captured off the rename button's
- * own aria-label ("Rename group {name}") before it disappears behind the
- * input. Lets a Back to the gghObj step reset the input to a genuine no-op
+ * The Page Tours group's real name, captured by the gghObj step's runFun as
+ * it opens the rename input the rgiObj step highlights, off the rename
+ * button's own aria-label ("Rename group {name}") before it disappears behind
+ * the input. Lets a Back to the gghObj step reset the input to a genuine no-op
  * edit (draft === name) rather than an actual rename, without this module
  * otherwise needing to know the live app state (PagTouCom itself is only ever
  * passed `actStoObj`, not `staAppObj`, for this purpose).
@@ -633,7 +628,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
  *
 */
 
-let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/forNamFun below need this group's own real, pre-rename name to revert to. How: This starts as the group's own default name, then is overwritten by the rgiObj step's own runFun (see buiTesFun below) the instant it opens the rename input.
+let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/forNamFun below need this group's own real, pre-rename name to revert to. How: This starts as the group's own default name, then is overwritten by the gghObj step's own runFun (see buiTesFun below) the instant it opens the rename input.
 
 // #endregion Module State
 
@@ -657,14 +652,10 @@ let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/fo
  * tabStr: This property in the returned object uses 'today' in order to keep
  * this from auto-navigating when the step opens (a page tour is launched from
  * Today, and clicking the real nav icon is meant to be what does the
- * navigating, not the step itself). priButStr defaults to 'Next' (every page
- * tour has more steps after this one) but is overridable,
- * onboarding/app-features.tsx's own App Features tours reuse this exact step
- * verbatim as their OWN Step 1, currently still their only step, so theirs
- * pass 'Done' instead. butLabStr names the actual nav button ("Today",
- * "Pickers", ...) in the closing sentence instead of the generic "click it
- * now", optional and only passed where a caller has explicitly asked for it,
- * so other callers' wording is unaffected.
+ * navigating, not the step itself). priButStr defaults to 'Next' but is
+ * overridable for a tour whose last step this is. butLabStr, when given,
+ * names the actual nav button ("Today", "Pickers", ...) in the closing
+ * sentence instead of the generic "click it now".
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -707,7 +698,7 @@ const buiTs1Fun = ( pagKeyStr : string, runSteFun? : () => void, priButStr : str
 
 		bodEle : <>{ navTarObj.bodEle } Go ahead and click { butLabStr ? <>the "{ butLabStr }" page's button</> : 'it' } now.</>, // What: Body Element. Why: This step's own coach card needs navTarObj's own description plus an explicit click instruction. How: This appends a click sentence after navTarObj's own bodEle, naming the button when butLabStr is given.
 
-		...( runSteFun ? { runFun : runSteFun } : {} ) // What: Run Spread. Why: Only some callers (the Pickers/Data/Stats tours below) need a side effect fired alongside this step's own click. How: This spreads a runFun field in only when runSteFun was actually passed.
+		...( runSteFun ? { runFun : runSteFun } : {} ) // What: Run Spread. Why: A caller may need a side effect fired alongside this step's own click. How: This spreads a runFun field in only when runSteFun was actually passed.
 
 
 	};
@@ -729,7 +720,7 @@ const buiTs1Fun = ( pagKeyStr : string, runSteFun? : () => void, priButStr : str
  * the gghObj step, which needs Edit Mode to stay on (the rgiObj step's own
  * Done doesn't need this at all, see forNamFun below for why). Resets the
  * input's value back to its real name first so the blur that follows reads as
- * a NO-OP commit (see tab-today.tsx's GroHeaCom: cmtEdiFun only calls
+ * a NO-OP commit (see group-header.tsx's GroHeaCom: cmtEdiFun only calls
  * onRenGroFun when the draft differs from the name prop) instead of an actual
  * rename. Deliberately NOT Escape: GroHeaCom's own Escape handling is exactly
  * this (see its canEdiFun), but a real Escape keydown also bubbles to
@@ -791,12 +782,13 @@ const canRenFun = () : void => { // What: Cancel Rename Function. Why: A Back ou
  * @summary
  * Forces the real Page Tours name back, used wherever a click (Done, Back,
  * Skip) might have blurred a still-open, typed-in rename input a tick earlier,
- * see each call site's own comment for that race. Deferred a full 200ms, NOT
- * just a frame: GroHeaCom's own blur-triggered cmtEdiFun doesn't call
- * onRenGroFun synchronously either, it defers to its OWN setTimeout(…, 150)
- * (the closing-animation delay in finCloFun), so calling this immediately
- * would fire BEFORE that delayed commit and get overwritten right back to the
- * typed value 150ms later. 200ms leaves a safety margin past it.
+ * see each call site's own comment for that race. Deferred a full p01
+ * duration step (about 209ms), NOT just a frame: GroHeaCom's own
+ * blur-triggered cmtEdiFun doesn't call onRenGroFun synchronously either, it
+ * defers to its OWN setTimeout of its base duration step (about 158ms, the
+ * closing-animation delay in finCloFun), so calling this immediately would
+ * fire BEFORE that delayed commit and get overwritten right back to the typed
+ * value that long later. The p01 step leaves a safety margin past it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1343,7 +1335,7 @@ const buiTesFun = ( pagIdeStr : string, actStoObj : ActStoTyp ) : TouSteTyp[] =>
 					const renInpEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="pagTouSec"] [data-element-name-hook~="groNamInp"]' ); // What: Rename Input Element. Why: This is the real input this step highlights and needs focused. How: This looks it up fresh, since it only exists once the rename button above has been clicked.
 
 
-					if ( renInpEle ) renInpEle.focus( { preventScroll : true } ); // What: Rename Input Focus. Why: Explicit focus alongside the input's own autoFocus is belt-and-suspenders, since the click driving it here is synthetic, not a direct user click on the rename button itself. How: This focuses renInpEle without scrolling the page.
+					if ( renInpEle ) renInpEle.focus( { preventScroll : true } ); // What: Rename Input Focus. Why: The rename input should hold keyboard focus once it mounts. How: This focuses renInpEle without scrolling the page.
 
 
 				} );
@@ -1367,14 +1359,14 @@ const buiTesFun = ( pagIdeStr : string, actStoObj : ActStoTyp ) : TouSteTyp[] =>
 			runFun : () => { // What: Run Function. Why: Edit Mode's own real Cancel control alone isn't enough to discard an in-progress rename, since clicking this step's own Done button can itself race-commit a real rename first. How: This clicks the real Cancel control, then forces the real Page Tours name back afterward regardless of what the DOM did.
 
 
-				const canButEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="ediBanSpa"] [data-element-name-hook~="ediCanBut"]' ); // What: Cancel Button Element. Why: This is the real control that discards any group reordering and closes the rename input. How: This looks it up fresh, since it only exists while Edit Mode is on. // Edit Mode's own real Cancel control discards any group reordering AND closes the rename input, GroHeaCom force-closes `editing` the instant editMode itself goes false. That's still not enough on its own, though: clicking this step's own Done button (a totally different element) blurs the currently-focused rename input FIRST, as an intrinsic part of the click's own focus-change handling, which happens before React's onClick (and therefore this runFun) ever fires, and that blur's own commit() genuinely renames the group for real if the user typed something. There's no way to intercept that ordering from here, so this doesn't try to, it just forces the real name back afterward directly, via the same action a real rename commit would have called. A harmless no-op if nothing was ever typed.
+				const canButEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="ediBanSpa"] [data-element-name-hook~="ediCanBut"]' ); // What: Cancel Button Element. Why: This is the real control that discards any group reordering and closes the rename input. How: This looks it up fresh, since it only exists while Edit Mode is on. // Edit Mode's own real Cancel control discards any group reordering AND closes the rename input, GroHeaCom force-closes ediOpeBoo the instant ediModBoo itself goes false. That's still not enough on its own, though: clicking this step's own Done button (a totally different element) blurs the currently-focused rename input FIRST, as an intrinsic part of the click's own focus-change handling, which happens before React's onClick (and therefore this runFun) ever fires, and that blur's own cmtEdiFun genuinely renames the group for real if the user typed something. There's no way to intercept that ordering from here, so this doesn't try to, it just forces the real name back afterward directly, via the same action a real rename commit would have called. A harmless no-op if nothing was ever typed.
 
 
 				if ( canButEle ) canButEle.click(); // What: Cancel Button Click. Why: This must only fire when the control actually exists. How: This clicks canButEle.
 
 
 
-				forNamFun( actStoObj ); // What: Force Name Call. Why: The click above (and Done's own blur race) might still leave the group's real name overwritten. How: This forces the real pgtNamStr back, 200ms after this fires.
+				forNamFun( actStoObj ); // What: Force Name Call. Why: The click above (and Done's own blur race) might still leave the group's real name overwritten. How: This forces the real pgtNamStr back, one p01 duration step after this fires.
 
 
 			}
@@ -1396,7 +1388,7 @@ const buiTesFun = ( pagIdeStr : string, actStoObj : ActStoTyp ) : TouSteTyp[] =>
 
 // #region Exports
 
-export { buiTesFun, buiTs1Fun, canRenFun, forNamFun }; // What: Named Exports. Why: PagTouCom builds each page tour's steps from these and guards its rename step with them. How: This exports the 2 step builders and the 2 rename guards by name; the target catalogs and pgtNamStr stay private to this file.
+export { buiTesFun, buiTs1Fun, canRenFun, forNamFun }; // What: Named Exports. Why: These are the step builders and rename guards the page tours use. How: This exports the 2 step builders and the 2 rename guards by name.
 
 // #endregion Exports
 
