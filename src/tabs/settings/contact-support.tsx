@@ -60,22 +60,22 @@ import { scrBehFun   } from '../../utils/motion.ts';     // What: Scroll Behavio
  * - `namStr` (String): Name String is the recognized browser's own display
  *   name, used directly in detBroFun's own returned label.
  *
- * - `regObj` (RegExp): Regex Object is the pattern that recognizes this
- *   specific browser from the user-agent string, capturing its version
- *   number in its own first group.
+ * - `patReg` (RegExp): Pattern Regular Expression is the pattern that
+ *   recognizes this specific browser from the user-agent string, capturing
+ *   its version number in its own first group.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const BRO_PAT_ARR = [ // What: Browser Pattern Array. Why: This is the ordered list of engines detBroFun can recognize, checked most-specific first. How: This is iterated by detBroFun, matching each entry's own regObj against the user-agent string.
+const BRO_PAT_ARR = [ // What: Browser Pattern Array. Why: This is the ordered list of engines detBroFun can recognize, checked most-specific first. How: This is iterated by detBroFun, matching each entry's own patReg against the user-agent string.
 
 
-	{ namStr : 'Edge',    regObj : /Edg\/([\d.]+)/              }, // What: Edge Pattern Object. Why: Edge's own user-agent also contains "Chrome", so it must be checked first. How: This matches the "Edg/" token and its version.
-	{ namStr : 'Opera',   regObj : /OPR\/([\d.]+)/              }, // What: Opera Pattern Object. Why: Opera's own user-agent also contains "Chrome", so it must be checked before Chrome. How: This matches the "OPR/" token and its version.
-	{ namStr : 'Chrome',  regObj : /Chrome\/([\d.]+)/           }, // What: Chrome Pattern Object. Why: This covers Chrome itself once Edge and Opera have been ruled out. How: This matches the "Chrome/" token and its version.
-	{ namStr : 'Firefox', regObj : /Firefox\/([\d.]+)/          }, // What: Firefox Pattern Object. Why: Firefox uses its own distinct engine and token. How: This matches the "Firefox/" token and its version.
-	{ namStr : 'Safari',  regObj : /Version\/([\d.]+).*Safari/ }   // What: Safari Pattern Object. Why: Safari reports its own version in a separate "Version/" token rather than beside its name. How: This matches "Version/" followed later by "Safari", capturing that version.
+	{ namStr : 'Edge',    patReg : /Edg\/([\d.]+)/              }, // What: Edge Pattern Object. Why: Edge's own user-agent also contains "Chrome", so it must be checked first. How: This matches the "Edg/" token and its version.
+	{ namStr : 'Opera',   patReg : /OPR\/([\d.]+)/              }, // What: Opera Pattern Object. Why: Opera's own user-agent also contains "Chrome", so it must be checked before Chrome. How: This matches the "OPR/" token and its version.
+	{ namStr : 'Chrome',  patReg : /Chrome\/([\d.]+)/           }, // What: Chrome Pattern Object. Why: This covers Chrome itself once Edge and Opera have been ruled out. How: This matches the "Chrome/" token and its version.
+	{ namStr : 'Firefox', patReg : /Firefox\/([\d.]+)/          }, // What: Firefox Pattern Object. Why: Firefox uses its own distinct engine and token. How: This matches the "Firefox/" token and its version.
+	{ namStr : 'Safari',  patReg : /Version\/([\d.]+).*Safari/ }   // What: Safari Pattern Object. Why: Safari reports its own version in a separate "Version/" token rather than beside its name. How: This matches "Version/" followed later by "Safari", capturing that version.
 
 
 ];
@@ -130,7 +130,7 @@ function detBroFun () : string {
 	for ( const broPatObj of BRO_PAT_ARR ) { // What: Pattern Match Loop. Why: The first pattern that actually matches the real user-agent string wins. How: This iterates BRO_PAT_ARR in order, returning as soon as one pattern matches.
 
 
-		const matResArr = usrAgeStr.match( broPatObj.regObj ); // What: Match Result Array. Why: This is the actual test of whether this pattern recognizes the current browser. How: This runs broPatObj's own regObj against usrAgeStr, producing null or a match array with the captured version in [1].
+		const matResArr = usrAgeStr.match( broPatObj.patReg ); // What: Match Result Array. Why: This is the actual test of whether this pattern recognizes the current browser. How: This runs broPatObj's own patReg against usrAgeStr, producing null or a match array with the captured version in [1].
 
 
 		if ( matResArr ) return `${ broPatObj.namStr } ${ matResArr[ 1 ].split( '.' ).slice( 0, 2 ).join( '.' ) }`; // What: Recognized Browser Return. Why: A recognized browser should report its own name and a short major.minor version, not the full patch string. How: This returns "Name X.Y", trimming the captured version down to its first 2 dot-separated parts.

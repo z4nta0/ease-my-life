@@ -15,7 +15,7 @@ import { writeFileSync } from 'node:fs';                              // What: W
 
 
 import type { IteRcdTyp } from '../src/core/data-model.ts';            // What: Item Record Type. Why: The simulator runs on rebuilt sample items. How: This types buiIteFun's items, asserted whole for the simulator since it reads only the fields they carry.
-import type { PclRowTyp } from '../src/core/data-model.ts';            // What: Pick-Log Row Type. Why: The simulator returns real pick-log rows. How: This types conLogFun's input.
+import type { PclRowTyp } from '../src/core/data-model.ts';            // What: Pick-Log Row Type. Why: The simulator returns real pick-log rows. How: This types covLogFun's input.
 import type { PicRcdTyp } from '../src/core/data-model.ts';            // What: Picker Record Type. Why: The simulator runs on rebuilt sample pickers. How: This types buiPicFun's pickers, asserted whole for the simulator since it reads only the fields they carry.
 import type { RawStaTyp } from '../src/state/onboarding-seed-data.ts'; // What: Raw Stats Type. Why: The script writes the three precomputed logs hydStaFun reads. How: This types the logs it builds and writes.
 
@@ -275,10 +275,10 @@ const isoIndFun = ( isoDayStr : string ) => { // What: ISO Index Function. Why: 
 
 
 
-// #region conLogFun
+// #region covLogFun
 
 /**
- * conLogFun = Convert Log Function
+ * covLogFun = Convert Log Function
  *
  * @summary
  * Converts the simulator's pick-log rows from real dates to the portable
@@ -296,12 +296,12 @@ const isoIndFun = ( isoDayStr : string ) => { // What: ISO Index Function. Why: 
  *
  * @example
  * ```ts
- * conLogFun(hisRowArr, todIndNum) // => [ { dayNum, done, group, ... } ]
+ * covLogFun(hisRowArr, todIndNum) // => [ { dayNum, done, group, ... } ]
  * ```
  *
 */
 
-const conLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ 'pickLog' ] => hisRowArr.map( ( curRowObj ) => { // What: Convert Log Function. Why: The generated file stores day offsets rather than dates. How: This maps each history row to its portable shape.
+const covLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ 'pickLog' ] => hisRowArr.map( ( curRowObj ) => { // What: Convert Log Function. Why: The generated file stores day offsets rather than dates. How: This maps each history row to its portable shape.
 
 
 	const donDatObj = curRowObj.completedAt ? new Date( curRowObj.completedAt ) : null; // What: Done Date Object. Why: Only a completed row has a time of day to record. How: This parses its completedAt, or stays null for a row never completed.
@@ -331,7 +331,7 @@ const conLogFun = ( hisRowArr : PclRowTyp[], todIndNum : number ) : RawStaTyp[ '
 
 } );
 
-// #endregion conLogFun
+// #endregion covLogFun
 
 
 
@@ -378,7 +378,7 @@ const simDatFun = () : RawStaTyp => { // What: Simulate Data Function. Why: A no
 	return { // What: Simulated Data Return. Why: The caller writes these three logs. How: This converts the pick rows and pairs them with the reminder rows.
 
 
-		pickLog         : conLogFun( hisRowArr, isoIndFun( isoDayFun( todDatObj ) ) ), // What: Pick Log. Why: The pick rows are stored as day offsets. How: This converts them against today's day index.
+		pickLog         : covLogFun( hisRowArr, isoIndFun( isoDayFun( todDatObj ) ) ), // What: Pick Log. Why: The pick rows are stored as day offsets. How: This converts them against today's day index.
 		reminderLog     : remLogArr,                                                   // What: Reminder Log. Why: Completed Mondays are stored as reminder log rows. How: This passes them through.
 		reminderSkipLog : remSkiArr                                                    // What: Reminder Skip Log. Why: Skipped Mondays are stored as skip log rows. How: This passes them through.
 
