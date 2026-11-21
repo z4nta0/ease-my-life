@@ -481,7 +481,7 @@
 
 }
 
-.conMesSpa { /* What: Confirm Message Span. Why: The message explains what the bar is asking or warning about. How: This sets it in body text that takes the bar's free width and wraps cleanly. */
+.banMesSpa { /* What: Banner Message Span. Why: The message explains what the bar is asking or warning about. How: This sets it in body text that takes the bar's free width and wraps cleanly. */
 
 
 	color       : var( --tex-mai-col );                /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -493,7 +493,7 @@
 
 
 }
-.namConDiv .conMesSpa { /* What: Confirm Message Span In Name Conflict Div. Why: The warning's text should match its warm bar. How: This sets it in a darkened warm color. */
+.namConDiv .banMesSpa { /* What: Banner Message Span In Name Conflict Div. Why: The warning's text should match its warm bar. How: This sets it in a darkened warm color. */
 
 
 	color : var( --war-dar-col ); /* Warning Dark Color = oklch( 0.45 0.13 50 ) */

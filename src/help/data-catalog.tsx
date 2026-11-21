@@ -660,14 +660,14 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	},
 
-	// padYcoNum:0, .schLinDiv rows stack with zero gap (same pattern as .basRowDiv above), touching Daily Generator Toggle below.
+	// padYcoNum:0, .setLinDiv rows stack with zero gap (same pattern as .basRowDiv above), touching Daily Generator Toggle below.
 	{ // What: Picker Conditional Help Item. Why: This is the on-demand help tip for the Picker Conditional element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
 		bodEle    : <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach any existing conditional below, but if you want to create a new one you will need to use the Conditionals section above.</>,
 		ideStr    : 'dataPickerConditionalToggle',
 		padYcoNum : 0,
-		selStr    : '[data-element-name-hook~="schLinDiv"]:has(button[aria-label="Attach a conditional"])',
+		selStr    : '[data-element-name-hook~="setLinDiv"]:has(button[aria-label="Attach a conditional"])',
 		titStr    : 'Picker Conditional'
 
 
@@ -690,8 +690,8 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 		bodEle    : <>This determines whether the picker will be included in the app's daily auto-generator. When on, this picker's items will be automatically added to your todo list. When off, the picker won't run automatically, but you can still generate a pick manually from the Pickers tab.</>,
 		ideStr    : 'dataPickerDailyToggle',
-		padYcoNum : 0, // padYcoNum:0, same .schLinDiv zero-gap stacking, touching Picker Cadence below.
-		selStr    : '[data-element-name-hook~="schLinDiv"]:has(button[aria-label*="daily generator"])',
+		padYcoNum : 0, // padYcoNum:0, same .setLinDiv zero-gap stacking, touching Picker Cadence below.
+		selStr    : '[data-element-name-hook~="setLinDiv"]:has(button[aria-label*="daily generator"])',
 		titStr    : 'Daily Generator Toggle'
 
 
@@ -701,8 +701,8 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 
 		ideStr    : 'dataPickerCadence',
-		padYcoNum : 0, // padYcoNum:0, same .schLinDiv zero-gap stacking, touching Picker Day Selection below.
-		selStr    : '[data-element-name-hook~="schLinDiv"]:has(select[aria-label="Cadence"])',
+		padYcoNum : 0, // padYcoNum:0, same .setLinDiv zero-gap stacking, touching Picker Day Selection below.
+		selStr    : '[data-element-name-hook~="setLinDiv"]:has(select[aria-label="Cadence"])',
 		titStr    : 'Picker Cadence',
 
 		bodEle : (
@@ -733,8 +733,8 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 		bodEle    : <>This lets you choose which days of the week this picker is allowed to run on. Tap a day to toggle it on or off.</>,
 		ideStr    : 'dataPickerDays',
-		padYcoNum : 0, // padYcoNum:0, same .schLinDiv zero-gap stacking, touching Picker Holidays Toggle below.
-		selStr    : '[data-element-name-hook~="schLinDiv"]:has([data-element-name-hook~="dowChiDiv"])',
+		padYcoNum : 0, // padYcoNum:0, same .setLinDiv zero-gap stacking, touching Picker Holidays Toggle below.
+		selStr    : '[data-element-name-hook~="setLinDiv"]:has([data-element-name-hook~="dowChiDiv"])',
 		titStr    : 'Picker Day Selection'
 
 
@@ -745,8 +745,8 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 		bodEle    : <>This determines whether this picker skips major U.S. holidays. When on, this picker won't run on those days. You can edit which days count as holidays, or add your own, in Settings.</>,
 		ideStr    : 'dataPickerSkipHolidays',
-		padYcoNum : 0, // padYcoNum:0, same .schLinDiv zero-gap stacking, touching Picker Day Selection above.
-		selStr    : '[data-element-name-hook~="schLinDiv"]:has(button[aria-label="Skip on holidays"])',
+		padYcoNum : 0, // padYcoNum:0, same .setLinDiv zero-gap stacking, touching Picker Day Selection above.
+		selStr    : '[data-element-name-hook~="setLinDiv"]:has(button[aria-label="Skip on holidays"])',
 		titStr    : 'Picker Holidays Toggle'
 
 
@@ -758,7 +758,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 		bodEle    : <>This determines whether the picker is allowed to choose an item when another item with the same name already exists elsewhere in the generated daily todo list. If all items are ineligible due to duplication, then this setting is ignored and an item is chosen normally.</>,
 		ideStr    : 'dataPickerAvoidDuplicates',
 		padYcoNum : 0, // padYcoNum:0, .conGroDiv--items (this group's own wrapper) touches "Item Controls" kicker above with zero gap.
-		selStr    : '[data-element-name-hook~="schLinDiv"]:has(button[aria-label="Avoid duplicate items"])',
+		selStr    : '[data-element-name-hook~="setLinDiv"]:has(button[aria-label="Avoid duplicate items"])',
 		titStr    : 'Picker Duplicate Items Toggle'
 
 

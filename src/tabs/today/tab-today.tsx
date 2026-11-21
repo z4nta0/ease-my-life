@@ -4685,7 +4685,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							<div
 								ref={ genCarRef }
 
-								className={` ${ cssModObj.onbCreDiv }   ${ cssModObj.onbCreDivGenerate }   ${ cheExiBoo ? cssModObj.onbCreDivRemoving : '' }   ${ onbReaBoo ? cssModObj.onbCreDivPulsing : '' } `}
+								className={` ${ cssModObj.onbCarDiv }   ${ cssModObj.onbCarDivGenerate }   ${ cheExiBoo ? cssModObj.onbCarDivRemoving : '' }   ${ onbReaBoo ? cssModObj.onbCarDivPulsing : '' } `}
 
 								data-card-needed-active={ !onbReaBoo || undefined } // What: Card Needed Active Attribute. Why: A Generate card still waiting on its tutorials reads as unfinished. How: This sets the presence-only attribute while onbReaBoo is false.
 							>{ /* What: Generate Card Div Element. Why: This is the closing "Generate a real list" checklist card. How: This renders its own icon/heading/explanation plus either a working or a disabled Generate button, depending on onbReaBoo. */ }
@@ -4743,7 +4743,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						{ onbEmpBoo && ( // What: Empty State Visibility Check. Why: This CTA only belongs to a brand-new user with no pickers at all. How: This renders the empty-state card only while onbEmpBoo is true.
 
 
-							<div className={ cssModObj.onbCreDiv }>{ /* What: Empty State Div Element. Why: A brand-new user with no pickers at all needs a plain, non-tour empty-state CTA. How: This renders its own icon/heading/explanation plus a Create-a-picker button. */ }
+							<div className={ cssModObj.onbCarDiv }>{ /* What: Empty State Div Element. Why: A brand-new user with no pickers at all needs a plain, non-tour empty-state CTA. How: This renders its own icon/heading/explanation plus a Create-a-picker button. */ }
 
 
 								<div className={ cssModObj.onbIcoDiv }>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed plus icon. */ }
@@ -4781,7 +4781,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						{ shoIdlBoo && ( // What: No-Run Empty State Visibility Check. Why: This CTA only belongs to a user with real pickers but nothing runnable today. How: This renders the card only while shoIdlBoo is true.
 
 
-							<div className={` ${ cssModObj.onbCreDiv }   ${ cssModObj.onbCreDivNorun } `}>{ /* What: No-Run Empty State Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. */ }
+							<div className={` ${ cssModObj.onbCarDiv }   ${ cssModObj.onbCarDivNorun } `}>{ /* What: No-Run Empty State Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. */ }
 
 
 								<div className={ cssModObj.onbIcoDiv }>{ /* What: Card Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed calendar icon. */ }

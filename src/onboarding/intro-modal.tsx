@@ -131,7 +131,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 		>{ /* What: Container Scrim Div Element. Why: This is the modal's own full-viewport backdrop and, since it can scroll, the positioning context the focus effect above cares about. How: This wraps the welcome card below and marks itself as an accessible dialog named by titHeaStr. Its data-element-name-hook is read by the shared Escape-key handler. */ }
 
 
-			<div className={` ${ cssModObj.welCarDiv }   ${ redMotBoo ? '' : cssModObj.welCarDivRise } `}>{ /* What: Welcome Card Div Element. Why: This is the actual visible card, separate from the scrim so only it plays the slide-in entrance animation. How: This applies the rise entrance modifier class unless redMotBoo reports the user prefers reduced motion. */ }
+			<div className={` ${ cssModObj.intCarDiv }   ${ redMotBoo ? '' : cssModObj.intCarDivRise } `}>{ /* What: Intro Card Div Element. Why: This is the actual visible card, separate from the scrim so only it plays the slide-in entrance animation. How: This applies the rise entrance modifier class unless redMotBoo reports the user prefers reduced motion. */ }
 
 
 				<div className={ cssModObj.icoMarDiv }>{ icoTopEle }</div>{ /* What: Icon Mark Div Element. Why: Every intro modal shows a recognizable glyph above its own title. How: This renders whatever icon node the caller passed in. */ }

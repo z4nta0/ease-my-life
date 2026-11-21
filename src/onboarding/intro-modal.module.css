@@ -50,9 +50,9 @@
 }
 
 
-/* #region welCarDiv */
+/* #region intCarDiv */
 
-.welCarDiv { /* What: Welcome Card Div. Why: The modal's content sits on one raised card centered in the backdrop. How: This styles the card and centers it with auto margins, which collapse to top-aligned once the card outgrows the screen. */
+.intCarDiv { /* What: Intro Card Div. Why: The modal's content sits on one raised card centered in the backdrop. How: This styles the card and centers it with auto margins, which collapse to top-aligned once the card outgrows the screen. */
 
 
 	background    : var( --bac-sur-col );                                           /* Background Surface Color = oklch( 0.975 0.004 240 ) */
@@ -67,17 +67,17 @@
 
 
 }
-.welCarDiv--rise { /* What: Welcome Card Div Rise. Why: The card should rise gently into place when the modal opens. How: This plays the welCarDivOpenRise entrance, added only when reduced motion isn't requested. */
+.intCarDiv--rise { /* What: Intro Card Div Rise. Why: The card should rise gently into place when the modal opens. How: This plays the intCarDivOpenRise entrance, added only when reduced motion isn't requested. */
 
 
-	animation : welCarDivOpenRise var( --dur-ani-p02 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation : intCarDivOpenRise var( --dur-ani-p02 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Welcome Card Div. Why: Someone who asked for less motion shouldn't see the card animate. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Intro Card Div. Why: Someone who asked for less motion shouldn't see the card animate. How: This applies only when the reduced-motion preference is set. */
 
 
-	.welCarDiv { /* What: Motionless Welcome Card Div. Why: The card should simply appear. How: This turns its animation and transitions off. */
+	.intCarDiv { /* What: Motionless Intro Card Div. Why: The card should simply appear. How: This turns its animation and transitions off. */
 
 
 		animation  : none;
@@ -88,7 +88,7 @@
 
 
 }
-@keyframes welCarDivOpenRise { /* What: Welcome Card Div Open Rise Keyframes. Why: A card that fades up a little reads as arriving rather than blinking in. How: This fades the card in from slightly lower and smaller to its resting place. */
+@keyframes intCarDivOpenRise { /* What: Intro Card Div Open Rise Keyframes. Why: A card that fades up a little reads as arriving rather than blinking in. How: This fades the card in from slightly lower and smaller to its resting place. */
 
 
 	from {
@@ -324,7 +324,7 @@
 
 /* #endregion actStaDiv */
 
-/* #endregion welCarDiv */
+/* #endregion intCarDiv */
 
 /* #endregion intScrDiv */
 

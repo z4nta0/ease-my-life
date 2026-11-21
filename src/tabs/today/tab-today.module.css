@@ -1873,9 +1873,9 @@
 
 
 
-/* #region onbCreDiv */
+/* #region onbCarDiv */
 
-.onbCreDiv { /* What: Onboarding Create Div. Why: The Generate and empty-state cards read as dashed accent prompts in the list. How: This draws a centered dashed soft-accent card stacking its icon, heading, text, and action. */
+.onbCarDiv { /* What: Onboarding Card Div. Why: The Generate and empty-state cards read as dashed accent prompts in the list. How: This draws a centered dashed soft-accent card stacking its icon, heading, text, and action. */
 
 
 	align-items    : center;
@@ -1891,7 +1891,7 @@
 
 
 }
-.onbCreDiv--generate[data-card-needed-active] { /* What: Needed Onboarding Create Div Generate. Why: A Generate card still waiting on its tutorials reads as unfinished, warm rather than red. How: This tints its border and fill warm, keying off data-card-needed-active. */
+.onbCarDiv--generate[data-card-needed-active] { /* What: Needed Onboarding Card Div Generate. Why: A Generate card still waiting on its tutorials reads as unfinished, warm rather than red. How: This tints its border and fill warm, keying off data-card-needed-active. */
 
 
 	background   : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
@@ -1899,17 +1899,17 @@
 
 
 }
-.onbCreDiv.onbCreDiv--removing { /* What: Onboarding Create Div Removing. Why: The Generate card slides away once the real list is made. How: This plays the shared card skip-out. */
+.onbCarDiv.onbCarDiv--removing { /* What: Onboarding Card Div Removing. Why: The Generate card slides away once the real list is made. How: This plays the shared card skip-out. */
 
 
 	animation : global( cardRemoveSlideOut ) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */ /* What: Global cardRemoveSlideOut Keyframes. Why: The cardRemoveSlideOut keyframes are shared with the Today cards, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Onboarding Create Div Removing. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Onboarding Card Div Removing. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.onbCreDiv.onbCreDiv--removing { /* What: Still Onboarding Create Div Removing. Why: The card should go at once. How: This turns its animation and opacity off. */
+	.onbCarDiv.onbCarDiv--removing { /* What: Still Onboarding Card Div Removing. Why: The card should go at once. How: This turns its animation and opacity off. */
 
 
 		animation : none;
@@ -1920,17 +1920,17 @@
 
 
 }
-.onbCreDiv--pulsing { /* What: Onboarding Create Div Pulsing. Why: A Generate card ready to click sends a sonar ping out onto the page, which needs a positioned card to anchor it. How: This positions the card for its ping. */
+.onbCarDiv--pulsing { /* What: Onboarding Card Div Pulsing. Why: A Generate card ready to click sends a sonar ping out onto the page, which needs a positioned card to anchor it. How: This positions the card for its ping. */
 
 
 	position : relative;
 
 
 }
-.onbCreDiv--pulsing::after { /* What: Onboarding Create Div Pulsing Ping. Why: The ping expands from the card's edge outward onto the page, where it reads against the background. How: This draws a matching click-through layer that plays an expanding accent ring. */
+.onbCarDiv--pulsing::after { /* What: Onboarding Card Div Pulsing Ping. Why: The ping expands from the card's edge outward onto the page, where it reads against the background. How: This draws a matching click-through layer that plays an expanding accent ring. */
 
 
-	animation      : onbCreDivPulsePing var( --dur-ani-p09 ) var( --mot-dec-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation      : onbCarDivPulsePing var( --dur-ani-p09 ) var( --mot-dec-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	border-radius  : inherit;
 	content        : '';
 	inset          : 0;
@@ -1939,10 +1939,10 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Onboarding Create Div Pulsing Ping. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Onboarding Card Div Pulsing Ping. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.onbCreDiv--pulsing::after { /* What: Still Onboarding Create Div Pulsing Ping. Why: The ping is purely decorative. How: This turns its animation and transition off. */
+	.onbCarDiv--pulsing::after { /* What: Still Onboarding Card Div Pulsing Ping. Why: The ping is purely decorative. How: This turns its animation and transition off. */
 
 
 		animation  : none;
@@ -1953,7 +1953,7 @@
 
 
 }
-@keyframes onbCreDivPulsePing { /* What: Onboarding Create Div Pulse Ping Keyframes. Why: The ring spreads and fades. How: This grows an accent box shadow to the p01 rhythm step while fading it out. */
+@keyframes onbCarDivPulsePing { /* What: Onboarding Card Div Pulse Ping Keyframes. Why: The ring spreads and fades. How: This grows an accent box shadow to the p01 rhythm step while fading it out. */
 
 
 	0% {
@@ -2019,7 +2019,7 @@
 
 
 }
-.onbCreDiv--norun .onbTexPar { /* What: Onboarding Text Paragraph In Onboarding Create Div Norun. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin. */
+.onbCarDiv--norun .onbTexPar { /* What: Onboarding Text Paragraph In Onboarding Card Div Norun. Why: With no button, the card's gap spaces its two paragraphs, so a paragraph margin would double it. How: This drops the margin. */
 
 
 	margin : 0;
@@ -2166,7 +2166,7 @@
 
 }
 
-/* #endregion onbCreDiv */
+/* #endregion onbCarDiv */
 
 /* #endregion todGroDiv */
 

@@ -946,7 +946,7 @@
 
 }
 
-.stoChiSpa { /* What: Storage Chip Span. Why: Each fact is a small neutral chip. How: This draws a bordered mono pill that never wraps. */
+.setChiSpa { /* What: Settings Chip Span. Why: Each fact is a small neutral chip. How: This draws a bordered mono pill that never wraps. */
 
 
 	align-items    : center;
@@ -965,7 +965,7 @@
 
 
 }
-.stoChiSpa[data-chip-ok-active] { /* What: Good Storage Chip Span. Why: A reassuring fact reads green. How: This tints it green, keying off data-chip-ok-active. */
+.setChiSpa[data-chip-ok-active] { /* What: Good Settings Chip Span. Why: A reassuring fact reads green. How: This tints it green, keying off data-chip-ok-active. */
 
 
 	background   : oklch( from var( --suc-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Success Main Color = oklch( 0.5 0.11 155 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
@@ -974,7 +974,7 @@
 
 
 }
-.stoChiSpa[data-chip-warn-active] { /* What: Warning Storage Chip Span. Why: A fact worth acting on reads warm. How: This tints it in a warm color darkened to stay readable at 11px, keying off data-chip-warn-active. */
+.setChiSpa[data-chip-warn-active] { /* What: Warning Settings Chip Span. Why: A fact worth acting on reads warm. How: This tints it in a warm color darkened to stay readable at 11px, keying off data-chip-warn-active. */
 
 
 	background   : oklch( from var( --acc-sec-col ) l c h / var( --cdn-pow-009-rec ) ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
@@ -1189,7 +1189,7 @@
 
 }
 
-.resConDiv { /* What: Reset Confirm Div. Why: A destructive action's Cancel and confirm buttons swap in for its single button. How: This lines them up in a row that keeps its size and plays the shared footer swap-in. */
+.rowConDiv { /* What: Row Confirm Div. Why: A destructive action's Cancel and confirm buttons swap in for its single button. How: This lines them up in a row that keeps its size and plays the shared footer swap-in. */
 
 
 	animation : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -1199,18 +1199,18 @@
 
 
 }
-.resConDiv--leaving { /* What: Reset Confirm Div Leaving. Why: A cancelled confirm swaps back out before it unmounts. How: This plays the shared footer swap-out. */
+.rowConDiv--leaving { /* What: Row Confirm Div Leaving. Why: A cancelled confirm swaps back out before it unmounts. How: This plays the shared footer swap-out. */
 
 
 	animation : global( footerSwapFadeOut ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeOut Keyframes. Why: The footerSwapFadeOut keyframes are shared with every editor footer, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reset Confirm Div And Reset Confirm Div Leaving. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Row Confirm Div And Row Confirm Div Leaving. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.resConDiv,
-	.resConDiv--leaving { /* What: Still Reset Confirm Div And Reset Confirm Div Leaving. Why: The pair should swap at once, and JS already skips the leave delay. How: This turns its animation off. */
+	.rowConDiv,
+	.rowConDiv--leaving { /* What: Still Row Confirm Div And Row Confirm Div Leaving. Why: The pair should swap at once, and JS already skips the leave delay. How: This turns its animation off. */
 
 
 		animation : none;
@@ -1344,7 +1344,7 @@
 
 }
 
-.aboCreSpa { /* What: About Creator Span. Why: The creator and source links read as quieter lines. How: This sets them small and muted. */
+.aboLinSpa { /* What: About Line Span. Why: The creator and source links read as quieter lines. How: This sets them small and muted. */
 
 
 	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */

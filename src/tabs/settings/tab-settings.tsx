@@ -2163,7 +2163,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 										<span
-											className={ cssModObj.stoChiSpa }
+											className={ cssModObj.setChiSpa }
 
 											data-chip-ok-active
 										>On</span> // What: Set Store Chip Span Element. Why: This is the actual granted-state confirmation. How: This renders the fixed text "On".
@@ -2175,7 +2175,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 										<span
-											className={ cssModObj.stoChiSpa }
+											className={ cssModObj.setChiSpa }
 
 											data-chip-warn-active
 										>Blocked</span> // What: Set Store Chip Span Element. Why: This is the actual denied-state confirmation. How: This renders the fixed text "Blocked".
@@ -2292,16 +2292,16 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 										<span
-											className={ cssModObj.stoChiSpa }
+											className={ cssModObj.setChiSpa }
 
 											data-chip-ok-active={ ( stoStaObj && stoStaObj.perBoo ) || undefined } // What: Chip Ok Active Attribute. Why: Protected storage reads as good news. How: This is present only while the storage is persisted.
 											data-chip-warn-active={ !( stoStaObj && stoStaObj.perBoo ) || undefined } // What: Chip Warn Active Attribute. Why: Unprotected storage is worth acting on. How: This is present only while the storage isn't persisted.
 										>{ stoStaObj && stoStaObj.perBoo ? 'Protected from cleanup' : 'Not protected yet' }</span>{ /* What: Persisted Chip Span Element. Why: Whether the browser has promised not to evict this app's own data is worth its own always-visible chip. How: This renders one of 2 labels, styled ok/warn, based on stoStaObj's own persisted field. */ }
 
-										<span className={ cssModObj.stoChiSpa }>{ forBytFun( stoStaObj && stoStaObj.bytNum ) } of your data</span>{ /* What: Size Chip Span Element. Why: How much data is actually stored is worth its own always-visible chip. How: This renders forBytFun's own formatted size, reading stoStaObj's own dataBytes field. */ }
+										<span className={ cssModObj.setChiSpa }>{ forBytFun( stoStaObj && stoStaObj.bytNum ) } of your data</span>{ /* What: Size Chip Span Element. Why: How much data is actually stored is worth its own always-visible chip. How: This renders forBytFun's own formatted size, reading stoStaObj's own dataBytes field. */ }
 
 										<span
-											className={ cssModObj.stoChiSpa }
+											className={ cssModObj.setChiSpa }
 
 											data-chip-warn-active={ ( stoStaObj && stoStaObj.mirBoo === false ) || undefined } // What: Chip Warn Active Attribute. Why: An out-of-date fallback copy is worth acting on. How: This is present only while mirrorOk is false.
 										>Fallback copy: { stoStaObj && stoStaObj.mirBoo === false ? 'out of date' : forWheFun( stoStaObj && stoStaObj.mirStr ) }</span>{ /* What: Mirror Chip Span Element. Why: How fresh the localStorage fallback mirror is worth its own always-visible chip. How: This renders either a warning or forWheFun's own formatted timestamp, reading stoStaObj's own mirBoo/mirStr fields. */ }
@@ -2310,7 +2310,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 											<span
-												className={ cssModObj.stoChiSpa }
+												className={ cssModObj.setChiSpa }
 
 												data-chip-ok-active
 											>Installed</span> // What: Installed Chip Span Element. Why: This is the actual installed confirmation. How: This renders the fixed text "Installed".
@@ -2613,7 +2613,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								{ penImpObj ? ( // What: Pending Import Check. Why: A staged backup awaiting confirmation replaces the plain Import trigger with its own confirm pair. How: This renders the confirm pair while penImpObj holds a value, the plain trigger otherwise.
 
 
-									<div className={` ${ cssModObj.resConDiv }   ${ impLeaBoo ? cssModObj.resConDivLeaving : '' } `}>{ /* What: Import Confirm Div Element. Why: The Import/Cancel confirm pair needs its own grouping, replacing the single Import trigger while a backup is staged. How: This wraps the confirm's own Import and Cancel buttons. */ }
+									<div className={` ${ cssModObj.rowConDiv }   ${ impLeaBoo ? cssModObj.rowConDivLeaving : '' } `}>{ /* What: Row Confirm Div Element. Why: The Import/Cancel confirm pair needs its own grouping, replacing the single Import trigger while a backup is staged. How: This wraps the confirm's own Import and Cancel buttons. */ }
 
 
 										<ButBasCom
@@ -2700,7 +2700,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								{ conResBoo ? ( // What: Reset Confirm Check. Why: An in-progress reset confirmation replaces the trigger with its own Reset/Cancel pair. How: This renders the confirm pair while conResBoo is true.
 
 
-									<div className={` ${ cssModObj.resConDiv }   ${ resLeaBoo ? cssModObj.resConDivLeaving : '' } `}>{ /* What: Reset Confirm Div Element. Why: The Reset/Cancel confirm pair needs its own grouping, replacing the single Reset trigger while confirmation is pending. How: This wraps the confirm's own Reset and Cancel buttons. */ }
+									<div className={` ${ cssModObj.rowConDiv }   ${ resLeaBoo ? cssModObj.rowConDivLeaving : '' } `}>{ /* What: Row Confirm Div Element. Why: The Reset/Cancel confirm pair needs its own grouping, replacing the single Reset trigger while confirmation is pending. How: This wraps the confirm's own Reset and Cancel buttons. */ }
 
 
 										<ButBasCom
@@ -2871,9 +2871,9 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 								<span className={ cssModObj.aboVerSpa }>{ APP_VER_STR == null ? 'Version: 1.0' : `Version: ${ APP_VER_STR }` }</span>{ /* What: Set About Ver Span Element. Why: The real build version belongs in this identity block. How: This renders APP_VER_STR, falling back to "1.0" when the build-time define is missing. */ }
 
-								<span className={ cssModObj.aboCreSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.dev/' rel='noopener noreferrer' target='_blank'>https://techgeek.dev/<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: Set About Creator Span Element. Why: The identity block links to the creator's developer site. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboLinSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.dev/' rel='noopener noreferrer' target='_blank'>https://techgeek.dev/<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: Set About Creator Span Element. Why: The identity block links to the creator's developer site. How: This renders a fixed external link, opened in a new tab. */ }
 
-								<span className={ cssModObj.aboCreSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' rel='noopener noreferrer' target='_blank'>https://github.com/z4nta0/ease-my-life<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: Set About Creator Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboLinSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' rel='noopener noreferrer' target='_blank'>https://github.com/z4nta0/ease-my-life<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: Set About Creator Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
 
 
 							</div>

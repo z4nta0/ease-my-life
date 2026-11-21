@@ -1297,7 +1297,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 							<ButBasCom
-								className={` ${ cssModObj.picActBut }   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? cssModObj.picActButLeaving : '' } `}
+								className={` ${ cssModObj.picDonBut }   ${ ( butLeaBoo || runPhaStr === 'sent' ) ? cssModObj.picDonButLeaving : '' } `}
 
 								style={{ animationDelay : ( butLeaBoo || runPhaStr === 'sent' ) ? '0ms' : '120ms' }} // What: Animation Delay. Why: The buttons rise in staggered but leave together, so the action never cuts a later button's exit short. How: This keeps the entrance delay, dropping it to 0ms while the buttons leave.
 

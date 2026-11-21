@@ -367,9 +367,9 @@
 }
 
 
-/* #region picActBut */
+/* #region picDonBut */
 
-.picActDiv .picActBut,
+.picActDiv .picDonBut,
 .picActDiv .picSenBut,
 .picActDiv .picRerBut,
 .picActDiv .picOneBut { /* What: Picker Action, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: The buttons rise in, staggered by their inline delay, when a pick resolves. How: This plays the action entrance. */
@@ -379,8 +379,8 @@
 
 
 }
-.picActDiv .picActBut--leaving,
-.picActDiv .picRerBut--leaving { /* What: Picker Action Button Leaving And Picker Re-Roll Button Leaving In Picker Actions Div. Why: Re-Roll and Done fall away before their action runs. How: This plays the action exit while the button carries its leaving class. */
+.picActDiv .picDonBut--leaving,
+.picActDiv .picRerBut--leaving { /* What: Picker Done Button Leaving And Picker Re-Roll Button Leaving In Picker Actions Div. Why: Re-Roll and Done fall away before their action runs. How: This plays the action exit while the button carries its leaving class. */
 
 
 	animation : picActButLeaveFadeOut var( --dur-ani-p01 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */
@@ -394,7 +394,7 @@
 
 
 }
-.picActBut[data-tour-disabled-active],
+.picDonBut[data-tour-disabled-active],
 .picSenBut[data-tour-disabled-active],
 .picRerBut[data-tour-disabled-active],
 .picOneBut[data-tour-disabled-active] { /* What: Tour-Disabled Picker Action, Send, Re-Roll, And Pick One Buttons. Why: While the tour asks for Send to Today, Re-Roll and Done must look and act unavailable, since a disabled button alone looks no different. How: This dims them and stops them taking the pointer. */
@@ -409,11 +409,11 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Action, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.picActDiv .picActBut,
+	.picActDiv .picDonBut,
 	.picActDiv .picSenBut,
 	.picActDiv .picRerBut,
 	.picActDiv .picOneBut,
-	.picActDiv .picActBut--leaving,
+	.picActDiv .picDonBut--leaving,
 	.picActDiv .picRerBut--leaving { /* What: Instant Picker Action, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: The buttons should arrive and leave at once. How: This shortens both animations to .01ms. */
 
 
@@ -536,7 +536,7 @@
 
 }
 
-/* #endregion picActBut */
+/* #endregion picDonBut */
 
 /* #endregion picActDiv */
 

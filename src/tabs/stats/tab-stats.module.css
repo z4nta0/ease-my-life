@@ -64,8 +64,8 @@
 
 }
 
-.pagKicDiv,
-.pagKicSpa { /* What: Page Kicker Div And Span. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
+.staKicDiv,
+.staKicSpa { /* What: Stats Kicker Div And Span. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
 
 
 	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1590,7 +1590,7 @@
 
 }
 
-.sumMetSpa .logTypSpa { /* What: Log Type Span In Summary Meta Span. Why: Every mode pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
+.sumMetSpa .kinTagSpa { /* What: Kind Tag Span In Summary Meta Span. Why: Every mode pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
 
 
 	text-align : center;
@@ -1645,7 +1645,7 @@
 
 }
 
-.ranHeaDiv .pagKicDiv { /* What: Page Kicker Div In Rank Header Div. Why: A long title should wrap rather than squeeze the sort toggle. How: This lets the kicker shrink. */
+.ranHeaDiv .staKicDiv { /* What: Stats Kicker Div In Rank Header Div. Why: A long title should wrap rather than squeeze the sort toggle. How: This lets the kicker shrink. */
 
 
 	min-width : 0;
@@ -2025,7 +2025,7 @@
 
 }
 
-.ranTagSpa { /* What: Rank Tag Span. Why: A status like inactive reads as a small outlined chip. How: This draws a small uppercase mono pill that never shrinks. */
+.staTagSpa { /* What: Stats Tag Span. Why: A status like inactive reads as a small outlined chip. How: This draws a small uppercase mono pill that never shrinks. */
 
 
 	align-items    : center;
@@ -2043,7 +2043,7 @@
 
 
 }
-.ranTagSpa--was { /* What: Rank Tag Span Was. Why: An item that returned but hasn't been picked since reads in the accent rather than muted. How: This tints the chip in the accent. */
+.staTagSpa--was { /* What: Stats Tag Span Was. Why: An item that returned but hasn't been picked since reads in the accent rather than muted. How: This tints the chip in the accent. */
 
 
 	background   : var( --acc-tin-col );                                                /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -2052,7 +2052,7 @@
 
 
 }
-.ranTagSpa--deleted { /* What: Rank Tag Span Deleted. Why: A deleted item's tag warns in a warm danger tint. How: This tints the chip red. */
+.staTagSpa--deleted { /* What: Stats Tag Span Deleted. Why: A deleted item's tag warns in a warm danger tint. How: This tints the chip red. */
 
 
 	background   : oklch( from var( --err-mai-col ) l c h / var( --cdn-pow-009-rec ) ); /* Error Main Color = oklch( 0.55 0.17 25 ), Core-Design-Number to the Power of 9 Reciprocal ~= 0.080 */
@@ -2138,7 +2138,7 @@
 
 }
 
-.freValSpa { /* What: Frequency Value Span. Why: A frequency or last-picked value reads as mono at the row's end. How: This sets tabular mono that never shrinks or wraps. */
+.metValSpa { /* What: Metric Value Span. Why: A frequency or last-picked value reads as mono at the row's end. How: This sets tabular mono that never shrinks or wraps. */
 
 
 	color                : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
@@ -2150,14 +2150,14 @@
 
 
 }
-.freValSpa[data-value-dim-active] { /* What: Dimmed Frequency Value Span. Why: A placeholder like Not Picked should read fainter than a real value. How: This fades it, keying off data-value-dim-active. */
+.metValSpa[data-value-dim-active] { /* What: Dimmed Metric Value Span. Why: A placeholder like Not Picked should read fainter than a real value. How: This fades it, keying off data-value-dim-active. */
 
 
 	color : oklch( from var( --tex-mut-col ) l c h / var( --cdn-pow-001-rec ) ); /* Text Muted Color = oklch( 0.5 0.012 250 ), Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
 
 
 }
-.freValSpa--freq { /* What: Frequency Value Span Frequency. Why: Values like every 12.5 weeks and Picked once differ in width, which would shift the tag before them. How: This fixes it at a rhythm step, right-aligned. */
+.metValSpa--freq { /* What: Metric Value Span Frequency. Why: Values like every 12.5 weeks and Picked once differ in width, which would shift the tag before them. How: This fixes it at a rhythm step, right-aligned. */
 
 
 	text-align : right;
@@ -2165,7 +2165,7 @@
 
 
 }
-.freValSpa--last { /* What: Frequency Value Span Last. Why: Values like 12 days and Yesterday differ in width, which would shift the tag before them, and the longest needs a smaller size to fit beside its tag. How: This sets it at the base font size, fixed at a rhythm step, right-aligned. */
+.metValSpa--last { /* What: Metric Value Span Last. Why: Values like 12 days and Yesterday differ in width, which would shift the tag before them, and the longest needs a smaller size to fit beside its tag. How: This sets it at the base font size, fixed at a rhythm step, right-aligned. */
 
 
 	font-size  : var( --fon-siz-bas );                /* Font Size Base = 11px */
@@ -2174,7 +2174,7 @@
 
 
 }
-.freValSpa--interval { /* What: Frequency Value Span Interval. Why: Values like every 100 days would shift the pill before them. How: This fixes it at a rhythm step, right-aligned. */
+.metValSpa--interval { /* What: Metric Value Span Interval. Why: Values like every 100 days would shift the pill before them. How: This fixes it at a rhythm step, right-aligned. */
 
 
 	text-align : right;
@@ -2182,7 +2182,7 @@
 
 
 }
-.freValSpa--fired { /* What: Frequency Value Span Fired. Why: A date like Aug 23 would shift the pill before it. How: This fixes it at a rhythm step, right-aligned. */
+.metValSpa--fired { /* What: Metric Value Span Fired. Why: A date like Aug 23 would shift the pill before it. How: This fixes it at a rhythm step, right-aligned. */
 
 
 	text-align : right;
@@ -2205,7 +2205,7 @@
 
 }
 
-.conValSpa .logTypSpa { /* What: Log Type Span In Conditional Value Span. Why: Every row's pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
+.conValSpa .kinTagSpa { /* What: Kind Tag Span In Conditional Value Span. Why: Every row's pill should be the same size. How: This fixes it at a rhythm step with its label centered. */
 
 
 	flex       : 0 0 auto;
@@ -2290,7 +2290,7 @@
 
 }
 
-.logMetSpa .logTypSpa { /* What: Log Type Span In Log Meta Span. Why: One-time and recurring pills should be the same size. How: This fixes it at a rhythm step with its label centered. */
+.logMetSpa .kinTagSpa { /* What: Kind Tag Span In Log Meta Span. Why: One-time and recurring pills should be the same size. How: This fixes it at a rhythm step with its label centered. */
 
 
 	text-align : center;
@@ -2317,7 +2317,7 @@
 
 
 
-.logTypSpa { /* What: Log Type Span. Why: A reminder's kind or a conditional's mode reads as a small outlined chip. How: This draws a small uppercase mono pill. */
+.kinTagSpa { /* What: Kind Tag Span. Why: A reminder's kind or a conditional's mode reads as a small outlined chip. How: This draws a small uppercase mono pill. */
 
 
 	border         : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -2331,7 +2331,7 @@
 
 
 }
-.logTypSpa--recurring { /* What: Log Type Span Recurring. Why: A recurring reminder reads in the accent. How: This tints the chip in the accent. */
+.kinTagSpa--recurring { /* What: Kind Tag Span Recurring. Why: A recurring reminder reads in the accent. How: This tints the chip in the accent. */
 
 
 	background   : oklch( from var( --acc-tin-col ) l c h / 0.5 );                      /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
@@ -2456,7 +2456,7 @@
 
 }
 
-.logEmpDiv { /* What: Log Empty Div. Why: A log with nothing in range says so quietly. How: This sets small muted text with a little padding. */
+.sumEmpDiv { /* What: Summary Empty Div. Why: A summary or log with nothing in range says so quietly. How: This sets small muted text with a little padding. */
 
 
 	color     : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */

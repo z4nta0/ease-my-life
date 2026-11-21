@@ -133,7 +133,7 @@
 
 
 }
-.conSubDiv + .schLinDiv { /* What: Schedule Line Div After Controls Subhead Div. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
+.conSubDiv + .setLinDiv { /* What: Setting Line Div After Controls Subhead Div. Why: The first row under a heading needs a divider above it. How: This draws a hairline on top of the row right after a subhead. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -893,9 +893,9 @@
 
 
 
-/* #region schLinDiv */
+/* #region setLinDiv */
 
-.schLinDiv { /* What: Schedule Line Div. Why: Each setting is a full-width row, its label left and its control right, wrapping when narrow. How: This spreads them across a padded row divided from the next. */
+.setLinDiv { /* What: Setting Line Div. Why: Each setting is a full-width row, its label left and its control right, wrapping when narrow. How: This spreads them across a padded row divided from the next. */
 
 
 	align-items     : center;
@@ -910,8 +910,8 @@
 
 
 }
-.conGroDiv--sched .schLinDiv:last-child,
-.conGroDiv--items:not( :has( .easConDiv ) ) .schLinDiv:last-child { /* What: Last Schedule Line Div In Controls Group Div Schedule And Items. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
+.conGroDiv--sched .setLinDiv:last-child,
+.conGroDiv--items:not( :has( .easConDiv ) ) .setLinDiv:last-child { /* What: Last Setting Line Div In Controls Group Div Schedule And Items. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
@@ -920,9 +920,9 @@
 }
 
 
-/* #region schLabSpa */
+/* #region setLabSpa */
 
-.schLabSpa { /* What: Schedule Label Span. Why: A setting's name sits over its live explanation, taking the row's spare width. How: This stacks them in a column that grows from zero but never narrows past a rhythm step. */
+.setLabSpa { /* What: Setting Label Span. Why: A setting's name sits over its live explanation, taking the row's spare width. How: This stacks them in a column that grows from zero but never narrows past a rhythm step. */
 
 
 	display        : flex;
@@ -935,9 +935,9 @@
 }
 
 
-/* #region schNamSpa */
+/* #region setNamSpa */
 
-.schNamSpa { /* What: Schedule Name Span. Why: Each setting leads with its name. How: This sets it in muted body text. */
+.setNamSpa { /* What: Setting Name Span. Why: Each setting leads with its name. How: This sets it in muted body text. */
 
 
 	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -946,7 +946,7 @@
 
 }
 
-.schNamSpa--help { /* What: Schedule Name Span Help. Why: The cadence setting's name carries an inline help tip. How: This lines them up in an inline row. */
+.setNamSpa--help { /* What: Setting Name Span Help. Why: The cadence setting's name carries an inline help tip. How: This lines them up in an inline row. */
 
 
 	align-items : center;
@@ -1006,11 +1006,11 @@
 
 }
 
-/* #endregion schNamSpa */
+/* #endregion setNamSpa */
 
 
 
-.schSubSpa { /* What: Schedule Sub Span. Why: The line under a setting explains its current value. How: This sets it small and muted. */
+.setSubSpa { /* What: Setting Sub Span. Why: The line under a setting explains its current value. How: This sets it small and muted. */
 
 
 	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -1020,17 +1020,17 @@
 
 }
 
-.schSubSpa--fade { /* What: Schedule Sub Span Fade. Why: An explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
+.setSubSpa--fade { /* What: Setting Sub Span Fade. Why: An explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
 
 
 	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with every other live explanation line, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Schedule Sub Span Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Setting Sub Span Fade. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.schSubSpa--fade { /* What: Still Schedule Sub Span Fade. Why: The change should happen at once. How: This turns its animation off. */
+	.setSubSpa--fade { /* What: Still Setting Sub Span Fade. Why: The change should happen at once. How: This turns its animation off. */
 
 
 		animation : none;
@@ -1041,7 +1041,7 @@
 
 }
 
-/* #endregion schLabSpa */
+/* #endregion setLabSpa */
 
 
 
@@ -1359,7 +1359,7 @@
 
 /* #endregion cadConDiv */
 
-/* #endregion schLinDiv */
+/* #endregion setLinDiv */
 
 
 

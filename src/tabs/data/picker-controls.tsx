@@ -1212,18 +1212,18 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 				<div className={ cssModObj.conSubDiv }>When it runs</div>{ /* What: Schedule Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "When it runs". */ }
 
 				<div
-					className={ cssModObj.schLinDiv }
+					className={ cssModObj.setLinDiv }
 
-					data-element-name-hook='schLinDiv'
+					data-element-name-hook='setLinDiv'
 				>{ /* What: Conditional Line Div Element. Why: The attach-a-conditional toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-					<span className={ cssModObj.schLabSpa }>{ /* What: Conditional Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
+					<span className={ cssModObj.setLabSpa }>{ /* What: Conditional Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
 
-						<span className={ cssModObj.schNamSpa }>Attach a conditional</span>{ /* What: Conditional Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Attach a conditional". */ }
+						<span className={ cssModObj.setNamSpa }>Attach a conditional</span>{ /* What: Conditional Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Attach a conditional". */ }
 
-						<span className={ cssModObj.schSubSpa }>{ /* What: Conditional Sub Span Element. Why: The row needs a live one-line explanation of the current state. How: This renders whichever of the 2 explanations below matches whether a conditional is attached. */ }
+						<span className={ cssModObj.setSubSpa }>{ /* What: Conditional Sub Span Element. Why: The row needs a live one-line explanation of the current state. How: This renders whichever of the 2 explanations below matches whether a conditional is attached. */ }
 
 
 							{ attConObj // What: Attached Conditional Check. Why: The explanation depends on whether a conditional is attached. How: This picks one of the 2 phrases below based on attConObj.
@@ -1353,21 +1353,21 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 				<div
-					className={ cssModObj.schLinDiv }
+					className={ cssModObj.setLinDiv }
 
-					data-element-name-hook='schLinDiv'
+					data-element-name-hook='setLinDiv'
 				>{ /* What: Daily Line Div Element. Why: The daily-generator membership toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-					<span className={ cssModObj.schLabSpa }>{ /* What: Daily Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
+					<span className={ cssModObj.setLabSpa }>{ /* What: Daily Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
 
-						<span className={ cssModObj.schNamSpa }>In the daily generator</span>{ /* What: Daily Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "In the daily generator". */ }
+						<span className={ cssModObj.setNamSpa }>In the daily generator</span>{ /* What: Daily Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "In the daily generator". */ }
 
 						<span
 							key={ draPicObj.includeInDaily ? 'on' : 'off' }
 
-							className={` ${ cssModObj.schSubSpa }   ${ cssModObj.schSubSpaFade } `}
+							className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 						>{ /* What: Daily Sub Span Element. Why: The row needs a live one-line explanation, cross-faded via its own key change. How: This renders whichever of the 2 explanations below matches draPicObj.includeInDaily. */ }
 
 
@@ -1410,16 +1410,16 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 						<div
-							className={ cssModObj.schLinDiv }
+							className={ cssModObj.setLinDiv }
 
-							data-element-name-hook='schLinDiv'
+							data-element-name-hook='setLinDiv'
 						>{ /* What: Cadence Line Div Element. Why: The cadence (how often) control needs its own labeled row. How: This wraps the label/sub text and the cadence selects below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-							<span className={ cssModObj.schLabSpa }>{ /* What: Cadence Label Span Element. Why: The row's own name/help tip and live explanation belong together. How: This wraps the lbl row and sub span below. */ }
+							<span className={ cssModObj.setLabSpa }>{ /* What: Cadence Label Span Element. Why: The row's own name/help tip and live explanation belong together. How: This wraps the lbl row and sub span below. */ }
 
 
-								<span className={` ${ cssModObj.schNamSpa }   ${ cssModObj.schNamSpaHelp } `}>{ /* What: Cadence Label Span Element. Why: The row needs its own literal name plus a help tip beside it. How: This renders the text "How often?" followed by the InfTipCom below. */ }How often?
+								<span className={` ${ cssModObj.setNamSpa }   ${ cssModObj.setNamSpaHelp } `}>{ /* What: Cadence Label Span Element. Why: The row needs its own literal name plus a help tip beside it. How: This renders the text "How often?" followed by the InfTipCom below. */ }How often?
 
 
 									<InfTipCom
@@ -1434,7 +1434,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								<span
 									key={ ( draPicObj.cadence || 'daily' ) + ( draPicObj.anchorDow ?? '' ) + ( draPicObj.anchorDom ?? '' ) + ( draPicObj.anchorMonth ?? '' ) + ( draPicObj.anchorDay ?? '' ) + ( draPicObj.dateMode ?? '' ) + ( draPicObj.nthOrdinal ?? '' ) + ( draPicObj.nthWeekday ?? '' ) }
 
-									className={` ${ cssModObj.schSubSpa }   ${ cssModObj.schSubSpaFade } `}
+									className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 								>{ /* What: Cadence Sub Span Element. Why: The row needs a live one-line summary of the exact configured schedule, cross-faded via its own composite key. How: This computes and returns the matching summary JSX for the picker's current cadence/anchor fields. */ }
 
 
@@ -1673,21 +1673,21 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 						<div
-							className={ cssModObj.schLinDiv }
+							className={ cssModObj.setLinDiv }
 
-							data-element-name-hook='schLinDiv'
+							data-element-name-hook='setLinDiv'
 						>{ /* What: Days Line Div Element. Why: The weekday multi-select needs its own labeled row. How: This wraps the label/sub text and the WeeChiCom control below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-							<span className={ cssModObj.schLabSpa }>{ /* What: Days Label Span Element. Why: The row's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
+							<span className={ cssModObj.setLabSpa }>{ /* What: Days Label Span Element. Why: The row's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
 
-								<span className={ cssModObj.schNamSpa }>Days</span>{ /* What: Days Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Days". */ }
+								<span className={ cssModObj.setNamSpa }>Days</span>{ /* What: Days Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Days". */ }
 
 								<span
 									key={ ( draPicObj.daysOfWeek || [] ).join( ',' ) }
 
-									className={` ${ cssModObj.schSubSpa }   ${ cssModObj.schSubSpaFade } `}
+									className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 								>{ /* What: Days Sub Span Element. Why: The row needs a live one-line summary of the chosen weekdays, cross-faded via its own key. How: This lists every chosen day, or a prompt when none are chosen. */ }
 
 
@@ -1722,21 +1722,21 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 						</div>
 
 						<div
-							className={ cssModObj.schLinDiv }
+							className={ cssModObj.setLinDiv }
 
-							data-element-name-hook='schLinDiv'
+							data-element-name-hook='setLinDiv'
 						>{ /* What: Holiday Line Div Element. Why: The skip-on-holidays toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-							<span className={ cssModObj.schLabSpa }>{ /* What: Holiday Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
+							<span className={ cssModObj.setLabSpa }>{ /* What: Holiday Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
 
-								<span className={ cssModObj.schNamSpa }>Skip on holidays</span>{ /* What: Holiday Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Skip on holidays". */ }
+								<span className={ cssModObj.setNamSpa }>Skip on holidays</span>{ /* What: Holiday Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Skip on holidays". */ }
 
 								<span
 									key={ draPicObj.skipHolidays ? 'on' : 'off' }
 
-									className={` ${ cssModObj.schSubSpa }   ${ cssModObj.schSubSpaFade } `}
+									className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 								>{ /* What: Holiday Sub Span Element. Why: The row needs a live one-line explanation, cross-faded via its own key change. How: This renders whichever of the 2 explanations below matches draPicObj.skipHolidays. */ }
 
 
@@ -1796,21 +1796,21 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 				<div className={ cssModObj.conSubDiv }>Item Controls</div>{ /* What: Item Controls Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "Item Controls". */ }
 
 				<div
-					className={ cssModObj.schLinDiv }
+					className={ cssModObj.setLinDiv }
 
-					data-element-name-hook='schLinDiv'
+					data-element-name-hook='setLinDiv'
 				>{ /* What: Duplicates Line Div Element. Why: The avoid-duplicate-items toggle needs its own labeled row. How: This wraps the label/sub text and the switch button below. Its data-element-name-hook is read by help mode's Data catalog. */ }
 
 
-					<span className={ cssModObj.schLabSpa }>{ /* What: Duplicates Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
+					<span className={ cssModObj.setLabSpa }>{ /* What: Duplicates Label Span Element. Why: The toggle's own name and live explanation belong together. How: This wraps the lbl and sub spans below. */ }
 
 
-						<span className={ cssModObj.schNamSpa }>Avoid duplicate items</span>{ /* What: Duplicates Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Avoid duplicate items". */ }
+						<span className={ cssModObj.setNamSpa }>Avoid duplicate items</span>{ /* What: Duplicates Label Span Element. Why: The row needs its own literal name. How: This renders the literal text "Avoid duplicate items". */ }
 
 						<span
 							key={ draPicObj.avoidDuplicates ? 'on' : 'off' }
 
-							className={` ${ cssModObj.schSubSpa }   ${ cssModObj.schSubSpaFade } `}
+							className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 						>{ /* What: Duplicates Sub Span Element. Why: The row needs a live one-line explanation, cross-faded via its own key change. How: This renders whichever of the 2 explanations below matches draPicObj.avoidDuplicates. */ }
 
 

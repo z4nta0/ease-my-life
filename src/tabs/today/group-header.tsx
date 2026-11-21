@@ -465,7 +465,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 				<div className={ cssModObj.merConDiv }>{ /* What: Merge Confirm Div Element. Why: This is the confirm-before-merging prompt's own root. How: This renders the explanatory message plus its own Cancel/Merge actions. */ }
 
 
-					<span className={ cssModObj.conMesSpa }>{ /* What: Confirm Message Span Element. Why: The user needs to understand exactly what merging will do before confirming it. How: This renders merPenObj's own new and old names inside the fixed explanatory copy. */ }
+					<span className={ cssModObj.banMesSpa }>{ /* What: Banner Message Span Element. Why: The user needs to understand exactly what merging will do before confirming it. How: This renders merPenObj's own new and old names inside the fixed explanatory copy. */ }
 
 
 						A group named &ldquo;{ merPenObj.newStr }&rdquo; already exists. Merge
@@ -509,7 +509,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 				<div className={ cssModObj.namConDiv }>{ /* What: Name Conflict Div Element. Why: A rename collision needs the same visual treatment as the merge-confirm banner above. How: This renders namErrStr as the banner's own message. */ }
 
 
-					<span className={ cssModObj.conMesSpa }>{ namErrStr }</span>{ /* What: Confirm Message Span Element. Why: This is the actual collision message text. How: This renders namErrStr directly. */ }
+					<span className={ cssModObj.banMesSpa }>{ namErrStr }</span>{ /* What: Banner Message Span Element. Why: This is the actual collision message text. How: This renders namErrStr directly. */ }
 
 
 				</div>
