@@ -14,9 +14,9 @@
  * name landing in the accent color and easing to normal text).
  *
  * The card's declarations are copied from the shared Today card classes the
- * real cards still use, until the design-system pass merges them. Under
- * reduced motion the reel never mounts, since the Today tab settles every slot
- * at once, and the settled name simply appears.
+ * real cards still use. Under reduced motion the reel's name animation and
+ * the settled name's landing are turned off; the Today tab skips the reel by
+ * settling its slots at once.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -26,7 +26,7 @@
 
 /* #region todCarArt */
 
-.todCarArt { /* What: Today Card Article. Why: The placeholder should sit in the list exactly like the card it stands in for, but it isn't a real card and shouldn't respond to the pointer. How: This lays out the check, body, and actions in the same three-column grid, surface, border, and spacing as a real Today card, with no pointer cursor or pointer events. */
+.todCarArt { /* What: Today Card Article. Why: The placeholder should sit in the list like the card it stands in for, but it isn't a real card and shouldn't respond to the pointer. How: This lays out the check, body, and actions in the same three-column grid, surface, border, and spacing as a real Today card, with the default cursor and no pointer events, and eases its background, opacity, and border color changes. */
 
 
 	align-items           : center;
@@ -74,10 +74,10 @@
 
 }
 
-.carCheSpa { /* What: Card Check Span. Why: The placeholder keeps the same slot a real card's check button fills, reading as a placeholder rather than a real checkbox. How: This draws the same rounded square with the button chrome reset, since here it's an inert span, dimmed with a dashed border. */
+.carCheSpa { /* What: Card Check Span. Why: The placeholder keeps the same slot a real card's check button fills, reading as a placeholder rather than a real checkbox. How: This draws the same rounded square with the button chrome reset, since here it's an inert span, dimmed with a dashed border, and carries a fade for its color changes. */
 
 
-	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: This drops the button's native styling through the prefixed property. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
 	align-items        : center;
 	appearance         : none;
 	background         : none;
@@ -257,7 +257,7 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Name Span And Settled Name Span. Why: Someone who asked for less motion should see the settled name directly, with no cycling or landing bounce. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Name Span And Settled Name Span. Why: Someone who asked for less motion should see the settled name directly, with no drop or landing bounce. How: This applies only when the reduced-motion preference is set. */
 
 
 	.reeNamSpa,

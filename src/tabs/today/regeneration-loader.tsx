@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './regeneration-loader.module.css'; // What: CSS Module Object. Why: The loader card and its reel are styled from their own module. How: This maps each class name in regeneration-loader.module.css to its hashed module class.
-import React     from 'react';                            // What: React. Why: LoaReeCom and LoaCarCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
+import React     from 'react';                            // What: React. Why: LoaReeCom and LoaCarCom are built directly on React's own APIs. How: This is used directly (React.useEffect, React.useState) instead of importing individual named hooks.
 
 
 import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: A loader card belongs to one picker, or a day-off stand-in for one. How: This types LacProTyp's picRcdObj.
@@ -98,7 +98,7 @@ function LoaReeCom ( { canIteArr } : LrcProTyp ) : React.JSX.Element {
 		return () => clearInterval( cycTimNum ); // What: Effect Cleanup Return. Why: The interval must not keep firing after this reel unmounts. How: This clears cycTimNum.
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: canIteArr is fixed for the reel's whole lifetime, and restarting the interval on a new array reference would visibly stutter the cycle. How: This keeps the dependency array empty so the interval starts once, on mount.
-	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to start once, on mount; canIteArr itself is fixed for the reel's whole lifetime. How: An empty array means this never re-subscribes.
+	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to start once, on mount; canIteArr itself is fixed for the reel's whole lifetime. How: An empty array means this runs once, on mount, and never again.
 
 
 
@@ -109,7 +109,7 @@ function LoaReeCom ( { canIteArr } : LrcProTyp ) : React.JSX.Element {
 			key={ curIndNum }
 
 			className={ cssModObj.reeNamSpa }
-		>{ /* What: Loader Reel Name Span Element. Why: The key on curIndNum forces a fresh mount every tick, replaying the fade-in. How: This renders the current candidate's own name, or a non-breaking space while none exists yet. */ }
+		>{ /* What: Reel Name Span Element. Why: The key on curIndNum forces a fresh mount whenever the index changes, replaying the fade-in. How: This renders the current candidate's own name, or a non-breaking space while none exists yet. */ }
 
 
 			{ canIteArr[ curIndNum ]?.name || ' ' }{ /* What: Candidate Name Expression. Why: The reel shows whichever candidate the current index points at. How: This renders that candidate's own name, or a non-breaking space while none exists yet. */ }
@@ -142,9 +142,9 @@ type LacProTyp = { infRcdObj : GenSloTyp | undefined, picRcdObj : Partial< PicRc
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.infRcdObj - Info Record Object: The slot's own
- *                          generation-in-progress record: { canArr, ideStr,
- *                          kinStr, staStr, texStr }, built up in TabTodCom's
- *                          own genLisFun.
+ *                          generation-in-progress record (its candidates,
+ *                          chosen item, kind, phase, and day-off text), built
+ *                          up in TabTodCom's own genLisFun.
  * @param props.picRcdObj - Picker Record Object: The picker this loader slot
  *                          belongs to.
  *
@@ -185,7 +185,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 
 			data-element-name-hook='todCarArt'
 			data-slot-pending-active={ sloStaStr === 'pending' || undefined } // What: Slot Pending Active Attribute. Why: A slot still waiting its turn gets a lighter card and faded text from its module. How: This sets the presence-only attribute while sloStaStr is 'pending' and removes it otherwise.
-		>{ /* What: Loader Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+		>{ /* What: Today Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 			<span
@@ -194,13 +194,13 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 				data-element-name-hook='carCheSpa'
 
 				aria-hidden='true'
-			/>{ /* What: Check Span Element. Why: A loader card still needs the same layout slot a real card's check button occupies. How: This renders an inert, unclickable placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
+			/>{ /* What: Card Check Span Element. Why: A loader card still needs the same layout slot a real card's check button occupies. How: This renders an inert, unclickable placeholder. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
-			<div className={ cssModObj.carBodDiv }>{ /* What: Loader Card Body Div Element. Why: The meta row and name row read as one grouped block, matching a real card's own layout. How: This wraps the meta row and the name row below. */ }
+			<div className={ cssModObj.carBodDiv }>{ /* What: Card Body Div Element. Why: The meta row and name row read as one grouped block, matching a real card's own layout. How: This wraps the meta row and the name row below. */ }
 
 
-				<div className={ cssModObj.carMetDiv }>{ /* What: Loader Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
+				<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The picker's own name needs a consistent meta-row slot, matching a real card's own layout. How: This wraps the picker-name span below. */ }
 
 
 					<span>{ picRcdObj.name }</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which picker this slot belongs to while it is still generating. How: This renders picRcdObj's own name. */ }
@@ -208,7 +208,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 
 				</div>
 
-				<div className={ cssModObj.carNamDiv }>{ /* What: Loader Card Name Div Element. Why: This is where the slot's own pending/active/settled visual actually renders. How: This renders exactly one of the three branches below, gated on staStr. */ }
+				<div className={ cssModObj.carNamDiv }>{ /* What: Card Name Div Element. Why: This is where the slot's own pending/active/settled visual actually renders. How: This renders the waiting dots, the reel, or the settled name below, depending on sloStaStr. */ }
 
 
 					{ sloStaStr === 'pending' && <span className={ cssModObj.waiDotSpa }>·  ·  ·</span> }{ /* What: Waiting Dots Span Element. Why: A slot not yet reached by the cascade shows plain waiting dots. How: This renders only while sloStaStr is 'pending'. */ }
@@ -219,12 +219,12 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 
 
 
-					{ sloStaStr === 'active' && !hasReeBoo && <span className={ cssModObj.waiDotSpa }>·  ·  ·</span> }{ /* What: Active Dots Span Element. Why: Any other active slot (day-off/charging, or a pick with no candidates) just shows the same waiting dots. How: This renders only while sloStaStr is 'active' and hasReeBoo is false. */ }
+					{ sloStaStr === 'active' && !hasReeBoo && <span className={ cssModObj.waiDotSpa }>·  ·  ·</span> }{ /* What: Waiting Dots Span Element. Why: Any other active slot (day-off/charging, or a pick with no candidates) just shows the same waiting dots. How: This renders only while sloStaStr is 'active' and hasReeBoo is false. */ }
 
 					{ sloStaStr === 'settled' && ( // What: Settled State Check. Why: Once this slot's own cascade step finishes, it shows the final resolved name instead of any dots/reel. How: This renders finNamStr only while sloStaStr is 'settled'.
 
 
-						<span className={ cssModObj.setNamSpa }>{ finNamStr }</span> // What: Loader Reel Name Span Element. Why: This is the slot's own final, settled display name. How: This renders finNamStr directly.
+						<span className={ cssModObj.setNamSpa }>{ finNamStr }</span> // What: Settled Name Span Element. Why: This is the slot's own final, settled display name. How: This renders finNamStr directly.
 
 
 					) }
@@ -240,7 +240,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 				className={ cssModObj.carActDiv }
 
 				data-element-name-hook='carActDiv'
-			/>{ /* What: Loader Card Actions Div Element. Why: A loader card still needs the same layout slot a real card's actions strip occupies. How: This renders an empty placeholder, matching a real card's own layout. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
+			/>{ /* What: Card Actions Div Element. Why: A loader card still needs the same layout slot a real card's actions strip occupies. How: This renders an empty placeholder, matching a real card's own layout. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
 
 
 		</article>
@@ -259,7 +259,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { type GenSloTyp, LoaCarCom }; // What: Named Exports. Why: The Today tab shows one loader card per picker slot while generating, and builds each slot's state. How: This exports LoaCarCom and the slot type by name; LoaReeCom stays private to this file.
+export { type GenSloTyp, LoaCarCom }; // What: Named Exports. Why: The Today tab needs the loader card and the slot type. How: This exports LoaCarCom and the slot type by name; LoaReeCom stays private to this file.
 
 // #endregion Exports
 

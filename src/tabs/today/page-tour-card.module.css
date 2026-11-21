@@ -20,7 +20,7 @@
 
 /* #region todCarArt */
 
-.todCarArt { /* What: Today Card Article. Why: The tour offer should sit in the list like any other Today card. How: This lays out the check, body, and actions in the Today card's three-column grid, surface, border, and spacing. */
+.todCarArt { /* What: Today Card Article. Why: The tour offer should sit in the list like any other Today card. How: This lays out the check, body, and actions in the Today card's three-column grid, surface, border, and spacing, and eases its background, opacity, and border color changes. */
 
 
 	align-items           : center;
@@ -111,7 +111,7 @@
 .carCheBut { /* What: Card Check Button. Why: The check spot holds the play and undo buttons, shaped like a real card's checkbox. How: This draws the clickable rounded square with the button chrome reset and a color fade, and eases its focus ring in, and eases its press and focus ring. */
 
 
-	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: Safari only honors its own prefixed property for dropping a button's native styling. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
+	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: This drops the button's native styling through the prefixed property. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
 	align-items        : center;
 	appearance         : none;
 	background         : none;
@@ -187,7 +187,7 @@
 
 }
 
-.cheRipSpa { /* What: Check Ripple Span. Why: The done check keeps the same ripple layer every done row carries. How: This draws an invisible accent ring just outside the box that never takes the pointer. */
+.cheRipSpa { /* What: Check Ripple Span. Why: The done check keeps the same ripple layer a real done row carries. How: This draws an invisible accent ring just outside the box that never takes the pointer. */
 
 
 	border         : var( --bor-wid-bas ) solid var( --acc-mai-col ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */

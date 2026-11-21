@@ -7,7 +7,7 @@ import cssModObj from './page-tour-card.module.css'; // What: CSS Module Object.
 import React     from 'react';                       // What: React. Why: PagTouCom is built directly on React's own APIs. How: This is used directly (React.Fragment) instead of importing individual named hooks.
 
 
-import { IcoSvgCom   } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The card's Play and uncheck controls show small glyphs. How: This is rendered inside those buttons.
+import { IcoSvgCom   } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The card's check and Cancel controls show glyphs. How: This is rendered inside those buttons.
 import { ONB_CHE_OBJ } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: A page tour's card shows whether that tour is already done. How: This is called via ONB_CHE_OBJ.entLooFun.
 
 
@@ -23,8 +23,8 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
  *
  * @summary
  * The Today tab's Page Tours launcher card: a persistent checklist-style row
- * that starts one page tour, with Play and uncheck controls and only the
- * checklist bookkeeping behind it.
+ * that starts one page tour, with Play, uncheck, and Cancel controls and only
+ * the checklist bookkeeping behind it.
  *
  * Sections:
  *  - Components
@@ -38,7 +38,7 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
 
 // #region Components
 
-type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onUncTutFun : ( touIdeStr : string ) => void, staAppObj : StaAppTyp, touRcdObj : { ideStr : string, labStr : string, timStr : string } }; // What: Page-Tour-Component Props Type. Why: A page tour's launcher card starts or un-resolves its tour and reads whether it's done. How: This types PagTouCom's props, named Pto since Ptc, Poc, and Puc already belong to other components.
+type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( touKinStr : string, touIdeStr : string ) => void, onUncTutFun : ( touIdeStr : string ) => void, staAppObj : StaAppTyp, touRcdObj : { ideStr : string, labStr : string, timStr : string } }; // What: Page-Tour-Component Props Type. Why: A page tour's launcher card starts or un-resolves its tour and reads whether it's done. How: This types PagTouCom's props, named Prc since Ptc, Poc, and Puc already belong to other components.
 
 // #region PagTouCom
 
@@ -47,10 +47,9 @@ type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( t
  *
  * @summary
  * A "Page Tours" launcher card: same shape/behavior as a picker's
- * tutorial card (persistent, checked/unchecked toggle, Play/X, see
- * EntCarCom's own tutorial branch above), just with no sample picker/
- * task backing it: no data to finish/skip/cancel, only the checklist
- * bookkeeping itself.
+ * tutorial card (persistent, checked/unchecked toggle, Play/X, like
+ * EntCarCom's tutorial branch), just with no sample picker/task backing it:
+ * no data to finish or skip, only the checklist bookkeeping itself.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -83,7 +82,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 	const onRowCliFun = ( cliEveObj : React.MouseEvent ) => { // What: On Row Click Function. Why: Clicking anywhere on the card (other than its own actions area) should start or un-resolve this tour. How: This checks for a click inside the actions area first, then dispatches to onUncTutFun or onPlaTutFun based on tutDonBoo.
 
 
-		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Type Assertion Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on a card always lands on one.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="carActDiv"]' ) ) return; // What: Actions Area Guard. Why: A click on the card's own action buttons is handled by those buttons, not the row. How: This bails out when the click landed inside carActDiv. // What: Type Assertion Note. Why: An event's target is typed as a plain EventTarget. How: It's read as an element here, since a click on the card lands on one.
 
 
 
@@ -106,7 +105,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 			data-element-name-hook='todCarArt tutCarArt'
 
 			onClick={ onRowCliFun }
-		>{ /* What: Page Tour Card Article Element. Why: This is PagTouCom's own root. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
+		>{ /* What: Today Card Article Element. Why: This is PagTouCom's own root. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by Today's own drag-to-reorder and card-scroll code and help mode's Today catalog. */ }
 
 
 			{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved page-tour card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.
@@ -130,14 +129,14 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 					} }
-				>{ /* What: Undo Check Button Element. Why: A resolved page-tour card can be un-resolved directly from its own check button, unlike a pending one. How: This calls onUncTutFun, scoped to 'pageTour'. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>{ /* What: Card Check Button Element. Why: A resolved page-tour card can be un-resolved directly from its own check button, unlike a pending one. How: This calls onUncTutFun with the tour's own id. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 					<span
 						className={ cssModObj.cheRipSpa }
 
 						aria-hidden='true'
-					/>{ /* What: Check Ripple Span Element. Why: A completed check needs the same ripple flourish every other done row gets. How: This is a purely decorative, empty span. */ }
+					/>{ /* What: Check Ripple Span Element. Why: A completed check keeps the same ripple layer a real done row carries. How: This is a purely decorative, empty span. */ }
 
 					<IcoSvgCom
 						className={ cssModObj.cheIcoSvg }
@@ -170,7 +169,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 					} }
-				>{ /* What: Play Check Button Element. Why: A pending page-tour card's own check button starts the tour instead of toggling done. How: This calls onPlaTutFun, scoped to 'pageTour'. Its data-element-name-hook is read by help mode's Today catalog. */ }
+				>{ /* What: Card Check Button Element. Why: A pending page-tour card's own check button starts the tour instead of toggling done. How: This calls onPlaTutFun, scoped to 'pageTour'. Its data-element-name-hook is read by help mode's Today catalog. */ }
 
 
 					<IcoSvgCom
@@ -191,14 +190,14 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 				<div className={ cssModObj.carMetDiv }>{ /* What: Card Meta Div Element. Why: The tour's own label and its optional time estimate sit together. How: This wraps the label span and, when one exists, the time estimate. */ }
 
 
-					<span>{ touRcdObj.labStr } Tour</span>{ /* What: Meta Picker Span Element. Why: The user needs to see which page tour this card offers. How: This renders touRcdObj's own label plus the literal word "Tour". */ }
+					<span>{ touRcdObj.labStr } Tour</span>{ /* What: Meta Tour Label Span Element. Why: The user needs to see which page tour this card offers. How: This renders touRcdObj's own label plus the literal word "Tour". */ }
 
 
 
-					{ touRcdObj.timStr && ( // What: Time Estimate Check. Why: Not every page-tour card has a manually-timed estimate. How: This renders the dot/time pair only while touRcdObj's own time is set.
+					{ touRcdObj.timStr && ( // What: Time Estimate Check. Why: A page-tour card shows its time estimate only when its manifest entry carries one. How: This renders the dot/time pair only while touRcdObj's own time is set.
 
 
-						<React.Fragment>{ /* What: Time Estimate Fragment Element. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
+						<React.Fragment>{ /* What: Time Estimate Fragment. Why: The separator dot and the time text are true siblings with no shared wrapper of their own. How: This groups both spans without adding an extra DOM node. */ }
 
 
 							<span className={ cssModObj.metDotSpa }>&middot;</span>{ /* What: Meta Dot Span Element. Why: The label and the time estimate need a small visual separator between them. How: This renders a literal middle-dot character. */ }
@@ -227,7 +226,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 					className={ cssModObj.carActDiv }
 
 					data-element-name-hook='carActDiv'
-				>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by each Today card's own row-click handler, which ignores clicks inside it and help mode's Today catalog. */ }
+				>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by this card's row-click handler, which ignores clicks inside it, and by help mode. */ }
 
 
 					<button
@@ -244,7 +243,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 
 
 						} }
-					>{ /* What: Cancel Icon Button Element. Why: Cancelling marks this card resolved without actually finishing the tour. How: This calls actStoObj.setCarFun with a 'cancelled' status. */ }
+					>{ /* What: Action Icon Button Element. Why: Cancelling marks this card resolved without actually finishing the tour. How: This calls actStoObj.setCarFun with a 'cancelled' status. */ }
 
 
 						<IcoSvgCom
