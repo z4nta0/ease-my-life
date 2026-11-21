@@ -122,7 +122,7 @@ const NAV_HEL_OBJ : HelIteTyp = { // What: Nav Help Object. Why: Every page shar
 	selStr    : '[data-tab-button-key]',                                                                        // What: Selector String. Why: Every nav button shares one badge and one tip. How: finTarFun matches all five tab buttons, which HelOveCom unions into one highlight.
 	titStr    : 'Navigation',                                                                                   // What: Title String. Why: This is the tip's own heading text. How: HelTipCom renders it as the tip's title.
 
-	bodEle : ( // What: Body Element. Why: This is NAV_HEL_OBJ's own tip content, one column per tab. How: This maps NAV_TAB_ARR, reusing each tab's own real nav icon so it can never drift from the real button.
+	bodEle : ( // What: Body Element. Why: This is NAV_HEL_OBJ's own tip content, one column per tab. How: This maps NAV_TAB_ARR, rendering each tab's nav icon through IcoSvgCom.
 
 
 		<>{ /* What: Nav Tip Fragment. Why: The tip body is several sibling blocks with no wrapper of its own. How: This groups one navIteDiv per NAV_TAB_ARR row. */ }
@@ -135,10 +135,10 @@ const NAV_HEL_OBJ : HelIteTyp = { // What: Nav Help Object. Why: Every page shar
 					key={ curTabObj.icoStr }
 
 					className={ cssModObj.navIteDiv }
-				>{ /* What: Help Nav Item Div Element. Why: Each tab gets its own icon/label/description block inside the shared nav tip. How: This renders curTabObj's own icon and label on one line, its description below. */ }
+				>{ /* What: Nav Item Div Element. Why: Each tab gets its own icon/label/description block inside the shared nav tip. How: This renders curTabObj's own icon and label on one line, its description below. */ }
 
 
-					<div className={ cssModObj.navLabDiv }><IcoSvgCom className={ cssModObj.navIcoSvg } icoNamStr={ curTabObj.icoStr } sizSteStr='bas' /><b>{ curTabObj.labStr }:</b></div>{ /* What: Help Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
+					<div className={ cssModObj.navLabDiv }><IcoSvgCom className={ cssModObj.navIcoSvg } icoNamStr={ curTabObj.icoStr } sizSteStr='bas' /><b>{ curTabObj.labStr }:</b></div>{ /* What: Nav Label Div Element. Why: The tab's own real icon glyph next to its label lets a reader match this entry to the real button. How: This renders IcoSvgCom with curTabObj.icoStr alongside curTabObj.labStr in bold. */ }{ /* Vertical Rhythm Base ~= 14.572px */ }
 
 					<p>{ curTabObj.desStr }</p>{ /* What: Help Nav Description Paragraph Element. Why: This is the actual explanatory text for this tab. How: This renders curTabObj.desStr as plain text. */ }
 
@@ -327,7 +327,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 	const [ recMapObj, setRecMapObj ] = React.useState< Record< string, HelRecTyp > >( {} );                                               // What: Rect Map Object And Setter. Why: Every tagged element's own current rect (keyed by its own catalog id) drives the whole rendered overlay. How: This starts empty and is written wholesale by meaTarFun below on every animation frame while actModBoo.
 	const [ opeIdeStr, setOpeIdeStr ] = React.useState< string | null >( null );                                                           // What: Open Identifier String And Setter. Why: At most one tip can be open at a time, tracked by its own (possibly mulBoo-suffixed) id. How: This starts null (no tip open) and is toggled by a badge's own onClick below.
-	const [ togRecObj, setTogRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by meaTarFun below whenever a .helTogBut is found on the page.
+	const [ togRecObj, setTogRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Toggle Rect Object And Setter. Why: The page's own help toggle button needs a mask cutout too, even though it is never one of allIteArr. How: This is written by meaTarFun below whenever the helTogBut hooked button is found on the page.
 
 	// #endregion Overlay State Setup
 
@@ -344,7 +344,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 		// #region Chrome Collection
 
-		const chrSelArr = [ // What: Chrome Selector Array. Why: These are the only pieces of always-on-top chrome any highlight ever needs clipping against; the tab bar alone varies its own edge at runtime. How: This is mapped into real chrome items below.
+		const chrSelArr = [ // What: Chrome Selector Array. Why: These are the pieces of always-on-top chrome a highlight is clipped against; the tab bar alone varies its own edge at runtime. How: This is mapped into real chrome items below.
 
 
 			[ '[data-element-name-hook~="todPagHed"]', 'top'  ], // What: Today Header Entry. Why: The Today header stays pinned above the scrolling list. How: This pairs its hook selector with the edge a highlight is clipped against.
@@ -412,7 +412,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-			if ( curIteObj.mulBoo ) { // What: Per Element Branch. Why: Some items (every group's own Log button, every card's own actions) need one badge per matched element instead of unioning them into one. How: This gives each matched element its own synthesized sub-id and its own independently-clipped rect.
+			if ( curIteObj.mulBoo ) { // What: Per Element Branch. Why: Some items (every group's own Log button, say) need one badge per matched element instead of unioning them into one. How: This gives each matched element its own synthesized sub-id and its own independently-clipped rect.
 
 
 				tarEleArr.forEach( ( curTarEle, curIndNum ) => { // What: Per Element Loop. Why: Every one of this item's own matched elements needs its own rect computed and stored under its own sub-id. How: This walks tarEleArr, writing one nexMapObj entry per element.
@@ -455,7 +455,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 					// #region Sub Entry Write
 
-					const curLabStr = curIteObj.labStr // What: Current Label String. Why: A mulBoo conditional/reminder/item row's own title should read as "{its own name} Conditional" rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curTarEle only, when curIteObj.labStr is set.
+					const curLabStr = curIteObj.labStr // What: Current Label String. Why: A mulBoo row's own title can read from its own name or label rather than one generic title shared by every instance. How: This reads text (or an input's own value, for a row currently open/editing) from within curTarEle only, when curIteObj.labStr is set.
 						? ( curTarEle.querySelector( curIteObj.labStr )?.textContent || curTarEle.querySelector< HTMLInputElement >( curIteObj.labStr )?.value ) // What: Live Label Read. Why: A row's own name is its text, or an input's value while it is being edited. How: This queries labStr inside curTarEle and reads either.
 						: undefined; // What: No Label Fallback. Why: An item without labStr has no per-row name. How: This leaves the label undefined.
 
@@ -539,7 +539,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 			const matWidEle = curIteObj.mwsStr ? document.querySelector( curIteObj.mwsStr ) : null; // What: Match Width Element. Why: mwsStr sizes the open tip to a DIFFERENT element's own width than whatever is highlighted, e.g. the nav tip's own .appTabNav container. How: This looks mwsStr up directly, independent of tarEleArr.
 
-			const tipWidNum = matWidEle && matWidEle.matches( '[data-placement="bottom"] > [data-element-name-hook~="appTabNav"]' ) // What: Tip Width Number. Why: "As wide as the navbar itself" is only sane on 'bottom' placement, where the container really is a reasonably-sized pill; 'top'/'side' would either run off-screen or force the tip's own text into an extremely tall narrow column. How: This reads matWidEle's own real width only while it carries the 'tabbar--bottom' class, otherwise leaves this undefined.
+			const tipWidNum = matWidEle && matWidEle.matches( '[data-placement="bottom"] > [data-element-name-hook~="appTabNav"]' ) // What: Tip Width Number. Why: "As wide as the navbar itself" is only sane on 'bottom' placement, where the container really is a reasonably-sized pill; 'top'/'side' would either run off-screen or force the tip's own text into an extremely tall narrow column. How: This reads matWidEle's own real width only while it sits directly under a [data-placement="bottom"] parent, otherwise leaves this undefined.
 				? matWidEle.getBoundingClientRect().width // What: Navbar Width Read. Why: On 'bottom' placement the tip matches the navbar's own width. How: This reads matWidEle's own current width.
 				: undefined;                              // What: No Width Fallback. Why: Other placements keep the usual fixed tip width. How: This leaves the width undefined.
 
@@ -655,7 +655,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 				// #region Width And Badge Update
 
-				curRecObj.width = curRecObj.right - curRecObj.left; // What: Width Recompute. Why: curRecObj's own width must reflect whatever its left/right just settled to. How: This recomputes width directly from the just-adjusted edges.
+				curRecObj.width = curRecObj.right - curRecObj.left; // What: Width Update. Why: curRecObj's own width must reflect whatever its left/right just settled to. How: This recomputes width directly from the just-adjusted edges.
 
 				nexMapObj[ curIdeStr ].badAncNum = badRecFun( curRecObj, true ).top; // What: Badge Anchor Stash. Why: plaTipFun's own "flips above" branch needs to know where this member's own centered badge sits, well above curRecObj.top itself. How: This computes the centered badge rect (badRecFun's own cenBadBoo mode) now that curRecObj's own group-adjusted top/width are both final, and stashes just its own top as badAncNum.
 
@@ -677,7 +677,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 		// #region Toggle Rect Handling
 
-		const togButEle = document.querySelector( '[data-element-name-hook~="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one .helTogBut currently on the page.
+		const togButEle = document.querySelector( '[data-element-name-hook~="helTogBut"]' ); // What: Toggle Button Element. Why: The page's own toggle button sits inside sticky/stacked chrome that traps its own z-index below the dim layer's, so it needs its own mask cutout even though it is never one of allIteArr. How: This looks up the one helTogBut hooked button currently on the page.
 
 
 		if ( togButEle ) { // What: Toggle Found Guard. Why: Only write a toggle rect when the button was actually found. How: This measures and stores togButEle's own bounding rect.
@@ -701,9 +701,9 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 	const safMeaFun = React.useCallback( () => { // What: Safe Measure Function. Why: A thrown error from a single bad measurement (e.g. a target mid-reflow) must not kill the rAF loop permanently, since an uncaught exception would skip the requestAnimationFrame call after it and silently stop all per-frame tracking. How: This wraps meaTarFun in a try/catch, logging and swallowing any error instead of letting it propagate.
 
 
-		try { meaTarFun(); } // What: Recompute Try. Why: A thrown error from a single bad measurement must not escape this wrapper uncaught. How: This calls meaTarFun inside the guarded block.
+		try { meaTarFun(); } // What: Measure Try. Why: A thrown error from a single bad measurement must not escape this wrapper uncaught. How: This calls meaTarFun inside the guarded block.
 
-		catch ( errCatObj ) { console.error( '[help-mode] recompute failed', errCatObj ); } // What: Recompute Catch. Why: Swallowing the error here, instead of letting it propagate, is what keeps the rAF loop alive for every later frame. How: This logs errCatObj to the console and does nothing else.
+		catch ( errCatObj ) { console.error( '[help-mode] measure failed', errCatObj ); } // What: Measure Catch. Why: Swallowing the error here, instead of letting it propagate, is what keeps the rAF loop alive for every later frame. How: This logs errCatObj to the console and does nothing else.
 
 
 	}, [ meaTarFun ] ); // What: Callback Dependency Array. Why: This callback's own identity only needs to change when meaTarFun's own identity does. How: meaTarFun is called directly inside the try block above.
@@ -774,7 +774,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 	React.useEffect( () => { // What: Click Guard Effect. Why: Anything NOT currently tagged (or part of help mode's own UI) must be blocked from interaction while active, the same capture-phase idea as the guided tour's own click-guard. How: This registers a capture-phase click listener, a keydown listener, and a focusin listener that closes an open tip once focus moves past its badge, all cleaned up together.
 
 
-		if ( !actModBoo ) return; // What: Inactive Guard. Why: There is nothing to guard while help mode itself is off. How: This skips registering either listener while actModBoo is false.
+		if ( !actModBoo ) return; // What: Inactive Guard. Why: There is nothing to guard while help mode itself is off. How: This skips registering the listeners while actModBoo is false.
 
 
 
@@ -794,13 +794,13 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 
 
-		const cliCapFun = ( cliEveObj : MouseEvent ) => { // What: Click Capture Function. Why: This is the actual capture-phase guard blocking every untagged click. How: This lets a genuine target click through (re-measuring shortly after), otherwise swallows the click and closes whatever tip is open.
+		const cliCapFun = ( cliEveObj : MouseEvent ) => { // What: Click Capture Function. Why: This is the capture-phase guard that blocks a click landing outside every target and exempt region. How: This lets a genuine target click through (re-measuring shortly after), otherwise swallows the click and closes whatever tip is open.
 
 
 			if ( hitTarFun( cliEveObj ) ) { // What: On Target Branch. Why: A click that lands on a real target (e.g. Save/Cancel/Delete closing an editor) must not be blocked, just re-measured. How: This defers to a macrotask so the resulting DOM/React commit has already landed before recomputing.
 
 
-				setTimeout( safMeaFun, 0 ); // What: Deferred Recompute Schedule. Why: The click's own resulting DOM/React commit (e.g. an editor closing) needs a tick to actually land before recomputing rects. How: This schedules safMeaFun on a macrotask via a 0ms timeout.
+				setTimeout( safMeaFun, 0 ); // What: Deferred Measure Schedule. Why: The click's own resulting DOM/React commit (e.g. an editor closing) needs a tick to actually land before recomputing rects. How: This schedules safMeaFun on a macrotask via a 0ms timeout.
 
 
 
@@ -905,7 +905,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 			className={ cssModObj.modOveDiv }
 
 			aria-live='polite'
-		>{ /* What: Container Help Mode Div Element. Why: This is HelOveCom's own root portaled element. How: This wraps the dim-layer SVG, the rendered highlight spots, every badge, and at most one open tip below. */ }
+		>{ /* What: Mode Overlay Div Element. Why: This is HelOveCom's own root portaled element. How: This wraps the dim-layer SVG, the rendered highlight spots, every badge, and at most one open tip below. */ }
 
 
 			<svg
@@ -913,7 +913,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 				height={ vieHeiNum }
 				width={ vieWidNum }
-			>{ /* What: Help Dim SVG Element. Why: This paints the single dim layer with cutouts for every currently-highlighted target. How: This wraps a <mask> defining the cutouts and a full-viewport <rect> filled through that mask below. */ }
+			>{ /* What: Dim Layer SVG Element. Why: This paints the single dim layer with cutouts for every currently-highlighted target. How: This wraps a <mask> defining the cutouts and a full-viewport <rect> filled through that mask below. */ }
 
 
 				<mask id='helDimMas'>{ /* What: Help Mask Element. Why: One shared SVG mask lets arbitrarily many cutouts coexist in a single dim layer, instead of the guided tour's own single-spotlight box-shadow trick. How: This paints a full white rect, then one black rounded-rect per highlighted target/toggle button below. */ }
@@ -953,7 +953,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 					} ) }
 
-					{ togRecObj && ( // What: Toggle Cutout Check. Why: The page's own toggle button sits inside sticky chrome whose own stacking context traps it below the dim layer's z-index, so it needs a cutout too even though it is never one of allIteArr. How: This renders a plain padded circular cutout only while togRecObj holds a measured rect.
+					{ togRecObj && ( // What: Toggle Cutout Check. Why: The page's own toggle button sits inside sticky chrome whose own stacking context traps it below the dim layer's z-index, so it needs a cutout too even though it is never one of allIteArr. How: This renders a padded, fully rounded cutout only while togRecObj holds a measured rect.
 
 
 						<rect
@@ -964,7 +964,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 							width={ togRecObj.width + rhyPixFun( 'm02' ) * 2 } // Vertical Rhythm Base Minus 2 ~= 8.304px
 							x={ togRecObj.left - rhyPixFun( 'm02' ) } // Vertical Rhythm Base Minus 2 ~= 8.304px
 							y={ togRecObj.top - rhyPixFun( 'm02' ) } // Vertical Rhythm Base Minus 2 ~= 8.304px
-						/> // What: Toggle Cutout Rect Element. Why: The toggle button's own cutout needs the same treatment as every other target, just always circular and flatly padded. How: This is punched as a circle (rx/ry set to half the padded height) at togRecObj's own padded position/size.
+						/> // What: Toggle Cutout Rect Element. Why: The toggle button's own cutout needs the same treatment as every other target, just fully rounded and flatly padded. How: This is punched with rx/ry set to half the padded height at togRecObj's own padded position/size.
 
 					) }
 
@@ -979,7 +979,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 					width={ vieWidNum }
 					x='0'
 					y='0'
-				/>{ /* What: Help Dim Fill Rect Element. Why: This is the actual visible dim layer, its own cutouts coming entirely from the mask above. How: This is a full-viewport rect filled through url(#help-mask). */ }
+				/>{ /* What: Dim Fill Rect Element. Why: This is the actual visible dim layer, its own cutouts coming entirely from the mask above. How: This is a full-viewport rect filled through url(#helDimMas). */ }
 
 
 			</svg>
@@ -1011,7 +1011,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 						className={ cssModObj.higSpoDiv }
 
 						style={ spoStyObj }
-					/> // What: Help Spot Div Element. Why: This is the actual visible highlight box drawn around a target, e.g. for its own border/glow styling. How: This is positioned and shaped entirely via spoStyObj, keyed by curIdeStr for React's own list reconciliation.
+					/> // What: Highlight Spot Div Element. Why: This is the actual visible highlight box drawn around a target, e.g. for its own border/glow styling. How: This is positioned and shaped by spoStyObj, keyed by curIdeStr for React's own list reconciliation.
 
 				);
 
@@ -1035,7 +1035,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 					const curRecObj = recMapObj[ curIdeStr ];                     // What: Current Rect Object. Why: The badge's own position and its title function (if any) both need this id's own current rect. How: This reads curIdeStr straight out of recMapObj.
 					const badRecObj = badRecFun( curRecObj, !!curIteObj.groStr ); // What: Badge Rect Object. Why: The badge itself renders at its own anchor point, not at the highlighted target's own position. How: This calls badRecFun, centering only when this item is part of a column group.
 
-					const badLabStr = typeof curIteObj.titStr === 'function' ? curIteObj.titStr( curRecObj ) : ( typeof curIteObj.titStr === 'string' ? curIteObj.titStr : 'More info' ); // What: Badge Label String. Why: The badge's own accessible name should reflect a dynamic title (e.g. reading a picker's own cadence unit) when curIteObj.titStr is a function. How: This calls curIteObj.titStr with curRecObj when it is a function, uses it directly when it is a string, otherwise falls back to a generic label.
+					const badLabStr = typeof curIteObj.titStr === 'function' ? curIteObj.titStr( curRecObj ) : ( typeof curIteObj.titStr === 'string' ? curIteObj.titStr : 'More info' ); // What: Badge Label String. Why: The badge's own accessible name should reflect a dynamic title (e.g. a row's own live name) when curIteObj.titStr is a function. How: This calls curIteObj.titStr with curRecObj when it is a function, uses it directly when it is a string, otherwise falls back to a generic label.
 
 
 
@@ -1058,10 +1058,10 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 							aria-label={ badLabStr }
 
-							onClick={ ( cliEveObj ) => { // What: Badge Click Handler. Why: A badge click must not reach the document-level click guard, which would close the tip again. How: This stops propagation, then toggles this badge's own tip open or closed.
+							onClick={ ( cliEveObj ) => { // What: Badge Click Handler. Why: A badge click should not bubble on to any ancestor's own click handler. How: This stops propagation, then toggles this badge's own tip open or closed.
 
 
-								cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The capture-phase guard already let this click through; bubbling on would count as an outside click. How: This stops the click from bubbling further.
+								cliEveObj.stopPropagation(); // What: Propagation Stop. Why: The capture-phase guard already let this click through, and nothing above the badge needs it. How: This stops the click from bubbling further.
 
 								setOpeIdeStr( ( preIdeStr ) => preIdeStr === curIdeStr ? null : curIdeStr ); // What: Open Toggle. Why: Clicking an open badge closes its tip, clicking any other badge opens its own. How: This compares the previous open id against curIdeStr.
 
@@ -1136,7 +1136,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 // #region Exports
 
-export { HelOveCom }; // What: Named Export. Why: Every tab file that renders help mode imports the overlay by name. How: This exports HelOveCom; every other binding in this file is internal-only.
+export { HelOveCom }; // What: Named Export. Why: This makes the overlay available outside this file. How: This exports HelOveCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

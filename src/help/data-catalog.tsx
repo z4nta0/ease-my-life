@@ -591,7 +591,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 		mulBoo    : true,                                            // mulBoo is true because every picker gets its own badge.
 		padYcoNum : 0,                                               // padYcoNum:0, same .catHeaHed/.catBodDiv zero-gap stacking as conditionalsManager; matters once a picker is expanded and .catBodDiv renders beneath it.
 		selStr    : '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"][data-picker-row-identifier] > [data-element-name-hook~="catHeaHed"]',
-		titStr    : ( tarRecObj ) => tarRecObj?.labStr ? `${ tarRecObj.labStr } Picker` : 'Picker' // titStr is dynamic by TYPE, not name (unlike conditionalRow/pickerRow's own precedent).
+		titStr    : ( tarRecObj ) => tarRecObj?.labStr ? `${ tarRecObj.labStr } Picker` : 'Picker' // titStr is a function because the title reads the row's own mode pill (labStr) rather than its name, unlike conditionalRow's name-based title.
 
 
 	},
@@ -1093,7 +1093,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 // #region Exports
 
-export { DAT_HEL_ARR }; // What: Named Export. Why: The Data tab renders its own help toggle and hands help mode this catalog. How: This exports the catalog by name.
+export { DAT_HEL_ARR }; // What: Named Export. Why: This makes the catalog available to whichever tab renders its help. How: This exports the catalog by name.
 
 // #endregion Exports
 

@@ -107,7 +107,7 @@
 
 }
 
-.helBadBut { /* What: Help Badge Button. Why: Each target gets a small "i" marker that opens its tip, large enough to meet the 24px minimum touch target. How: This draws a round outlined button at a fixed spot that takes the pointer back from the overlay, and eases its press and focus ring. */
+.helBadBut { /* What: Help Badge Button. Why: Each target gets a small "i" marker that opens its tip, large enough to meet the 24px minimum touch target. How: This draws a round outlined button at a fixed spot that takes the pointer back from the overlay, and eases its hover and open colors, press, and focus ring. */
 
 
 	align-items     : center;
