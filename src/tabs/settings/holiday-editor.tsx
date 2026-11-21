@@ -100,7 +100,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 	 * @summary
 	 * Deletes a custom holiday after its row plays its exit animation: it
 	 * flags the row as exiting at once, then removes the holiday from the
-	 * store 300ms later.
+	 * store after the p02 duration step (about 277ms).
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -116,7 +116,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 	 *
 	*/
 
-	const rmvExiFun = ( cusIdeStr : string ) => { // What: Remove Exit Function. Why: Deleting a custom holiday should not simply vanish the row; it should play its own exit animation first. How: This flags cusIdeStr as exiting, then removes it from the store 300ms later, once that animation has had time to play.
+	const rmvExiFun = ( cusIdeStr : string ) => { // What: Remove Exit Function. Why: Deleting a custom holiday should not simply vanish the row; it should play its own exit animation first. How: This flags cusIdeStr as exiting, then removes it from the store after the p02 duration step, once that animation has had time to play.
 
 
 		setExiIdeStr( cusIdeStr ); // What: Exiting Identifier Set. Why: This is what actually triggers the row's own exit class below. How: This writes the removed row's own id into exiIdeStr.
@@ -157,7 +157,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 
 
-		const [ , monValNum, dayValNum ] = draDatStr.split( '-' ).map( Number ); // What: Month Value Number. Why: A custom holiday recurs by month/day only, not by the specific year the date input happened to show. How: This splits the "YYYY-MM-DD" draft, discards the year, and maps the month through Number. // What: Day Value Number. Why: The day is the date's last part. How: This keeps the third piece as a number.
+		const [ , monValNum, dayValNum ] = draDatStr.split( '-' ).map( Number ); // What: Month Value Number. Why: A custom holiday recurs by month/day only, not by the specific year the date input happened to show. How: This splits the "YYYY-MM-DD" draft, maps each part through Number, and discards the year. // What: Day Value Number. Why: The day is the date's last part. How: This keeps the third piece as a number.
 
 
 		actStoObj.addHolFun({ // What: Add Custom Holiday Call. Why: This is the actual store mutation that creates the new recurring day off. How: This calls actStoObj.addHolFun with the trimmed name and the parsed month/day.
@@ -181,14 +181,14 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 	return (
 
 
-		<React.Fragment>{ /* What: Holiday Editor Fragment Element. Why: The holiday list and the add form below it are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+		<React.Fragment>{ /* What: Holiday Editor Fragment. Why: The holiday list and the add form below it are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
 			<ul
 				className={ cssModObj.holLisUno }
 
 				data-element-name-hook='holLisUno'
-			>{ /* What: Holiday List Ul Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps cmpHolArr and then cusHolArr into their own rows below. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+			>{ /* What: Holiday List Unordered Element. Why: This is the whole editable list, computed holidays first, then any custom ones. How: This maps cmpHolArr and then cusHolArr into their own rows below. Its data-element-name-hook is read by help mode's Settings catalog. */ }
 
 
 				{ cmpHolArr.map( ( holCurObj ) => { // What: Computed Holiday Map. Why: One row is needed per rule-computed holiday for the current year. How: This maps cmpHolArr, deriving each row's own on/off state from disKeyArr before rendering it.
@@ -207,23 +207,23 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 							className={ cssModObj.holRowIte }
 
 							data-holiday-off-active={ !holEnaBoo || undefined } // What: Holiday Off Active Attribute. Why: A turned-off holiday's name mutes and its date is struck through by its module. How: This sets the presence-only attribute while holEnaBoo is false and removes it otherwise.
-						>{ /* What: Holiday Row Li Element. Why: Each computed holiday needs its own row pairing its name/date info with an on/off switch. How: This renders holCurObj's own name and date, plus a switch bound to holEnaBoo. */ }
+						>{ /* What: Holiday Row Item Element. Why: Each computed holiday needs its own row pairing its name/date info with an on/off switch. How: This renders holCurObj's own name and date, plus a switch bound to holEnaBoo. */ }
 
 
 							<div className={ cssModObj.holInfDiv }>{ /* What: Holiday Info Div Element. Why: The name and date need their own grouping, separate from the switch. How: This wraps the name span and the date span below. */ }
 
 
-								<span className={ cssModObj.holNamSpa }>{ holCurObj.namStr }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders holCurObj's own name field. */ }
+								<span className={ cssModObj.holNamSpa }>{ holCurObj.namStr }</span>{ /* What: Holiday Name Span Element. Why: A row needs its own visible holiday name. How: This renders holCurObj's own name field. */ }
 
 								<span className={ cssModObj.holDatSpa }>{ /* What: Holiday Date Span Element. Why: The landing date, and (when observed) the real weekday it falls on, need their own grouping. How: This wraps the main date span and, conditionally, the observed-note span below. */ }
 
 
-									<span className={ cssModObj.datMaiSpa }>{ shoDatFun( holCurObj.datObj ) }</span>{ /* What: Holiday Date Main Span Element. Why: Every row needs a compact landing-date label. How: This renders holCurObj's own date, formatted via shoDatFun. */ }
+									<span className={ cssModObj.datMaiSpa }>{ shoDatFun( holCurObj.datObj ) }</span>{ /* What: Date Main Span Element. Why: A row needs a compact landing-date label. How: This renders holCurObj's own date, formatted via shoDatFun. */ }
 
 									{ holCurObj.obsBoo && ( // What: Observed Note Check. Why: A holiday shifted off a weekend needs to also explain which real weekday it falls on. How: This renders the observed-note span only while holCurObj.obsBoo is true.
 
 
-										<span className={ cssModObj.holObsSpa }>observed &middot; { holCurObj.namStr === 'New Year\'s Day' ? 'falls' : 'lands' } on a { reaDayFun( holCurObj.actObj! ) }</span> // What: Holiday Obs Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from reaDayFun. // What: Non-Null Note. Why: Only a rule-based holiday is ever observed on a shifted day, and every rule-based holiday carries its actual date. How: The ! tells TypeScript actObj is set inside the observed check.
+										<span className={ cssModObj.holObsSpa }>observed &middot; { holCurObj.namStr === 'New Year\'s Day' ? 'falls' : 'lands' } on a { reaDayFun( holCurObj.actObj! ) }</span> // What: Holiday Observed Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from reaDayFun. // What: Non-Null Note. Why: Only a rule-based holiday is ever observed on a shifted day, and every rule-based holiday carries its actual date. How: The ! tells TypeScript actObj is set inside the observed check.
 
 
 									) }
@@ -239,14 +239,14 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 								data-element-name-hook='togSwiBut'
 
-								aria-label={ `${ holEnaBoo ? 'Disable' : 'Enable' } ${ holCurObj.namStr }` }
+								aria-label={ `${ holEnaBoo ? 'Disable' : 'Enable' } ${ holCurObj.namStr }` } // What: Switch Label. Why: The accessible name should say what pressing the switch does. How: This reads Disable while the holiday is enabled and Enable while it is off.
 								aria-pressed={ holEnaBoo }
 
 								onClick={ () => actStoObj.togHolFun( holCurObj.keyStr ) }
-							>{ /* What: Holiday Switch Button Element. Why: Every computed holiday needs a way to toggle it off/on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
+							>{ /* What: Toggle Switch Button Element. Why: A computed holiday needs a way to toggle it off and on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by help mode's Today catalog, help mode's Pickers catalog, and help mode's Data catalog. */ }
 
 
-								<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Dot Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed state. */ }
+								<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed state. */ }
 
 
 							</button>
@@ -268,20 +268,20 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 						key={ cusCurObj.id }
 
 						className={` ${ cssModObj.holRowIte }   ${ cssModObj.holRowIteEnter }   ${ exiIdeStr === cusCurObj.id ? cssModObj.holRowIteExiting : '' } `}
-					>{ /* What: Custom Holiday Row Li Element. Why: Each custom holiday needs its own row pairing its name/recurrence info with a delete button. How: This renders cusCurObj's own name and recurring date, plus a delete button bound to rmvExiFun. */ }
+					>{ /* What: Holiday Row Item Element. Why: Each custom holiday needs its own row pairing its name and recurrence info with a delete button. How: This renders cusCurObj's own name and recurring date, plus a delete button bound to rmvExiFun, carrying the entering modifier and, while removed, the exiting modifier. */ }
 
 
 						<div className={ cssModObj.holInfDiv }>{ /* What: Holiday Info Div Element. Why: The name and recurrence need their own grouping, separate from the delete button. How: This wraps the name span and the date span below. */ }
 
 
-							<span className={ cssModObj.holNamSpa }>{ cusCurObj.name }</span>{ /* What: Holiday Name Span Element. Why: Every row needs its own visible holiday name. How: This renders cusCurObj's own name field. */ }
+							<span className={ cssModObj.holNamSpa }>{ cusCurObj.name }</span>{ /* What: Holiday Name Span Element. Why: A row needs its own visible holiday name. How: This renders cusCurObj's own name field. */ }
 
 							<span className={` ${ cssModObj.holDatSpa }   ${ cssModObj.holDatSpaCustom } `}>{ /* What: Holiday Date Span Element. Why: A custom holiday's recurrence label needs its own grouping. How: This wraps the recurrence label and the "every year" note below. */ }
 
 
-								<span>{ reuDatFun( cusCurObj.month, cusCurObj.day ) }</span>{ /* What: Recur Label Span Element. Why: Every custom row needs a year-agnostic "Month Day" label. How: This renders cusCurObj's own month/day, formatted via reuDatFun. */ }
+								<span>{ reuDatFun( cusCurObj.month, cusCurObj.day ) }</span>{ /* What: Recur Label Span Element. Why: A custom row needs a year-agnostic "Month Day" label. How: This renders cusCurObj's own month/day, formatted via reuDatFun. */ }
 
-								<span className={ cssModObj.holReuSpa }>&middot; every year</span>{ /* What: Holiday Recur Span Element. Why: A custom holiday recurs annually, and that is not otherwise obvious from the date label alone. How: This renders a fixed "every year" note. */ }
+								<span className={ cssModObj.holReuSpa }>&middot; every year</span>{ /* What: Holiday Recurring Span Element. Why: A custom holiday recurs annually, and that is not otherwise obvious from the date label alone. How: This renders a fixed "every year" note. */ }
 
 
 							</span>
@@ -295,7 +295,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 							aria-label={ `Remove ${ cusCurObj.name }` }
 
 							onClick={ () => rmvExiFun( cusCurObj.id ) }
-						>{ /* What: Custom Holiday Delete Button Element. Why: A user-added holiday needs its own way to be removed entirely, unlike a computed one which can only be disabled. How: This calls rmvExiFun with this row's own id when clicked. */ }
+						>{ /* What: Holiday Delete Button Element. Why: A user-added holiday needs its own way to be removed entirely, unlike a computed one which can only be disabled. How: This calls rmvExiFun with this row's own id when clicked. */ }
 
 
 							<IcoSvgCom
@@ -340,11 +340,11 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 						if ( keyEveObj.key === 'Enter' ) addCusFun(); // What: Enter Submit Branch. Why: Enter should submit the typed name the same way clicking Add would. How: This calls addCusFun.
 
-						else if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); // What: Escape Blur Branch. Why: Escape should back out of the field without submitting, matching every other text input in this tab. How: This blurs the input via keyEveObj.currentTarget.
+						else if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); // What: Escape Blur Branch. Why: Escape should back out of the field without submitting, like the other inputs in this tab. How: This blurs the input via keyEveObj.currentTarget.
 
 
 					} }
-				/>{ /* What: Draft Name Input Element. Why: The user needs a text field to type a new holiday's own name into. How: This is bound to draNamStr, submits on Enter, and blurs on Escape like every other text input in this tab. */ }
+				/>{ /* What: Holiday Name Input Element. Why: The user needs a text field to type a new holiday's own name into. How: This is bound to draNamStr, submits on Enter, and blurs on Escape like the other inputs in this tab. */ }
 
 				<input
 					className={ cssModObj.holDatInp }
@@ -355,8 +355,8 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 					aria-label='Date'
 
 					onChange={ ( chaEveObj ) => setDraDatStr( chaEveObj.target.value ) }
-					onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
-				/>{ /* What: Draft Date Input Element. Why: The user needs a native date picker to choose the new holiday's own recurring month/day. How: This is bound to draDatStr and blurs on Escape like every other input in this tab. */ }
+					onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } } // What: Date Key Down Handler. Why: The date field needs a way to back out from the keyboard. How: This blurs the input on Escape.
+				/>{ /* What: Holiday Date Input Element. Why: The user needs a native date picker to choose the new holiday's own recurring month/day. How: This is bound to draDatStr and blurs on Escape like the other inputs in this tab. */ }
 
 
 
@@ -389,7 +389,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { HolEdiCom }; // What: Named Export. Why: TabSetCom renders the holiday list in its Holidays section. How: This exports HolEdiCom by name.
+export { HolEdiCom }; // What: Named Export. Why: The holiday editor is the one binding this file shares. How: This exports HolEdiCom by name.
 
 // #endregion Exports
 

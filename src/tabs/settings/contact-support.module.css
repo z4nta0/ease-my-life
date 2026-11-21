@@ -12,8 +12,8 @@
  * holds the validation note, the offline fallback, and the actions.
  *
  * The row and the text fields share their look with the rest of the Settings
- * tab and the app's other forms, so their declarations are copied here from
- * those shared classes until the design-system pass merges them.
+ * tab and the app's other forms, through declarations copied here from those
+ * shared classes.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -23,7 +23,7 @@
 
 /* #region supTrgDiv */
 
-.supTrgDiv { /* What: Support Trigger Div. Why: "Having problems?" should read like every other Settings row, its text on the left and its button on the right. How: This spreads the two apart in a bordered flex row and keeps the button from shrinking or wrapping. */
+.supTrgDiv { /* What: Support Trigger Div. Why: "Having problems?" should read like the other Settings rows, its text on the left and its button on the right. How: This spreads the two apart in a bordered flex row and keeps the button from shrinking or wrapping. */
 
 
 	--but-bas-fle : 0 0 auto; /* What: Button Base Flex. Why: The row's button should keep its full size beside long text. How: The shared button reads this and stops shrinking. */
@@ -69,7 +69,7 @@
 
 }
 
-.setNamSpa { /* What: Settings Name Span. Why: The row's name leads it like every other Settings row. How: This sets it in bold body text. */
+.setNamSpa { /* What: Settings Name Span. Why: The row's name leads it like the other Settings rows. How: This sets it in bold body text. */
 
 
 	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
@@ -78,7 +78,7 @@
 
 }
 
-.setSubSpa { /* What: Settings Sub Span. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with balanced wrapping. */
+.setSubSpa { /* What: Settings Sub Span. Why: The explanation should read as quieter supporting text. How: This sets it small and muted with pretty wrapping. */
 
 
 	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -285,7 +285,7 @@
 
 
 
-.supHonPar { /* What: Support Honeypot Paragraph. Why: Bots should find and fill this field while people never see it, and some bots skip display:none fields. How: This moves the field off-screen into a 1px box instead of hiding it. */
+.supHonPar { /* What: Support Honeypot Paragraph. Why: The field has to stay in the page for bots to fill while people never see it. How: This moves the field off-screen into a 1px box instead of hiding it. */
 
 
 	height   : 1px;
@@ -333,7 +333,7 @@
 
 }
 
-.supValSpa { /* What: Support Validation Span. Why: An empty-field send attempt should explain itself right beside the buttons. How: This sets the note in small red text, pushes it left, and pops it in. */
+.supValSpa { /* What: Support Validation Span. Why: An empty-field send attempt should explain itself right beside the buttons. How: This sets the note in small red text and pops it in. */
 
 
 	animation : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -359,7 +359,7 @@
 
 /* #region supFalSpa */
 
-.supFalSpa { /* What: Support Fallback Span. Why: A send that didn't go through lost nothing, so its note reads as advice rather than an error. How: This sets it in small warm text, pushes it left, and pops it in. */
+.supFalSpa { /* What: Support Fallback Span. Why: A send that didn't go through lost nothing, so its note reads as advice rather than an error. How: This sets it in small warm text and pops it in. */
 
 
 	animation   : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with the Settings tab's own messages, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */

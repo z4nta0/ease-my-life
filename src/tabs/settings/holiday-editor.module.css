@@ -14,8 +14,7 @@
  * date.
  *
  * The switch, delete button, and text field declarations are copied from
- * shared classes other screens still use, until the design-system pass
- * merges them.
+ * shared classes other screens also use.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -209,7 +208,7 @@
 
 
 }
-.holDatSpa--custom { /* What: Holiday Date Span Custom. Why: A custom day's date and "every year" tag fit on one line. How: This lays them out in a wrapping baseline row. */
+.holDatSpa--custom { /* What: Holiday Date Span Custom. Why: A custom day's date and "every year" tag sit on one line when there is room. How: This lays them out in a baseline row that wraps when they don't fit. */
 
 
 	align-items    : baseline;
@@ -228,7 +227,7 @@
 
 
 }
-.datMaiSpa::after { /* What: Date Main Span Strike Line. Why: Turning a day off should strike its date through, drawn in from the left, which text-decoration can't animate. How: This draws a thin top-border line across the date's middle, scaled to nothing until the day is off. */
+.datMaiSpa::after { /* What: Date Main Span Strike Line. Why: Turning a day off should strike its date through, drawn in from the left, which text-decoration can't animate. How: This draws a thin top-border line across the date's middle, scaled to nothing until the day is off, and eases the scale in and out. */
 
 
 	border-top       : var( --bor-wid-bas ) solid currentColor;             /* Border Width Base ~= 1.160px */

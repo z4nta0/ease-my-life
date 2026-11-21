@@ -205,7 +205,7 @@
 
 }
 
-.panTitSpa { /* What: Panel Title Span. Why: The head names which document is open. How: This sets the name in bold, slightly larger text. */
+.panTitSpa { /* What: Panel Title Span. Why: The head names which document is open. How: This sets the name in semibold text. */
 
 
 	color       : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */

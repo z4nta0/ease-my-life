@@ -9,7 +9,7 @@ import React     from 'react';                   // What: React. Why: LegModCom 
 
 import { createPortal } from 'react-dom';               // What: Create Portal. Why: The modal must render into <body> so help mode's overlay and any ancestor's stacking can't bury it. How: This is called by LegModCom's own return.
 import { durMilFun    } from '../../utils/rhythm.ts';   // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { IcoSvgCom    } from '../../ui/icon.tsx';       // What: Icon SVG Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'x'.
+import { IcoSvgCom    } from '../../ui/icon.tsx';       // What: Icon SVG Component. Why: The modal's own close button needs a recognizable glyph. How: This is rendered inside LegModCom's close button with the name 'croEle'.
 import { PriPolCom    } from './legal-text.tsx';        // What: Privacy Policy Component. Why: The modal shows the Privacy Policy's own text. How: This renders inside the panel's body when legDocStr is 'privacy'.
 import { redMotFun    } from '../../utils/motion.ts';   // What: Reduced Motion Function. Why: A user who prefers reduced motion should dismiss the modal instantly instead of playing its own closing animation. How: This is checked inside LegModCom's modDisFun to skip the animated delay.
 import { TerSerCom    } from './legal-text.tsx';        // What: Terms Service Component. Why: The modal shows the Terms of Service's own text. How: This renders inside the panel's body when legDocStr is 'terms'.
@@ -111,7 +111,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 	 *
 	*/
 
-	const modDisFun = () => { // What: Modal Dismiss Function. Why: Every dismissal path (Esc, backdrop click, close button) needs the same reduced-motion check and the same delayed onCloModFun. How: This calls onCloModFun immediately when reduced motion is preferred, otherwise plays the closing animation for 200ms first.
+	const modDisFun = () => { // What: Modal Dismiss Function. Why: Every dismissal path (Esc, backdrop click, close button) needs the same reduced-motion check and the same delayed onCloModFun. How: This calls onCloModFun immediately when reduced motion is preferred, otherwise plays the closing animation for its p01 duration step first.
 
 
 		if ( redMotFun() ) { onCloModFun(); return; } // What: Reduced Motion Guard. Why: A user who prefers reduced motion should not see the closing animation at all. How: This calls onCloModFun immediately and skips the animated path below.
@@ -127,7 +127,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 			setModCloBoo( false ); // What: Closing State Clear Call. Why: The next open should not inherit this close's own --closing modifiers. How: This resets modCloBoo back to its default false value.
 
-			onCloModFun(); // What: Deferred Close Call. Why: The caller needs to actually clear legDocStr once the closing animation has finished playing. How: This calls the onCloModFun prop passed in from LegModCom's own caller.
+			onCloModFun(); // What: Deferred Close Call. Why: The caller needs to actually clear legDocStr once the closing animation has finished playing. How: This calls the onCloModFun prop.
 
 
 		}, durMilFun( 'p01' ) ); // What: Close Animation Delay. Why: onCloModFun must wait for the closing animation. How: This reads the close animations' own p01 duration step, so the timer ends with them. // Duration Base Plus 1 ~= 209.1ms
@@ -186,7 +186,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 
 
-		const focDelTim = setTimeout( () => { if ( panEleRef.current ) panEleRef.current.focus(); }, 20 ); // What: Focus Delay Timeout. Why: Moving focus into the panel lets Esc and scroll work immediately, but must wait one tick for the panel to actually be mounted. How: This focuses panEleRef's current element after 20ms, guarded so it no-ops if the ref is not attached yet.
+		const focDelTim = setTimeout( () => { if ( panEleRef.current ) panEleRef.current.focus(); }, 20 ); // What: Focus Delay Timeout. Why: Moving focus into the panel lets Esc and scroll work immediately. How: This focuses panEleRef's current element after 20ms, guarded so it no-ops if the ref is not attached.
 
 
 
@@ -212,7 +212,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 		};
 
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: modDisFun is recreated every render, and listing it would re-lock the scroller and re-move focus each time. How: The open-time copy stays correct, since it only calls the parent's close handler, which just clears the open document.
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: modDisFun is recreated every render, and listing it would re-lock the scroller and re-move focus each time. How: The open-time copy of modDisFun stays correct, since it reads only redMotFun, a state setter, and the onCloModFun it received at open.
 	}, [ legDocStr ] ); // What: Effect Dependency Array. Why: This effect must re-run every time a different document (or no document) is requested. How: legDocStr changes both whether the modal is shown at all and which document's own title/body renders inside it.
 
 
@@ -238,7 +238,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 			data-element-name-hook='legBacDiv'
 
 			onMouseDown={ ( mouDowObj ) => { if ( mouDowObj.target === mouDowObj.currentTarget ) modDisFun(); } } // What: Backdrop Dismiss Handler. Why: Only a press on the scrim itself, not one inside the panel, should close the modal. How: This calls modDisFun only when the mousedown target is the backdrop element.
-		>{ /* What: Container Backdrop Div Element. Why: This is the modal's own full-viewport scrim, and a direct click on it (not on the panel inside it) should dismiss the modal. How: This wraps the panel below and calls modDisFun only when the mousedown target is the backdrop itself. Its data-element-name-hook is read by help mode, which lets clicks inside the modal through. */ }
+		>{ /* What: Legal Backdrop Div Element. Why: This is the modal's own full-viewport scrim, and a direct click on it (not on the panel inside it) should dismiss the modal. How: This wraps the panel below and calls modDisFun only when the mousedown target is the backdrop itself. Its data-element-name-hook is read by help mode, which lets clicks inside the modal through. */ }
 
 
 			<div
@@ -250,13 +250,13 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 				aria-modal='true'
 				role='dialog'
 				tabIndex={ -1 }
-			>{ /* What: Container Panel Div Element. Why: This is the actual visible, scrollable, focusable dialog panel. How: This is focused on open via panEleRef and swaps to its own --closing modifier class while modCloBoo is true. */ }
+			>{ /* What: Legal Panel Div Element. Why: This is the actual visible, scrollable, focusable dialog panel. How: This is focused on open via panEleRef and swaps to its own --closing modifier class while modCloBoo is true. */ }
 
 
-				<div className={ cssModObj.panHeaDiv }>{ /* What: Container Head Div Element. Why: This groups the panel's own title and close button on one row. How: This renders the title span followed by the close button below. */ }
+				<div className={ cssModObj.panHeaDiv }>{ /* What: Panel Head Div Element. Why: This groups the panel's own title and close button on one row. How: This renders the title span followed by the close button below. */ }
 
 
-					<span className={ cssModObj.panTitSpa }>{ modTitStr }</span>{ /* What: Title Note Span Element. Why: This shows which document (Privacy Policy or Terms of Service) is currently open. How: This renders modTitStr as the panel's own visible heading text. */ }
+					<span className={ cssModObj.panTitSpa }>{ modTitStr }</span>{ /* What: Panel Title Span Element. Why: This shows which document (Privacy Policy or Terms of Service) is currently open. How: This renders modTitStr as the panel's own visible heading text. */ }
 
 					<button
 						className={ cssModObj.panCloBut }
@@ -266,7 +266,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 						aria-label='Close'
 
 						onClick={ modDisFun }
-					>{ /* What: Close Action Button Element. Why: A user must always have an explicit, visible way to dismiss the modal. How: This calls modDisFun when clicked. */ }
+					>{ /* What: Panel Close Button Element. Why: A user needs an explicit, visible way to dismiss the modal. How: This calls modDisFun when clicked. */ }
 
 
 						<IcoSvgCom
@@ -280,7 +280,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 				</div>
 
-				<div className={ cssModObj.panBodDiv }>{ /* What: Container Body Div Element. Why: This is the actual scrollable area the chosen document's own body renders into. How: This renders PriPolCom or TerSerCom below, chosen by legDocStr. */ }
+				<div className={ cssModObj.panBodDiv }>{ /* What: Panel Body Div Element. Why: This is the actual scrollable area the chosen document's own body renders into. How: This renders PriPolCom or TerSerCom below, chosen by legDocStr. */ }
 
 
 					{ legDocStr === 'privacy' ? <PriPolCom /> : <TerSerCom /> }{ /* What: Document Choice Expression. Why: Only one of the two documents is ever shown at a time. How: This renders PriPolCom while legDocStr is 'privacy', otherwise TerSerCom. */ }
@@ -309,7 +309,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 // #region Exports
 
-export { LegModCom }; // What: Named Export. Why: tab-settings.tsx renders this modal from its Legal section. How: This exports LegModCom by name.
+export { LegModCom }; // What: Named Export. Why: The modal shell is the one binding this file shares. How: This exports LegModCom by name.
 
 // #endregion Exports
 

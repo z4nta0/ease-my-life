@@ -4,11 +4,11 @@
 // #region Imports
 
 import cssModObj from './contact-support.module.css'; // What: CSS Module Object. Why: The trigger row and the support form are styled from their own module. How: This maps each class name in contact-support.module.css to its hashed module class.
-import React     from 'react';                        // What: React. Why: ConSupCom is built directly on React's own APIs. How: This is used directly (React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                        // What: React. Why: ConSupCom is built directly on React's own APIs. How: This is used directly (React.useState, for one) instead of importing individual named hooks.
 
 
 import { APP_VER_STR } from '../../constants.ts';        // What: App Version String. Why: A bug report should arrive with the real build version attached. How: This fills the form's own read-only version field and is posted with the message.
-import { ButBasCom   } from '../../ui/button.tsx';       // What: Button Base Component. Why: The form's own open, send, and copy-address actions need consistently-styled buttons. How: This is rendered throughout ConSupCom.
+import { ButBasCom   } from '../../ui/button.tsx';       // What: Button Base Component. Why: The form's actions need consistently-styled buttons. How: This is rendered throughout ConSupCom.
 import { CarSurCom   } from '../../ui/card-surface.tsx'; // What: Card Surface Component. Why: The support form sits inside the shared bordered container. How: This wraps the form's own fields inside ConSupCom.
 import { ColDisCom   } from '../../ui/collapse.tsx';     // What: Collapse Disclosure Component. Why: The contact-support form needs to expand/collapse in place. How: This wraps the contact-support form's own CarSurCom, gated on forOpeBoo.
 import { durMilFun   } from '../../utils/rhythm.ts';     // What: Duration Millisecond Function. Why: The scroll timer must wait out the form's expand. How: This returns a duration step's length in milliseconds.
@@ -23,7 +23,7 @@ import { scrBehFun   } from '../../utils/motion.ts';     // What: Scroll Behavio
  * contact-support.tsx = Contact Support
  *
  * @summary
- * The Account section's own support form: ConSupCom is a collapsible card
+ * The About section's own support form: ConSupCom is a collapsible card
  * holding a subject, a message, and 2 read-only diagnostic fields (the app
  * version and the browser detBroFun detects from the user agent against
  * BRO_PAT_ARR), posted to Netlify Forms under FOR_NAM_STR, with SUP_EMA_STR as
@@ -200,10 +200,10 @@ function ConSupCom () : React.JSX.Element {
 	const [ draSubStr, setDraSubStr ] = React.useState( '' );    // What: Draft Subject String And Setter. Why: The subject field needs somewhere to hold its own typed value before sending. How: This is bound to the subject input below and read by senForFun.
 	const [ draMesStr, setDraMesStr ] = React.useState( '' );    // What: Draft Message String And Setter. Why: The message field needs somewhere to hold its own typed value before sending. How: This is bound to the message textarea below and read by senForFun.
 	const [ senTimNum, setSenTimNum ] = React.useState( 0 );     // What: Sent Time Number And Setter. Why: A successful send needs both a truthy flag and a fresh React key to replay the "sent" note if the user sends a second message later. How: This is set to Date.now() on a successful send and used as both the visibility check and the key below.
-	const [ shoErrBoo, setShoErrBoo ] = React.useState( false ); // What: Show Error Boolean And Setter. Why: Pressing Send with an empty field needs to surface a validation message. How: This is set true by senForFun's own guard and cleared on every subsequent send attempt.
+	const [ shoErrBoo, setShoErrBoo ] = React.useState( false ); // What: Show Error Boolean And Setter. Why: Pressing Send with an empty field needs to surface a validation message. How: This is set true by senForFun's own guard and cleared once a send attempt passes validation.
 	const [ senFaiBoo, setSenFaiBoo ] = React.useState( false ); // What: Send Failed Boolean And Setter. Why: A failed POST needs to surface the fallback address instead of leaving the user stuck. How: This is set inside senForFun's own catch handler.
 	const [ adrCopBoo, setAdrCopBoo ] = React.useState( false ); // What: Address Copied Boolean And Setter. Why: The fallback "Copy address" button needs to confirm the copy actually happened. How: This is set true by copAdrFun and cleared 2400ms later.
-	const [ botFieStr, setBotFieStr ] = React.useState( '' );    // What: Bot Field String And Setter. Why: A spam bot filling this hidden field is the signal a real human never would. How: This is posted alongside the real fields and left for Netlify's own spam filtering to act on. // Honeypot. Bots fill every field they find; humans never see this one, so a non-empty value means we silently accept and drop the submission.
+	const [ botFieStr, setBotFieStr ] = React.useState( '' );    // What: Bot Field String And Setter. Why: A spam bot filling this hidden field is the signal a real human never would. How: This is posted alongside the real fields and left for Netlify's own spam filtering to act on. // Honeypot. Humans never see this field, so a non-empty value means a bot filled it, and we silently accept and drop the submission.
 	const [ isaSenBoo, setIsaSenBoo ] = React.useState( false ); // What: Is-A Sending Boolean And Setter. Why: A second Send press must not fire a second overlapping request while one is already in flight. How: This gates senForFun's own guard and disables the Send button while true.
 
 	const broNamStr = React.useMemo( () => detBroFun(), [] );           // What: Browser Name String. Why: The diagnostic fields need the detected browser, computed once rather than on every render. How: This memoizes detBroFun's own return value with an empty dependency array.
@@ -248,11 +248,11 @@ function ConSupCom () : React.JSX.Element {
 
 		setForOpeBoo( true ); // What: Form Open Call. Why: This is the actual trigger that expands the ColDisCom below. How: This flips forOpeBoo to true.
 
-		setTimeout( () => { // What: Scroll-Into-View Timeout. Why: Scrolling must wait until ColDisCom's own expand animation has actually finished, so the form's final height (not a mid-animation one) is what gets measured. How: This waits 360ms, matching ColDisCom's own animation duration, before measuring and possibly scrolling.
+		setTimeout( () => { // What: Scroll-Into-View Timeout. Why: Scrolling must wait until ColDisCom's own expand animation has actually finished, so the form's final height (not a mid-animation one) is what gets measured. How: This waits the p02 duration step ColDisCom expands over, before measuring and possibly scrolling.
 
 
 			const forCurEle = forCarRef.current;                                                         // What: Form Current Element. Why: This gives a stable local handle on the rendered form for this measurement pass. How: This is read once from forCarRef.current.
-			const scrConEle = forCurEle && forCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scroll container is what actually needs to be scrolled, not the form itself. How: This walks up from forCurEle to the nearest ancestor matching '.appConMai'.
+			const scrConEle = forCurEle && forCurEle.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: The shared scroll container is what actually needs to be scrolled, not the form itself. How: This walks up from forCurEle to the nearest ancestor carrying the appConMai hook.
 
 
 			if ( !forCurEle || !scrConEle ) return; // What: Missing Element Guard. Why: Nothing can be measured or scrolled if either element is not actually mounted. How: This bails out early whenever either lookup above failed.
@@ -261,9 +261,9 @@ function ConSupCom () : React.JSX.Element {
 
 			const forRecObj = forCurEle.getBoundingClientRect();                                                                  // What: Form Rect Object. Why: Deciding whether the form overflows below the fold requires its own real, current position and size. How: This is compared against conRecObj below.
 			const conRecObj = scrConEle.getBoundingClientRect();                                                                  // What: Container Rect Object. Why: The visible scroll boundary is relative to the container, not the viewport. How: This is combined with forRecObj and the bottom tab bar's own rect below.
-			const barCurEle = document.querySelector( '[data-placement="bottom"] > [data-element-name-hook~="appTabNav"]' );      // What: Bar Current Element. Why: A bottom-placed tab bar's own top edge is the real scroll boundary, when one exists. How: This queries for it directly; other placements leave this null. // The floating bottom tab bar overlays .main rather than sitting outside it, so its own top edge, not the container's raw bottom, is the real visible boundary content can scroll up to. Other tab placements (side/top) don't occupy this edge, so .appTabNav--bottom simply won't exist and conRecObj.bottom is used as-is.
+			const barCurEle = document.querySelector( '[data-placement="bottom"] > [data-element-name-hook~="appTabNav"]' );      // What: Bar Current Element. Why: A bottom-placed tab bar's own top edge is the real scroll boundary, when one exists. How: This queries for it directly; other placements leave this null. // The bottom tab bar overlays the scroll container's lower edge, so its top edge, not the container's raw bottom, is the visible boundary content can scroll up to. With another tab placement the query finds nothing, so conRecObj.bottom is used as-is.
 			const visBotNum = barCurEle ? Math.min( conRecObj.bottom, barCurEle.getBoundingClientRect().top ) : conRecObj.bottom; // What: Visible Bottom Number. Why: This is the actual usable bottom edge content can scroll up to. How: This takes whichever is smaller, the container's own bottom or the bottom bar's own top, falling back to the container's bottom when there is no bottom bar.
-			const oveBelNum = forRecObj.bottom - visBotNum + rhyPixFun( 'p02' );                                                  // What: Overflow Below Number. Why: Only a form that actually overflows past the visible bottom edge needs any scrolling at all. How: This is the form's own bottom minus the visible bottom edge, plus a p02 step of breathing room. // Bring the form's bottom into view (with a little breathing room), but never scroll past its top, so the "Having problems?" row stays visible too when the form is short enough to fit alongside it. // Vertical Rhythm Base Plus 2 ~= 25.572px
+			const oveBelNum = forRecObj.bottom - visBotNum + rhyPixFun( 'p02' );                                                  // What: Overflow Below Number. Why: A form whose bottom sits within a p02 step of the visible bottom edge, or past it, needs scrolling. How: This is the form's own bottom minus the visible bottom edge, plus a p02 step of breathing room. // Bring the form's bottom into view with a little breathing room; a form short enough to fit also leaves the "Having problems?" row visible. // Vertical Rhythm Base Plus 2 ~= 25.572px
 
 
 			if ( oveBelNum > 0 ) { // What: Overflow Check. Why: The form should only actually be scrolled when it truly overflows below the fold. How: This scrolls the container only while oveBelNum is positive.
@@ -291,7 +291,7 @@ function ConSupCom () : React.JSX.Element {
 
 
 
-	const canForFun = () => { // What: Cancel Form Function. Why: Cancelling the form should discard the draft and fully reset its own transient state. How: This clears both drafts and every transient flag, then closes the form.
+	const canForFun = () => { // What: Cancel Form Function. Why: Cancelling the form should discard the draft and fully reset its own transient state. How: This clears both drafts and the error, failure, and copied flags, then closes the form.
 
 
 		setDraSubStr( '' );    // What: Draft Subject Reset. Why: A cancelled form must not leave stale text behind for next time. How: This clears the subject draft.
@@ -322,7 +322,7 @@ function ConSupCom () : React.JSX.Element {
 
 
 
-		try { // What: Clipboard Write Try. Why: Some browsers throw synchronously when the Clipboard API is touched outside a secure context. How: This wraps the write so the catch below can swallow that.
+		try { // What: Clipboard Write Try. Why: A clipboard failure should not break the form. How: This wraps the write so the catch below can swallow a synchronous throw.
 
 
 			if ( navigator.clipboard && navigator.clipboard.writeText ) navigator.clipboard.writeText( SUP_EMA_STR ).then( copDonFun, () => {} ); // What: Clipboard Write Attempt. Why: The Clipboard API is not universally available, and a rejected promise here should not surface as an error. How: This writes SUP_EMA_STR to the clipboard when the API exists, silently ignoring a rejection.
@@ -362,7 +362,7 @@ function ConSupCom () : React.JSX.Element {
 	 *
 	*/
 
-	const senForFun = () => { // What: Send Form Function. Why: This is the actual submit action behind the Send button. How: This validates both drafts, POSTs to Netlify Forms, and only clears the drafts once that POST actually succeeds. // POST to Netlify Forms. Netlify listens for form-encoded POSTs on any path of the site and matches them to a detected form by the `form-name` field, hence posting to '/' rather than to an endpoint of our own. // Only clear the form on success. A failed send must never eat what the user typed, which is the whole reason this waits on the response instead of optimistically confirming.
+	const senForFun = () => { // What: Send Form Function. Why: This is the actual submit action behind the Send button. How: This validates both drafts, POSTs to Netlify Forms, and only clears the drafts once that POST actually succeeds. // POST to Netlify Forms. Netlify matches a form-encoded POST to a detected form by the `form-name` field, hence posting to '/' rather than to an endpoint of our own.
 
 
 		if ( isaSenBoo ) return; // What: Already Sending Guard. Why: A second Send press while one request is already in flight must not fire a second, overlapping one. How: This bails out early whenever isaSenBoo is already true.
@@ -407,10 +407,10 @@ function ConSupCom () : React.JSX.Element {
 			method  : 'POST'                                                    // What: Method. Why: A form submission is a POST. How: This sets the request method.
 
 
-		} ).then( ( fetResObj ) => { // What: Fetch Then Handler. Why: Netlify's own response status is the only reliable signal of whether the submission was actually accepted. How: This throws on a non-ok status (caught below), otherwise clears the drafts and shows the sent confirmation.
+		} ).then( ( fetResObj ) => { // What: Fetch Then Handler. Why: The response status says whether the submission was accepted. How: This throws on a non-ok status (caught below), otherwise clears the drafts and shows the sent confirmation.
 
 
-			if ( !fetResObj.ok ) throw new Error( 'HTTP ' + fetResObj.status ); // What: Non-Ok Status Guard. Why: Netlify can accept the connection but still reject the submission itself. How: This throws, routing to the catch handler below, whenever the response status is not ok.
+			if ( !fetResObj.ok ) throw new Error( 'HTTP ' + fetResObj.status ); // What: Non-Ok Status Guard. Why: A response that isn't ok means the submission was not accepted. How: This throws, routing to the catch handler below, whenever the response status is not ok.
 
 
 
@@ -472,25 +472,25 @@ function ConSupCom () : React.JSX.Element {
 	return (
 
 
-		<React.Fragment>{ /* What: Contact Support Fragment Element. Why: The "Having problems?" trigger card and the collapsible form below it are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+		<React.Fragment>{ /* What: Contact Support Fragment. Why: The "Having problems?" trigger card and the collapsible form below it are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
-			<CarSurCom>{ /* What: Card Surface Component. Why: "Having problems?" needs its own bordered container, matching every other row in this tab. How: This wraps the trigger row below. */ }
+			<CarSurCom>{ /* What: Card Surface Component. Why: "Having problems?" needs its own bordered container, like the other rows in this tab. How: This wraps the trigger row below. */ }
 
 
 				<div
 					className={ cssModObj.supTrgDiv }
 
 					data-element-name-hook='supTrgDiv'
-				>{ /* What: Support Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+				>{ /* What: Support Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. Its data-element-name-hook is read by help mode. */ }
 
 
-					<div className={ cssModObj.setInfDiv }>{ /* What: Contact Info Div Element. Why: The row's own name/description/sent-note need their own grouping, apart from the button. How: This wraps the name span, the description span, and (conditionally) the sent-confirmation span. */ }
+					<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name/description/sent-note need their own grouping, apart from the button. How: This wraps the name span, the description span, and (conditionally) the sent-confirmation span. */ }
 
 
-						<span className={ cssModObj.setNamSpa }>Having problems?</span>{ /* What: Set Data Name Span Element. Why: Every row in this tab names itself with this same span. How: This renders the fixed label "Having problems?". */ }
+						<span className={ cssModObj.setNamSpa }>Having problems?</span>{ /* What: Settings Name Span Element. Why: A Settings row names itself with this span. How: This renders the fixed label "Having problems?". */ }
 
-						<span className={ cssModObj.setSubSpa }>Send a note and it&rsquo;ll come through with your app version and browser attached, so there&rsquo;s no back-and-forth to track those down.</span>{ /* What: Set Data Sub Span Element. Why: Every row in this tab explains itself with this same span. How: This renders the fixed description text. */ }
+						<span className={ cssModObj.setSubSpa }>Send a note and it&rsquo;ll come through with your app version and browser attached, so there&rsquo;s no back-and-forth to track those down.</span>{ /* What: Settings Sub Span Element. Why: A Settings row explains itself with this span. How: This renders the fixed description text. */ }
 
 						<span
 							className={ cssModObj.senStaSpa }
@@ -506,7 +506,7 @@ function ConSupCom () : React.JSX.Element {
 									key={ senTimNum }
 
 									className={ cssModObj.setMesSpa }
-								>Message sent, thanks! I&rsquo;ll be in touch.</span> // What: Sent Confirmation Span Element. Why: This is the actual confirmation text shown after a successful send. How: This is remounted (via its own senTimNum key) so a repeat send replays the announcement.
+								>Message sent, thanks! I&rsquo;ll be in touch.</span> // What: Settings Message Span Element. Why: This is the actual confirmation text shown after a successful send. How: This is remounted (via its own senTimNum key) so a repeat send replays the announcement.
 
 
 							) }
@@ -539,7 +539,7 @@ function ConSupCom () : React.JSX.Element {
 			<ColDisCom open={ forOpeBoo }>{ /* What: Collapse Disclosure Component. Why: The support form itself should stay collapsed until the trigger above is pressed. How: This mounts/expands its own CarSurCom below, gated on forOpeBoo. */ }
 
 
-				<CarSurCom>{ /* What: Card Surface Component. Why: The form's own fields need the same bordered container as every other card in this tab. How: This wraps the whole supForDiv div below. */ }
+				<CarSurCom>{ /* What: Card Surface Component. Why: The form's fields need the same bordered container as the other cards in this tab. How: This wraps the whole supForDiv div below. */ }
 
 
 					<div
@@ -548,13 +548,13 @@ function ConSupCom () : React.JSX.Element {
 						className={ cssModObj.supForDiv }
 
 						data-element-name-hook='supForDiv'
-					>{ /* What: Support Form Div Element. Why: This is the form's own root, giving opeForFun a stable element to measure and scroll to. How: This wraps the subject/message fields, the diagnostic fields, the honeypot, and the form's own footer buttons. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+					>{ /* What: Support Form Div Element. Why: This is the form's own root, giving opeForFun a stable element to measure and scroll to. How: This wraps the subject/message fields, the diagnostic fields, the honeypot, and the form's own footer buttons. Its data-element-name-hook is read by help mode and the update check. */ }
 
 
-						<label className={ cssModObj.supFieLab }>{ /* What: Subject Label Element. Why: The subject input needs its own labeled field wrapper, matching the message field below. How: This wraps the visible field label and the subject input itself. */ }
+						<label className={ cssModObj.supFieLab }>{ /* What: Support Field Label Element. Why: The subject input needs its own labeled field wrapper, matching the message field below. How: This wraps the visible field label and the subject input itself. */ }
 
 
-							<span className={ cssModObj.supLabSpa }>Subject</span>{ /* What: Support Flabel Span Element. Why: The subject input needs a visible label. How: This renders the fixed text "Subject". */ }
+							<span className={ cssModObj.supLabSpa }>Subject</span>{ /* What: Support Label Span Element. Why: The subject input needs a visible label. How: This renders the fixed text "Subject". */ }
 
 							<input
 								className={ cssModObj.supSubInp }
@@ -564,19 +564,19 @@ function ConSupCom () : React.JSX.Element {
 								value={ draSubStr }
 
 								onChange={ ( chaEveObj ) => setDraSubStr( chaEveObj.target.value ) }
-							/>{ /* What: Draft Subject Input Element. Why: The user needs a text field to type the support message's own subject into. How: This is bound to draSubStr. */ }
+							/>{ /* What: Support Subject Input Element. Why: The user needs a text field to type the support message's own subject into. How: This is bound to draSubStr. */ }
 
 
 						</label>
 
-						<div className={ cssModObj.supFieDiv }>{ /* What: Message Field Div Element. Why: The message textarea needs its own explicit label element rather than an implicit wrapping label, since its id must differ from index.html's own static form (see the comment on that id below). How: This wraps the message label and the message textarea. */ }
+						<div className={ cssModObj.supFieDiv }>{ /* What: Support Field Div Element. Why: The message textarea needs its own explicit label element rather than an implicit wrapping label, since its id must differ from index.html's own static form (see the comment on that id below). How: This wraps the message label and the message textarea. */ }
 
 
 							<label
 								className={ cssModObj.supLabLab }
 
 								htmlFor='supMesTex--app'
-							>Message</label>{ /* What: Message Label Element. Why: The message textarea needs a visible, properly-associated label. How: This points at the textarea below via its own distinct id. */ }{ /* The id is supMesTex--app, not supMesTex, since that id is already taken by index.html's hidden static Netlify form (see its own comment above the <form name="support">), and duplicate ids on the page confused the browser's label matching (both labels applied, announcing "Message Message"). */ }
+							>Message</label>{ /* What: Support Label Label Element. Why: The message textarea needs a visible, properly-associated label. How: This points at the textarea below via its own distinct id. */ }{ /* The id is supMesTex--app, not supMesTex, since that id is already taken by index.html's hidden static Netlify form (see its own comment above the <form name="support">), and duplicate ids on the page confused the browser's label matching (both labels applied, announcing "Message Message"). */ }
 
 							<textarea
 								id='supMesTex--app'
@@ -588,31 +588,31 @@ function ConSupCom () : React.JSX.Element {
 								value={ draMesStr }
 
 								onChange={ ( chaEveObj ) => setDraMesStr( chaEveObj.target.value ) }
-							/>{ /* What: Draft Message Textarea Element. Why: The user needs a multi-line field to type the support message's own body into. How: This is bound to draMesStr. */ }
+							/>{ /* What: Support Message Textarea Element. Why: The user needs a multi-line field to type the support message's own body into. How: This is bound to draMesStr. */ }
 
 
 						</div>
 
 
-						<div className={ cssModObj.supDiaDiv }>{ /* What: Support Diag Div Element. Why: The 2 read-only diagnostic fields need their own grouping, separate from the editable fields above. How: This wraps the app-version field and the browser field. */ }
+						<div className={ cssModObj.supDiaDiv }>{ /* What: Support Diagnostics Div Element. Why: The 2 read-only diagnostic fields need their own grouping, separate from the editable fields above. How: This wraps the app-version field and the browser field. */ }
 
 
-							<div className={ cssModObj.diaFieDiv }>{ /* What: Version Diag Field Div Element. Why: The app version needs its own labeled diagnostic row. How: This wraps its own label span and value span. */ }
+							<div className={ cssModObj.diaFieDiv }>{ /* What: Diagnostic Field Div Element. Why: The app version needs its own labeled diagnostic row. How: This wraps its own label span and value span. */ }
 
 
-								<span className={ cssModObj.supLabSpa }>App version</span>{ /* What: Support Flabel Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "App version". */ }
+								<span className={ cssModObj.supLabSpa }>App version</span>{ /* What: Support Label Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "App version". */ }
 
-								<span className={ cssModObj.diaValSpa }>{ appVerStr }</span>{ /* What: Support Diag Val Span Element. Why: The actual diagnostic value needs to render. How: This renders appVerStr. */ }
+								<span className={ cssModObj.diaValSpa }>{ appVerStr }</span>{ /* What: Diagnostic Value Span Element. Why: The actual diagnostic value needs to render. How: This renders appVerStr. */ }
 
 
 							</div>
 
-							<div className={ cssModObj.diaFieDiv }>{ /* What: Browser Diag Field Div Element. Why: The detected browser needs its own labeled diagnostic row. How: This wraps its own label span and value span. */ }
+							<div className={ cssModObj.diaFieDiv }>{ /* What: Diagnostic Field Div Element. Why: The detected browser needs its own labeled diagnostic row. How: This wraps its own label span and value span. */ }
 
 
-								<span className={ cssModObj.supLabSpa }>Browser</span>{ /* What: Support Flabel Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "Browser". */ }
+								<span className={ cssModObj.supLabSpa }>Browser</span>{ /* What: Support Label Span Element. Why: The diagnostic value needs a visible label. How: This renders the fixed text "Browser". */ }
 
-								<span className={ cssModObj.diaValSpa }>{ broNamStr }</span>{ /* What: Support Diag Val Span Element. Why: The actual diagnostic value needs to render. How: This renders broNamStr. */ }
+								<span className={ cssModObj.diaValSpa }>{ broNamStr }</span>{ /* What: Diagnostic Value Span Element. Why: The actual diagnostic value needs to render. How: This renders broNamStr. */ }
 
 
 							</div>
@@ -625,7 +625,7 @@ function ConSupCom () : React.JSX.Element {
 							className={ cssModObj.supHonPar }
 
 							aria-hidden='true'
-						>{ /* What: Honeypot Paragraph Element. Why: A real human never sees or fills this field, so any bot that does gives itself away. How: This wraps a label and input a screen reader never announces, hidden from assistive tech entirely. */ }
+						>{ /* What: Support Honeypot Paragraph Element. Why: A real human never sees or fills this field, so any bot that does gives itself away. How: This wraps a label and input a screen reader never announces, hidden from assistive tech entirely. */ }
 
 
 							<label>{ /* What: Honeypot Label Element. Why: A hidden form field still technically needs a label. How: This wraps the honeypot input below inside its own label text. */ }
@@ -654,7 +654,7 @@ function ConSupCom () : React.JSX.Element {
 							className={ cssModObj.supFooDiv }
 
 							data-element-name-hook='supFooDiv'
-						>{ /* What: Support Form Foot Div Element. Why: The validation/failure messages and the form's own action buttons need their own grouping at the bottom. How: This wraps whichever messages currently apply plus the Cancel/Send buttons. Its data-element-name-hook is read by help mode's Settings catalog. */ }
+						>{ /* What: Support Footer Div Element. Why: The validation/failure messages and the form's own action buttons need their own grouping at the bottom. How: This wraps whichever messages currently apply plus the Cancel/Send buttons. Its data-element-name-hook is read by help mode. */ }
 
 
 							<span
@@ -671,7 +671,7 @@ function ConSupCom () : React.JSX.Element {
 										key='verr'
 
 										className={ cssModObj.supValSpa }
-									>Please fill out both form fields.</span> // What: Validation Message Span Element. Why: This is the actual validation copy shown on an empty-field send attempt. How: This renders fixed text explaining what is missing.
+									>Please fill out both form fields.</span> // What: Support Validation Span Element. Why: This is the actual validation copy shown on an empty-field send attempt. How: This renders fixed text explaining what is missing.
 
 
 								) }
@@ -683,7 +683,7 @@ function ConSupCom () : React.JSX.Element {
 										key='sfail'
 
 										className={ cssModObj.supFalSpa }
-									>{ /* What: Failure Message Span Element. Why: This is the actual fallback copy shown on a failed send. How: This explains the likely cause and surfaces the raw support address. */ }
+									>{ /* What: Support Fallback Span Element. Why: This is the actual fallback copy shown on a failed send. How: This explains the likely cause and surfaces the raw support address. */ }
 
 
 										Couldn&rsquo;t send. You may be offline. Your message is still here, so try again, or write to <span className={ cssModObj.falAdrSpa }>{ SUP_EMA_STR }</span>.
@@ -762,7 +762,7 @@ function ConSupCom () : React.JSX.Element {
 
 // #region Exports
 
-export { ConSupCom }; // What: Named Export. Why: TabSetCom renders the support form in its Account section. How: This exports ConSupCom by name; its constants and detBroFun stay private to this file.
+export { ConSupCom }; // What: Named Export. Why: The support form is the one binding this file shares. How: This exports ConSupCom by name; its constants and detBroFun stay private to this file.
 
 // #endregion Exports
 
