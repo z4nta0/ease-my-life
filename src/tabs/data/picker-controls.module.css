@@ -895,7 +895,7 @@
 
 /* #region setLinDiv */
 
-.setLinDiv { /* What: Setting Line Div. Why: Each setting is a full-width row, its label left and its control right, wrapping when narrow. How: This spreads them across a padded row divided from the next. */
+.setLinDiv { /* What: Setting Line Div. Why: Each setting is a full-width row, its label left and its control right, wrapping onto two lines at about 742px wide and below for its longest label. How: This spreads them across a padded row divided from the next. */
 
 
 	align-items     : center;
@@ -1297,7 +1297,7 @@
 
 /* #region cadConDiv */
 
-.cadConDiv { /* What: Cadence Controls Div. Why: The cadence and its anchor selects sit together and wrap on narrow widths, starting flush left. How: This lines them up in a wrapping row. */
+.cadConDiv { /* What: Cadence Controls Div. Why: The cadence and its anchor selects sit together, starting flush left and wrapping onto two lines at about 592px wide and below for its longest set of selects. How: This lines them up in a wrapping row. */
 
 
 	align-items     : center;
