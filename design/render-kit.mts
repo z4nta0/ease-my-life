@@ -144,7 +144,7 @@ async function staVitFun () : Promise< ViteDevServer > {
  * @summary
  * Captures a 1,200px square product card to a PNG: it starts the render
  * server, opens the card.html in the given folder at that size, waits for its
- * fonts, screenshots its #carSqaDiv element to the output path, closes the
+ * fonts, screenshots its #carSquDiv element to the output path, closes the
  * browser and the server, and logs the file's size in KB.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -177,7 +177,7 @@ async function renCarFun ( carDirStr : string, outPatStr : string ) : Promise< v
 
 	await capPagObj.evaluate( () => document.fonts.ready.then( () => undefined ) ); // What: Font Wait Call. Why: The brand fonts must be drawn, not their fallbacks. How: This waits for every font to load.
 
-	await capPagObj.locator( '#carSqaDiv' ).screenshot( { path : outPatStr } ); // What: Card Screenshot Call. Why: This is the image itself. How: This captures the card element as a PNG.
+	await capPagObj.locator( '#carSquDiv' ).screenshot( { path : outPatStr } ); // What: Card Screenshot Call. Why: This is the image itself. How: This captures the card element as a PNG.
 
 
 
