@@ -612,7 +612,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-		APP_NAM_OBJ.appPalFun( palResObj, theKeyStr ); // What: Apply Palette Call. Why: Resolving a palette does nothing on its own, since it still has to be written to the page. How: This applies the resolved palette's colors, and records the active key, onto the document.
+		APP_NAM_OBJ.appPalFun( palResObj ); // What: Apply Palette Call. Why: Resolving a palette does nothing on its own, since it still has to be written to the page. How: This applies the resolved palette's colors onto the document.
 
 
 	}, [ staAppObj.appearance, sysDarBoo ] ); // What: Effect Dependency Array. Why: The applied palette only ever needs to change when the persisted appearance settings or the system dark-mode state change. How: staAppObj.appearance covers the user's own theme choice/custom colors; sysDarBoo covers the OS-level light/dark toggle.

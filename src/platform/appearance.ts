@@ -106,7 +106,7 @@ type PalTokTyp = { // What: Palette Tokens Type. Why: Built-in and custom themes
  *
 */
 
-const PAL_SET_OBJ : Record< string, PalTokTyp > = { // What: Palette Set Object. Why: This is the app's fixed set of built-in color themes, each a full 8-token palette plus a display name. How: app.tsx looks the active theme's palette up here, and the Settings tab's theme picker reads every palette for its previews.
+const PAL_SET_OBJ : Record< string, PalTokTyp > = { // What: Palette Set Object. Why: This is the app's fixed set of built-in color themes, each a full 8-token palette plus a display name. How: This maps each built-in theme key to its palette, read as PAL_SET_OBJ[theKeyStr].
 
 
 	ember : { // What: Ember Palette Object. Why: This is one of the app's built-in themes. How: This holds Ember's own 8 color tokens plus display name, read via PAL_SET_OBJ[theKeyStr] dynamic lookup when this key is the active theme.
@@ -256,8 +256,8 @@ const THE_PAI_OBJ : Record< string, { darStr : string, ligStr : string } > = { /
 // #region Module State
 
 let __lasPalStr : string | null      = null;      // What: Last Palette String. Why: The cross-fade should only run when the resolved palette's actual colors changed, not on every re-application. How: This holds the previous call's color signature string, compared against the current one below.
-let __palAppBoo : boolean            = false;     // What: Palette Applied Boolean. Why: The very first palette application (initial page load) must never cross-fade, only later theme swaps should. How: This starts false and is set true at the end of appPalFun's first run.
-let __tatIdeNum : number | undefined = undefined; // What: Theme-Animation-Timeout Identifier Number. Why: A running cross-fade class needs to be removed again after its own duration, and a fast repeat swap must cancel the previous removal instead of racing it. How: This holds the current setTimeout id, cleared and reassigned on every appPalFun call that starts a new cross-fade.
+let __palAppBoo : boolean            = false;     // What: Palette Applied Boolean. Why: The very first palette application (initial page load) must never cross-fade, only later theme swaps should. How: This starts false and is set true by every appPalFun call right after its cross-fade check, so only the first call sees it false.
+let __tatIdeNum : number | undefined = undefined; // What: Theme-Animation-Timeout Identifier Number. Why: A running cross-fade attribute needs to be removed again after its own duration, and a fast repeat swap must cancel the previous removal instead of racing it. How: This holds the current setTimeout id, cleared and reassigned on every appPalFun call that starts a new cross-fade.
 
 
 
@@ -324,7 +324,7 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
 
 	// #region Offset Calculation
 
-	const modSigNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr/acsStr tokens need to move toward the page background in dark mode but away from it in light mode. How: This flips the sign of their lightness offset below based on the given mode.
+	const modSigNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr and acsStr tokens need to move toward the page background, which is darker in dark mode and lighter in light mode. How: This is 1 in dark mode and -1 in light mode, flipping the sign of their lightness offset below.
 
 	const calOffFun = ( offAmoNum : number, floValNum : number ) => ( modKeyStr === 'dark' // What: Calculate Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
 
@@ -437,13 +437,11 @@ function resTheFun ( appSetObj : AppSetTyp, sysDarBoo : boolean ) : string {
  * covHexFun = Convert Hex Function
  *
  * @summary
- * Resolves an arbitrary CSS color string (palettes are authored in
- * oklch()) down to a plain hex string, the one color format every UA is
- * guaranteed to parse for a meta theme-color. It paints the color onto a
- * scratch canvas's single pixel and reads the pixel back with
- * getImageData, which always yields sRGB bytes. Reading fillStyle back
- * instead used to work, but modern browsers keep an oklch() string as-is
- * there, which silently disabled the whole theme-color sync.
+ * Resolves an arbitrary CSS color string (palettes are authored in oklch())
+ * down to a plain hex string for a meta theme-color. It paints the color onto
+ * a scratch canvas's single pixel and reads the pixel back with getImageData,
+ * which yields sRGB bytes. Reading fillStyle back instead used to keep an
+ * oklch() string as-is, which silently disabled the whole theme-color sync.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -465,14 +463,14 @@ function resTheFun ( appSetObj : AppSetTyp, sysDarBoo : boolean ) : string {
 function covHexFun ( cssColStr : string ) : string | null {
 
 
-	try { // What: Fill Style Probe Try. Why: Assigning an unsupported color to a canvas context's fillStyle could throw in some environments rather than silently no-op. How: This wraps the whole probe-and-resolve sequence below so any such error is caught and treated as an ordinary parse failure.
+	try { // What: Fill Style Probe Try. Why: Assigning an unsupported color to a canvas context's fillStyle is guarded so any thrown error counts as an ordinary parse failure. How: This wraps the whole probe-and-resolve sequence below so any such error is caught and treated as an ordinary parse failure.
 
 
-		if ( window.CSS && CSS.supports && !CSS.supports( 'color', cssColStr ) ) return null; // What: Unsupported Color Guard. Why: Some very old browsers may not recognize a given color syntax at all, such as oklch(). How: This bails out early with null when the CSS.supports API exists and reports the color as unparseable.
+		if ( window.CSS && CSS.supports && !CSS.supports( 'color', cssColStr ) ) return null; // What: Unsupported Color Guard. Why: A browser that doesn't recognize a color syntax, such as oklch(), can't resolve it. How: This bails out early with null when the CSS.supports API exists and reports the color as unparseable.
 
 
 
-		if ( !__tinProObj ) { // What: No Probe Object Check. Why: The scratch canvas 2D context only needs to be created once, ever. How: This gates the creation block below so it only runs on the very first call.
+		if ( !__tinProObj ) { // What: No Probe Object Check. Why: The scratch canvas 2D context is reused once it exists. How: This gates the creation block below so it only runs while no context is cached.
 
 
 			const canProEle = document.createElement( 'canvas' ); // What: Canvas Probe Element. Why: A canvas 2D context is the mechanism used to resolve the color below. How: This creates a fresh, unattached canvas element.
@@ -508,16 +506,16 @@ function covHexFun ( cssColStr : string ) : string | null {
 
 		const [ redValNum, greValNum, bluValNum ] = __tinProObj.getImageData( 0, 0, 1, 1 ).data; // What: Red Value Number. Why: The painted pixel holds the color converted to sRGB, which is what a hex string needs. How: This reads the pixel back and keeps its first channel. // What: Green Value Number. Why: The hex string needs the green channel too. How: This keeps the second channel. // What: Blue Value Number. Why: The hex string needs the blue channel too. How: This keeps the third channel, ignoring alpha after it.
 
-		const hexResStr = '#' + [ redValNum, greValNum, bluValNum ].map( ( chaValNum ) => chaValNum.toString( 16 ).padStart( 2, '0' ) ).join( '' ); // What: Hex Result String. Why: A theme-color tag needs a plain hex color every browser parses. How: This formats each channel as 2 hex digits and joins them after a leading #.
+		const hexResStr = '#' + [ redValNum, greValNum, bluValNum ].map( ( chaValNum ) => chaValNum.toString( 16 ).padStart( 2, '0' ) ).join( '' ); // What: Hex Result String. Why: A theme-color tag needs a plain hex color. How: This formats each channel as 2 hex digits and joins them after a leading #.
 
 
 
-		return hexResStr; // What: Hex Result Return. Why: The caller writes this straight into the theme-color tag. How: This returns hexResStr.
+		return hexResStr; // What: Hex Result Return. Why: The resolved hex string is this function's result. How: This returns hexResStr.
 
 
 	}
 
-	catch { return null; } // What: Parse Error Guard. Why: Some environments could throw rather than silently no-op on an invalid assignment. How: This catches any such error and returns null, same as an ordinary parse failure.
+	catch { return null; } // What: Parse Error Guard. Why: An invalid assignment is guarded so any thrown error counts as a parse failure. How: This catches any such error and returns null, same as an ordinary parse failure.
 
 
 }
@@ -532,14 +530,10 @@ function covHexFun ( cssColStr : string ) : string | null {
  * synTinFun = Sync Tint Function
  *
  * @summary
- * Keeps an installed PWA's status-bar tint in sync with the app's own
- * in-app theme and palette choice. A manifest's theme_color is static
- * and has no media-query support, which is why the light/dark
- * <meta name="theme-color"> pair in index.html only works in a browser
- * tab, not once installed. Chrome on Android does honor runtime changes
- * to the meta tag in standalone mode, so this rewrites it on every
- * palette application instead, collapsing the light/dark pair down to
- * one tag JS now fully owns.
+ * Keeps an installed PWA's status-bar tint in sync with the app's own in-app
+ * theme and palette choice. It rewrites one <meta name="theme-color"> tag on
+ * every palette application, collapsing the light/dark pair in index.html down
+ * to one tag JS owns.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -559,7 +553,7 @@ function covHexFun ( cssColStr : string ) : string | null {
 function synTinFun ( bacColStr : string ) : void {
 
 
-	const hexResStr = covHexFun( bacColStr ); // What: Hex Result String. Why: A <meta name="theme-color"> tag's content must be a color the UA will definitely parse. How: This resolves the given background color down to a plain hex string.
+	const hexResStr = covHexFun( bacColStr ); // What: Hex Result String. Why: A <meta name="theme-color"> tag's content needs a plain hex color. How: This resolves the given background color down to a plain hex string.
 
 
 	if ( !hexResStr ) return; // What: No Hex Guard. Why: There is nothing safe to write if the color could not be resolved. How: This bails out early, leaving whatever theme-color tag already exists untouched.
@@ -621,14 +615,12 @@ function synTinFun ( bacColStr : string ) : void {
  * appPalFun = Apply Palette Function
  *
  * @summary
- * Applies a full 8-token palette object (a PAL_SET_OBJ entry, or a
- * derived custom one built by resCusFun) directly onto the document
- * root as CSS custom properties, and records the active palette name
- * for CSS that keys off it. Cross-fades the themable properties on
- * every change after the first, so the initial page load never
- * animates but every later user-driven theme swap does. Also keeps the
- * installed PWA's status-bar tint in sync with the newly-applied
- * background color.
+ * Applies a full 8-token palette object (a PAL_SET_OBJ entry, or a derived
+ * custom one built by resCusFun) directly onto the document root as CSS custom
+ * properties. Cross-fades the themable properties on every change after the
+ * first, so the initial page load never animates but every later user-driven
+ * theme swap does. Also keeps the installed PWA's status-bar tint in sync with
+ * the newly-applied background color.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -636,20 +628,17 @@ function synTinFun ( bacColStr : string ) : void {
  *                    to apply (bacStr, surStr, borStr, texStr, mutStr, accStr,
  *                    acsStr, warStr), either a PAL_SET_OBJ entry or a derived
  *                    custom palette from resCusFun.
- * @param theKeyStr - Theme Key String: The resolved theme key this palette
- *                    corresponds to (e.g. 'ink', 'customLight'), written onto
- *                    document.body's dataset for CSS to key off.
  *
  * @returns This function does not return anything.
  *
  * @example
  * ```ts
- * appPalFun(palResObj, theKeyStr) // => void
+ * appPalFun(palResObj) // => void
  * ```
  *
 */
 
-function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
+function appPalFun ( palResObj : PalTokTyp ) : void {
 
 
 	// #region Palette Change Detection
@@ -663,15 +652,15 @@ function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 
 
 
-	if ( __palAppBoo && palChaBoo && !redMotFun() ) { // What: Cross-Fade Trigger Check. Why: The cross-fade should only play when a palette had already been applied before, the resolved colors actually changed, and the user doesn't prefer reduced motion. How: This gates the class-add/timeout block below on all three conditions holding at once.
+	if ( __palAppBoo && palChaBoo && !redMotFun() ) { // What: Cross-Fade Trigger Check. Why: The cross-fade should only play when a palette had already been applied before, the resolved colors actually changed, and the user doesn't prefer reduced motion. How: This gates the attribute-set and timeout block below on all three conditions holding at once.
 
 
-		const docRooEle = document.documentElement; // What: Document Root Element. Why: The cross-fade class toggles on the root element, which is what the app's CSS transition rules key off. How: This is read once and reused for both the add and remove below.
+		const docRooEle = document.documentElement; // What: Document Root Element. Why: The cross-fade attribute goes on the root element, which is what the app's CSS transition rules key off. How: This is read once and reused for both the add and remove below.
 
 		docRooEle.setAttribute( 'data-theme-fade-active', '' ); // What: Theme Fade Attribute Set. Why: This is the attribute the app's CSS keys off to enable a brief cross-fade transition on the themable custom properties. How: This sets the presence-only attribute on the root element immediately, before the new values are written below.
 
 
-		clearTimeout( __tatIdeNum ); // What: Theme-Animation-Timeout Identifier Number Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own class add. How: This cancels whatever removal was previously scheduled.
+		clearTimeout( __tatIdeNum ); // What: Theme-Animation-Timeout Identifier Number Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own attribute set. How: This cancels whatever removal was previously scheduled.
 
 		__tatIdeNum = setTimeout( () => docRooEle.removeAttribute( 'data-theme-fade-active' ), durMilFun( 'p04' ) ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade attribute must not stay on indefinitely, only for the duration of the transition. How: This schedules the attribute's removal after the CSS transition's own p04 duration step. // Duration Base Plus 4 ~= 486.1ms
 
@@ -680,7 +669,7 @@ function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 
 
 
-	__palAppBoo = true; // What: Palette Applied Boolean Update. Why: Every call after this one is a real theme swap, eligible for the cross-fade above. How: This is set true unconditionally, once, on the very first call.
+	__palAppBoo = true; // What: Palette Applied Boolean Update. Why: Every call after this one is a real theme swap, eligible for the cross-fade above. How: This is set true unconditionally on every call, so only the first call sees it false.
 
 
 
@@ -701,10 +690,6 @@ function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 
 
 
-	document.body.dataset.palette = theKeyStr || 'custom'; // What: Palette Dataset Write. Why: Some CSS keys off which specific palette is active, not just its raw token values. How: This writes the resolved theme key, or 'custom' if none was given, onto body's own dataset.
-
-
-
 	synTinFun( palResObj.bacStr ); // What: Status Bar Tint Sync Call. Why: An installed PWA's status bar should follow the newly-applied background color too. How: This hands the resolved background color to synTinFun.
 
 
@@ -720,20 +705,20 @@ function appPalFun ( palResObj : PalTokTyp, theKeyStr : string ) : void {
 
 // #region Exports
 
-const APP_NAM_OBJ = { // What: Appearance Namespace Object. Why: app.tsx and the Settings tab reach this file's palettes and theme functions through one namespaced import. How: This maps each external property name onto the internal binding of the same name.
+const APP_NAM_OBJ = { // What: Appearance Namespace Object. Why: This gathers the file's palettes and theme functions into one namespaced export. How: This maps each external property name onto the internal binding of the same name.
 
 
-	appPalFun   : appPalFun,   // What: Apply Palette Function. Why: app.tsx writes the resolved palette onto the document through this. How: This maps onto appPalFun.
-	PAL_SET_OBJ : PAL_SET_OBJ, // What: Palette Set Object. Why: app.tsx resolves built-in themes and the Settings tab previews them from this. How: This maps onto PAL_SET_OBJ.
-	resCusFun   : resCusFun,   // What: Resolve Custom Function. Why: app.tsx derives a user's custom palettes through this. How: This maps onto resCusFun.
-	resTheFun   : resTheFun    // What: Resolve Theme Function. Why: app.tsx picks the active theme key, including system switching, through this. How: This maps onto resTheFun.
+	appPalFun   : appPalFun,   // What: Apply Palette Function. Why: This writes a resolved palette onto the document. How: This maps onto appPalFun.
+	PAL_SET_OBJ : PAL_SET_OBJ, // What: Palette Set Object. Why: This holds the built-in palettes. How: This maps onto PAL_SET_OBJ.
+	resCusFun   : resCusFun,   // What: Resolve Custom Function. Why: This derives a custom palette from a user's colors. How: This maps onto resCusFun.
+	resTheFun   : resTheFun    // What: Resolve Theme Function. Why: This resolves the active theme key, including system switching. How: This maps onto resTheFun.
 
 
 };
 
 
 
-export { APP_NAM_OBJ, type PalTokTyp }; // What: Named Exports. Why: Every consumer reaches this file's palettes and theme functions through the one namespace object, and the theme picker types a previewed palette with PalTokTyp. How: This exports both by name at the very end of the file.
+export { APP_NAM_OBJ, type PalTokTyp }; // What: Named Exports. Why: The palettes and theme functions are exported through the one namespace object, and PalTokTyp types a previewed palette. How: This exports both by name at the very end of the file.
 
 // #endregion Exports
 
