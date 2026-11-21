@@ -6,7 +6,7 @@
  *
  * @summary
  * Styles for GuiTouCom, the guided tour's overlay: a full-screen layer that
- * sits above everything else (help mode's own dim layer included), the plain
+ * sits above the app shell and help mode's own dim layer, the plain
  * dim shown before a target is found, the spotlight that darkens the page
  * around the current target with one huge box-shadow instead of a real
  * cut-out, and the coach card with its arrow, progress line, title, body, and
@@ -26,7 +26,7 @@
 
 /* #region touOveDiv */
 
-.touOveDiv { /* What: Tour Overlay Div. Why: The tour's dim, spotlight, and coach card must sit above everything on screen, while clicks still reach the real target underneath. How: This fixes a full-screen layer above help mode's own layer that ignores the pointer, with only the coach card opting back in. */
+.touOveDiv { /* What: Tour Overlay Div. Why: The tour's dim, spotlight, and coach card must sit above the app shell and help mode's layers, while clicks still reach the real target underneath. How: This fixes a full-screen layer above help mode's own layer that ignores the pointer, with only the coach card opting back in. */
 
 
 	inset          : 0;
@@ -246,7 +246,7 @@
 
 }
 
-.touSkiBut { /* What: Tour Skip Button. Why: Leaving the tour should always be possible but shouldn't compete with Next. How: This styles a borderless text button in small muted type. */
+.touSkiBut { /* What: Tour Skip Button. Why: Skip leaves the tour but shouldn't compete with Next. How: This styles a borderless text button in small muted type. */
 
 
 	background  : 0;

@@ -8,7 +8,7 @@ import React     from 'react';                    // What: React. Why: This is t
 
 
 import { createPortal } from 'react-dom';            // What: Create Portal. Why: The dim layer, spotlight and coach card must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with GuiTouCom's own JSX and document.body inside the porBodFun helper below.
-import { emlTouObj    } from '../state/tour-bus.ts'; // What: Ease-My-Life Tour Object. Why: This publishes the running tour's touPhaStr/touSteNum/touIdeStr/resTopNum/wanRaiBoo fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
+import { emlTouObj    } from '../state/tour-bus.ts'; // What: Ease-My-Life Tour Object. Why: This publishes the running tour's phase, step, and layout fields so other tabs can react without a context provider. How: This is written to via .set() at several points below and never read synchronously here.
 import { finTarFun    } from '../help/geometry.ts';  // What: Find Targets Function. Why: A step's selector list resolves to its visible targets the same way help mode's items do. How: This is called with the step's own selector list, trying each alternative in turn.
 import { InfTipCom    } from '../ui/info-tip.tsx';   // What: Info Tip Component. Why: A cirBoo step's disabled Next button needs a hover/tap hint explaining why it can't be clicked yet. How: This wraps that disabled button in the render output below.
 import { rhyPixFun    } from '../utils/rhythm.ts';   // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
@@ -31,7 +31,7 @@ import type { ReactNode } from 'react';               // What: React Node. Why: 
  * @summary
  * A generic guided-tour engine: sequential single-spotlight steps with a coach
  * card (Step N of N, Skip/Back/Next). Shared by the Welcome Tour
- * (onboarding/welcome-tour.tsx) and every per-feature mini-tour built on it.
+ * (onboarding/welcome-tour.tsx) and the per-feature mini-tours built on it.
  * This file owns none of any specific tour's content or business logic, only
  * the mechanics: spotlight positioning, the chrome clamp, the click-guard, the
  * not-found watchdog, tab-sync, the mobile rail auto-open, resume-on-reload
@@ -106,7 +106,7 @@ const COA_HEI_NUM = 220; // What: Coach Height Number. Why: This is a conservati
  * horizontal midpoint, clamped so it never slides into the coach's own rounded
  * corners (at least 18px in from the left, and 26px short of the right).
  * Shared by the render function's own first-paint placement and plaTarFun's
- * per-frame write, so the two always agree.
+ * per-frame write, so the two use the same arrow math.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -186,7 +186,7 @@ const coaWidFun = ( vieWidNum : number ) : number => Math.min( rhyPixFun( 'p10' 
  *
 */
 
-const isaDocFun = ( curScrEle : Element ) : boolean => curScrEle === document.scrollingElement || curScrEle === document.documentElement; // What: Is-A Document Function. Why: Every scroll and measurement of a step's scroller treats the document's own scroller differently. How: This compares curScrEle against document.scrollingElement and documentElement.
+const isaDocFun = ( curScrEle : Element ) : boolean => curScrEle === document.scrollingElement || curScrEle === document.documentElement; // What: Is-A Document Function. Why: A step's scroller is scrolled and measured differently when it is the document's own scroller. How: This compares curScrEle against document.scrollingElement and documentElement.
 
 // #endregion isaDocFun
 
@@ -280,7 +280,7 @@ const safBotFun = () : number => { // What: Safe Bottom Function. Why: A bottom-
  *
 */
 
-const safTopFun = ( { forCoaBoo } : { forCoaBoo? : boolean } = {} ) : number => { // What: Safe Top Function. Why: Every clamp/scroll calculation below needs one shared answer for "how far down does fixed chrome reach". How: This returns 0 for the coach (forCoaBoo), otherwise the lowest bottom edge among the sticky header, the mobile group rail, and the Edit Mode banner.
+const safTopFun = ( { forCoaBoo } : { forCoaBoo? : boolean } = {} ) : number => { // What: Safe Top Function. Why: The clamp and scroll calculations below share one answer for how far down fixed chrome reaches. How: This returns 0 for the coach (forCoaBoo), otherwise the lowest bottom edge among the sticky header, the mobile group rail, and the Edit Mode banner.
 
 
 	if ( forCoaBoo ) return 0; // What: Coach Exemption Guard. Why: The coach card floats in its own high z-index overlay, never physically under this chrome. How: This skips the whole exclusion zone and returns 0 whenever forCoaBoo is true.
@@ -289,7 +289,7 @@ const safTopFun = ( { forCoaBoo } : { forCoaBoo? : boolean } = {} ) : number => 
 
 	// #region Header And Rail Floor
 
-	const heaCurEle = document.querySelector( '[data-element-name-hook~="todPagHed"]' ); // What: Header Current Element. Why: Today's own sticky header is the first, always-present piece of chrome to clamp against. How: This looks it up fresh on every call, since it may not exist outside the Today tab.
+	const heaCurEle = document.querySelector( '[data-element-name-hook~="todPagHed"]' ); // What: Header Current Element. Why: Today's own sticky header is the first piece of chrome to clamp against. How: This looks it up fresh on every call, since it may not exist outside the Today tab.
 	const raiCurEle = document.querySelector( '[data-element-name-hook~="groRaiAsi"]' ); // What: Rail Current Element. Why: On mobile the group rail stacks below the header as its own row, so it needs folding into the same floor. How: This looks up the rail element fresh on every call.
 
 	let floBotNum = heaCurEle ? heaCurEle.getBoundingClientRect().bottom : 0; // What: Floor Bottom Number. Why: This is the running "safe top" answer, widened below by whichever additional chrome is also present. How: This starts at the header's own bottom edge, or 0 when there is no header at all.
@@ -335,12 +335,12 @@ const safTopFun = ( { forCoaBoo } : { forCoaBoo? : boolean } = {} ) : number => 
  * @summary
  * Where the coach should sit relative to the (already clamped) highlight rect,
  * shared by the render function's own React-driven placement and plaTarFun's
- * imperative per-frame write, so the two can never disagree. Having both
- * matters: plaTarFun is what keeps the coach in lockstep with the highlight
- * DURING a smooth scroll (see its own comment), but React's render still needs
- * the same math for the coach's very first paint each step (before plaTarFun
- * has run at all) and as the eventual-consistency fallback once React catches
- * up.
+ * imperative per-frame write, so the two use the same placement math. Having
+ * both matters: plaTarFun is what keeps the coach in lockstep with the
+ * highlight DURING a smooth scroll (see its own comment), but React's render
+ * still needs the same math for the coach's very first paint each step (before
+ * plaTarFun has run at all) and as the eventual-consistency fallback once
+ * React catches up.
  *
  * Below the target is preferred whenever the coach's own height plus a
  * base-step gap fits there; otherwise the coach sits a base step above it,
@@ -427,13 +427,10 @@ const spoPadFun = ( curSteObj : TouSteTyp ) : number => curSteObj.cirBoo ? 0 : r
  * todTopFun = Today Top Function
  *
  * @summary
- * Shared by every tour's Skip action (both the intro modal's and, once a tour
- * is under way, the coach card's) and by a finished tour: ending a tour should
- * always land back on a pristine Today, not wherever a mid-tour tab-switch or
- * scroll happened to leave things. Exported so onboarding/welcome-tour.tsx's
- * intro-modal Skip (which fires before any GuiTouCom is even mounted) can
- * reuse the exact same behavior. The scroll reset waits one animation frame,
- * so the tab switch has committed first.
+ * Ends a tour on a pristine Today: it switches to the Today tab when another
+ * is active, then scrolls the app's own scroller and the window to the top.
+ * The scroll reset waits one animation frame, so the tab switch has committed
+ * first.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -450,7 +447,7 @@ const spoPadFun = ( curSteObj : TouSteTyp ) : number => curSteObj.cirBoo ? 0 : r
  *
 */
 
-const todTopFun = ( actIdeStr : string, selTabFun : ( tabIdeStr : string ) => void ) : void => { // What: Today Top Function. Why: Every tour ending (Skip, Done, or the not-found watchdog) needs to land the user back on a pristine, top-scrolled Today. How: This switches to Today if needed, then scrolls both the app's own scroller and the window to 0.
+const todTopFun = ( actIdeStr : string, selTabFun : ( tabIdeStr : string ) => void ) : void => { // What: Today Top Function. Why: A tour that ends needs to land the user back on a pristine, top-scrolled Today. How: This switches to Today if needed, then scrolls both the app's own scroller and the window to 0.
 
 
 	if ( actIdeStr !== 'today' ) selTabFun( 'today' ); // What: Today Switch Guard. Why: A tour can end from any tab, but the landing spot is always Today. How: This only calls selTabFun when the actIdeStr tab is not already Today.
@@ -495,9 +492,9 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  * spotlight cutout around the current step's target(s), plus a coach card
  * (title, body, Skip/Back/Next) positioned relative to it. Owns every mechanic
  * described in this file's own header comment (spotlight tracking, the
- * click-guard, the not-found watchdog, tab-sync, the mobile rail auto-open,
- * resume-on-reload persistence); a specific tour's own content lives entirely
- * in its steObjArr prop, authored by a caller such as
+ * chrome clamp, the click-guard, the not-found watchdog, tab-sync, the mobile
+ * rail auto-open, resume-on-reload persistence); a specific tour's own
+ * content lives entirely in its steObjArr prop, authored by a caller such as
  * onboarding/welcome-tour.tsx or one of the onboarding-*-tours.jsx mini-tour
  * modules.
  *
@@ -598,8 +595,8 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  *   curSteObj.cirBoo exactly (always pulses); every other cirBoo step is
  *   unaffected.
  *
- * - `resBoo` (Boolean): Defaults to true (every Welcome Tour step qualifies,
- *   since its targets are all durable/already-rendered). Set false on a step
+ * - `resBoo` (Boolean): Defaults to true (a step whose target is already
+ *   rendered and durable qualifies). Set false on a step
  *   whose target only exists because an EARLIER step's un-persisted side
  *   effect put it there (e.g. a form opened by a previous click): a reload
  *   wipes that side effect, so resuming directly into such a step would
@@ -675,9 +672,9 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  *                            actually changes.
  * @param props.onFinTouFun - On Finish Tour Function: Called on genuine
  *                            completion only (the primary button on a step
- *                            whose priStr is 'Done'), after this component's
- *                            own cleanup (activeTour, the bus's phase, the
- *                            body class) has already run.
+ *                            whose priStr is 'Done', or a solo step's one
+ *                            button), after the persisted activeTour
+ *                            checkpoint has been cleared.
  * @param props.onSkiTouFun - On Skip Tour Function: Called for everything else
  *                            the tour can end from: the Skip button, a target
  *                            that never resolves (the not-found watchdog), or
@@ -697,11 +694,8 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  * @param props.steObjArr   - Step Object Array: The tour's own steps, each
  *                            shaped as described above.
  * @param props.touIdeStr   - Tour Identifier String: This tour's slot key in
- *                            state.onboarding.activeTour, e.g. 'welcome'. The
- *                            ONLY thing enforcing "one guided tour at a time"
- *                            is that only one GuiTouCom is ever mounted at
- *                            once; touIdeStr just labels whichever one that is
- *                            for persistence.
+ *                            state.onboarding.activeTour, e.g. 'welcome'; it
+ *                            labels the tour for persistence.
  *
  * @returns The tour's own dim/spotlight/coach overlay, portaled onto
  * document.body.
@@ -719,10 +713,10 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 	// #region State, Refs And Coach Height Tracking
 
-	const { draActBoo }               = useEmlTouFun();                                                                                    // What: Drag Active Boolean. Why: Published by tab-today.tsx's group/item drag handlers for the duration of a reorder gesture, since the coach card can sit right over whatever is being dragged. How: This reads the shared bus's own draActBoo field; only the coach hides while it is true, the spotlight/dim stay so the highlighted target is still visible to drop onto.
+	const { draActBoo }               = useEmlTouFun();                                                                                    // What: Drag Active Boolean. Why: The coach card can sit right over whatever is being dragged, so a reorder gesture's flag on the bus hides it. How: This reads the shared bus's own draActBoo field; only the coach hides while it is true, the spotlight/dim stay so the highlighted target is still visible to drop onto.
 	const [ curSteNum, setCurSteNum ] = React.useState( resSteNum || 0 );                                                                  // What: Current Step Number And Setter. Why: This is the tour's own live position in `steObjArr`. How: This starts at resSteNum (or 0), then only setCurSteNum ever advances/rewinds it.
 	const [ curRecObj, setCurRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Current Rect Object And Setter. Why: The render function needs the current step's own clamped highlight rect to position the spotlight and coach. How: This starts null (nothing to show yet) and is written by the position-tracking effect below.
-	const [ resTopNum, setResTopNum ] = React.useState( 0 );                                                                               // What: Reserve Top Number And Setter. Why: Extra top-space (px) reserved above the Today list when the current step's highlight is too tall for the coach to fit above or below it. How: This is published on the bus (see the effect below) so TabTodCom can push its list content down by this amount instead of the coach card overlaying part of what is highlighted; driven by rect/viewport math, not any specific step, so any future tour step with a too-tall highlight gets this automatically.
+	const [ resTopNum, setResTopNum ] = React.useState( 0 );                                                                               // What: Reserve Top Number And Setter. Why: Extra top-space (px) reserved above the Today list when the current step's highlight is too tall for the coach to fit above or below it. How: This is published on the bus (see the effect below) so the Today tab can push its list content down by this amount instead of the coach card overlaying part of what is highlighted; it is driven by rect/viewport math rather than any specific step.
 	const [ coaHeiNum, setCoaHeiNum ] = React.useState( COA_HEI_NUM );                                                                     // What: Coach Height Number And Setter. Why: COA_HEI_NUM is only a rough estimate; a step with longer body text renders taller than it, and using the stale estimate for the "place above" branch made a long step's coach overlap the top of its own target instead of sitting flush above it. How: This starts at the rough estimate and is corrected once the real coach has been measured by the layout effect below.
 
 	const spoEleRef = React.useRef< HTMLDivElement | null >( null ); // What: Spotlight Element Reference. Why: The spotlight is positioned imperatively every frame (no React lag) rather than through React state alone. How: This is attached to the rendered touSpoDiv div below.
@@ -755,11 +749,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	React.useEffect( () => { // What: Bus Phase Effect. Why: Other tabs read bus.touPhaStr === 'tour' to know a guided tour of SOME kind is active, without caring which one (e.g. tab-today.tsx's own empty-state gating, app.tsx's rail sync). How: This is published for the duration this component is mounted and cleared back to 'off' on unmount, however that happens.
 
 
-		emlTouObj.set( { touPhaStr : 'tour' } ); // What: Phase Publish. Why: Every other module gating on "is any tour running" needs this flipped on the instant this component mounts. How: This writes touPhaStr : 'tour' onto the shared bus.
+		emlTouObj.set( { touPhaStr : 'tour' } ); // What: Phase Publish. Why: Other modules gating on "is any tour running" needs this flipped on the instant this component mounts. How: This writes touPhaStr : 'tour' onto the shared bus.
 
 
 
-		return () => { emlTouObj.set( { resTopNum : 0, touPhaStr : 'off' } ); }; // What: Phase Cleanup Return. Why: resTopNum is republished continuously while mounted (see the effect below), but nothing else clears it on unmount, so the last step's value would otherwise linger on the bus forever, permanently padding Today's list even after the tour is long over. How: This resets both touPhaStr and resTopNum back to their off/idle values.
+		return () => { emlTouObj.set( { resTopNum : 0, touPhaStr : 'off' } ); }; // What: Phase Cleanup Return. Why: resTopNum is republished whenever it changes while mounted (see the effect below), but nothing else clears it on unmount, so the last step's value would otherwise linger on the bus, padding Today's list even after the tour is over. How: This resets both touPhaStr and resTopNum back to their off/idle values.
 
 
 	}, [] ); // What: Effect Dependency Array. Why: This mount/unmount publish should only ever run once for this component's own lifetime. How: An empty array means there is no dependency that could ever change to trigger a re-run.
@@ -769,7 +763,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	React.useEffect( () => { emlTouObj.set( { touSteNum : curSteNum } ); }, [ curSteNum ] ); // What: Step Publish Effect. Why: Other modules read bus.touSteNum to gate behavior on a specific step index (e.g. onboarding/app-features.tsx). How: This republishes the touSteNum field whenever curSteNum changes. // What: Effect Dependency Array. Why: This must re-run whenever curSteNum itself changes. How: curSteNum is the exact value being published.
 
 
-	React.useEffect( () => { emlTouObj.set( { touIdeStr : touIdeStr } ); }, [ touIdeStr ] ); // What: Tour Identifier Publish Effect. Why: This lets a consumer that needs to act only during a SPECIFIC tour's specific step (not just "some tour is up") tell them apart, e.g. tab-picker.tsx disabling its own "Add New Picker" button only during the Pickers page tour's own Step 4, not any other tour that happens to pass through the same step index. How: This is never cleared on unmount (like `touSteNum` itself is not), since every consumer already gates on touPhaStr === 'tour' too, which IS cleared, so a stale touIdeStr left over from the last tour can never be read as still current. // What: Effect Dependency Array. Why: This must re-run whenever the touIdeStr prop itself changes. How: touIdeStr is the exact value being published.
+	React.useEffect( () => { emlTouObj.set( { touIdeStr : touIdeStr } ); }, [ touIdeStr ] ); // What: Tour Identifier Publish Effect. Why: This lets a consumer that acts only during one tour's specific step tell tours apart, e.g. the Pickers page tour's Step 4. How: This is never cleared on unmount, like `touSteNum` itself, since touPhaStr, which is cleared, tells a reader whether any tour is up. // What: Effect Dependency Array. Why: This must re-run whenever the touIdeStr prop itself changes. How: touIdeStr is the exact value being published.
 
 
 	React.useEffect( () => { emlTouObj.set( { resTopNum : resTopNum } ); }, [ resTopNum ] ); // What: Reserve Top Publish Effect. Why: This is published on the bus so the active tab (which owns the actual scrollable content) can apply it, since this component only overlays the page and does not own that layout. How: resTopNum itself is set by the position-tracking effect below, decided ONCE per step rather than continuously, see the comment on decResFun there for why. // What: Effect Dependency Array. Why: This must re-run whenever resTopNum itself changes. How: resTopNum is the exact value being published.
@@ -809,11 +803,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 	// #region Current Step Sync
 
-	const curSteObj = steObjArr[ curSteNum ] || null; // What: Current Step Object. Why: A resumed step index that no longer exists (e.g. a stale activeTour left over from before this tour's step count changed) must read as undefined rather than throw, and the position-tracking effect below bails out to skiTouFun the moment it sees a falsy value here. How: This reads steObjArr at curSteNum, falling back to null.
+	const curSteObj = steObjArr[ curSteNum ] || null; // What: Current Step Object. Why: A resumed step index that no longer exists (e.g. a stale activeTour left over from before this tour's step count changed) must read as null rather than throw, and the position-tracking effect below bails out to skiTouFun the moment it sees a falsy value here. How: This reads steObjArr at curSteNum, falling back to null.
 
 
 
-	React.useEffect( () => { // What: Tab Sync Effect. Why: Whichever tab a step's target lives on is load-bearing for a resume (there is no previous step to have navigated there) and, since steps never call selTabFun themselves, this is the ONLY thing that switches tabs at all, forward, back, or resuming alike. How: This switches to the step's own tabStr whenever the active tab differs.
+	React.useEffect( () => { // What: Tab Sync Effect. Why: Whichever tab a step's target lives on is load-bearing for a resume (there is no previous step to have navigated there) and, since steps never call selTabFun themselves, this is the only thing that switches to a step's tab, forward, back, or resuming alike. How: This switches to the step's own tabStr whenever the active tab differs.
 
 
 		if ( curSteObj && curSteObj.tabStr && actIdeStr !== curSteObj.tabStr ) selTabFun( curSteObj.tabStr ); // What: Tab Switch. Why: The step's own target may live on a different tab than whatever is currently active. How: This only calls selTabFun when the current step names a tab and it does not already match.
@@ -1009,7 +1003,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 			dowEveObj.preventDefault();  // What: Default Prevention. Why: This is what actually stops the browser's own focus transfer. How: This calls preventDefault on the mousedown event.
-			dowEveObj.stopPropagation(); // What: Propagation Stop. Why: The click that would otherwise follow this mousedown must also be kept from reaching whatever it landed on. How: This calls stopPropagation on the mousedown event.
+			dowEveObj.stopPropagation(); // What: Propagation Stop. Why: The mousedown itself must also be kept from reaching whatever it landed on. How: This calls stopPropagation on the mousedown event.
 
 
 		};
@@ -1083,7 +1077,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		const focGuaFun = ( focEveObj : FocusEvent ) => { // What: Focusout Guard Function. Why: The mousedown guard above only covers focus loss caused by something ELSE on the page stealing it; it cannot do anything about the target itself losing focus for a reason with no in-page click behind it at all, e.g. the browser window/tab losing OS-level focus (alt-tabbing away, or a mobile browser backgrounding and dismissing its own keyboard). How: That still fires a real 'focusout' on the target (unlike 'blur' on window, which does not reach the element), and unlike mousedown's default-focus-transfer, blur/focusout is not cancelable, so preventDefault does nothing here; what DOES work is that React's onBlur is itself just a delegated listener for the native 'focusout' bubbling up to the root container, so stopping propagation on it up here, in capture phase at the document (above where it would ever reach that root listener), keeps React from ever calling the target's own onBlur at all, e.g. GroHeaCom's own commit(), which is what actually closes the rename input and makes the step's target vanish. Exempts a focus move INTO the coach (focEveObj.relatedTarget), e.g. Tab-ing to the Next/Done button, since that is a legitimate, deliberate way to leave the target, same as a click on it already is via isaOffFun's own '.coaCarDiv' exemption.
+		const focGuaFun = ( focEveObj : FocusEvent ) => { // What: Focusout Guard Function. Why: The mousedown guard above only covers focus loss caused by a press elsewhere on the page; the target can also lose focus with no press behind it, and React then calls the target's own onBlur, e.g. GroHeaCom's own cmtEdiFun, which closes the rename input and makes the step's target vanish. How: This stops propagation of the native 'focusout' in capture phase at the document, above React's delegated onBlur listener at the root, so the target's own onBlur never runs. A focus move INTO the coach (focEveObj.relatedTarget), e.g. Tab-ing to the Next/Done button, is exempt, since it is a deliberate way to leave the target, the same as a click on the coach is under isaOffFun's own coaCarDiv hook exemption.
 
 
 			// #region Early Exemptions
@@ -1295,8 +1289,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 * every frame until that selector matches, one with advDelNum waits that
 	 * many milliseconds, and any other cirBoo step waits a single tick so the
 	 * target's own native click handler runs before the tour moves on; a step
-	 * without cirBoo advances immediately. Each wait bails out if the
-	 * component unmounts or the step changes in the meantime.
+	 * without cirBoo advances immediately. The poll and the delay each bail
+	 * out if the component unmounts or the step changes in the meantime.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1335,7 +1329,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * Moves the tour past the current step: a 'Done' step or a solo step
 		 * finishes the tour through finTouFun, and every other step moves to
 		 * the next step index. Solo steps finish whatever their button says,
-		 * since their label (e.g. "Dismiss") is never 'Done'.
+		 * since their label (e.g. "Dismiss") need not be 'Done'.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1466,7 +1460,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 		let rafIdeNum : number; // What: Request-Animation-Frame Identifier Number. Why: This holds the current requestAnimationFrame handle so the cleanup below can cancel it. How: This starts uninitialized and is only ever written inside this effect's own closures.
 
-		let isaCanBoo = false; // What: Is-A Cancelled Boolean. Why: This is the flag every scheduled callback checks before doing anything. How: This starts false and is only ever written inside this effect's own closures.
+		let isaCanBoo = false; // What: Is-A Cancelled Boolean. Why: This is the flag the frame loop and the bring retry check before doing anything. How: This starts false and is only ever written inside this effect's own closures.
 		let resDecBoo = false; // What: Reserve Decided Boolean. Why: Whether THIS step's target needs top-space reserved above it is declared here (not down by decResFun's own definition, where it conceptually belongs) because briTarFun now needs to read/set it on its very first call, before decResFun's own code further down has even run. How: See decResFun's own comment for the full reasoning on what this tracks and why the decision only ever happens once per step.
 		let resAmoNum = 0;     // What: Reserve Amount Number. Why: Same reasoning as resDecBoo above, hoisted here so briTarFun can read/set it before decResFun's own code has run. How: See decResFun's own comment for the full reasoning on what this tracks.
 
@@ -1563,7 +1557,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const scrAmoFun = ( curScrEle : Element, delYcoNum : number ) => { // What: Scroll Amount Function. Why: A step that jumps to a different part of the page, or, via briTarFun's own content-grew re-trigger and decResFun's own follow-up correction below, mid-step too, should read as the tour visibly navigating there rather than an unexplained cut. How: This is smooth unless prefers-reduced-motion, and is deliberately NOT applied to todTopFun (the tour-END reset on Skip/Done), which is a closing reset, not a "here's the next thing" step transition, and already fires alongside a tab switch back to Today, staying an instant cut by design.
+		const scrAmoFun = ( curScrEle : Element, delYcoNum : number ) => { // What: Scroll Amount Function. Why: A step that jumps to a different part of the page should read as the tour visibly navigating there rather than an unexplained cut. How: This scrolls the window or the scroller by delYcoNum, smoothly unless the user prefers reduced motion.
 
 
 			const curBehStr = scrBehFun(); // What: Current Behavior String. Why: The scroll should be instant for a user who prefers reduced motion. How: This resolves the reduced-motion preference once.
@@ -1690,7 +1684,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			// #region Target Measurements
 
-			const isaDocBoo = isaDocFun( curScrEle );                                                                   // What: Is-A Document Boolean. Why: Several branches below need to know whether the resolved scroller is the document itself. How: This compares curScrEle against both document.scrollingElement and document.documentElement.
+			const isaDocBoo = isaDocFun( curScrEle );                                                                   // What: Is-A Document Boolean. Why: The scroller's visible bounds below depend on whether the resolved scroller is the document itself. How: This compares curScrEle against both document.scrollingElement and document.documentElement.
 			const tarRecObj = uniRecFun( curEleArr );                                                                   // What: Target Rect Object. Why: Every branch below needs the target's own current union rect. How: This unions every matched element via uniRecFun.
 			const scrRecObj = isaDocBoo ? { bottom : window.innerHeight, top : 0 } : curScrEle.getBoundingClientRect(); // What: Scroller Rect Object. Why: The pad math below needs the scroller's own visible bounds. How: This uses the viewport bounds for the document scroller, otherwise curScrEle's own bounding rect.
 
@@ -1736,7 +1730,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			const resPrdBoo = notCatBoo && notDecBoo && hasPrdBoo; // What: Reserve Predict Boolean. Why: The reserve prediction below only applies when all 3 checks above hold. How: This ANDs the 3 checks above.
 
 
-			if ( resPrdBoo ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the exact same fits-below/fits-above checks decResFun itself uses below, so this can never disagree with what decResFun would have decided anyway, just decided proactively instead of reactively; this replaces the loop's own decResFun (unchanged) used to be the only place this got decided, which meant a visibly separate second "jump then re-scroll" once it found the overlap, this step's target genuinely overlapping the coach at its settled position is exactly the case reproduced live and reported as jank. How: This reserves extra room below the target when the coach would fit neither below nor above its predicted landing position.
+			if ( resPrdBoo ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the same fits-below/fits-above checks decResFun uses below, deciding proactively instead of reactively: decResFun alone used to decide this, which meant a visibly separate second "jump then re-scroll" once it found the overlap, reproduced live as jank when a target overlapped the coach at its settled position. How: This reserves extra room below the target when the coach would fit neither below nor above its predicted landing position.
 
 
 				const vieHeiNum = window.innerHeight;                                                                                    // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This is read fresh from window.innerHeight.
@@ -1751,7 +1745,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 					resDecBoo = true;                           // What: Reserve Decided Commit. Why: This decision must only ever happen once per step. How: This flips resDecBoo to true so neither this branch nor decResFun's own later check re-decides it.
 					resAmoNum = coaHeiNum + rhyPixFun( 'p04' ); // What: Reserve Amount Commit. Why: The reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step. // Vertical Rhythm Base Plus 4 ~= 44.876px
 
-					setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state, which the effect below forwards onto the bus.
+					setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state, which the Reserve Top Publish Effect above forwards onto the bus.
 
 
 					requestAnimationFrame( () => briTarFun() ); // What: Reserve Retry. Why: The padding has not rendered yet (React has not re-committed), so the retry must wait a real frame to measure the actual, already-reserved layout instead of guessing at it. How: This re-calls briTarFun on the next animation frame.
@@ -1799,7 +1793,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * claChrFun = Clamp Chrome Function
 		 *
 		 * @summary
-		 * Clamps the drawn highlight rect so the spotlight never reaches into
+		 * Clamps the drawn highlight rect so the spotlight stops short of
 		 * Today's own sticky chrome at the top or a bottom-placed tab bar,
 		 * both of which sit below this overlay and would otherwise show
 		 * through the spotlight's cutout as if they were part of the target.
@@ -1825,7 +1819,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const claChrFun = ( curRecObj : BoxRecTyp, curEleArr : Element[] ) => { // What: Clamp Chrome Function. Why: Today's own sticky header (and, on mobile, the groups rail stacked below it) plus a floating bottom tab bar (tabPlacement 'bottom') both sit at a higher z-index than the surrounding content but a LOWER one than this tour overlay, so a highlighted rect reaching past either one's edge would expose it through the spotlight's cutout (a box-shadow "hole") instead of dimming it, reading as if that chrome were part of the highlighted target. How: This clamps the rect actually drawn (not the one briTarFun scrolls by, which needs the real position) so the spotlight never reaches into either safe zone; targets that live INSIDE the nav bar, the group rail, or Today's own header are exempt, since clamping those against their own containing chrome can squash the highlight down to a sliver sitting below/past the actual target instead of on it.
+		const claChrFun = ( curRecObj : BoxRecTyp, curEleArr : Element[] ) => { // What: Clamp Chrome Function. Why: Today's own sticky header (and, on mobile, the groups rail stacked below it) plus a floating bottom tab bar (tabPlacement 'bottom') both sit at a higher z-index than the surrounding content but a LOWER one than this tour overlay, so a highlighted rect reaching past either one's edge would expose it through the spotlight's cutout (a box-shadow "hole") instead of dimming it, reading as if that chrome were part of the highlighted target. How: This clamps the rect actually drawn (not the one briTarFun scrolls by, which needs the real position) so the spotlight stops short of either safe zone; targets that live INSIDE the nav bar, the group rail, or Today's own header are exempt, since clamping those against their own containing chrome can squash the highlight down to a sliver sitting below/past the actual target instead of on it.
 
 
 			if ( curEleArr.some( ( curIteEle ) => curIteEle.closest( '[data-element-name-hook~="appTabNav"], [data-element-name-hook~="groRaiAsi"], [data-element-name-hook~="todPagHed"]' ) ) ) return curRecObj; // What: Chrome Membership Exemption. Why: A target that is itself part of the nav bar, the group rail, or Today's own header must never be clamped against that same chrome. How: This returns curRecObj untouched whenever any matched element sits inside one of those 3 containers, matched with one selector list.
@@ -2080,7 +2074,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			// #region Reserve Commit
 
 			resAmoNum = coaHeiNum + rhyPixFun( 'p04' ); // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step. // Vertical Rhythm Base Plus 4 ~= 44.876px
-			setResTopNum( resAmoNum );                  // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state.
+			setResTopNum( resAmoNum );                  // What: Reserve Top Commit. Why: This publishes the reserve so the Today tab can pad its list by it. How: This publishes resAmoNum into React state.
 
 
 
@@ -2108,7 +2102,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 					const freScrEle = getScrFun( freEleArr[ 0 ] );                                                             // What: Fresh Scroll Element. Why: The scroller itself may have changed too, now that the reserve padding has actually rendered, so this must be re-resolved fresh rather than reusing one resolved before the frame. How: This resolves the first fresh element's own scroller via getScrFun.
 					const freTopNum = uniRecFun( freEleArr ).top;                                                              // What: Fresh Top Number. Why: This is the target's own real, post-padding top edge. How: This unions freEleArr and reads its own top.
-					const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPixFun( 'm01' ) + coaHeiNum + rhyPixFun( 'bas' ); // What: Desired Top Number. Why: This scrolls so the target lands exactly coaHeiNum plus a base step below the safe floor, the same threshold the "fits above" check above uses, and what the coach's own render-time placement needs to actually seat it flush above the target instead of overlapping it. How: This adds the safe floor, its small-step margin, the coach's own height, and a base-step gap. // Vertical Rhythm Base Minus 1 = 11px, Vertical Rhythm Base ~= 14.572px
+					const desTopNum = safTopFun( { forCoaBoo : true } ) + rhyPixFun( 'm01' ) + coaHeiNum + rhyPixFun( 'bas' ); // What: Desired Top Number. Why: This scrolls so the target lands the coach's own height plus a base step and a small-step margin below the safe floor, the same threshold the "fits above" check above uses, and what the coach's own render-time placement needs to seat it flush above the target instead of overlapping it. How: This adds the safe floor, its small-step margin, the coach's own height, and a base-step gap. // Vertical Rhythm Base Minus 1 = 11px, Vertical Rhythm Base ~= 14.572px
 
 
 					scrAmoFun( freScrEle, freTopNum - desTopNum ); // What: Scroll By Desired Delta. Why: This is deliberately NOT a scroll that compensates for the padding just added (e.g. scrolling by +resAmoNum), since that would fully cancel the reserve's own effect, undoing the room it just opened up and leaving the coach exactly as short on space as before any reserve existed. How: This calls scrAmoFun with the gap between the target's own fresh top and its desired top.
@@ -2134,7 +2128,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 		// #region Live Position And Watchdog Loop
 
-		const scrPosFun = () => { // What: Scroll Position Function. Why: This repositions synchronously as scroll fires (before paint) so the highlight does not trail the content the way a purely rAF-driven fixed box does. How: This resolves the target fresh and, when found, repositions it via plaTarFun; listening broadly (capture) so it fires for whichever element scrolls.
+		const scrPosFun = () => { // What: Scroll Position Function. Why: This repositions as each scroll event fires so the highlight does not trail the content. How: This resolves the target fresh and, when found, repositions it via plaTarFun, listening in capture phase so it fires for whichever element scrolls.
 
 
 			const curEleArr = finTarFun( curSteObj.selStr ); // What: Current Element Array. Why: The reposition below needs the target's own current elements. How: This resolves curSteObj.selStr fresh on every scroll event.
@@ -2258,7 +2252,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 				preScrNum = scrHeiNum; // What: Last Scroll Height Commit. Why: The next frame's own scroll stable check needs this frame's own scroll height to compare against. How: This overwrites preScrNum with scrHeiNum.
 
-				decResFun( curEleArr ); // What: Reserve Decision Call. Why: Every frame gets a chance to settle the once-per-step reserve decision. How: This calls decResFun with the currently-resolved elements.
+				decResFun( curEleArr ); // What: Reserve Decision Call. Why: Each frame with a found target gets a chance to settle the once-per-step reserve decision. How: This calls decResFun with the currently-resolved elements.
 
 				const tarRecObj = plaTarFun( curEleArr ); // What: Target Rect Object. Why: The spotlight/coach must actually be positioned every frame. How: This calls plaTarFun, which both writes the DOM directly and returns the placed rect.
 
@@ -2335,7 +2329,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		return () => { // What: Effect Cleanup Return. Why: The loop, any queued frame, and the scroll listener must all stop once the step changes or this component unmounts. How: This cancels, then removes each of them.
 
 
-			isaCanBoo = true; // What: Cancel Flag Set. Why: Every scheduled callback checks this before doing anything once the step changes or this component unmounts. How: This flips isaCanBoo to true so any already-queued frame becomes a no-op.
+			isaCanBoo = true; // What: Cancel Flag Set. Why: The frame loop and the bring retry check this before doing anything once the step changes or this component unmounts. How: This flips isaCanBoo to true so any already-queued frame becomes a no-op.
 
 			cancelAnimationFrame( rafIdeNum ); // What: Frame Cancel Call. Why: A frame that hasn't fired yet must not fire after cleanup either. How: This cancels whatever frame rafIdeNum currently holds.
 
@@ -2417,7 +2411,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			data-element-name-hook='coaCarDiv'
 
 			aria-hidden='true'
-		>{ /* What: Measurer Coach Element. Why: This is the hidden clone described above. How: This renders the exact same content as the real coach below, but off-screen and pointer-events:none. Its data-element-name-hook is read by the tour runner's own outside-click checks. */ }
+		>{ /* What: Coach Card Div Element. Why: This is the hidden clone described above, a second coaCarDiv. How: This renders the same content as the real coach below, but off-screen and pointer-events:none. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 			{ !curSteObj.solBoo && <p className={ cssModObj.coaProPar }>Step { curSteNum + 1 } of { totSteNum }</p> }{ /* What: Coach Progress Paragraph Element. Why: Every non-solo step shows its own position in the sequence. How: This renders only when curSteObj.solBoo is falsy. */ }
@@ -2427,7 +2421,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			<p className={ cssModObj.coaBodPar }>{ curSteObj.bodEle }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.bodEle directly. */ }
 
 
-			<div className={` ${ cssModObj.coaRowDiv }   ${ curSteObj.solBoo ? cssModObj.coaRowDivSolo : '' } `}>{ /* What: Coach Row Div Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solBoo is true. */ }
+			<div className={` ${ cssModObj.coaRowDiv }   ${ curSteObj.solBoo ? cssModObj.coaRowDivSolo : '' } `}>{ /* What: Coach Row Div Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the coaRowDiv--solo modifier class whenever curSteObj.solBoo is true. */ }
 
 
 				{ !curSteObj.solBoo && ( // What: Left Nav Visibility Check. Why: A solo step hides the Skip/Back row entirely, per solBoo's own doc comment in GuiTouCom's own JSDoc above. How: This renders the left nav only for a non-solo step.
@@ -2567,7 +2561,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 					<p className={ cssModObj.coaBodPar }>{ curSteObj.bodEle }</p>{ /* What: Coach Body Paragraph Element. Why: Every step needs its own explanatory copy. How: This renders curSteObj.bodEle directly. */ }
 
 
-					<div className={` ${ cssModObj.coaRowDiv }   ${ curSteObj.solBoo ? cssModObj.coaRowDivSolo : '' } `}>{ /* What: Coach Row Div Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the ob-crow--solo modifier class whenever curSteObj.solBoo is true. */ }
+					<div className={` ${ cssModObj.coaRowDiv }   ${ curSteObj.solBoo ? cssModObj.coaRowDivSolo : '' } `}>{ /* What: Coach Row Div Element. Why: This groups the Skip/Back/Next controls into one row, stretched full-width for a solo step. How: This adds the coaRowDiv--solo modifier class whenever curSteObj.solBoo is true. */ }
 
 
 						{ !curSteObj.solBoo && ( // What: Left Nav Visibility Check. Why: A solo step hides the Skip/Back row entirely, per solBoo's own doc comment in GuiTouCom's own JSDoc above. How: This renders the left nav only for a non-solo step.
@@ -2656,7 +2650,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 // #region Exports
 
-export { GuiTouCom, todTopFun, type TouSteTyp }; // What: Named Exports. Why: Every onboarding tour module renders GuiTouCom as its shared tour engine and types its steps with TouSteTyp, and onboarding/welcome-tour.tsx calls todTopFun directly. How: This exports all three by name.
+export { GuiTouCom, todTopFun, type TouSteTyp }; // What: Named Exports. Why: The onboarding tour modules use GuiTouCom as their shared tour engine and TouSteTyp to type their steps, and onboarding/welcome-tour.tsx calls todTopFun directly. How: This exports all three by name.
 
 // #endregion Exports
 
