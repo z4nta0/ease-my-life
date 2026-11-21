@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import assert    from 'node:assert/strict';                       // What: Assert. Why: Every case checks a response or a claim. How: This makes strict assertions.
+import cheModObj from 'node:assert/strict';                       // What: Check Module Object. Why: Every case checks a response or a claim. How: This makes strict assertions.
 import cheSerFun from '../../netlify/handlers/checkout.mts';      // What: Checkout Serve Function. Why: The checkout function is tested directly. How: This is its handler.
 import webSerFun from '../../netlify/handlers/polar-webhook.mts'; // What: Webhook Serve Function. Why: The webhook function is tested directly. How: This is its handler.
 
@@ -181,8 +181,8 @@ test( 'a signed order.paid for the sync product sets the paid claim and keeps ot
 
 
 
-	assert.equal( webResObj.status, 200 );                                                 // What: Status Assertion. Why: The order was handled. How: This expects 200.
-	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { beta : true, paid : true } ); // What: Claim Assertion. Why: The account is paid and keeps its other claim. How: This reads both.
+	cheModObj.equal( webResObj.status, 200 );                                                 // What: Status Assertion. Why: The order was handled. How: This expects 200.
+	cheModObj.deepEqual( await claReaFun( accNewObj.uidStr ), { beta : true, paid : true } ); // What: Claim Assertion. Why: The account is paid and keeps its other claim. How: This reads both.
 
 
 } );
@@ -197,9 +197,9 @@ test( 'a webhook with a bad signature or an old timestamp is refused and changes
 
 
 
-	assert.equal( ( await webSerFun( webReqFun( ordEveObj, 'wrong-secret' ), LIV_COT_OBJ ) ).status, 403 );   // What: Forged Assertion. Why: A wrong secret's signature is refused. How: This expects 403.
-	assert.equal( ( await webSerFun( webReqFun( ordEveObj, WEB_SEC_STR, 600 ), LIV_COT_OBJ ) ).status, 403 ); // What: Stale Assertion. Why: A ten-minute-old webhook is refused. How: This expects 403.
-	assert.deepEqual( await claReaFun( accNewObj.uidStr ), {} );                                              // What: Unchanged Assertion. Why: Neither attempt unlocked anything. How: This expects no claims.
+	cheModObj.equal( ( await webSerFun( webReqFun( ordEveObj, 'wrong-secret' ), LIV_COT_OBJ ) ).status, 403 );   // What: Forged Assertion. Why: A wrong secret's signature is refused. How: This expects 403.
+	cheModObj.equal( ( await webSerFun( webReqFun( ordEveObj, WEB_SEC_STR, 600 ), LIV_COT_OBJ ) ).status, 403 ); // What: Stale Assertion. Why: A ten-minute-old webhook is refused. How: This expects 403.
+	cheModObj.deepEqual( await claReaFun( accNewObj.uidStr ), {} );                                              // What: Unchanged Assertion. Why: Neither attempt unlocked anything. How: This expects no claims.
 
 
 } );
@@ -234,8 +234,8 @@ test( 'a whsec_ secret signs with its decoded key, as Polar signs', async () => 
 
 	// #region Claim Assertions
 
-	assert.equal( webResObj.status, 200 );                                    // What: Status Assertion. Why: The decoded key's signature is genuine. How: This expects 200.
-	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Claim Assertion. Why: The account is unlocked. How: This expects it paid.
+	cheModObj.equal( webResObj.status, 200 );                                    // What: Status Assertion. Why: The decoded key's signature is genuine. How: This expects 200.
+	cheModObj.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Claim Assertion. Why: The account is unlocked. How: This expects it paid.
 
 	// #endregion Claim Assertions
 
@@ -256,7 +256,7 @@ test( 'an untagged order finds its account by email, and only a full refund clea
 	await webSerFun( webReqFun( { data : { ...ordDatObj, status : 'paid' }, type : 'order.paid' } ), LIV_COT_OBJ ); // What: Paid Delivery. Why: The purchase arrives. How: This sends order.paid.
 
 
-	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Email Match Assertion. Why: The email found the account. How: This expects it paid.
+	cheModObj.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Email Match Assertion. Why: The email found the account. How: This expects it paid.
 
 	// #endregion Paid Delivery
 
@@ -267,7 +267,7 @@ test( 'an untagged order finds its account by email, and only a full refund clea
 	await webSerFun( webReqFun( { data : { ...ordDatObj, status : 'partially_refunded' }, type : 'order.refunded' } ), LIV_COT_OBJ ); // What: Partial Refund Delivery. Why: A partial refund keeps sync. How: This sends one.
 
 
-	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Partial Refund Assertion. Why: Sync stays unlocked. How: This expects it still paid.
+	cheModObj.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : true } ); // What: Partial Refund Assertion. Why: Sync stays unlocked. How: This expects it still paid.
 
 	// #endregion Partial Refund
 
@@ -278,7 +278,7 @@ test( 'an untagged order finds its account by email, and only a full refund clea
 	await webSerFun( webReqFun( { data : { ...ordDatObj, status : 'refunded' }, type : 'order.refunded' } ), LIV_COT_OBJ ); // What: Full Refund Delivery. Why: A full refund takes sync away. How: This sends one.
 
 
-	assert.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : false } ); // What: Full Refund Assertion. Why: Sync is locked again. How: This expects it unpaid.
+	cheModObj.deepEqual( await claReaFun( accNewObj.uidStr ), { paid : false } ); // What: Full Refund Assertion. Why: Sync is locked again. How: This expects it unpaid.
 
 	// #endregion Full Refund
 
@@ -295,8 +295,8 @@ test( 'an order for another product is acknowledged and unlocks nothing', async 
 
 
 
-	assert.equal( webResObj.status, 202 );                       // What: Acknowledged Assertion. Why: Polar shouldn't retry it. How: This expects 202.
-	assert.deepEqual( await claReaFun( accNewObj.uidStr ), {} ); // What: Unchanged Assertion. Why: Nothing was unlocked. How: This expects no claims.
+	cheModObj.equal( webResObj.status, 202 );                       // What: Acknowledged Assertion. Why: Polar shouldn't retry it. How: This expects 202.
+	cheModObj.deepEqual( await claReaFun( accNewObj.uidStr ), {} ); // What: Unchanged Assertion. Why: Nothing was unlocked. How: This expects no claims.
 
 
 } );
@@ -319,8 +319,8 @@ test( 'the checkout refuses a missing or unverified sign-in and a deploy without
 
 	// #region Sign-In Refusals
 
-	assert.equal( ( await cheSerFun( cheReqFun( '' ), LIV_COT_OBJ ) ).status, 401 );              // What: No Token Assertion. Why: Nobody signed in can't buy. How: This expects 401.
-	assert.equal( ( await cheSerFun( cheReqFun( unvAccObj.tokStr ), LIV_COT_OBJ ) ).status, 403 ); // What: Unverified Assertion. Why: An unverified email couldn't sync anyway. How: This expects 403.
+	cheModObj.equal( ( await cheSerFun( cheReqFun( '' ), LIV_COT_OBJ ) ).status, 401 );              // What: No Token Assertion. Why: Nobody signed in can't buy. How: This expects 401.
+	cheModObj.equal( ( await cheSerFun( cheReqFun( unvAccObj.tokStr ), LIV_COT_OBJ ) ).status, 403 ); // What: Unverified Assertion. Why: An unverified email couldn't sync anyway. How: This expects 403.
 
 	// #endregion Sign-In Refusals
 
@@ -331,7 +331,7 @@ test( 'the checkout refuses a missing or unverified sign-in and a deploy without
 	delete process.env.POLAR_ACCESS_TOKEN; // What: Token Removal. Why: A deploy context without its token must say checkout isn't set up. How: This removes it for the next check.
 
 
-	assert.equal( ( await cheSerFun( cheReqFun( verAccObj.tokStr ), PRE_COT_OBJ ) ).status, 503 ); // What: Missing Token Assertion. Why: A deploy without its token can't sell. How: This expects 503.
+	cheModObj.equal( ( await cheSerFun( cheReqFun( verAccObj.tokStr ), PRE_COT_OBJ ) ).status, 503 ); // What: Missing Token Assertion. Why: A deploy without its token can't sell. How: This expects 503.
 
 
 	process.env.POLAR_ACCESS_TOKEN = 'test-polar-token'; // What: Token Restore. Why: Later cases need it. How: This puts the fake token back.
@@ -378,17 +378,17 @@ test( "the checkout asks Polar for the sync product tagged with the buyer's acco
 
 
 
-		assert.deepEqual( await cheResObj.json(), { url : 'https://polar.sh/checkout/test' } ); // What: Address Assertion. Why: The app sends the buyer to Polar's address. How: This expects it returned.
-		assert.equal( polReqObj!.url, 'https://api.polar.sh/v1/checkouts/' );                   // What: Endpoint Assertion. Why: Production uses live Polar. How: This checks the address. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
-		assert.deepEqual( JSON.parse( polReqObj!.body ), { customer_email : accNewObj.emaStr, external_customer_id : accNewObj.uidStr, metadata : { firebaseUid : accNewObj.uidStr }, products : [ PRO_LIV_STR ], success_url : 'https://easemylife.app/?purchase=sync' } ); // What: Body Assertion. Why: The webhook finds the account from these tags. How: This checks every field. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
+		cheModObj.deepEqual( await cheResObj.json(), { url : 'https://polar.sh/checkout/test' } ); // What: Address Assertion. Why: The app sends the buyer to Polar's address. How: This expects it returned.
+		cheModObj.equal( polReqObj!.url, 'https://api.polar.sh/v1/checkouts/' );                   // What: Endpoint Assertion. Why: Production uses live Polar. How: This checks the address. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
+		cheModObj.deepEqual( JSON.parse( polReqObj!.body ), { customer_email : accNewObj.emaStr, external_customer_id : accNewObj.uidStr, metadata : { firebaseUid : accNewObj.uidStr }, products : [ PRO_LIV_STR ], success_url : 'https://easemylife.app/?purchase=sync' } ); // What: Body Assertion. Why: The webhook finds the account from these tags. How: This checks every field. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
 
 
 
 		await cheSerFun( new Request( 'https://paid-sync-accounts--ease-my-life.netlify.app/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ accNewObj.tokStr }` }, method : 'POST' } ), PRE_COT_OBJ ); // What: Preview Checkout Call. Why: A preview must never reach live Polar. How: This starts a checkout as a preview.
 
 
-		assert.equal( polReqObj!.url, 'https://sandbox-api.polar.sh/v1/checkouts/' ); // What: Sandbox Endpoint Assertion. Why: Previews use the sandbox. How: This checks the address. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
-		assert.deepEqual( JSON.parse( polReqObj!.body ).products, [ PRO_SAN_STR ] );  // What: Sandbox Product Assertion. Why: Previews sell the sandbox product. How: This checks it. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
+		cheModObj.equal( polReqObj!.url, 'https://sandbox-api.polar.sh/v1/checkouts/' ); // What: Sandbox Endpoint Assertion. Why: Previews use the sandbox. How: This checks the address. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
+		cheModObj.deepEqual( JSON.parse( polReqObj!.body ).products, [ PRO_SAN_STR ] );  // What: Sandbox Product Assertion. Why: Previews sell the sandbox product. How: This checks it. // What: Non-Null Note. Why: The stub stored the request. How: The ! tells TypeScript it exists.
 
 
 	}
