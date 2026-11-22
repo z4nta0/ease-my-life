@@ -408,10 +408,10 @@
 
 
 }
-@supports ( -moz-appearance : none ) { /* What: Firefox Scope Tab Div. Why: The rail's bottom border needs a pixel of room where this feature query matches. How: This applies only where -moz-appearance is recognized. */
+@supports ( -moz-appearance : none ) { /* What: Firefox Scope Tab Div. Why: Firefox rounds the sideways-scrolling tab row's height down, clipping a sliver off each tab's bottom border and shadow. How: This applies only in Firefox, the one engine that recognizes -moz-appearance. */
 
 
-	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds the m09 vertical spacing step (about 1px) of bottom padding. */
+	.scoTabDiv { /* What: Padded Scope Tab Div. Why: A pixel of room below the tabs keeps their bottom edges whole. How: This adds Spacing Vertical Base Minus 9 (about 1px) of bottom padding. */
 
 
 		padding-bottom : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
