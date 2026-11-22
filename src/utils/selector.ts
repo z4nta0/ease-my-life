@@ -95,7 +95,7 @@ const splSelFun = ( selLisStr : string ) : string[] => { // What: Split Selector
 
 
 
-	return altSelArr; // What: Alternative Selector Array Return. Why: The caller tries each top-level alternative in order. How: This returns every alternative split out above.
+	return altSelArr; // What: Alternative Selector Array Return. Why: The caller needs the top-level alternatives in their original order. How: This returns every alternative split out above.
 
 
 };

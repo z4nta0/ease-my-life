@@ -568,9 +568,8 @@ function isaDueFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
  * @summary
  * Every task/reminder due on cheDatObj, in a stable order (one-time
  * first, then newest-added). Hidden tasks (see the migrate.ts migStaFun()
- * comment on the hidden flag) are excluded here so every downstream
- * consumer (Today, Stats, streak reconciliation) never has to filter
- * them out separately.
+ * comment on the hidden flag) are excluded here, so a caller never has to
+ * filter them out separately.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

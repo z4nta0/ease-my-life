@@ -204,7 +204,7 @@ const updReaFun = () : boolean => updReaBoo; // What: Update Ready Function. Why
 
 // #region Module Init
 
-if ( navigator.serviceWorker ) navigator.serviceWorker.addEventListener( 'controllerchange', () => { // What: Controller Change Listener. Why: A new version taking control of the page is the signal that an update is ready. How: This marks it ready and reloads at once when that's safe, or tells the note to show.
+if ( navigator.serviceWorker ) navigator.serviceWorker.addEventListener( 'controllerchange', () => { // What: Controller Change Listener. Why: A new version taking control of the page is the signal that an update is ready. How: This marks the update ready, tells the note to show, and reloads at once when that's safe.
 
 
 	if ( !hadConBoo ) { hadConBoo = true; return; } // What: First Install Guard. Why: A first install's worker taking control isn't a new version. How: This records the controller and stops.
