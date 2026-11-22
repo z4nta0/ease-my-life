@@ -1354,7 +1354,7 @@ const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: Consumers import thi
 	dueTodFun : dueTodFun, // What: Due Today Function. Why: Callers need the due, non-hidden, stably-sorted task list by this exact name. How: This re-exports dueTodFun under its own matching name.
 	isaDonFun : isaDonFun, // What: Is-A Done Function. Why: Callers check whether a task's own occurrence is already completed by this exact name. How: This re-exports isaDonFun under its own matching name.
 	isaDueFun : isaDueFun, // What: Is-A Due Function. Why: Callers check whether a task is due on a given date by this exact name. How: This re-exports isaDueFun under its own matching name.
-	isaFulFun : isaFulFun, // What: Is-A Full Function. Why: Callers drop a same-day completed one-time task by this exact name. How: This re-exports isaFulFun under its own matching name.
+	isaFulFun : isaFulFun, // What: Is-A Full Function. Why: A one-time task counts as finished once it has been completed, on whichever day. How: This re-exports isaFulFun under its own matching name.
 	isaReuFun : isaReuFun, // What: Is-A Recurring Function. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This re-exports isaReuFun under its own matching name.
 	isaStaFun : isaStaFun, // What: Is-A Stale Function. Why: Callers drop a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its own matching name.
 	nexEliFun : nexEliFun, // What: Next Eligible Function. Why: Callers need a task's own next eligible occurrence by this exact name. How: This re-exports nexEliFun under its own matching name.

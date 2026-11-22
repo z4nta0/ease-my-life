@@ -759,7 +759,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 		};
 
 
-	}, [ actModBoo, allIteArr, safMeaFun ] ); // What: Effect Dependency Array. Why: This effect must restart whenever help mode itself toggles, and re-close over a fresh safMeaFun/allIteArr whenever either changes identity. How: actModBoo gates whether the loop runs at all, and the other two are read directly inside looRafFun/safMeaFun above.
+	}, [ actModBoo, allIteArr, safMeaFun ] ); // What: Effect Dependency Array. Why: This effect must restart whenever help mode itself toggles, or the loop would keep measuring with an out-of-date safMeaFun. How: actModBoo gates whether the loop runs at all, safMeaFun is called directly inside looRafFun above, and allIteArr is listed because safMeaFun changes whenever the catalog does.
 
 	// #endregion Rect Tracking
 

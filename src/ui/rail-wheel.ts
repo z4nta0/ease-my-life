@@ -15,11 +15,11 @@ import React from 'react'; // What: React. Why: useRaiWheFun attaches and remove
  * @summary
  * Lets a mouse wheel scroll the app's horizontal pill rails. A rail only
  * scrolls sideways, but a mouse wheel only scrolls up and down, so on a
- * desktop without a trackpad the rails could only be moved by dragging their
- * scrollbar. Each rail opts in with a presence-only data-rail-wheel-scroll
- * attribute, and one document-level listener turns a vertical wheel turn over
- * a marked rail into a sideways scroll of that rail. The listener is native
- * and non-passive, since React's onWheel can't cancel the page's own scroll.
+ * desktop without a trackpad the wheel alone couldn't move the rails. Each
+ * rail opts in with a presence-only data-rail-wheel-scroll attribute, and one
+ * document-level listener turns a vertical wheel turn over a marked rail into
+ * a sideways scroll of that rail. The listener is native and non-passive,
+ * since React's onWheel can't cancel the page's own scroll.
  *
  * Sections:
  *  - Helpers

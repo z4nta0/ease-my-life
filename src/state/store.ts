@@ -8,9 +8,9 @@ import React from 'react'; // What: React. Why: This is the UI library the whole
 
 import { buiIteFun   } from './new-item.ts';             // What: Build Item Function. Why: addIteFun builds its new item with the same defaults the Data tab's new-item draft uses. How: This is called once per added item.
 import { CAD_NAM_OBJ } from '../core/cadence.ts';        // What: Cadence Namespace Object. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun) from the picker-authoring actions below.
-import { cdlAplFun   } from './pending-mutations.ts';    // What: Conditional-Log Apply Function. Why: A day-off card's completion is recorded in the conditional log. How: This is called by togDonFun for a day-off entry.
+import { cdlAplFun   } from './pending-mutations.ts';    // What: Conditional-Log Apply Function. Why: A day-off card's completion is recorded in the conditional log. How: This is called by the actions that check off or skip a Today entry.
 import { CON_NAM_OBJ } from '../core/conditionals.ts';   // What: Conditionals Namespace Object. Why: Day-off gate resolution logic and the default odds live here, not in this file. How: This is called (resDayFun) from resConFun below, and read for DEF_ODD_NUM in the conditional builders.
-import { cotAplFun   } from './pending-mutations.ts';    // What: Conditional-Toggle Apply Function. Why: Checking off a day-off card advances or reverts its conditional. How: This is called by togDonFun for a day-off entry.
+import { cotAplFun   } from './pending-mutations.ts';    // What: Conditional-Toggle Apply Function. Why: Checking off a day-off card advances or reverts its conditional. How: This is called by the actions that check off or skip a Today entry.
 import { enpAplFun   } from './pending-mutations.ts';    // What: Entry-Pending Apply Function. Why: A pick's staged consequences land only when its entry is marked done. How: This is called when an entry is checked off.
 import { enpRevFun   } from './pending-mutations.ts';    // What: Entry-Pending Revert Function. Why: Unchecking a done entry must restore exactly what completing it changed. How: This is called when an entry is unchecked.
 import { HOL_NAM_OBJ } from '../core/holidays.ts';       // What: Holidays Namespace Object. Why: The holiday-editing actions need a holidays state even on an old save without one. How: This is called (resStaFun) from the holiday actions below.
@@ -31,7 +31,7 @@ import { PWA_NAM_OBJ } from '../platform/pwa.ts';        // What: Progressive We
 import { ranIdeFun   } from '../utils/random-id.ts';     // What: Random Identifier Function. Why: New pickers, items, conditionals, holidays, and log rows each need a fresh id. How: This mints one from each kind's own prefix.
 import { rebPenFun   } from './pending-mutations.ts';    // What: Rebase Pending Function. Why: A direct value edit to an Ease Down item must not leave its own entry decaying from the old value. How: This is called by updIteFun after spuDroFun.
 import { SED_NAM_OBJ } from './seed.ts';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loaStaFun and by the reset action below.
-import { spuDroFun   } from './pending-mutations.ts';    // What: Stale-Pending-Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by the direct item-edit actions.
+import { spuDroFun   } from './pending-mutations.ts';    // What: Stale-Pending-Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by updIteFun.
 import { STG_NAM_OBJ } from './storage.ts';              // What: Storage Namespace Object. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loaStaFun, wriStaFun, fluStaFun, and the reset/impDatFun actions below.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';          // What: Tasks Namespace Object. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout stkSynFun and the task actions below.
 import { uniNamFun   } from '../utils/format.ts';        // What: Unique Name Function. Why: Two entries in the same scope can't share a name the user can't tell apart. How: This is called whenever an item, reminder, or picker is added or renamed.
@@ -862,17 +862,17 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * something setState() never could guard against.
 		 *
 		 * latStaRef.current is updated (not just setAppStaObj) before
-		 * reloading, even though nothing will ever render it: window.
-		 * location.reload() fires a pagehide event, and this file's own
-		 * flush effect above synchronously re-persists whatever
-		 * latStaRef.current holds at that moment. Without this, that flush
-		 * would silently re-save the STALE pre-wipe state right back into
-		 * the storage this action just cleared, undoing the wipe before
-		 * the reload even finishes loading; setAppStaObj() alone isn't
-		 * enough since React's own re-render (which is what actually
+		 * replacing the page, even though nothing will ever render it:
+		 * window.location.replace() unloads the page, which fires a pagehide
+		 * event, and this file's own flush effect above synchronously
+		 * re-persists whatever latStaRef.current holds at that moment. Without
+		 * this, that flush would silently re-save the STALE pre-wipe state
+		 * right back into the storage this action just cleared, undoing the
+		 * wipe before the reload even finishes loading; setAppStaObj() alone
+		 * isn't enough since React's own re-render (which is what actually
 		 * updates latStaRef.current, via this file's own render-phase
-		 * `latStaRef.current = appStaObj` line above) isn't guaranteed to
-		 * have committed yet by the time reload() below fires.
+		 * `latStaRef.current = appStaObj` line above) isn't guaranteed to have
+		 * committed yet by the time replace() below fires.
 		 *
 		 * The URL hash is cleared too, so a reload doesn't land back on a
 		 * #settings deep link.
@@ -914,7 +914,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const cleStaObj = migStaFun( SED_NAM_OBJ.buiCleFun() ); // What: Clean State Object. Why: The freshly-reloaded app needs a real, migrated empty state ready in latStaRef before reload() fires. How: This builds a fresh SED_NAM_OBJ.buiCleFun() and runs it through migStaFun().
+			const cleStaObj = migStaFun( SED_NAM_OBJ.buiCleFun() ); // What: Clean State Object. Why: The freshly-reloaded app needs a real, migrated empty state ready in latStaRef before the page is replaced. How: This builds a fresh SED_NAM_OBJ.buiCleFun() and runs it through migStaFun().
 
 			latStaRef.current = cleStaObj; // What: Latest State Reference Update. Why: The flush effect's own pagehide handler must see this clean state, not the stale pre-wipe one, per the design-rationale comment above. How: This assigns cleStaObj directly onto latStaRef.current.
 
@@ -1823,11 +1823,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * addIteFun = Add Item Function
 		 *
 		 * @summary
-		 * Adds one brand-new item to picIdeStr's own pool, built with the
-		 * mode-specific defaults described in new-item.ts's buiIteFun (a
-		 * charged, peer-average-weighted Ease Down item, an ease band stamped
-		 * from the picker's current average, a de-duplicated name), and puts
-		 * it first in the global items array.
+		 * Adds one brand-new item to picIdeStr's own pool, built by
+		 * new-item.ts's buiIteFun with the defaults for the picker's mode, and
+		 * puts it first in the global items array.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *

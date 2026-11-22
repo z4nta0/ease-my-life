@@ -184,9 +184,9 @@ const tasCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Task C
  * cleTasFun = Clear Task Function
  *
  * @summary
- * Discards the reminder copies sedTasFun makes, called whenever the Data tour
- * ends (Skip or Done), so they never linger in the user's real reminder list.
- * Harmless no-op for any copy that was never actually seeded.
+ * Discards the reminder copies sedTasFun makes, so they never linger in the
+ * user's real reminder list. Harmless no-op for any copy that was never
+ * actually seeded.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
