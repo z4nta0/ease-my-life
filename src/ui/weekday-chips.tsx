@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './weekday-chips.module.css'; // What: CSS Module Object. Why: The chip row and its chips are styled from their own module. How: This maps each class name in weekday-chips.module.css to its hashed module class.
+import cssModObj from './weekday-chips.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in weekday-chips.module.css to its hashed module class.
 
 
 import { DAY_FUL_ARR } from '../utils/date.ts'; // What: Day Full Array. Why: Each toggle chip's accessible name and title need the full weekday name. How: This is indexed by the chip's weekday number.

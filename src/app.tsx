@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './app.module.css'; // What: CSS Module Object. Why: The app shell, main area, and tab bar are styled from their own module. How: This maps each class name in app.module.css to its hashed module class.
+import cssModObj from './app.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in app.module.css to its hashed module class.
 import React     from 'react';            // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, for one) throughout, instead of importing individual named hooks.
 
 

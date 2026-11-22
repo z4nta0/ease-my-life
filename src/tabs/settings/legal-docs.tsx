@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './legal-docs.module.css'; // What: CSS Module Object. Why: The legal modal's backdrop, panel, head, and body styles live in its own module. How: This maps each class name in legal-docs.module.css to its hashed module class.
+import cssModObj from './legal-docs.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in legal-docs.module.css to its hashed module class.
 import React     from 'react';                   // What: React. Why: LegModCom is a React component. How: This is used directly (React.useRef, for one) throughout, instead of importing individual named hooks.
 
 

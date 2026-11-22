@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './boost-reset.module.css'; // What: CSS Module Object. Why: The boost value and reset button styles live in their own module. How: This maps each class name in boost-reset.module.css to its hashed module class.
+import cssModObj from './boost-reset.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in boost-reset.module.css to its hashed module class.
 import React     from 'react';                    // What: React. Why: BooResCom is built directly on React's own APIs. How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 

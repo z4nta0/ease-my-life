@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './reminders-section.module.css'; // What: CSS Module Object. Why: The Reminders section's header, quick-add form, and cards are styled from their own module. How: This maps each class name in reminders-section.module.css to its hashed module class.
+import cssModObj from './reminders-section.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in reminders-section.module.css to its hashed module class.
 import React     from 'react';                          // What: React. Why: The components use React's own APIs directly (hooks, Fragment, and types). How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 

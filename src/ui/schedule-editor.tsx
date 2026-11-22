@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './schedule-editor.module.css'; // What: CSS Module Object. Why: The schedule editor's fields, both of its layouts, and its visibility note are styled from their own module. How: This maps each class name in schedule-editor.module.css to its hashed module class.
+import cssModObj from './schedule-editor.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in schedule-editor.module.css to its hashed module class.
 import React     from 'react';                        // What: React. Why: SchEdiCom's refs, state, and fragments come from React's own APIs. How: This is used directly (React.useRef, for one) instead of importing individual named hooks.
 
 

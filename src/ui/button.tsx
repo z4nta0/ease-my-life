@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './button.module.css'; // What: CSS Module Object. Why: The button's base, size, and kind styles live in its own module. How: This maps each class name in button.module.css to its hashed module class.
+import cssModObj from './button.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in button.module.css to its hashed module class.
 
 
 import { IcoSvgCom } from './icon.tsx'; // What: Icon SVG Component. Why: A button can carry an optional leading icon. How: This renders icoNamStr's glyph ahead of the button's own label.

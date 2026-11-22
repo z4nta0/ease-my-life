@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './tour-runner.module.css'; // What: CSS Module Object. Why: The tour overlay, spotlight, and coach card styles live in their own module. How: This maps each class name in tour-runner.module.css to its hashed module class.
+import cssModObj from './tour-runner.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in tour-runner.module.css to its hashed module class.
 import React     from 'react';                    // What: React. Why: This is the UI library GuiTouCom and its supporting helpers are built on. How: This is used directly (React.useState, for one) throughout, instead of importing individual named hooks.
 
 

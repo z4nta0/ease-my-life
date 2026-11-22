@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './update-note.module.css'; // What: CSS Module Object. Why: The note's region and panel styles live in its own module. How: Each className reads its class from this object.
+import cssModObj from './update-note.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: Each className reads its class from this object.
 import React     from 'react';                    // What: React. Why: The note follows the update module's state. How: This is used directly (React.useSyncExternalStore).
 
 

@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './sort-select.module.css'; // What: CSS Module Object. Why: The sort control's row, label, and select styles live in its own module. How: This maps each class name in sort-select.module.css to its hashed module class.
+import cssModObj from './sort-select.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in sort-select.module.css to its hashed module class.
 
 
 import type { JSX } from 'react'; // What: JSX. Why: The component declares the element it returns. How: This types its return as a JSX element.

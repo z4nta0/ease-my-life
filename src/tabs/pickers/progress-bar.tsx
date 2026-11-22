@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './progress-bar.module.css'; // What: CSS Module Object. Why: The bar's own track and fill styles live in its own module. How: This maps each class name in progress-bar.module.css to its hashed module class.
+import cssModObj from './progress-bar.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in progress-bar.module.css to its hashed module class.
 
 // #endregion Imports
 

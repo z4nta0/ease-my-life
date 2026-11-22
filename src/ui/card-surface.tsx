@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './card-surface.module.css'; // What: CSS Module Object. Why: The card's own surface and padding styles live in its own module. How: This maps each class name in card-surface.module.css to its hashed module class.
+import cssModObj from './card-surface.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in card-surface.module.css to its hashed module class.
 
 
 import type { ComponentProps } from 'react'; // What: Component Props. Why: The card forwards every native div prop. How: This types CscProTyp's native part.

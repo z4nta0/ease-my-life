@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './number-stepper.module.css'; // What: CSS Module Object. Why: The stepper's own container, button, and input styles live in its own module. How: This maps each class name in number-stepper.module.css to its hashed module class.
+import cssModObj from './number-stepper.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in number-stepper.module.css to its hashed module class.
 import React     from 'react';                       // What: React. Why: NumSteCom is built directly on React's own APIs. How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 // #endregion Imports

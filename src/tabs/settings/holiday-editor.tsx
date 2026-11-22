@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './holiday-editor.module.css'; // What: CSS Module Object. Why: The holiday list and its add form are styled from their own module. How: This maps each class name in holiday-editor.module.css to its hashed module class.
+import cssModObj from './holiday-editor.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in holiday-editor.module.css to its hashed module class.
 import React     from 'react';                       // What: React. Why: HolEdiCom is built directly on React's own APIs. How: This is used directly (React.useState, for one) instead of importing individual named hooks.
 
 

@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './regeneration-loader.module.css'; // What: CSS Module Object. Why: The loader card and its reel are styled from their own module. How: This maps each class name in regeneration-loader.module.css to its hashed module class.
+import cssModObj from './regeneration-loader.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in regeneration-loader.module.css to its hashed module class.
 import React     from 'react';                            // What: React. Why: LoaReeCom and LoaCarCom are built directly on React's own APIs. How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 

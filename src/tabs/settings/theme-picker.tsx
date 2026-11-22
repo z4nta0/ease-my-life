@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './theme-picker.module.css'; // What: CSS Module Object. Why: The theme subsections and rows are styled from their own module. How: This maps each class name in theme-picker.module.css to its hashed module class.
+import cssModObj from './theme-picker.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in theme-picker.module.css to its hashed module class.
 import React     from 'react';                     // What: React. Why: The components in this file use React's Fragment and its element type. How: This is used directly (React.Fragment, for one) instead of importing individual named bindings.
 
 

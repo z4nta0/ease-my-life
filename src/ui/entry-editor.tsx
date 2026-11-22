@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './entry-editor.module.css'; // What: CSS Module Object. Why: The item editor's rows and footers are styled from their own module. How: This maps each class name in entry-editor.module.css to its hashed module class.
+import cssModObj from './entry-editor.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in entry-editor.module.css to its hashed module class.
 import React     from 'react';                     // What: React. Why: This is the UI library EntEdiCom is built on. How: This is used directly (React.Fragment, for one) instead of importing individual named hooks.
 
 

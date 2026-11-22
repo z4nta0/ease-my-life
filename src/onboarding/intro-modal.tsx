@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './intro-modal.module.css'; // What: CSS Module Object. Why: The modal's backdrop, card, and button styles live in its own module. How: This maps each class name in intro-modal.module.css to its hashed module class.
+import cssModObj from './intro-modal.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in intro-modal.module.css to its hashed module class.
 import React     from 'react';                    // What: React. Why: This is the UI library IntModCom is built on. How: This is used directly (React.useRef, for one) inside the component below.
 
 

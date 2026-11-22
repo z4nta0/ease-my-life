@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './picker-view.module.css'; // What: CSS Module Object. Why: The picker view's header, run stage, pool, and add-item rows are styled from their own module. How: This maps each class name in picker-view.module.css to its hashed module class.
+import cssModObj from './picker-view.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in picker-view.module.css to its hashed module class.
 import React     from 'react';                    // What: React. Why: PicVieCom is built directly on React's own APIs. How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 

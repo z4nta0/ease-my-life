@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './filter-rail.module.css'; // What: CSS Module Object. Why: The filter row, its label, its scrolling rail, and its pills are styled from their own module. How: This maps each class name in filter-rail.module.css to its hashed module class.
+import cssModObj from './filter-rail.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in filter-rail.module.css to its hashed module class.
 
 // #endregion Imports
 

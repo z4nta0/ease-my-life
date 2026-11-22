@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './item-card.module.css'; // What: CSS Module Object. Why: The item card, its name row, and its editor slot are styled from their own module. How: This maps each class name in item-card.module.css to its hashed module class.
+import cssModObj from './item-card.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in item-card.module.css to its hashed module class.
 
 
 import { EntEdiCom } from '../../ui/entry-editor.tsx'; // What: Entry Editor Component. Why: Adding or editing a pool item reuses the shared item editor. How: This is rendered once below the card's name row.

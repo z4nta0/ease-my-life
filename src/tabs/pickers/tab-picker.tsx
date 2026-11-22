@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './tab-picker.module.css'; // What: CSS Module Object. Why: The Pickers tab's header, filter rails, and picker strip are styled from their own module. How: This maps each class name in tab-picker.module.css to its hashed module class.
+import cssModObj from './tab-picker.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in tab-picker.module.css to its hashed module class.
 import React     from 'react';                   // What: React. Why: TabPicCom is built directly on React's own APIs. How: This is used directly (React.useCallback, for one) instead of importing individual named hooks.
 
 

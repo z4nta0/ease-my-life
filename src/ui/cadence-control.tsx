@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './cadence-control.module.css'; // What: CSS Module Object. Why: The cadence editor's fields and anchor block are styled from their own module. How: This maps each class name in cadence-control.module.css to its hashed module class.
+import cssModObj from './cadence-control.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in cadence-control.module.css to its hashed module class.
 
 
 import { CAD_NAM_OBJ } from '../core/cadence.ts';      // What: Cadence Namespace Object. Why: The cadence normalizing and tip copy come from this one domain namespace instead of being duplicated locally. How: This is called below for its own norCadFun and tipMesFun entries.

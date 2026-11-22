@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import cssModObj from './editor-footer.module.css'; // What: CSS Module Object. Why: The footer and delete confirm styles live in their own module. How: This maps each class name in editor-footer.module.css to its hashed module class.
+import cssModObj from './editor-footer.module.css'; // What: CSS Module Object. Why: This file's elements are styled from their own module. How: This maps each class name in editor-footer.module.css to its hashed module class.
 import React     from 'react';                      // What: React. Why: EdiFooCom is built directly on React's own APIs. How: This is used directly (React.useState) instead of importing individual named hooks.
 
 
