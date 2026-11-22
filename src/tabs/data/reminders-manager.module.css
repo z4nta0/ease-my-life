@@ -395,7 +395,7 @@
 
 
 }
-.matRowDiv:last-child { /* What: Last Matrix Row Div. Why: The footer's divider already closes the table. How: This drops the last row's hairline. */
+.matRowDiv:has( + .matFooDiv ) { /* What: Last Matrix Row Div. Why: The footer's divider already closes the table. How: This drops the hairline of the row right above the footer, the last one. */
 
 
 	border-bottom : 0;
