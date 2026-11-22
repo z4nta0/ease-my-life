@@ -133,7 +133,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEl
 					key={ value ? 'on' : 'off' }
 
 					className={` ${ cssModObj.forHelPar }   ${ cssModObj.forHelParFade } `}
-				>{ value ? enaHelEle : disHelEle }</p>{ /* What: Form Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by value so the text cross-fades on every flip, showing enaHelEle or disHelEle. */ }
+				>{ value ? enaHelEle : disHelEle }</p>{ /* What: Form Help Paragraph Fade Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by value so the text cross-fades on every flip, showing enaHelEle or disHelEle. */ }
 
 
 			</div>
@@ -189,9 +189,8 @@ type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : 
  * Daily schedule, Step 2 (Items) builds a fresh pool by typing item
  * names. Editing only ever shows Step 1, since an existing picker's own
  * items are edited via the Data tab or PicVieCom's own live pool instead.
- * On submit this calls onCrePicFun (a fresh picker, which store.ts's
- * addPicFun also spins up a matching Data-tab category for) or onSavEdiFun
- * (an in-place edit via savEdiFun), depending on isaEdiBoo.
+ * On submit this calls onCrePicFun (a fresh picker) or onSavEdiFun (an
+ * in-place edit), depending on isaEdiBoo.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -487,7 +486,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 	// #region Item Pool And Step Advance
 
-	const [ pooIteArr, setPooIteArr ] = React.useState< IteRcdTyp[] >( ( ( iniForObj && iniForObj.items ) || [] ) as IteRcdTyp[] ); // What: Pool Item Array And Setter. Why: Step 2's own pool; each item is { name, weight }, weight only mattering for weighted/dynamic modes and only editable inline then. How: This is a fresh pool (Option B, not a pick-from-library), starting from a prefilled items list, or empty; other defaults (drift value, ease knobs) are applied at commit time. // What: Type Assertion Note. Why: A prefilled form item may lack fields a stored item has. How: The pool is read as items, since the shared item editors read only the fields every pool item already carries.
+	const [ pooIteArr, setPooIteArr ] = React.useState< IteRcdTyp[] >( ( ( iniForObj && iniForObj.items ) || [] ) as IteRcdTyp[] ); // What: Pool Item Array And Setter. Why: Step 2's own pool; each item carries a name and a weight among its other fields, weight only mattering for weighted/dynamic modes and only editable inline then. How: This is a fresh pool (Option B, not a pick-from-library), starting from a prefilled items list, or empty; other defaults (drift value, ease knobs) are applied at commit time. // What: Type Assertion Note. Why: A prefilled form item may lack fields a stored item has. How: The pool is read as items, since the shared item editors read only the fields every pool item already carries.
 
 	const forWraRef = React.useRef< HTMLDivElement | null >( null ); // What: Form Wrap Reference. Why: advSteFun needs a handle on this form's own root so it can walk up to whichever ancestor actually scrolls. How: This is attached to the form's own root div, below.
 
@@ -1265,7 +1264,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						disabled={ !detReaBoo }
 						type='button'
 
-						onClick={ () => detReaBoo && setForSteNum( 2 ) }
+						onClick={ () => detReaBoo && setForSteNum( 2 ) } // What: On Click Handler. Why: The button is disabled until Step 1 is complete, but a click must still not advance early. How: This advances to Step 2 only while detReaBoo is true.
 					>{ /* What: Items Step Button Element. Why: The user needs a way to jump to Step 2 once it's actually reachable. How: This stays disabled until detReaBoo is true, and marks itself current through data-step-current-active while forSteNum is 2. */ }
 
 
@@ -1300,9 +1299,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						{ isaEdiBoo // What: Edit Mode Check. Why: Editing and creating need different intro text. How: This picks one of the two paragraphs below based on isaEdiBoo.
 
 
-							? <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Adjust its name, group, how it should pick and when it should run below.</React.Fragment> // What: Editing Intro Phrase. Why: An existing picker's own intro reads slightly differently since it's being adjusted rather than created for the first time. How: This renders while isaEdiBoo is true.
+							? <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Adjust its name, group, how it should pick and when it should run below.</React.Fragment> // What: Editing Intro Fragment. Why: An existing picker's own intro reads slightly differently since it's being adjusted rather than created for the first time. How: This renders while isaEdiBoo is true.
 
-							: <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Give it a name, attach a group, choose how it should pick and when it should run. You&rsquo;ll fill its list of items in the next step.</React.Fragment> // What: Create Intro Phrase. Why: A brand-new picker's own intro needs to set up the next Items step too. How: This renders while isaEdiBoo is false.
+							: <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Give it a name, attach a group, choose how it should pick and when it should run. You&rsquo;ll fill its list of items in the next step.</React.Fragment> // What: Create Intro Fragment. Why: A brand-new picker's own intro needs to set up the next Items step too. How: This renders while isaEdiBoo is false.
 
 
 						}
@@ -1348,7 +1347,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								value={ newNamStr }
 
 								onChange={ ( chaEveObj ) => setNewNamStr( chaEveObj.target.value ) }
-							/>{ /* What: Name Input Element. Why: This is the actual live-typed name field. How: This writes into newNamStr on every change. */ }
+							/>{ /* What: Form Text Input Element. Why: This is the actual live-typed name field. How: This writes into newNamStr on every change. */ }
 
 
 						</div>
@@ -1443,7 +1442,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									aria-label='New group name'
 
 									onChange={ ( chaEveObj ) => setNewGroStr( chaEveObj.target.value ) }
-								/>{ /* What: New Group Input Element. Why: A brand-new group needs its own typed name. How: This is a controlled text input writing into newGroStr on every change. */ }
+								/>{ /* What: Form Text Input Short Element. Why: A brand-new group needs its own typed name. How: This is a controlled text input writing into newGroStr on every change. */ }
 
 
 							</ColDisCom>
@@ -1456,12 +1455,12 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.forFieFie }
 
 							data-element-name-hook='forFieFie'
-						>{ /* What: Mode Field Fieldset Element. Why: The picker-type radio group needs its own labelled fieldset. How: This wraps the legend, help text, and the radio list below. Its data-element-name-hook is read by the tours and help mode. */ }
+						>{ /* What: Form Field Fieldset Element. Why: The picker-type radio group needs its own labelled fieldset. How: This wraps the legend, help text, and the radio list below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
-							<legend className={ cssModObj.forLabLeg }>Picker type</legend>{ /* What: Mode Legend Element. Why: A fieldset needs its own accessible legend. How: This renders the literal text "Picker type". */ }
+							<legend className={ cssModObj.forLabLeg }>Picker type</legend>{ /* What: Form Label Legend Element. Why: A fieldset needs its own accessible legend. How: This renders the literal text "Picker type". */ }
 
-							<p className={ cssModObj.forHelPar }>This is the ruleset that the picker follows each time it runs. &ldquo;Truly Random&rdquo; is the simplest where every item has an equal chance. The others nudge the odds in different ways. Not sure? We recommend the Dynamic Weighted type but you can change a picker&rsquo;s type at any time.</p>{ /* What: Mode Help Paragraph Element. Why: A first-time user needs to understand what a "mode" even means before picking one. How: This renders a fixed explanatory sentence with a recommendation. */ }
+							<p className={ cssModObj.forHelPar }>This is the ruleset that the picker follows each time it runs. &ldquo;Truly Random&rdquo; is the simplest where every item has an equal chance. The others nudge the odds in different ways. Not sure? We recommend the Dynamic Weighted type but you can change a picker&rsquo;s type at any time.</p>{ /* What: Form Help Paragraph Element. Why: A first-time user needs to understand what a "mode" even means before picking one. How: This renders a fixed explanatory sentence with a recommendation. */ }
 
 							<div
 								className={ cssModObj.modRadDiv }
@@ -1493,7 +1492,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											type='radio'
 
 											onChange={ () => setSelModStr( modKeyStr as ModNamTyp ) } // What: On Change Handler. Why: Choosing a mode radio selects that mode. How: This sets selModStr to modKeyStr. // What: Type Assertion Note. Why: Object.entries types its keys as plain strings. How: modKeyStr is read as a mode name, since it comes from the mode table's own keys.
-										/>{ /* What: Mode Radio Input Element. Why: This is the actual selectable control. How: This is checked when selModStr matches modKeyStr, and selects it on change. */ }
+										/>{ /* What: Mode Option Input Element. Why: This is the actual selectable control. How: This is checked when selModStr matches modKeyStr, and selects it on change. */ }
 
 										<div>{ /* What: Mode Text Div Element. Why: The mode's own name and hint text need to sit beside the radio input. How: This wraps modNamDiv and modHinDiv. */ }
 
@@ -1600,7 +1599,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										className={ cssModObj.conRaiDiv }
 
 										data-element-name-hook='conRaiDiv'
-										data-rail-wheel-scroll
+										data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 										data-scroll-end-active // What: Scroll End Active Attribute. Why: The rail starts with no edge fades until edge-fade.ts first measures it. How: This sets the presence-only attribute that togFadFun later toggles.
 										data-scroll-start-active // What: Scroll Start Active Attribute. Why: The rail starts with no edge fades until edge-fade.ts first measures it. How: This sets the presence-only attribute that togFadFun later toggles.
 									>{ /* What: Conditional Rail Div Element. Why: Every existing conditional plus the "Add New" pill need a horizontally-scrolling rail. How: This wraps one pill per sorted entry in conObjArr, then the fixed "Add New Conditional" pill. Its data-element-name-hook is read by help mode. */ }
@@ -1718,8 +1717,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 								data-element-name-hook='daiTogDiv'
 
-								disHelEle={ <React.Fragment>This picker <strong>will not run</strong> automatically, but you can still run it manually from this tab.</React.Fragment> } // What: Daily Disabled Phrase. Why: The daily-generator note needs its own live wording for the disabled state. How: This renders while incDaiBoo is false.
-								enaHelEle={ <React.Fragment>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</React.Fragment> } // What: Daily Enabled Phrase. Why: The daily-generator note needs its own live wording for the enabled state. How: This renders while incDaiBoo is true.
+								disHelEle={ <React.Fragment>This picker <strong>will not run</strong> automatically, but you can still run it manually from this tab.</React.Fragment> } // What: Daily Disabled Fragment. Why: The daily-generator note needs its own live wording for the disabled state. How: This renders while incDaiBoo is false.
+								enaHelEle={ <React.Fragment>This picker <strong>will run</strong> automatically as part of your daily list or whenever you tap Regenerate in the Today tab.</React.Fragment> } // What: Daily Enabled Fragment. Why: The daily-generator note needs its own live wording for the enabled state. How: This renders while incDaiBoo is true.
 								labTexStr='Include in the daily generator'
 								value={ incDaiBoo }
 
@@ -1784,7 +1783,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 											<WeeChiCom
 												locDayNum={ locDowNum }
-												locTipStr={ locDowNum === null ? '' : CAD_NAM_OBJ.locTipFun( locDowNum, 'On which day?' ) }
+												locTipStr={ locDowNum === null ? '' : CAD_NAM_OBJ.locTipFun( locDowNum, 'On which day?' ) } // What: Locked Tip String. Why: The weekday chips explain a locked day only while a weekly cadence locks one. How: This is empty when no day is locked, otherwise the tip CAD_NAM_OBJ.locTipFun builds for that day, naming the "On which day?" control.
 												value={ runDowArr }
 
 												onChange={ setRunDowArr }
@@ -1837,8 +1836,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										data-element-name-hook='schTogDiv'
 
-										disHelEle={ <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment> } // What: Holidays Run Phrase. Why: The holiday note needs its own live wording for the always-run state. How: This renders while skiHolBoo is false.
-										enaHelEle={ <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment> } // What: Holidays Skip Phrase. Why: The holiday note needs its own live wording for the skip-enabled state. How: This renders while skiHolBoo is true.
+										disHelEle={ <React.Fragment>This picker <strong>will always run</strong>, even on major U.S. holidays.</React.Fragment> } // What: Holidays Run Fragment. Why: The holiday note needs its own live wording for the always-run state. How: This renders while skiHolBoo is false.
+										enaHelEle={ <React.Fragment>This picker <strong>will not run</strong> on major U.S. holidays. You can edit which days count as holidays, or even add your own, on the Settings page.</React.Fragment> } // What: Holidays Skip Fragment. Why: The holiday note needs its own live wording for the skip-enabled state. How: This renders while skiHolBoo is true.
 										labTexStr='Skip on holidays'
 										value={ skiHolBoo }
 
@@ -1854,8 +1853,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 										data-element-name-hook='schTogDiv'
 
-										disHelEle={ <React.Fragment>This picker <strong>may pick</strong> an item even if its name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates Off Phrase. Why: The duplicate-avoidance note needs its own live wording for the disabled state. How: This renders while avoDupBoo is false.
-										enaHelEle={ <React.Fragment>This picker <strong>won&rsquo;t pick</strong> an item whose name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates On Phrase. Why: The duplicate-avoidance note needs its own live wording for the enabled state. How: This renders while avoDupBoo is true.
+										disHelEle={ <React.Fragment>This picker <strong>may pick</strong> an item even if its name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates Off Fragment. Why: The duplicate-avoidance note needs its own live wording for the disabled state. How: This renders while avoDupBoo is false.
+										enaHelEle={ <React.Fragment>This picker <strong>won&rsquo;t pick</strong> an item whose name is already on today&rsquo;s todo list.</React.Fragment> } // What: Avoid Duplicates On Fragment. Why: The duplicate-avoidance note needs its own live wording for the enabled state. How: This renders while avoDupBoo is true.
 										labTexStr='Avoid duplicate items'
 										value={ avoDupBoo }
 

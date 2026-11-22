@@ -9,9 +9,7 @@
  * brand mark, title, and intro), the Show filter row with its picker tab
  * strip, and the fading wrapper around whichever picker or form is showing.
  * The Group and Type rows draw their rails from the shared filter rail's own
- * module. Most of these classes are shared with the other tabs, so their rules
- * are copies of the global ones, resolved where this tab's own overrides used
- * to win. A selected picker tab keys off data-tab-select-active, and the
+ * module. A selected picker tab keys off data-tab-select-active, and the
  * disabled Add tab off the aria-disabled its info tip sets. The tab strip's
  * edge fades follow edge-fade.ts's data-scroll-start-active and
  * data-scroll-end-active, and the root reads --tab-tou-pad, which the body

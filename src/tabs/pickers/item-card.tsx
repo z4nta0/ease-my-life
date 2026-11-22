@@ -39,7 +39,7 @@ import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Recor
 
 // #region Components
 
-type IccProTyp = { ediKeyStr? : string, iteCloBoo : boolean, iteDatObj : IteRcdTyp, namInpRef? : ( namInpEle : HTMLInputElement | null ) => void, namValStr : string, onCanEdiFun : () => void, onCloEndFun : () => void, onNamChaFun : ( namValStr : string ) => void, onNamCmtFun? : ( namValStr : string ) => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Item-Card-Component Props Type. Why: The card shows one item's name and editor, may key its editor and select its name on mount, and hands every edit, save, cancel, and close back to its parent. How: This types IteCarCom's props.
+type IccProTyp = { ediKeyStr? : string, iteCloBoo : boolean, iteDatObj : IteRcdTyp, namInpRef? : ( namInpEle : HTMLInputElement | null ) => void, namValStr : string, onCanEdiFun : () => void, onCloEndFun : () => void, onNamChaFun : ( namValStr : string ) => void, onNamCmtFun? : ( namValStr : string ) => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Item-Card-Component Props Type. Why: The card shows one item's name and editor, may key its editor and focus its name field on mount, and hands every edit, save, cancel, and close back to its parent. How: This types IteCarCom's props.
 
 // #region IteCarCom
 
