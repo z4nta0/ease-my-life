@@ -48,19 +48,20 @@ import type { HelRecTyp } from './geometry.ts';     // What: Help Rect Type. Why
  * Where the open tip should sit relative to the target it describes, the same
  * "prefer below, flip above if it would clip, clamp horizontally" idea as both
  * InfTipCom's own plaTipFun and the tour's own coach placement. Both axes are
- * TARGET-relative, not badge-relative (the badge only marks where to click; it
- * is not where the tip should point): vertically it clears the target's own
- * rect so a big target cannot have "below" still land inside its own box;
- * horizontally the arrow centers on the target's own midpoint, and the tip box
- * is what shifts left/right off that centerpoint to stay clear of the viewport
- * edge. alwBelBoo skips the "prefer below, flip above" choice entirely, for a
- * target spanning nearly the whole viewport itself, where "above" has
- * essentially zero room no matter what. Otherwise this prefers below whenever
- * the full content fits there, and only prefers above when above genuinely has
- * more room than below, never unconditionally either way; a hardcoded
- * preference either way was the actual bug this replaced, since it could
- * either overflow the content back through the target or starve the tip's own
- * scrollable window to almost nothing.
+ * TARGET-relative (the badge only marks where to click), except that a column
+ * group member's above placement anchors to its badge (badAncNum), since that
+ * badge sits well above the member's own rect: vertically it clears the
+ * target's own rect so a big target cannot have "below" still land inside its
+ * own box; horizontally the arrow centers on the target's own midpoint, and
+ * the tip box is what shifts left/right off that centerpoint to stay clear of
+ * the viewport edge. alwBelBoo skips the "prefer below, flip above" choice
+ * entirely, for a target spanning nearly the whole viewport itself, where
+ * "above" has essentially zero room no matter what. Otherwise this prefers
+ * below whenever the full content fits there, and only prefers above when
+ * above genuinely has more room than below, never unconditionally either way;
+ * a hardcoded preference either way was the actual bug this replaced, since it
+ * could either overflow the content back through the target or starve the
+ * tip's own scrollable window to almost nothing.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
