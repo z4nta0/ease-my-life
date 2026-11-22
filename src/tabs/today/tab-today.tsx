@@ -10,7 +10,7 @@ import React     from 'react';                  // What: React. Why: This is the
 import { APP_FEA_ARR  } from '../../onboarding/app-features.tsx';   // What: App Feature Array. Why: This is the fixed catalog of App Features tutorial cards rendered once the checklist concludes. How: This is mapped over to render one AppFeaCom per entry and to compute the section's own done/total counts.
 import { AppFeaCom    } from './app-feature-card.tsx';              // What: App Feature Component. Why: Each app feature gets a launcher card in the App Features group. How: This is rendered once per feature.
 import { BacFloCom    } from '../../ui/bg-flourish.tsx';            // What: Background Flourish Component. Why: The decorative background glyphs render behind Today's own centered column too, same as every other tab. How: This is passed Today's own body ref and the fixed 'today' tab id.
-import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: Nearly every action in this file (confirm, cancel, save, merge, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
+import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: Nearly every action button in this file (confirm, cancel, done, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
 import { CAD_NAM_OBJ  } from '../../core/cadence.ts';               // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math shared with the rest of the app. How: This is called for perKeyFun/fulPerFun throughout generate() and the charging checks.
 import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntEdiCom, gated on whichever key/eid currently owns the open state.
 import { CON_NAM_OBJ  } from '../../core/conditionals.ts';          // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
@@ -1119,10 +1119,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * tab-today.tsx = Sticky Offset Measurement
 	 *
 	 * @summary
-	 * Measures the sticky header AND the rail (when it stacks above
-	 * content on mobile) so the rail's own sticky-top sits flush beneath
-	 * the header, and jumGroFun/the scroll-spy effect below correctly
-	 * account for both.
+	 * Measures the sticky header AND the rail (when it stacks above content at
+	 * 760px wide and below) so the rail's own sticky-top sits flush beneath
+	 * the header, and jumGroFun/the scroll-spy effect below correctly account
+	 * for both.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1157,7 +1157,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const heaHeiNum = heaCurEle.offsetHeight; // What: Header Height Number. Why: This is the header's own real rendered height. How: This reads heaCurEle.offsetHeight.
 
 			const raiCurEle = raiEleRef.current;                                                    // What: Rail Current Element. Why: The rail only contributes to the sticky offset while it is stacked horizontally, which needs its own live check below. How: This reads raiEleRef.current.
-			const raiHorBoo = !!raiCurEle && getComputedStyle( raiCurEle ).flexDirection === 'row'; // What: Rail Horizontal Boolean. Why: On mobile the rail flips to flex-direction: row and stacks below the header as a horizontal pill bar; this detects that state via computed style, so it follows the viewport breakpoint. How: This reads raiCurEle's own live computed flexDirection.
+			const raiHorBoo = !!raiCurEle && getComputedStyle( raiCurEle ).flexDirection === 'row'; // What: Rail Horizontal Boolean. Why: At 760px wide and below the rail flips to flex-direction: row and stacks below the header as a horizontal pill bar; this detects that state via computed style, so it follows that breakpoint. How: This reads raiCurEle's own live computed flexDirection.
 			const raiHeiNum = raiHorBoo ? raiCurEle.offsetHeight : 0;                               // What: Rail Height Number. Why: Only a horizontally-stacked rail contributes its own height to the sticky offset. How: This reads raiCurEle.offsetHeight only while raiHorBoo, otherwise 0.
 
 			// #endregion Height Measurement
@@ -1569,7 +1569,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * tab-today.tsx = Group Rail Edge Fades
 	 *
 	 * @summary
-	 * Scroll-aware edge fades on the mobile group rail: toggles
+	 * Scroll-aware edge fades on the group rail's sideways-scrolling pill row
+	 * at 760px wide and below: toggles
 	 * data-scroll-start-active/data-scroll-end-active so the mask gradient
 	 * only fades the side that has more content, matching the Pickers tab's
 	 * picTabDiv behavior.
@@ -2252,7 +2253,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const genBusRef = React.useRef( false );                                      // What: Generate Busy Reference. Why: genLisFun's own re-entrancy guard needs a value that updates synchronously, unlike React state. How: This is set true at genLisFun's own start and false at its own end.
 	const genMapRef = React.useRef< Record< string, GenSloTyp > | null >( null ); // What: Generate Map Reference. Why: The departing-entry computation inside genLisFun needs to read the live generate map synchronously, without waiting for a state update to land. How: This mirrors genMapObj, written by genLisFun alongside every setGenMapObj call.
 
-	const genTotNum = 3200; // What: Generate Total Number. Why: The whole reel-cascade animation shares this one fixed total duration; per-step pace flexes with how many slots are in the list (8 slots -> 400ms each; fewer slots -> slower and savorable, more -> quicker), so the whole cascade always wraps at this exact total. How: This is divided by ordSloArr.length inside genLisFun below.
+	const genTotNum = 3200; // What: Generate Total Number. Why: The whole reel-cascade animation shares this one fixed total duration; per-step pace flexes with how many slots are in the list (8 slots -> 400ms each; fewer slots -> slower and savorable, more -> quicker), so the reel steps always add up to this exact total. How: This is divided by ordSloArr.length inside genLisFun below.
 
 
 
@@ -2262,15 +2263,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * genLisFun = Generate List Function
 	 *
 	 * @summary
-	 * Rolls every daily picker behind a sequential reel-cycle loader.
-	 * Picks are computed up front so the loader shows the actual
-	 * candidate pool and final pick for each, then commits to state at
-	 * the end. Guarantees at least 1 second of loader time. genOptObj.autBoo
-	 * is true only when the scheduled boundary-check effect below
-	 * invokes this (never for the manual Regenerate button or the
-	 * onboarding tour's simulated click); it is threaded straight into
-	 * actStoObj.setEntFun since only an auto-run resets today's
-	 * own streak claim, see that action's own comment for why.
+	 * Rolls every daily picker behind a sequential reel-cycle loader. Picks
+	 * are computed up front so the loader shows the actual candidate pool and
+	 * final pick for each, then commits to state at the end. Its reel steps
+	 * share a fixed total of genTotNum. genOptObj.autBoo is true only when the
+	 * scheduled boundary-check effect below invokes this (never for the manual
+	 * Regenerate button or the onboarding tour's simulated click); it is
+	 * threaded straight into actStoObj.setEntFun since only an auto-run resets
+	 * today's own streak claim, see that action's own comment for why.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -2309,11 +2309,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 * tab-today.tsx = Pre-Cascade Scroll To Top
 		 *
 		 * @summary
-		 * Scrolls the list back to the top before the reel-cycle
-		 * animation starts, since the "Generated on..." button sits at
-		 * the bottom of the list and users would otherwise miss the
-		 * cascade entirely. Waits briefly for the smooth scroll to settle
-		 * before kicking off the loaders.
+		 * Scrolls the list back to the top before the reel-cycle animation
+		 * starts, since the Regenerate button sits at the bottom of the list
+		 * and users would otherwise miss the cascade entirely. Waits briefly
+		 * for the smooth scroll to settle before kicking off the loaders.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2670,7 +2669,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		else { // What: Full Cascade Branch. Why: Everyone else gets the real pending-active-settled reel cascade, one slot at a time. How: This awaits perSteNum between each slot's own active-then-settled transition.
 
 
-			const perSteNum = ordSloArr.length > 0 ? genTotNum / ordSloArr.length : 0; // What: Per Step Number. Why: The whole cascade must always wrap at genTotNum regardless of how many slots exist. How: This divides genTotNum by ordSloArr's own length.
+			const perSteNum = ordSloArr.length > 0 ? genTotNum / ordSloArr.length : 0; // What: Per Step Number. Why: The reel steps must always add up to genTotNum regardless of how many slots exist. How: This divides genTotNum by ordSloArr's own length.
 
 
 			for ( const curSloObj of ordSloArr ) { // What: Cascade Step Loop. Why: This is the actual per-slot animation driver. How: This flips each slot to active, waits perSteNum, then flips it to settled, in encounter order.
@@ -3207,7 +3206,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		return !staAppObj.pickers.some( ( curPicObj ) => { // What: Runnable Picker Check. Why: A single picker able to run today means this empty state doesn't apply. How: This tests pickers one by one against the four gates below until one passes.
+		return !staAppObj.pickers.some( ( curPicObj ) => { // What: Runnable Picker Check. Why: A single picker able to run today means this empty state doesn't apply. How: This tests pickers one by one against the four gates below until one passes, and the leading ! makes this true only when none of them passes all 4 conditions (visible, in the daily generator, scheduled today, not sitting out today's holiday).
 
 
 			const isaVisBoo = !curPicObj.hidden;                                                                    // What: Is-A Visible Boolean. Why: A still-hidden sample picker never runs. How: This negates the hidden flag.
@@ -3220,7 +3219,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			return isaVisBoo && isaDaiBoo && schTodBoo && holOkaBoo; // What: Runnable Return. Why: The picker runs today only when every gate passes. How: This returns their combination.
 
 
-		} ); // What: No Runnable Picker Return. Why: This is the actual check every branch above feeds into. How: This is true only when NO picker satisfies every one of the 4 conditions (visible, in the daily generator, scheduled today, not sitting out today's holiday).
+		} );
 
 
 	}, [ staAppObj.pickers, staAppObj.daily.pickerIds, staAppObj.holidays ] ); // What: Memo Dependency Array. Why: The answer only changes when a picker, the daily picker list, or the holiday list changes. How: Each of the three feeds one of the gates above.
@@ -3462,18 +3461,15 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 * tab-today.tsx = Double Animation Frame Wait
 		 *
 		 * @summary
-		 * A double rAF, not a direct call, since the last checklist item
-		 * is very often resolved by a tour's own Skip/Done, and EVERY
-		 * tour funnels both through onboarding/tour-runner.tsx's
-		 * todTopFun, which forces main.scrollTop back to 0 via its OWN
-		 * requestAnimationFrame, already queued by the time this effect
-		 * runs. A single rAF here would land in the same frame and race
-		 * it (losing, depending on exact scheduling); deferring one frame
-		 * further guarantees this runs strictly after that reset has
-		 * already applied, so this is the scroll position that sticks,
-		 * the same "wait for the DOM to fully settle" idiom used
-		 * elsewhere for post-commit timing (see the celebration
-		 * overlay's own verification notes above).
+		 * A double rAF, not a direct call, since the last checklist item is
+		 * very often resolved by a tour's own Skip/Done, and EVERY tour
+		 * funnels both through onboarding/tour-runner.tsx's todTopFun, which
+		 * forces main.scrollTop back to 0 via its OWN requestAnimationFrame,
+		 * already queued by the time this effect runs. A single rAF here would
+		 * land in the same frame and race it (losing, depending on exact
+		 * scheduling); deferring one frame further guarantees this runs
+		 * strictly after that reset has already applied, so this is the scroll
+		 * position that sticks.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -3530,7 +3526,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		};
 
 
-	}, [ actStoObj, scrPenBoo ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when scrPenBoo itself flips. How: scrPenBoo is exactly the flag this whole effect reacts to, and actStoObj is read by the effect.
+	}, [ actStoObj, scrPenBoo ] ); // What: Effect Dependency Array. Why: This effect re-runs when the pending flag flips, or when the actions object it calls changes. How: scrPenBoo is the flag this whole effect reacts to, and actStoObj is read by the effect.
 
 	// #endregion Generate Card Auto-Scroll
 
@@ -4069,7 +4065,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 					ref={ maiScrRef }
 
 					className={ cssModObj.todLayDiv }
-				>{ /* What: Today Layout Div Element. Why: This is the shared scroll wrapper the scroll-spy/generate/jumGroFun logic above all measure against. How: This renders the group rail and the groups/footer column side by side. */ }
+				>{ /* What: Today Layout Div Element. Why: This is the shared scroll wrapper the scroll-spy/generate/jumGroFun logic above all measure against. How: This renders the group rail and the groups/footer column side by side, stacked with the rail as a pill row above the list at 760px wide and below. */ }
 
 
 					<aside
@@ -4081,7 +4077,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						data-rail-wheel-scroll
 
 						aria-label='Groups'
-					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders a rail button for each bloOrdArr entry that has one, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tours and help mode. */ }
+					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, at 760px wide and below, the horizontal pill bar) listing every block. How: This renders a rail button for each bloOrdArr entry that has one, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<div className={ cssModObj.raiKicDiv }>Groups</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading label. How: This renders the literal word "Groups". */ }
@@ -4649,7 +4645,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 															onRerEntFun={ hanRerFun }
 															onSkiEntFun={ hanSkiFun }
 															onTogDonFun={ hanCheFun }
-															onTogEdiFun={ () => setActEdiStr( ( curValStr ) => curValStr === `item:${ entRcdObj.eid }` ? null : `item:${ entRcdObj.eid }` ) }
+															onTogEdiFun={ () => setActEdiStr( ( curValStr ) => curValStr === `item:${ entRcdObj.eid }` ? null : `item:${ entRcdObj.eid }` ) } // What: On Toggle Edit Function. Why: The same control opens and closes this row's editor. How: This clears actEdiStr when it already points at this row, otherwise points it at this row.
 															onUncTutFun={ uncTutFun }
 														/>{ /* What: Entry Card Component. Why: This is the actual row: a real pick, a day-off/charging card, or a mini-tour launcher, depending on entRcdObj's own kind. How: This is passed entRcdObj/picRcdObj plus every shared handler/animation-state flag. */ }
 
