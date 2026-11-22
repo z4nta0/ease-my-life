@@ -224,20 +224,20 @@ const REM_MAT_ARR : { dynFun : ( oncEnaBoo : boolean, reuEnaBoo : boolean ) => R
 
 	},
 
-	{ // What: Exclude Weekends Row Entry. Why: Whether a class is excluded from the Today page on weekends is its own independent participation setting. How: This entry's own dynFun explains which classes are currently excluded.
+	{ // What: Exclude Weekends Row Entry. Why: Whether a class is excluded from the Today page on weekends is its own independent participation setting. How: This entry's own dynFun explains which classes are currently hidden.
 
 
-		dynFun : paiSubFun( 'show in the Today page on weekends', 'nor' ),
+		dynFun : paiSubFun( 'be hidden from the Today page on weekends', 'nor' ),
 		keyStr : 'excludeWeekends',
 		labStr : 'Exclude on weekends'
 
 
 	},
 
-	{ // What: Exclude Holidays Row Entry. Why: Whether a class is excluded from the Today page on holidays is its own independent participation setting. How: This entry's own dynFun explains which classes are currently excluded.
+	{ // What: Exclude Holidays Row Entry. Why: Whether a class is excluded from the Today page on holidays is its own independent participation setting. How: This entry's own dynFun explains which classes are currently hidden.
 
 
-		dynFun : paiSubFun( 'show in the Today page on holidays', 'nor' ),
+		dynFun : paiSubFun( 'be hidden from the Today page on holidays', 'nor' ),
 		keyStr : 'excludeHolidays',
 		labStr : 'Exclude on holidays'
 
