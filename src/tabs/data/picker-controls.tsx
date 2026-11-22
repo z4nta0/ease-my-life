@@ -626,7 +626,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 			pilNodArr.forEach( ( pilCurEle ) => { // What: Pill Animate Loop. Why: Every pill needs its own individual tween, since each may have moved a different distance (or none at all). How: This computes each pill's own delta from prePosMap and plays a matching transform.
 
 
-				const oldXcoNum = prePosMap.get( pilCurEle.dataset.groupPillName! ); // What: Old X-Coordinate Number. Why: This pill's own previous position is keyed by its own group name. How: This looks up the pill's own data-group-pill-name attribute in prePosMap. // What: Non-Null Note. Why: Every group choice pill renders its own data-group-pill-name group name, and the "+ New Group" pill, which has none, simply finds no recorded position below. How: The ! tells TypeScript the key is set; the lookup returns undefined for the one pill without it.
+				const oldXcoNum = prePosMap.get( pilCurEle.dataset.groupPillName! ); // What: Old X-Coordinate Number. Why: This pill's own previous position is keyed by its own group name. How: This looks up the pill's own data-group-pill-name attribute in prePosMap. // What: Non-Null Note. Why: Every group choice pill renders its own data-group-pill-name group name, and the "+ New Group" pill, which has none, is looked up and recorded under the key undefined. How: The ! tells TypeScript the key is set; the one pill without it reads and writes its position under undefined.
 
 
 				if ( oldXcoNum == null ) return; // What: New Pill Guard. Why: A pill with no recorded previous position is brand new and has nothing to tween from. How: This skips straight to the next pill.
