@@ -70,7 +70,7 @@ const UPD_MOD_STR = '/src/platform/update.ts'; // What: Update Module String. Wh
  *                    update.
  *
  * @returns A promise that settles once the app is visible again, with no
- * value.
+ *          value.
  *
  * @example
  * ```ts

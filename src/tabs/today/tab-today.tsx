@@ -2279,7 +2279,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *                    boundary-check run.
 	 *
 	 * @returns A promise that settles once the cascade has finished and
-	 * today's list is committed, with no value.
+	 *          today's list is committed, with no value.
 	 *
 	 * @example
 	 * ```ts

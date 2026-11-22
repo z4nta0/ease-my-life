@@ -70,7 +70,7 @@ let errMesArr : string[] = []; // What: Error Message Array. Why: Each test's pa
  * @param secIndNum - Section Index Number: Which inner section to open, or
  *                    null for none.
  *
- * @returns A promise that settles once the parts are open.
+ * @returns A promise that settles once the parts are open, with no value.
  *
  * @example
  * ```ts

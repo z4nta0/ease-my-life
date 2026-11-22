@@ -360,7 +360,7 @@ async function reaDatFun () : Promise< RawSavTyp > {
  * @param appStaObj - App State Object: The full app state object to persist.
  *
  * @returns A promise that settles once the state is written to IndexedDB,
- * with no value.
+ *          with no value.
  *
  * @example
  * ```ts

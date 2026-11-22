@@ -881,7 +881,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		 * @param void - This function takes no parameters.
 		 *
-		 * @returns A promise that settles once every store has been cleared.
+		 * @returns A promise that settles once every store has been cleared,
+		 *          with no value.
 		 *
 		 * @example
 		 * ```ts
