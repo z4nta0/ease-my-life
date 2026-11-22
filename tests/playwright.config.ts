@@ -63,7 +63,7 @@ const SER_URL_STR = 'http://localhost:5190'; // What: Server URL String. Why: Ev
 
 
 
-const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playwright reads its whole setup from this file's default export. How: This holds the shared page settings, the suites' projects, the reporters, and the dev server.
+const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playwright reads its whole setup from this file's default export. How: This holds the shared page settings, the suites' projects, the reporters, and the servers.
 
 
 	expect        : { timeout : 10000 }, // What: Expect. Why: Some assertions wait on animations and debounced saves. How: This gives each expect up to 10 seconds.
@@ -105,7 +105,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 
 				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names that engine's Playwright browser.
-				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every per-engine project does. How: This picks it for Chromium only.
 
 
 			}
@@ -125,7 +125,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 				baseURL     : PRE_URL_STR,                                      // What: Base URL. Why: The policy runs only on the production build. How: This points the project's page.goto at the preview server.
 				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names that engine's Playwright browser.
-				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every per-engine project does. How: This picks it for Chromium only.
 
 
 			}
@@ -144,7 +144,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 
 				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names that engine's Playwright browser.
-				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every per-engine project does. How: This picks it for Chromium only.
 
 
 			}
@@ -163,7 +163,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 
 				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names it.
-				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every per-engine project does. How: This picks it for Chromium only.
 
 
 			}
@@ -182,7 +182,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 
 				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names it.
-				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every per-engine project does. How: This picks it for Chromium only.
 
 
 			}
@@ -201,7 +201,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 
 				browserName : engNamStr,                                        // What: Browser Name. Why: Each project runs in one engine. How: This names it.
-				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every project does. How: This picks it for Chromium only.
+				channel     : engNamStr === 'chromium' ? 'chromium' : undefined // What: Channel. Why: Chromium runs as full headless Chrome, as every per-engine project does. How: This picks it for Chromium only.
 
 
 			}
@@ -228,7 +228,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 	use : { // What: Use. Why: Every suite shares the same page setup. How: This sets the base URL, timezone, locale, service worker blocking, and failure artifacts.
 
 
-		baseURL        : SER_URL_STR,         // What: Base URL. Why: Specs navigate with short paths. How: This points every page.goto at the dev server.
+		baseURL        : SER_URL_STR,         // What: Base URL. Why: Specs navigate with short paths. How: This points page.goto at the dev server unless a project sets its own.
 		locale         : 'en-US',             // What: Locale. Why: Date labels and number formats must match from run to run. How: This runs every page in US English.
 		screenshot     : 'only-on-failure',   // What: Screenshot. Why: A failing step is easier to diagnose from what was on screen. How: This saves a screenshot only when a test fails.
 		serviceWorkers : 'block',             // What: Service Workers. Why: The PWA worker could serve cached files instead of the code under test. How: This blocks service worker registration.
@@ -246,7 +246,7 @@ const PLA_CON_OBJ = defineConfig({ // What: Playwright Config Object. Why: Playw
 
 			command             : 'npx vite --port 5190 --strictPort', // What: Command. Why: A strict port fails loudly instead of drifting onto another server's port. How: This starts the Vite dev server on 5190.
 			cwd                 : ROO_DIR_STR,                         // What: Current Working Directory. Why: Vite reads its config from the repo root. How: This starts the command there.
-			env                 : { VITE_FIREBASE_EMULATOR : '127.0.0.1', VITE_TIP_URL : TIP_URL_STR }, // What: Environment. Why: The interaction suite's settings spec checks the Buy Me a Coffee button opens its tip page, and the account suite must reach the Firebase Emulator, never the real project. How: This builds the app with the tip placeholder and the emulator's host.
+			env                 : { VITE_FIREBASE_EMULATOR : '127.0.0.1', VITE_TIP_URL : TIP_URL_STR }, // What: Environment. Why: The Buy Me a Coffee button needs a tip page address, and the app must reach the Firebase Emulator, never the real project. How: This starts the app with the tip placeholder and the emulator's host.
 			reuseExistingServer : false,                               // What: Reuse Existing Server. Why: A leftover server could be running other code. How: This starts a fresh server, failing the run if the port is taken.
 			timeout             : 60000,                               // What: Timeout. Why: The first start can take a while on a cold cache. How: This waits up to a minute for the server to answer.
 			url                 : SER_URL_STR                          // What: URL. Why: Playwright starts the tests only once the app answers. How: This is the address it polls.

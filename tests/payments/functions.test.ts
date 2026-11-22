@@ -49,7 +49,7 @@ import { test        } from 'node:test';                     // What: Test. Why:
 // #region Constants
 
 const LIV_COT_OBJ = { deploy : { context : 'production' } };     // What: Live Context Object. Why: Most cases run as the production site. How: This stands in for Netlify's context there.
-const PRE_COT_OBJ = { deploy : { context : 'deploy-preview' } }; // What: Preview Context Object. Why: A preview must not sell before the sandbox exists. How: This stands in for Netlify's context there.
+const PRE_COT_OBJ = { deploy : { context : 'deploy-preview' } }; // What: Preview Context Object. Why: A preview deploy sells from the sandbox and needs its own Polar token. How: This stands in for Netlify's context there.
 const WEB_SEC_STR = 'test-webhook-secret';                       // What: Webhook Secret String. Why: Test webhooks are signed with a known secret. How: This is it.
 
 // #endregion Constants
@@ -106,7 +106,31 @@ async function accNewFun ( verEmaBoo : boolean, staClaObj : object = {} ) : Prom
 
 
 
+// #region claReaFun
+
+/**
+ * claReaFun = Claim Read Function
+ *
+ * @summary
+ * Looks an account up in the auth emulator and returns its custom claims
+ * parsed from JSON, or an empty object when it has none.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param uidValStr - UID Value String: The account's UID.
+ *
+ * @returns A promise that resolves with the account's custom claims.
+ *
+ * @example
+ * ```ts
+ * await claReaFun(uidValStr) // => { paid: true }
+ * ```
+ *
+*/
+
 const claReaFun = async ( uidValStr : string ) => JSON.parse( ( await admPosFun( `/identitytoolkit.googleapis.com/v1/projects/${ EMU_PRO_STR }/accounts:lookup`, { localId : [ uidValStr ] } ) ).users[ 0 ].customAttributes || '{}' ); // What: Claim Read Function. Why: Each webhook case checks the account's claims afterwards. How: This looks the account up and parses its custom claims.
+
+// #endregion claReaFun
 
 
 

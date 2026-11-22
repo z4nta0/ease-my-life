@@ -169,7 +169,32 @@ async function holAddFun ( curPagObj : Page, holNamStr : string, holDatStr : str
 
 
 
+// #region revReaFun
+
+/**
+ * revReaFun = Revision Read Function
+ *
+ * @summary
+ * Reads the account's manifest from the Firestore emulator as its owner and
+ * returns its revision number, which moves each time an upload commits.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param manUrlStr - Manifest URL String: The manifest's REST address in the
+ *                    emulator.
+ *
+ * @returns A promise that resolves with the manifest's revision.
+ *
+ * @example
+ * ```ts
+ * await revReaFun(manUrlStr) // => 3
+ * ```
+ *
+*/
+
 const revReaFun = ( manUrlStr : string ) : Promise< number > => fetch( manUrlStr, { headers : { 'Authorization' : 'Bearer owner' } } ).then( ( resCurObj ) => resCurObj.json() ).then( ( manDocObj ) => Number( manDocObj.fields.rev.integerValue ) ); // What: Revision Read Function. Why: An upload lands when the manifest's revision moves. How: This reads the manifest from the emulator as its owner and returns its revision.
+
+// #endregion revReaFun
 
 
 
