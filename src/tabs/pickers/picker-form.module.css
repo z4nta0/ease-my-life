@@ -386,7 +386,7 @@
 
 }
 
-.forTexInp { /* What: Form Text Input. Why: Names are typed into a bordered field. How: This draws a rounded field that borders in the accent on focus. */
+.forTexInp { /* What: Form Text Input. Why: Names are typed into a bordered field. How: This draws a rounded field that eases its border to the accent color on focus. */
 
 
 	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -615,7 +615,7 @@
 
 }
 
-.modOptInp { /* What: Mode Option Input. Why: The native radio is redrawn as a small ring that fills when chosen. How: This clears its native look and draws an outlined circle at the base rhythm step. */
+.modOptInp { /* What: Mode Option Input. Why: The native radio is redrawn as a small ring that fills when chosen. How: This clears its native look, draws an outlined circle at the base rhythm step, and eases its border color. */
 
 
 	-webkit-appearance : none;
