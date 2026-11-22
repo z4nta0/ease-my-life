@@ -7,7 +7,7 @@ import cssModObj from './app.module.css'; // What: CSS Module Object. Why: This 
 import React     from 'react';            // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, for one) throughout, instead of importing individual named hooks.
 
 
-import { APP_NAM_OBJ  } from './platform/appearance.ts';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through the appearance module's theme functions. How: This supplies the palette effect's theme resolution, palette lookup, and palette application.
+import { APP_NAM_OBJ  } from './platform/appearance.ts';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through the appearance module's theme functions. How: This supplies the palette effect's theme and palette resolution and its palette application.
 import { BacFloCom    } from './ui/bg-flourish.tsx';             // What: Background Flourish Component. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared maiInnDiv ref and the current tab id.
 import { durMilFun    } from './utils/rhythm.ts';                // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FeaTouCom    } from './onboarding/app-features.tsx';    // What: Feature Tour Component. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.

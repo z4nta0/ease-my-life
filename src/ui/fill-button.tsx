@@ -52,7 +52,7 @@ type FbcProTyp = { isaDisBoo : boolean, labTexStr : string, onFilActFun : () => 
  *                            currently unavailable (e.g. already at full
  *                            charge).
  * @param props.labTexStr   - Label Text String: The button's own visible text
- *                            (e.g. "Fill", "Refill all").
+ *                            (e.g. "Refill").
  * @param props.onFilActFun - On Fill Action Function: The real Fill/Refill
  *                            action, called once the disabled guard passes.
  *

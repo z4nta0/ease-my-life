@@ -769,7 +769,7 @@ function FloColCom ( { floIteArr, sidKeyStr } : FccProTyp ) : React.JSX.Element 
 						top       : `${ floCurObj.topNum }px`,
 						transform : `rotate(${ floCurObj.rotNum }deg)`
 					}}
-				>{ /* What: Flourish Glyph Span Element. Why: This is the actual decorative glyph, absolutely positioned within its own parent gutter. How: This renders floCurObj's own symbol, sized/rotated/positioned entirely via the inline style above. */ }
+				>{ /* What: Flourish Glyph Span Element. Why: This is the actual decorative glyph, absolutely positioned within its own parent gutter. How: This renders floCurObj's own symbol, sized, rotated, and offset by the inline style above. */ }
 
 
 					{ floCurObj.symStr }
