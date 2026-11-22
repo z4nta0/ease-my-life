@@ -2737,7 +2737,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 			<header className={ cssModObj.pagHeaHed }>{ /* What: Page Header Header Element. Why: This groups the page's own kicker/help toggle, brand mark, title, and subtitle. How: This renders as a semantic header landmark above the filters/body wrapper. */ }
 
 
-				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The page's own kicker and help toggle sit side by side. How: This wraps the kicker span and the HelButCom. */ }
+				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The page's own kicker and help toggle sit side by side. How: This wraps the kicker div and the HelButCom. */ }
 
 
 					<div className={ cssModObj.staKicDiv }>Stats</div>{ /* What: Stats Kicker Div Element. Why: The page opens with a small labelled kicker naming it. How: This renders the literal word "Stats". */ }
@@ -3616,7 +3616,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 					{ !isaConBoo && ( // What: Headline Row Visibility Check. Why: The Conditionals scope has its own dedicated headline row above, so this generic one only belongs on every other scope. How: This renders it only while isaConBoo is false.
 
 
-						<div className={ cssModObj.staRowDiv }>{ /* What: Stat Row Div Element. Why: Every non-Conditionals scope shows 4 headline cards in one row. How: This renders either the Reminders-shaped set or the pick-shaped set, based on isaRemBoo. */ }
+						<div className={ cssModObj.staRowDiv }>{ /* What: Stat Row Div Element. Why: Every non-Conditionals scope shows 4 headline cards, in one row of four above 640px wide and in two rows of two at 640px and below. How: This renders either the Reminders-shaped set or the pick-shaped set, based on isaRemBoo. */ }
 
 
 							{ isaRemBoo ? ( // What: Reminders Headline Check. Why: The Reminders scope's own headline cards are shaped differently from a pick-based scope's. How: This renders the Reminders-shaped set while isaRemBoo is true, the pick-shaped set otherwise.
@@ -4069,7 +4069,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 						>{ /* What: Card Surface Component. Why: The Conditionals summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. Its data-element-name-hook is read by help mode. */ }
 
 
-							<div className={ cssModObj.sumHeaDiv }>{ /* What: Summary Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row, sharing this class with the Reminders summary below for consistent layout. How: This wraps the kicker div and the summary numbers div. */ }
+							<div className={ cssModObj.sumHeaDiv }>{ /* What: Summary Header Div Element. Why: The summary's own kicker and headline numbers are grouped at the top of the card, the numbers always on their own line below the kicker, sharing this class with the Reminders summary below. How: This wraps the kicker div and the summary numbers div. */ }
 
 
 								<div className={ cssModObj.staKicDiv }>Conditionals</div>{ /* What: Stats Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal word "Conditionals". */ }
@@ -4458,7 +4458,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 					{ scoValStr === 'all' && ( // What: Rankings Visibility Check. Why: The Most Picked/Coldest cards only make sense on the combined All view, not a single-picker scope. How: This renders both cards only while scoValStr is 'all'.
 
 
-						<div className={` ${ cssModObj.staRowDiv }   ${ cssModObj.staRowDivTwo } `}>{ /* What: Stat Row Div Element. Why: The two ranking cards sit side by side in their own row. How: This wraps the Most Picked and Coldest items Cards. */ }
+						<div className={` ${ cssModObj.staRowDiv }   ${ cssModObj.staRowDivTwo } `}>{ /* What: Stat Row Div Element. Why: The two ranking cards sit side by side in their own row above 640px wide and stack in one column at 640px and below. How: This wraps the Most Picked and Coldest items Cards. */ }
 
 
 							<RanCarCom
