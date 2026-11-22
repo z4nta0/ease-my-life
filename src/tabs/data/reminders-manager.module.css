@@ -988,7 +988,7 @@
 
 }
 
-.inlEdiDiv { /* What: Inline Editor Div. Why: The editor body blends into its row rather than drawing its own card, and fades in as it opens. How: This clears the card chrome and plays the shared row entrance. */
+.inlEdiDiv { /* What: Inline Editor Div. Why: The editor body blends into its row rather than drawing its own card, and fades in as it opens. How: This clears the card chrome and plays the shared editor entrance. */
 
 
 	animation     : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */

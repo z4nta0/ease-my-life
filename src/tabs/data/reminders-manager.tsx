@@ -66,23 +66,20 @@ import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record 
  * ITE_SOR_ARR = Item Sort Array
  *
  * @summary
- * Item-list sort options for the Data tab's Reminders section,
- * extrapolated from the same vocabulary as the Data tab's own
- * section/item sorts (see sorEntFun in list-sorting.ts). Reminders
- * have no per-item Active/Inactive concept (no enabled/disabled
- * toggle, only a schedule and a today's-completion state, which isn't
- * the same thing) and no Group, so only Name and Type (One-time vs
- * Recurring) apply besides Date, the reminder's own next eligible
- * occurrence (TAS_NAM_OBJ.nexEliFun), the same date a Skip confirm
- * already computes elsewhere in this file. Labeled Soonest/Latest
- * rather than "Low to High"/"High to Low" like the numeric sorts
- * elsewhere, matching the app's own wording for date proximity (e.g.
- * the ease editor's Soonest/Latest). A reminder with no next
- * occurrence at all (rare, effectively stale, normally purged before
- * it'd ever be seen here) is a genuinely missing value, not an
- * irrelevant field the way Range/Odds/Boost are for a conditional
- * whose mode doesn't use them, so it uses sorEntFun's ordinary
- * top/bottom-by-direction N/A placement rather than always-last.
+ * Item-list sort options for the Data tab's Reminders section, extrapolated
+ * from the same vocabulary as the Data tab's own section/item sorts (see
+ * sorEntFun in list-sorting.ts). Reminders have no per-item Active/Inactive
+ * concept (no enabled/disabled toggle, only a schedule and a
+ * today's-completion state, which isn't the same thing) and no Group, so only
+ * Name and Type (One-time vs Recurring) apply besides Date, the reminder's own
+ * next eligible occurrence (TAS_NAM_OBJ.nexEliFun). Labeled Soonest/Latest
+ * rather than "Low to High"/"High to Low" like the numeric sorts elsewhere,
+ * matching the app's own wording for date proximity (e.g. the ease editor's
+ * Soonest/Latest). A reminder with no next occurrence at all (rare,
+ * effectively stale, normally purged before it'd ever be seen here) is a
+ * genuinely missing value, not an irrelevant field the way Range/Odds/Boost
+ * are for a conditional whose mode doesn't use them, so it uses sorEntFun's
+ * ordinary top/bottom-by-direction N/A placement rather than always-last.
  *
  * Every entry shares one shape. Each row's own comment explains its
  * `keyStr`, while `labStr` repeats no comment of its own:
@@ -917,7 +914,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 	const iteSorStr = ( staAppObj.ui && staAppObj.ui.dataSort && staAppObj.ui.dataSort.reminders ) || 'name-asc';                           // What: Item Sort String. Why: The Items list's own sort needs a persisted, defaulted value to drive both the sort control and the comparator below. How: This reads staAppObj's own ui.dataSort.reminders, falling back to 'name-asc'.
 
 
-	const tasDatMap = new Map( visTasArr.map( ( curTasObj ) => { // What: Task Date Map. Why: TAS_NAM_OBJ.nexEliFun can walk up to ~3 years of days per call; computing every task's own next date once up front (rather than inside the comparator below, which runs it on every comparison) avoids doing that work redundantly. How: This maps each visible task to a [id, time] pair.
+	const tasDatMap = new Map( visTasArr.map( ( curTasObj ) => { // What: Task Date Map. Why: TAS_NAM_OBJ.nexEliFun can walk well over 3 years of days per call; computing every task's own next date once up front (rather than inside the comparator below, which runs it on every comparison) avoids doing that work redundantly. How: This maps each visible task to a [id, time] pair.
 
 
 		const nexEliObj = TAS_NAM_OBJ.nexEliFun( curTasObj, staAppObj.reminderOpts, staAppObj.holidays ); // What: Next Eligible Object. Why: This is the actual date sorEntFun sorts by for the date-asc/date-desc options. How: This calls TAS_NAM_OBJ.nexEliFun against curTasObj.
@@ -1289,7 +1286,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 														className={ cssModObj.lisRowDiv }
 
 														data-element-name-hook='lisRowDiv'
-													>{ /* What: List Row Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive), which also cost it an accessible name of its own. How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. Its data-element-name-hook is read by the tours and help mode. */ }
+													>{ /* What: List Row Div Element. Why: While editing, this is a plain div rather than a button, since a button can't legally contain the input below it (interactive-in-interactive). How: This renders the type icon, the live name input, and a real, separate collapse-chevron button. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 														<RowIcoCom isaOncBoo={ isaOncBoo } />{ /* What: Row Icon Component. Why: The type icon needs its own wrapper for styling. How: This renders a pin while isaOncBoo is true, a calendar otherwise. */ }

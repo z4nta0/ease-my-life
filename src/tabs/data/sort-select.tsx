@@ -16,8 +16,8 @@ import type { JSX } from 'react'; // What: JSX. Why: The component declares the 
  * sort-select.tsx = Sort Select
  *
  * @summary
- * A small labeled select reused for the sort controls on the Data tab: the
- * section-list sort and each section's own item-list sort.
+ * A small labeled select reused for the sort controls on the Data tab, such
+ * as a section's own item-list sort.
  *
  * Sections:
  *  - Components
@@ -39,8 +39,8 @@ type SscProTyp = { labTexStr : string, onChange : ( keyValStr : string ) => void
  * SorSelCom = Sort Select Component
  *
  * @summary
- * A small labeled select reused for the sort controls on the Data
- * tab: the section-list sort and each section's own item-list sort.
+ * A small labeled select reused for the sort controls on the Data tab, such
+ * as a section's own item-list sort.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
