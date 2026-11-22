@@ -570,7 +570,7 @@ async function askPerFun ( forAskBoo : boolean ) : Promise< boolean > {
  *
 */
 
-const askFirFun = () : Promise< boolean > => askPerFun( false ); // What: Ask First Function. Why: The first picker is the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked (and was denied) is not asked again.
+const askFirFun = () : Promise< boolean > => askPerFun( false ); // What: Ask First Function. Why: The first picker is the first instant there is data worth protecting from eviction. How: This calls askPerFun unforced, so a device that already asked is not asked again.
 
 // #endregion askFirFun
 
