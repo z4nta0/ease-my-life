@@ -1164,7 +1164,7 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 
 
 
-			if ( actIteObj && !itePooArr.includes( actIteObj ) ) return { cycArr : [], picObj : null, updArr : [] }; // What: Paused Streak Guard. Why: When another picker already placed the active item's own name on Today, the streak pauses for the day rather than duplicating it or abandoning a half-spent item. How: This returns the empty result, so no card appears and nothing changes until tomorrow's run continues the streak.
+			if ( actIteObj && !itePooArr.includes( actIteObj ) ) return { cycArr : [], picObj : null, updArr : [] }; // What: Paused Streak Guard. Why: When another picker already placed the active item's own name on Today, the streak pauses for the day rather than duplicating it or abandoning a half-spent item. How: This returns the empty result, so the picker makes no pick and no updates on this run.
 
 
 
@@ -1333,7 +1333,7 @@ const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: This is the one na
 
 
 
-export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ, type PicResTyp, type PicUpdTyp }; // What: Named Exports. Why: The three name normalizers and the two pick types are exported individually, and every other helper is reached through the PIC_NAM_OBJ namespace. How: This exports all four bindings, plus the pick result and update types, by name in one statement at the very end of the file.
+export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ, type PicResTyp, type PicUpdTyp }; // What: Named Exports. Why: The three name normalizers and the two pick types are exported individually beside PIC_NAM_OBJ, which carries the engine's shared functions and constants, and every other helper stays private to this file. How: This exports those four bindings, plus the pick result and update types, by name in one statement at the very end of the file.
 
 // #endregion Exports
 

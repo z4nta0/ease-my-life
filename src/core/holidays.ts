@@ -6,7 +6,7 @@
 import { isoDayFun } from '../utils/date.ts'; // What: ISO Day Function. Why: Holiday dates are matched against local-calendar YYYY-MM-DD keys. How: This formats each computed holiday date as that key.
 
 
-import type { HolStaTyp } from './data-model.ts'; // What: Holiday State Type. Why: Every resolver reads the saved holiday settings. How: This types each holStaObj parameter.
+import type { HolStaTyp } from './data-model.ts'; // What: Holiday State Type. Why: The functions that read the saved holiday settings need their shape. How: This types each holStaObj parameter.
 
 // #endregion Imports
 
