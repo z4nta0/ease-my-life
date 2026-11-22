@@ -163,7 +163,7 @@ test( 'the daily generator switch and run time save', async ( { page : curPagObj
 
 
 
-test( 'holidays can be turned off, added, and removed', async ( { page : curPagObj } ) => { // What: Holiday Test. Why: Disabling, adding, and removing a holiday must each save. How: This disables one, adds one, and removes it, checking IndexedDB and the row animations at each step.
+test( 'holidays can be turned off, added, and removed', async ( { page : curPagObj } ) => { // What: Holiday Test. Why: Disabling, adding, and removing a holiday must each save. How: This disables one, adds one, and removes it, waiting for IndexedDB to hold each change and checking the removed row's exit animation.
 
 
 	// #region Holiday Disable
