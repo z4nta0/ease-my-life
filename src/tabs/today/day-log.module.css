@@ -10,15 +10,12 @@
  * header, icon key, and body. The body holds either the reminders table or,
  * for a picker group, a Conditionals block and one block per picker, each a
  * table of items with their value at generation, change, value after, and
- * status chips. The open chip keys off its own aria-pressed, a collapsed
- * block off its header's aria-expanded, a neutral mode pill off
- * data-mode-neutral-active, a zero boost off data-boost-zero-active, and a
- * row's status off data-row-done-active, data-row-due-active,
- * data-row-upcoming-active, or data-row-vacation-active. The trend
- * directions (up, down, flat), the status icon tints, and the status pill
- * kinds are modifier classes. Each table cell carries its own column's
- * alignment, and the narrower widths re-grid the tables through container
- * queries on the app.
+ * status chips. The open chip keys off its own aria-pressed, a collapsed block
+ * off its header's aria-expanded, and mode pills, boosts, and row statuses off
+ * presence-only data attributes. The trend directions (up, down, flat), the
+ * status icon tints, and the status pill kinds are modifier classes. Each
+ * table cell carries its own column's alignment, and the narrower widths
+ * re-grid the tables through container queries on the app.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -421,7 +418,7 @@
 /* #region bloHeaBut */
 
 .bloHeaBut,
-.bloHeaDiv { /* What: Block Header Button And Div. Why: Each picker block's header opens and closes it, laying the chevron, name, and summary out in columns. How: This strips the button chrome and lays them out on a three-column grid. */
+.bloHeaDiv { /* What: Block Header Button And Div. Why: Each picker block's header, a button that opens and closes it or a div that only titles it, lays the chevron, name, and summary out in columns. How: This strips the button chrome and lays them out on a three-column grid. */
 
 
 	align-items           : center;
