@@ -42,8 +42,8 @@ import React from 'react'; // What: React. Why: useModIneFun applies and lifts t
  * is open. It finds the modal's own top-level node, the ancestor of
  * insEleRef's element that sits directly in the body (the portal's root),
  * then sets inert on each of that node's siblings except live regions, and
- * on unmount removes it from exactly the elements it set it on, so an
- * element that was already inert stays that way.
+ * when the modal closes or unmounts removes it from exactly the elements it
+ * set it on, so an element that was already inert stays that way.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
