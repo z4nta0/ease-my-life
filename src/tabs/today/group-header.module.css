@@ -414,7 +414,7 @@
 /* #region merConDiv */
 
 .merConDiv,
-.namConDiv { /* What: Merge Confirm Div And Name Conflict Div. Why: Merging two groups needs a confirmation bar right under the header. How: This lays out the message and actions in a wrapping accent-tinted bar that drops in. */
+.namConDiv { /* What: Merge Confirm Div And Name Conflict Div. Why: Merging two groups needs a confirmation bar right under the header. How: This lays out the message and actions in a wrapping accent-tinted bar that drops in, wrapping the merge prompt's actions under its message at about 405px wide and below for the fixture's group names. */
 
 
 	align-items     : center;

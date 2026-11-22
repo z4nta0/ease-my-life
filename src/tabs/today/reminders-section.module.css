@@ -1165,7 +1165,7 @@
 
 /* #region skiConDiv */
 
-.skiConDiv { /* What: Skip Confirm Div. Why: Skipping a reminder asks first, in a recessed card under it. How: This spreads the question and its actions across a wrapping row and fades the card in. */
+.skiConDiv { /* What: Skip Confirm Div. Why: Skipping a reminder asks first, in a recessed card under it. How: This spreads the question and its actions across a wrapping row and fades the card in, wrapping its actions under the question at about 445px wide and below for its longest date. */
 
 
 	align-items     : center;

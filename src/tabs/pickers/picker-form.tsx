@@ -1369,7 +1369,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								className={ cssModObj.forGroDiv }
 
 								data-element-name-hook='forGroDiv'
-							>{ /* What: Form Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. Its data-element-name-hook is read by help mode and the test suites. */ }
+							>{ /* What: Form Groups Div Element. Why: Every existing group chip plus the "New Group" chip sit in one row, wrapping onto two lines at about 545px wide and below for the fixture's groups. How: This maps exiGroArr to one chip each, then appends the fixed "New Group" chip. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 								{ exiGroArr.map( ( curGroStr ) => ( // What: Group Chip List Render. Why: Every existing group needs its own selectable chip. How: This maps exiGroArr to one button per curGroStr.
@@ -1779,7 +1779,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											className={ cssModObj.schRowDiv }
 
 											data-element-name-hook='schRowDiv'
-										>{ /* What: Schedule Row Div Element. Why: The weekday chips and their preset shortcuts sit side by side. How: This wraps WeeChiCom and schPreDiv. Its data-element-name-hook is read by help mode. */ }
+										>{ /* What: Schedule Row Div Element. Why: The weekday chips and their preset shortcuts sit side by side, wrapping the presets under the chips at about 530px wide and below. How: This wraps WeeChiCom and schPreDiv. Its data-element-name-hook is read by help mode. */ }
 
 
 											<WeeChiCom

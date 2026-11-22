@@ -14,10 +14,11 @@
  * The editor has two layouts, chosen by its own layVarStr prop. Today's
  * stacked layout (.schEdiDiv--stacked) keeps each field's label above its
  * control, with a divider between fields. The Data tab's rows layout
- * (.schEdiDiv--rows) puts each field on its own full-bleed row, label left and
- * control right, matching the picker item editor. The segmented controls
- * inside a row read --seg-max-wid and --seg-gri-fle, which the rows layout
- * sets, rather than being styled from here.
+ * (.schEdiDiv--rows) puts each field on its own full-bleed row, matching the
+ * picker item editor: the Repeat field's control takes its own line under the
+ * label, while a field like the days keeps its label left and control right.
+ * The segmented controls inside a row read --seg-max-wid and --seg-gri-fle,
+ * which the rows layout sets, rather than being styled from here.
  *
  * The fields share their look with the cadence editor and the app's other
  * forms, so those declarations are copied here from the shared classes.
@@ -96,7 +97,7 @@
 
 
 }
-.schEdiDiv--rows .forFieDiv { /* What: Form Field Div In Schedule Editor Div Rows. Why: In the Data tab each field is one full-bleed row, label left and control right, wrapping on a narrow screen. How: This lays the field out as a wrapping row pulled out to the edges with a bottom divider, and sets the segmented control's row sizing. */
+.schEdiDiv--rows .forFieDiv { /* What: Form Field Div In Schedule Editor Div Rows. Why: In the Data tab each field is one full-bleed row with its label at the start. The Repeat field always puts its control on its own line under the label, while a field like the days holds one line at 320px. How: This lays the field out as a wrapping row pulled out to the edges with a bottom divider, and sets the segmented control's row sizing. */
 
 
 	--seg-gri-fle : 100%; /* What: Segment Grid Flex. Why: The Repeat control takes its own full-width line under the label. How: Segmented controls inside the row read this as their flex basis. */

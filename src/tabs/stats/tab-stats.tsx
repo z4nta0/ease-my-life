@@ -4365,7 +4365,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 						>{ /* What: Card Surface Component. Why: The Reminders summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. Its data-element-name-hook is read by help mode. */ }
 
 
-							<div className={ cssModObj.sumHeaDiv }>{ /* What: Summary Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row. How: This wraps the kicker div and the summary numbers div. */ }
+							<div className={ cssModObj.sumHeaDiv }>{ /* What: Summary Header Div Element. Why: The summary's own kicker and headline numbers sit together in one row, wrapping its numbers under the kicker at about 425px wide and below. How: This wraps the kicker div and the summary numbers div. */ }
 
 
 								<div className={ cssModObj.staKicDiv }>Reminders completed</div>{ /* What: Stats Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal words "Reminders completed". */ }

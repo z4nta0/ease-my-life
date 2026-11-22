@@ -214,7 +214,7 @@
 
 /* #region accFieDiv */
 
-.accFieDiv { /* What: Account Field Div. Why: A field and its button share one line, the button centered against the field rather than the whole row. How: This lays them out in a wrapping, vertically centered row below the row's text. */
+.accFieDiv { /* What: Account Field Div. Why: A field and its button share one line, the button centered against the field rather than the whole row. How: This lays them out in a wrapping, vertically centered row below the row's text, wrapping the button under the field at about 550px wide and below for its longest label. */
 
 
 	--but-bas-fle : 0 0 auto; /* What: Button Base Flex. Why: The button should keep its size beside a growing field. How: ButBasCom reads this for its own flex. */
@@ -276,7 +276,7 @@
 
 /* #endregion setInfDiv */
 
-.accChoDiv { /* What: Account Choice Div. Why: The two first-sync choices sit side by side, wrapping onto two lines when there isn't room. How: This lays them out in a wrapping row. */
+.accChoDiv { /* What: Account Choice Div. Why: The two first-sync choices sit side by side, wrapping onto two lines at about 450px wide and below. How: This lays them out in a wrapping row. */
 
 
 	display   : flex;

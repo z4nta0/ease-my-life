@@ -355,7 +355,7 @@
 
 /* #region picActDiv */
 
-.picActDiv { /* What: Picker Actions Div. Why: The run's buttons sit in a wrapping row under the stage. How: This lays them out in a centered, wrapping row. */
+.picActDiv { /* What: Picker Actions Div. Why: The run's buttons sit in a wrapping row under the stage. How: This lays them out in a centered, wrapping row, wrapping onto two lines at about 360px wide and below. */
 
 
 	align-items : center;
@@ -782,7 +782,7 @@
 
 /* #region delConDiv */
 
-.delConDiv { /* What: Delete Confirm Div. Why: Deleting asks first, in place of the row's content. How: This spreads the question and its actions across a wrapping row and slides it in. */
+.delConDiv { /* What: Delete Confirm Div. Why: Deleting asks first, in place of the row's content. How: This spreads the question and its actions across a wrapping row and slides it in, wrapping its actions under the question at about 560px wide and below for its longest name. */
 
 
 	align-items     : center;

@@ -44,7 +44,7 @@
 
 
 }
-.segConDiv--grid { /* What: Segment Control Div Grid. Why: Repeat's five options wrap on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, spreading its columns across the full width so no large gap is left at the end of a row. */
+.segConDiv--grid { /* What: Segment Control Div Grid. Why: Repeat's five options wrap on a narrow screen, and wrapped flex rows justify on their own, leaving pills stranded at opposite edges. How: This switches it to an auto-fit grid so every wrapped row lines up under the row above, spreading its columns across the full width so no large gap is left at the end of a row, wrapping onto two rows at about 485px wide and below in Today's reminder form. */
 
 
 	display               : grid;

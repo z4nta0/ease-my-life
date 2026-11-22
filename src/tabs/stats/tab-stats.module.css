@@ -1472,7 +1472,7 @@
 
 /* #region sumHeaDiv */
 
-.sumHeaDiv { /* What: Summary Header Div. Why: A summary card's kicker and its headline stats share the top, wrapping when long. How: This spreads them across a wrapping baseline row. */
+.sumHeaDiv { /* What: Summary Header Div. Why: A summary card's kicker and its headline stats share the top. How: This spreads them across a wrapping baseline row, wrapping at about 425px wide and below on the Reminders card. */
 
 
 	align-items     : baseline;

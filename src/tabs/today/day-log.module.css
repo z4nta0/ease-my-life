@@ -253,7 +253,7 @@
 
 /* #region keyIteSpa */
 
-.keyIteSpa { /* What: Key Items Span. Why: The icons and their meanings flow into columns as wide as they need. How: This lays them out on an auto-fitting grid. */
+.keyIteSpa { /* What: Key Items Span. Why: The icons and their meanings flow into columns as wide as they need. How: This lays them out on an auto-fitting grid, breaking onto more rows at about 555px wide and below, and briefly at about 770px just above the 760px switch. */
 
 
 	align-items           : center;
@@ -616,7 +616,7 @@
 
 /* #region bloSumSpa */
 
-.bloSumSpa { /* What: Block Summary Span. Why: A picker's header ends with its done counts, pushed right and wrapping when tight. How: This lays them out in a right-aligned wrapping mono row. */
+.bloSumSpa { /* What: Block Summary Span. Why: A picker's header ends with its done counts, pushed right. How: This lays them out in a right-aligned wrapping mono row, holding one line at 320px. */
 
 
 	align-items     : center;
@@ -1239,7 +1239,7 @@
 
 /* #region rowStaSpa */
 
-.rowStaSpa { /* What: Row Status Span. Why: A row's status chips or pill sit right-aligned in the last column, wrapping when tight. How: This lines them up in a right-aligned wrapping row. */
+.rowStaSpa { /* What: Row Status Span. Why: A row's status chips or pill sit right-aligned in the last column. How: This lines them up in a right-aligned wrapping row, holding one line at 320px. */
 
 
 	align-items     : center;

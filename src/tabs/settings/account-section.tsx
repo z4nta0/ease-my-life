@@ -273,7 +273,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 							>Enter the email address the sign-in link was sent to.</span>{ /* What: Settings Sub Span Element. Why: The link alone doesn't say whose it is. How: This asks for the address, and describes the field. */ }
 
 
-							<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field when there isn't room. */ }
+							<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field at about 520px wide and below. */ }
 
 
 								<input
@@ -377,7 +377,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 									>{ linSenStr ? `A sign-in link is on its way to ${ linSenStr }. Open it on this device to finish.` : "We'll email you a link that signs you in, with no password to remember." }</span>{ /* What: Settings Sub Span Element. Why: The row explains the link before sending it and where it went after. How: This picks its sentence by whether a link was sent, fading the new one in through its second class, setSubSpaFade, and describes the field. */ }
 
 
-									<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field when there isn't room. */ }
+									<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field at about 550px wide and below for its longest label. */ }
 
 
 										<input
@@ -446,7 +446,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 									>Using the installed app? If the link opened in your browser instead, copy that page's address and paste it here.</span>{ /* What: Settings Sub Span Element. Why: A link that opened somewhere other than this app needs another way to finish. How: This explains the workaround, and describes the field. */ }
 
 
-									<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field when there isn't room. */ }
+									<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field at about 520px wide and below. */ }
 
 
 										<input
@@ -584,7 +584,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 
-								<div className={ cssModObj.accChoDiv }>{ /* What: Account Choice Div Element. Why: The two choices sit side by side, wrapping onto two lines on a narrow screen. How: This holds both buttons. */ }
+								<div className={ cssModObj.accChoDiv }>{ /* What: Account Choice Div Element. Why: The two choices sit side by side, wrapping onto two lines at about 450px wide and below. How: This holds both buttons. */ }
 
 
 									<ButBasCom

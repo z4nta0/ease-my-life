@@ -445,7 +445,7 @@
 
 /* #region forGroDiv */
 
-.forGroDiv { /* What: Form Groups Div. Why: The existing groups and the New Group chip wrap together under the label. How: This lays them out in a wrapping row. */
+.forGroDiv { /* What: Form Groups Div. Why: The existing groups and the New Group chip wrap together under the label. How: This lays them out in a wrapping row, wrapping onto two lines at about 545px wide and below for the fixture's groups. */
 
 
 	display    : flex;
@@ -1058,7 +1058,7 @@
 
 /* #region schRowDiv */
 
-.schRowDiv { /* What: Schedule Row Div. Why: The weekday chips and their presets sit on one row that wraps when tight. How: This lines them up in a wrapping row. */
+.schRowDiv { /* What: Schedule Row Div. Why: The weekday chips and their presets sit on one row. How: This lines them up in a wrapping row, wrapping the presets under the chips at about 530px wide and below. */
 
 
 	align-items : center;
@@ -1072,7 +1072,7 @@
 
 /* #region schPreDiv */
 
-.schPreDiv { /* What: Schedule Presets Div. Why: The Every Day, Weekdays, and Weekends shortcuts sit together. How: This lines them up in a wrapping row. */
+.schPreDiv { /* What: Schedule Presets Div. Why: The Every Day, Weekdays, and Weekends shortcuts sit together. How: This lines them up in a wrapping row, holding one line at 320px. */
 
 
 	display   : flex;
@@ -1380,7 +1380,7 @@
 
 /* #region delConDiv */
 
-.delConDiv { /* What: Delete Confirm Div. Why: Deleting asks first, in place of the row's content. How: This spreads the question and its actions across a wrapping row and slides it in. */
+.delConDiv { /* What: Delete Confirm Div. Why: Deleting asks first, in place of the row's content. How: This spreads the question and its actions across a wrapping row and slides it in, wrapping its actions under the question at about 560px wide and below for its longest name. */
 
 
 	align-items     : center;
