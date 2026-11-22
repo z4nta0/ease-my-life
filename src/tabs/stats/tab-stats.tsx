@@ -47,12 +47,11 @@ import type { VclRowTyp } from '../../core/data-model.ts'; // What: Vacation-Log
  * @summary
  * The Stats tab: the pick-log-derived history view, an activity heatmap,
  * per-picker breakdown, and reminder/conditional history, all filterable by
- * Group/Type/Show and a date range, paginated (PagNavCom) once a list runs
- * long. BreBarCom renders the stacked breakdown bars, HeaLegCom the heatmap's
- * heat legend, and relWheFun, couLevFun, outCouFun, and remTalFun are small
- * date, heatmap, and tally helpers the rest of the file reads from.
- * STA_RAN_ARR, SOU_MET_ARR, and TYP_MET_ARR define the range pills and
- * breakdown segments. TabStaCom ties every section together as the tab.
+ * Group/Type/Show and a date range, paginated once a list runs long. It holds
+ * the lookup tables behind the range pills and breakdown segments, small date,
+ * heatmap, and tally helpers, the stacked breakdown bars, the heat legend, the
+ * pager, the ranking card, and the tab component that ties every section
+ * together.
  *
  * Sections:
  *  - Constants
@@ -80,7 +79,7 @@ const PER_DAY_OBJ : Record< string, number > = { monthly : 30, weekly : 7, yearl
 
 
 
-const REM_SIZ_NUM = 10; // What: Reminder Size Number. Why: The Reminders breakdown card pages like Gmail, 10 rows at a time. How: This is passed straight through to PagNavCom as its own pagSizNum.
+const REM_SIZ_NUM = 10; // What: Reminder Size Number. Why: The Reminders breakdown card pages its list 10 rows at a time. How: This is passed straight through to PagNavCom as its own pagSizNum.
 
 
 
@@ -968,7 +967,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const todIsoStr = isoDayFun( todDatObj ); // What: Today ISO String. Why: The streak, heatmap, and "last picked" math all need today's own calendar day as a plain string. How: This converts todDatObj via the shared isoDayFun helper.
 
 
-	const cutIsoStr = React.useMemo( () => { // What: Cutoff ISO String Memo. Why: Every range-filtered query below needs one shared lower-bound date to compare a row's own date against. How: This computes today minus the active range's own day count, or null for "All time"'s no-cutoff case.
+	const cutIsoStr = React.useMemo( () => { // What: Cutoff ISO String Memo. Why: Every range-filtered query below needs one shared lower-bound date to compare a row's own date against. How: This computes today minus one day fewer than the active range's own day count (the range includes today), or null for "All time"'s no-cutoff case.
 
 
 		if ( ranDefObj.dayNum === Infinity ) return null; // What: No Cutoff Guard. Why: "All time" has no lower bound at all. How: This returns null, which every range-filtered query below treats as "include everything".
@@ -1456,7 +1455,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		return () => cleFunArr.forEach( ( cleCurFun ) => cleCurFun() ); // What: Effect Cleanup Return. Why: Every row's own cleanup function built above must actually run on unmount or re-run. How: This invokes each one in turn.
 
 
-	}, [ picLisArr.length, remEnaBoo, scoValStr, ranValStr, metKeyStr, remMetStr, conMetStr, isaConBoo, isaRemBoo, staGroStr, typFilStr, exiModArr.length, visPicArr.length ] ); // What: Effect Dependency Array. Why: Any change that can mount, unmount, resize, or reflow one of these rows needs this to re-attach its listeners against the current DOM nodes. How: picLisArr.length, staGroStr, typFilStr, and visPicArr.length change how many pills the Show and Group rows hold, exiModArr.length and remEnaBoo decide whether the Type row exists, scoValStr, isaConBoo, and isaRemBoo swap which scope's metric rows mount, ranValStr moves the Range row's selection, and metKeyStr, remMetStr, and conMetStr move each metric row's selection.
+	}, [ picLisArr.length, remEnaBoo, scoValStr, ranValStr, metKeyStr, remMetStr, conMetStr, isaConBoo, isaRemBoo, staGroStr, typFilStr, exiModArr.length, visPicArr.length ] ); // What: Effect Dependency Array. Why: Any change that can mount, unmount, resize, or reflow one of these rows needs this to re-attach its listeners against the current DOM nodes. How: picLisArr.length, staGroStr, typFilStr, and visPicArr.length change how many pills the Show and Group rows hold, exiModArr.length and remEnaBoo each can mount the Type row, scoValStr, isaConBoo, and isaRemBoo swap which scope's metric rows mount, ranValStr moves the Range row's selection, and metKeyStr, remMetStr, and conMetStr move each metric row's selection.
 
 	// #endregion Filter Row Scroll Fades
 
@@ -1489,7 +1488,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		} );
 
 
-	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the active scope, the range cutoff, the Reminders-scope flag, or the hidden-picker set changes. How: Each dependency corresponds to one of the four filter conditions above (or the log itself).
+	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This filtered view only ever needs recomputing when the raw log, the active scope, the range cutoff, the Reminders-scope flag, or the hidden-picker set changes. How: picLogArr is the log itself, hidPicSet, scoValStr, and cutIsoStr feed the hidden, scope, and range checks, and isaRemBoo gates the early return.
 
 
 	const rejCouMap = React.useMemo( () => { // What: Rejected Count Map Memo. Why: The Pick breakdown's own "Re-Rolled Away" metric needs a per-item rejection count under the same scope/range rules as picRowArr. How: This counts, through outCouFun, only 'rejected'-outcome rows matching the active filters. // Per-item count of re-rolled-away (rejected) rows, range + scope aware.
@@ -1498,7 +1497,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		return outCouFun( 'rejected', picLogArr, hidPicSet, scoValStr, cutIsoStr, isaRemBoo ); // What: Rejected Count Return. Why: The breakdown's Re-Rolled Away column reads this per-item map. How: This counts the 'rejected' rows through outCouFun.
 
 
-	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: Each dependency gates one of the same four filter conditions.
+	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: These are the same inputs picRowArr reads, with isaRemBoo making outCouFun return an empty map.
 
 
 	const skiCouMap = React.useMemo( () => { // What: Skipped Count Map Memo. Why: The Pick breakdown's own "Skipped" metric needs a per-item skip count under the same scope/range rules as picRowArr. How: This counts, through outCouFun, only 'skipped'-outcome rows matching the active filters. // Per-item count of skipped rows, range + scope aware.
@@ -1507,7 +1506,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		return outCouFun( 'skipped', picLogArr, hidPicSet, scoValStr, cutIsoStr, isaRemBoo ); // What: Skipped Count Return. Why: The breakdown's Skipped column reads this per-item map. How: This counts the 'skipped' rows through outCouFun.
 
 
-	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: Each dependency gates one of the same four filter conditions.
+	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: These are the same inputs picRowArr reads, with isaRemBoo making outCouFun return an empty map.
 
 
 	const remRowArr = React.useMemo( () => ( // What: Reminder Row Array Memo. Why: Every reminder-shaped card below shares this one type/hidden/range-filtered view of the reminder completion log. How: This keeps only rows whose own type opts into Stats, whose own task isn't hidden, and whose own completion date is inside the active range. // Reminder rows for the active range.
@@ -2060,7 +2059,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 		// #region Day Info Build
 
-		const dayInfMap = new Map(); // What: Day Info Map. Why: The run-detection loop below needs each date's own item and depleted-end flag, keyed for lookup. How: This maps each pick date to a small { itemId, depletedEnd } record.
+		const dayInfMap = new Map(); // What: Day Info Map. Why: The run-detection loop below needs each date's own item and depleted-end flag, keyed for lookup. How: This maps each pick date to a small { ideStr, depBoo } record.
 
 
 		for ( const rowCurObj of picRowArr ) dayInfMap.set( rowCurObj.date, { // What: Day Info Population Loop. Why: Every logged pick contributes its own date's item/depleted-end pair. How: This sets one entry per row, keyed by its own date.
@@ -2414,7 +2413,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-	const lasForFun = ( dayCouNum : number, uniModStr : string ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct elapsed-time label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days ago" string. // Human label for "last picked", in the active unit.
+	const lasForFun = ( dayCouNum : number, uniModStr : string ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct elapsed-time label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days" string, with exactly one calendar day read as "Yesterday". // Human label for "last picked", in the active unit.
 
 
 		if ( uniModStr === 'eligible' ) { // What: Eligible Mode Branch. Why: Eligible-mode "last picked" is already a period count, phrased differently from the calendar branch below. How: This special-cases zero, then a cadenced or plain count.
@@ -4069,7 +4068,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 						>{ /* What: Card Surface Component. Why: The Conditionals summary shares the same card chrome as every other stat card. How: This wraps the summary header and either the summary list or an empty state. Its data-element-name-hook is read by help mode. */ }
 
 
-							<div className={ cssModObj.sumHeaDiv }>{ /* What: Summary Header Div Element. Why: The summary's own kicker and headline numbers are grouped at the top of the card, the numbers always on their own line below the kicker, sharing this class with the Reminders summary below. How: This wraps the kicker div and the summary numbers div. */ }
+							<div className={ cssModObj.sumHeaDiv }>{ /* What: Summary Header Div Element. Why: The summary's own kicker and headline numbers are grouped at the top of the card. How: This wraps the kicker div and the summary numbers div. */ }
 
 
 								<div className={ cssModObj.staKicDiv }>Conditionals</div>{ /* What: Stats Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders the literal word "Conditionals". */ }
@@ -4906,7 +4905,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 													) ) }
 
-													{ metPlaBoo && ( // What: Plain Metric Value Check. Why: These four metrics all show the same plain raw-count shape, just reading a different field. How: This renders iteCurObj's own field named by effMetStr only while effMetStr matches one of these four.
+													{ metPlaBoo && ( // What: Plain Metric Value Check. Why: These four metrics all show the same plain raw-count shape, just reading a different field. How: This renders the plain-count span only while effMetStr matches one of these four.
 
 
 														<span className={ cssModObj.metNumSpa }>{ iteCurObj[ MET_FIE_OBJ[ effMetStr ] ] }</span> // What: Metric Number Span Element. Why: These four metrics each show one raw count. How: This reads the row field MET_FIE_OBJ maps effMetStr to.
