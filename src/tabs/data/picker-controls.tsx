@@ -960,7 +960,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 						className={ cssModObj.groPilDiv }
 
-						data-rail-wheel-scroll
+						data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 
 						aria-label='Picker group'
 						role='radiogroup'
@@ -1286,7 +1286,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								className={ cssModObj.conRaiDiv }
 
 								data-element-name-hook='conRaiDiv'
-								data-rail-wheel-scroll
+								data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 							>{ /* What: Conditional Rail Div Element. Why: This is the actual scrollable pill rail, alphabetical except the attached conditional pins to the front. How: This maps every conditional (sorted with the attached one, draPicObj.conditionalId, first, then by name) to one pill each. Its data-element-name-hook is read by help mode. */ }
 
 

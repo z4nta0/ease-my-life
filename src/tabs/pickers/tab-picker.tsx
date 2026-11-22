@@ -738,7 +738,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 							className={ cssModObj.picTabDiv }
 
 							data-element-name-hook='picTabDiv'
-							data-rail-wheel-scroll
+							data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 						>{ /* What: Picker Tab Div Element. Why: The Add New Picker tab plus one tab per currently-visible picker need a horizontally-scrolling rail; re-keying by the two filters together replays each tab's own stagger-in animation whenever the filtered set changes. How: This wraps the Add New Picker tab and one tab per entry in sorPicArr. Its data-element-name-hook is read by the tours and help mode. */ }
 
 

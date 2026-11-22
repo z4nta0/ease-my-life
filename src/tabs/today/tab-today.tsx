@@ -4074,7 +4074,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						className={ cssModObj.groRaiAsi }
 
 						data-element-name-hook='groRaiAsi'
-						data-rail-wheel-scroll
+						data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 
 						aria-label='Groups'
 					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, at 760px wide and below, the horizontal pill bar) listing every block. How: This renders the "Groups" kicker, a rail button for each bloOrdArr entry that has one, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tours and help mode. */ }

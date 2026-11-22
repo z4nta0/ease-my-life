@@ -3054,7 +3054,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 							className={ cssModObj.scoTabDiv }
 
 							data-element-name-hook='scoTabDiv'
-							data-rail-wheel-scroll
+							data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 						>{ /* What: Scope Tab Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its tabs' enter animation) whenever the Group/Type filter pair changes. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
@@ -3160,7 +3160,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 							className={ cssModObj.ranPilDiv }
 
 							data-element-name-hook='ranPilDiv'
-							data-rail-wheel-scroll
+							data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 						>{ /* What: Range Pills Div Element. Why: This is the actual scrollable row of Range filter pills. How: This renders one pill per STA_RAN_ARR entry. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
@@ -3400,7 +3400,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 										className={ cssModObj.breMetDiv }
 
-										data-rail-wheel-scroll
+										data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 									>{ /* What: Breakdown Metrics Div Element. Why: The user needs a way to pivot the breakdown list across five different metrics. How: This renders one pill per entry in the inline metric-label list below. */ }
 
 
@@ -4207,7 +4207,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 									className={ cssModObj.breMetDiv }
 
-									data-rail-wheel-scroll
+									data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 								>{ /* What: Breakdown Metrics Div Element. Why: The user needs a way to pivot the breakdown list across three different metrics. How: This renders one pill per entry in the inline metric-label list below. */ }
 
 
@@ -4524,7 +4524,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 								className={ cssModObj.breMetDiv }
 
-								data-rail-wheel-scroll
+								data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 
 								aria-label='Breakdown metric'
 								role='tablist'

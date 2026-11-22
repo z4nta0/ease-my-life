@@ -1725,7 +1725,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						className={ cssModObj.scoTabDiv }
 
 						data-element-name-hook='scoTabDiv'
-						data-rail-wheel-scroll
+						data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 					>{ /* What: Scope Tab Div Element. Why: This is the actual box rail, re-keyed when the Group or Type filter changes so its own entrance animation replays. How: This renders the All box (when present), then one box per Conditionals, Reminders, and visible picker entry built inline below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
