@@ -152,6 +152,7 @@
 
 	align-items     : center;
 	display         : flex;
+	isolation       : isolate;                             /* What: Stage Stacking Context. Why: The glow's negative stack level would otherwise drop it behind the card's own background, out of sight. How: This makes the stage its own stacking context, so the glow sits below the name but above the card. */
 	justify-content : center;
 	min-height      : calc( var( --ver-rhy-p07 ) * 1rem ); /* Vertical Rhythm Base Plus 7 ~= 104.323px */
 	position        : relative;
@@ -260,7 +261,7 @@
 	pointer-events : none;
 	position       : absolute;
 	width          : 60%;
-	z-index        : -1;                                                               /* What: Glow Stack Level. Why: The halo has to sit behind the name it lights, within the dissolve's own stage. How: This puts it one level below the stage's other content. */
+	z-index        : -1;                                                               /* What: Glow Stack Level. Why: The halo has to sit behind the name it lights. How: This puts it one level below the name, inside the stacking context the stage's isolation gives it. */
 
 
 }
