@@ -2146,7 +2146,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									aria-label='Daily generator run time'
 
 									onChange={ ( chaEveObj ) => onRunChaFun( chaEveObj.target.value ) }
-									onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } }
+									onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } } // What: Run Time Key Down Handler. Why: Escape should leave the time field so keyboard focus is not held in it. How: This blurs the input only when the pressed key is Escape and ignores every other key.
 								/>{ /* What: Run Time Input Element. Why: This is the actual control for the generator's own scheduled run time. How: This is bound to the persisted runTime, saving (and asking notification permission) via onRunChaFun. */ }
 
 

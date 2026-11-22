@@ -165,16 +165,16 @@ function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, v
 
 									type='button'
 
-									onClick={ ( cliEveObj ) => { // What: Preview Click Handler. Why: Pressing Preview must play the style without also selecting the radio row it sits inside. How: This cancels the click's own default label behavior, then plays the preview.
+									onClick={ ( cliEveObj ) => { // What: Preview Click Handler. Why: Pressing Preview must play the style and nothing else. How: This cancels the click's own default label behavior, then plays the preview.
 
 
-										cliEveObj.preventDefault(); // What: Default Prevention Call. Why: A click inside the label would otherwise also toggle the radio itself. How: This cancels the click's own default action.
+										cliEveObj.preventDefault(); // What: Default Prevention Call. Why: Pressing Preview should only play the style. How: This cancels the click's own default action.
 
 										onPreStyFun( optCurObj.valStr ); // What: Style Preview Call. Why: This is the actual preview trigger. How: This calls onPreStyFun with this option's own valStr.
 
 
 									} }
-								>Preview</button> // What: Style Preview Button Element. Why: This is the actual control that plays a live preview of this specific option's own style. How: This prevents the click from also toggling the radio itself, then calls onPreStyFun with this option's own value.
+								>Preview</button> // What: Style Preview Button Element. Why: This is the actual control that plays a live preview of this specific option's own style. How: This cancels the click's default, then calls onPreStyFun with this option's own value.
 
 
 							) }
