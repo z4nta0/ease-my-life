@@ -603,10 +603,10 @@ function snaProFun ( froRcdArr : SnaRcdTyp[], tarRcdArr : SnaRcdTyp[], proNamArr
  * valSigFun = Value Signature Function
  *
  * @summary
- * Joins every probed value of a snapshot into one string, so two looks are
- * the same only when every value of every element in them matches. The
- * durations are left out, since only the look is compared, and so are an
- * undrawn outline's color and offset, which read as one mark.
+ * Joins every probed value of a snapshot into one string, so two looks are the
+ * same only when every value of every element in them matches. The durations
+ * are left out, since only the look is compared, and so are an undrawn
+ * outline's color, offset, and width, which read as one mark.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -621,7 +621,7 @@ function snaProFun ( froRcdArr : SnaRcdTyp[], tarRcdArr : SnaRcdTyp[], proNamArr
  *
 */
 
-const valSigFun = ( snaRcdArr : SnaRcdTyp[] ) : string => JSON.stringify( snaRcdArr.map( ( snaRcdObj ) => snaRcdObj.valArr.map( ( valCurStr ) => ( valCurStr.startsWith( '~' ) ? '~' : valCurStr ) ) ) ); // What: Value Signature Function. Why: A look is the same between two moments only when every probed value that shows matches. How: This joins every record's values into one string to compare, reading an undrawn outline's color and offset as one mark.
+const valSigFun = ( snaRcdArr : SnaRcdTyp[] ) : string => JSON.stringify( snaRcdArr.map( ( snaRcdObj ) => snaRcdObj.valArr.map( ( valCurStr ) => ( valCurStr.startsWith( '~' ) ? '~' : valCurStr ) ) ) ); // What: Value Signature Function. Why: A look is the same between two moments only when every probed value that shows matches. How: This joins every record's values into one string to compare, reading an undrawn outline's color, offset, and width as one mark.
 
 // #endregion valSigFun
 

@@ -335,7 +335,7 @@ const STA_RCD_ARR : StaRcdTyp[] = [ // What: State Record Array. Why: The checks
 		tabStr : 'today',
 		widNum : 375,
 
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="helTogBut"]' ).first().click(); }
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="helTogBut"]' ).first().click(); } // What: Help Mode Action Function. Why: The state shows help mode turned on. How: This presses the help toggle.
 
 
 	},
@@ -349,7 +349,7 @@ const STA_RCD_ARR : StaRcdTyp[] = [ // What: State Record Array. Why: The checks
 		tabStr : 'settings',
 		widNum : 1280,
 
-		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="priRowDiv"] button' ).first().click(); }
+		actFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="priRowDiv"] button' ).first().click(); } // What: Privacy Action Function. Why: The state shows the Privacy Policy panel open. How: This presses the first button in the Privacy row.
 
 
 	}
@@ -379,11 +379,11 @@ const ALL_STA_ARR = [ ...STA_RCD_ARR, ...EXT_STA_ARR, ...REA_STA_ARR ]; // What:
  * loads the real-data backup on the suites' fixed day, switches to the state's
  * tab, and moves the Tab starting point back to the top of the page (or loads
  * an empty install on that day and waits for its welcome dialog), waits for
- * the web fonts, runs the state's action if it has one, then waits until no
- * finite animation is still running, so a check never measures a card halfway
- * through its entrance. An endless animation (a looping boot or badge effect)
- * can't settle, so it's left out of the wait, and the wait fails the check
- * after 5 seconds rather than hanging.
+ * the web fonts and for the boot splash to leave, runs the state's action if
+ * it has one, then waits until no finite animation is still running, so a
+ * check never measures a card halfway through its entrance. An endless
+ * animation (a looping boot or badge effect) can't settle, so it's left out of
+ * the wait, and the wait fails the check after 5 seconds rather than hanging.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

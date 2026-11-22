@@ -19,10 +19,9 @@ import type { HolStaTyp } from '../../src/core/data-model.ts'; // What: Holiday 
  * holidays.ts = Holidays
  *
  * @summary
- * The checker's own copy of the app's US holiday rules, written from the
- * rules rather than from core/holidays.ts, so a mistake there shows up as a
- * disagreement here. Pickers that skip holidays and reminder classes that
- * exclude them both depend on this set.
+ * The checker's own copy of the app's US holiday rules, written from the rules
+ * rather than from core/holidays.ts, so a mistake there shows up as a
+ * disagreement here.
  *
  * The rules: New Year's Day, Juneteenth, Independence Day, Veterans Day,
  * and Christmas fall on fixed dates, and when one lands on a Saturday it is
@@ -85,18 +84,19 @@ const NTH_HOL_ARR = [ // What: Nth Holiday Array. Why: These holidays are an nth
  * holSetFun = Holiday Set Function
  *
  * @summary
- * Every date the saved settings treat as a holiday within a year, plus the
- * observed dates the neighboring years push into it (a Saturday New Year's
- * Day of the next year is observed on this year's December 31). Dates are
- * YYYY-MM-DD strings, so membership is a plain Set lookup.
+ * Every date the saved settings treat as a holiday in a year and in the years
+ * on either side of it, so an observed date that crosses a year boundary (a
+ * Saturday New Year's Day of the next year is observed on this year's
+ * December 31) is included. Dates are YYYY-MM-DD strings, so membership is a
+ * plain Set lookup.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param holStaObj - Holiday State Object: The saved holiday settings.
  * @param yeaValNum - Year Value Number: The year to list.
  *
- * @returns The set of holiday dates for the year and its neighbors, which
- *          holds the year's own dates and those observed into it.
+ * @returns The set of holiday dates for the year and the years on either side
+ *          of it.
  * @see {@link holDatSet}
  *
  * @example
