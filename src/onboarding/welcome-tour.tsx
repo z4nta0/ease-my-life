@@ -706,7 +706,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 // #region Exports
 
-export { WelTouCom }; // What: Named Export. Why: The first-run welcome modal and its driven tour are this file's one public binding. How: This re-exports WelTouCom; every other binding in this file is internal-only.
+export { WelTouCom }; // What: Named Export. Why: The first-run welcome modal and its driven tour are this file's one public binding. How: This exports WelTouCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

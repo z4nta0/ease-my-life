@@ -630,14 +630,14 @@ window.addEventListener( 'appinstalled', () => { // What: App Installed Listener
 const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why: This is the single public entry point to this file's install and persistence operations. How: This maps each of this file's own internal function/variable names directly onto matching external property names.
 
 
-	askFirFun : askFirFun, // What: Ask First Function. Why: This exposes the first-picker persistence request. How: This re-exports askFirFun under its own matching name.
-	askInsFun : askInsFun, // What: Ask Install Function. Why: This exposes the native install prompt. How: This re-exports askInsFun under its own matching name.
-	askPerFun : askPerFun, // What: Ask Persist Function. Why: This exposes the forced persistence request. How: This re-exports askPerFun under its own matching name.
-	canInsFun : canInsFun, // What: Can Install Function. Why: This exposes whether an install prompt is available. How: This re-exports canInsFun under its own matching name.
-	insStaFun : insStaFun, // What: Install State Function. Why: This exposes the install state. How: This re-exports insStaFun under its own matching name.
-	isaIosBoo : isaIosBoo, // What: Is-An iOS Boolean. Why: This exposes whether the device is an iOS one, read directly rather than called. How: This re-exports isaIosBoo under its own matching name.
-	isaMacBoo : isaMacBoo, // What: Is-A Mac Boolean. Why: This exposes whether the device is a Mac, read directly rather than called. How: This re-exports isaMacBoo under its own matching name.
-	isaStaFun : isaStaFun, // What: Is-A Standalone Function. Why: This exposes whether the app is running installed. How: This re-exports isaStaFun under its own matching name.
+	askFirFun : askFirFun, // What: Ask First Function. Why: This exposes the first-picker persistence request. How: This exports askFirFun under its own matching name.
+	askInsFun : askInsFun, // What: Ask Install Function. Why: This exposes the native install prompt. How: This exports askInsFun under its own matching name.
+	askPerFun : askPerFun, // What: Ask Persist Function. Why: This exposes the forced persistence request. How: This exports askPerFun under its own matching name.
+	canInsFun : canInsFun, // What: Can Install Function. Why: This exposes whether an install prompt is available. How: This exports canInsFun under its own matching name.
+	insStaFun : insStaFun, // What: Install State Function. Why: This exposes the install state. How: This exports insStaFun under its own matching name.
+	isaIosBoo : isaIosBoo, // What: Is-An iOS Boolean. Why: This exposes whether the device is an iOS one, read directly rather than called. How: This exports isaIosBoo under its own matching name.
+	isaMacBoo : isaMacBoo, // What: Is-A Mac Boolean. Why: This exposes whether the device is a Mac, read directly rather than called. How: This exports isaMacBoo under its own matching name.
+	isaStaFun : isaStaFun, // What: Is-A Standalone Function. Why: This exposes whether the app is running installed. How: This exports isaStaFun under its own matching name.
 	subscribe : subAddFun  // What: Subscribe. Why: This exposes install and persistence change notifications, keeping the conventional observer name. How: This maps onto subAddFun.
 
 

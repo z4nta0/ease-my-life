@@ -682,9 +682,9 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 const SED_NAM_OBJ = { // What: Seed Namespace Object. Why: This is the single public entry point every consumer imports by name. How: This maps this file's own internal function/constant names directly onto matching external property names.
 
 
-	buiCleFun   : buiCleFun,   // What: Build Clean Function. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than any sample data. How: This re-exports buiCleFun under its own matching name.
-	MOD_DEF_OBJ : MOD_DEF_OBJ, // What: Mode Definition Object. Why: Every consumer needing a picker mode's own display label and explanatory hint text reads this shared table. How: This re-exports MOD_DEF_OBJ under its own matching name.
-	picLogFun   : picLogFun    // What: Pick Log Function. Why: scripts/build-onboarding-stats.mts reuses this exact simulation to precompute the Welcome Tour's own sample history offline. How: This re-exports picLogFun under its own matching name.
+	buiCleFun   : buiCleFun,   // What: Build Clean Function. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than any sample data. How: This exports buiCleFun under its own matching name.
+	MOD_DEF_OBJ : MOD_DEF_OBJ, // What: Mode Definition Object. Why: Every consumer needing a picker mode's own display label and explanatory hint text reads this shared table. How: This exports MOD_DEF_OBJ under its own matching name.
+	picLogFun   : picLogFun    // What: Pick Log Function. Why: scripts/build-onboarding-stats.mts reuses this exact simulation to precompute the Welcome Tour's own sample history offline. How: This exports picLogFun under its own matching name.
 
 
 };

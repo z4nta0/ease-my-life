@@ -640,11 +640,11 @@ function holDatFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date 
 const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object the consuming files import and call through. How: This maps the five functions the rest of the app calls onto external property names matching them exactly.
 
 
-	cmpYeaFun : cmpYeaFun, // What: Compute Year Function. Why: This exposes the per-year computation of every defined holiday's record. How: This re-exports cmpYeaFun under its own matching name.
-	defStaFun : defStaFun, // What: Default State Function. Why: This exposes the canonical empty holidays-state shape. How: This re-exports defStaFun under its own matching name.
-	holDatFun : holDatFun, // What: Holiday Date Function. Why: This exposes the check of whether a specific date is a holiday, returning its name. How: This re-exports holDatFun under its own matching name.
-	holInfFun : holInfFun, // What: Holiday Info Function. Why: This exposes a specific date's full holiday record. How: This re-exports holInfFun under its own matching name.
-	resStaFun : resStaFun  // What: Resolve State Function. Why: This exposes the fallback that reads a holidays state an old save may lack. How: This re-exports resStaFun under its own matching name.
+	cmpYeaFun : cmpYeaFun, // What: Compute Year Function. Why: This exposes the per-year computation of every defined holiday's record. How: This exports cmpYeaFun under its own matching name.
+	defStaFun : defStaFun, // What: Default State Function. Why: This exposes the canonical empty holidays-state shape. How: This exports defStaFun under its own matching name.
+	holDatFun : holDatFun, // What: Holiday Date Function. Why: This exposes the check of whether a specific date is a holiday, returning its name. How: This exports holDatFun under its own matching name.
+	holInfFun : holInfFun, // What: Holiday Info Function. Why: This exposes a specific date's full holiday record. How: This exports holInfFun under its own matching name.
+	resStaFun : resStaFun  // What: Resolve State Function. Why: This exposes the fallback that reads a holidays state an old save may lack. How: This exports resStaFun under its own matching name.
 
 
 };

@@ -268,10 +268,10 @@ document.addEventListener( 'visibilitychange', () => { // What: Visibility Chang
 const UPD_NAM_OBJ = { // What: Update Namespace Object. Why: This gathers the update operations into one namespaced export. How: This maps each name to the function it calls.
 
 
-	relNowFun : relNowFun, // What: Reload Now Function. Why: The note's Reload button applies the update. How: This re-exports relNowFun under its own name.
-	subAddFun : subAddFun, // What: Subscribe Add Function. Why: The note listens for an update becoming ready. How: This re-exports subAddFun under its own name.
-	synBusFun : synBusFun, // What: Sync Busy Function. Why: Sync tells this file when a reload would interrupt it. How: This re-exports synBusFun under its own name.
-	updReaFun : updReaFun  // What: Update Ready Function. Why: The note reads whether an update is ready. How: This re-exports updReaFun under its own name.
+	relNowFun : relNowFun, // What: Reload Now Function. Why: The note's Reload button applies the update. How: This exports relNowFun under its own name.
+	subAddFun : subAddFun, // What: Subscribe Add Function. Why: The note listens for an update becoming ready. How: This exports subAddFun under its own name.
+	synBusFun : synBusFun, // What: Sync Busy Function. Why: Sync tells this file when a reload would interrupt it. How: This exports synBusFun under its own name.
+	updReaFun : updReaFun  // What: Update Ready Function. Why: The note reads whether an update is ready. How: This exports updReaFun under its own name.
 
 
 };

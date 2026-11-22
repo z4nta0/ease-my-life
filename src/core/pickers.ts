@@ -1316,15 +1316,15 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: This is the one namespace object through which the rest of the app reaches this file's picking helpers. How: This maps each of this file's own internal implementations used elsewhere onto a matching external property name.
 
 
-	aveEasFun   : aveEasFun,   // What: Average Ease Function. Why: This gives a picker's own average ease-band value. How: This re-exports aveEasFun under its own matching name.
-	dayDriFun   : dayDriFun,   // What: Day Drift Function. Why: This converts a typed day count back into a drift value. How: This re-exports dayDriFun under its own matching name.
-	DEF_EAS_OBJ : DEF_EAS_OBJ, // What: Default Ease Object. Why: This is the default ease-band shape for a fresh item or a conditional with no band. How: This re-exports DEF_EAS_OBJ under its own matching name.
-	driDayFun   : driDayFun,   // What: Drift Day Function. Why: This shows an ease band as soonest and latest days. How: This re-exports driDayFun under its own matching name.
-	easEliFun   : easEliFun,   // What: Ease Eligible Function. Why: This tells whether an ease-mode item is currently eligible to be picked. How: This re-exports easEliFun under its own matching name.
-	modEliFun   : modEliFun,   // What: Mode Eligible Function. Why: This gives a pool item's own mode-specific eligibility. How: This re-exports modEliFun under its own matching name.
-	picIteFun   : picIteFun,   // What: Pick Item Function. Why: This picks a new item from a picker's own pool. How: This re-exports picIteFun under its own matching name.
-	reaValFun   : reaValFun,   // What: Readiness Value Function. Why: This gives a pool item's own readiness value. How: This re-exports reaValFun under its own matching name.
-	THR_VAL_NUM : THR_VAL_NUM  // What: Threshold Value Number. Why: The full-charge ceiling is shared outside this file. How: This re-exports THR_VAL_NUM under its own matching name.
+	aveEasFun   : aveEasFun,   // What: Average Ease Function. Why: This gives a picker's own average ease-band value. How: This exports aveEasFun under its own matching name.
+	dayDriFun   : dayDriFun,   // What: Day Drift Function. Why: This converts a typed day count back into a drift value. How: This exports dayDriFun under its own matching name.
+	DEF_EAS_OBJ : DEF_EAS_OBJ, // What: Default Ease Object. Why: This is the default ease-band shape for a fresh item or a conditional with no band. How: This exports DEF_EAS_OBJ under its own matching name.
+	driDayFun   : driDayFun,   // What: Drift Day Function. Why: This shows an ease band as soonest and latest days. How: This exports driDayFun under its own matching name.
+	easEliFun   : easEliFun,   // What: Ease Eligible Function. Why: This tells whether an ease-mode item is currently eligible to be picked. How: This exports easEliFun under its own matching name.
+	modEliFun   : modEliFun,   // What: Mode Eligible Function. Why: This gives a pool item's own mode-specific eligibility. How: This exports modEliFun under its own matching name.
+	picIteFun   : picIteFun,   // What: Pick Item Function. Why: This picks a new item from a picker's own pool. How: This exports picIteFun under its own matching name.
+	reaValFun   : reaValFun,   // What: Readiness Value Function. Why: This gives a pool item's own readiness value. How: This exports reaValFun under its own matching name.
+	THR_VAL_NUM : THR_VAL_NUM  // What: Threshold Value Number. Why: The full-charge ceiling is shared outside this file. How: This exports THR_VAL_NUM under its own matching name.
 
 
 };

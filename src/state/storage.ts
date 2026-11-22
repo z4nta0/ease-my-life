@@ -1499,19 +1499,19 @@ async function staRepFun () : Promise< StoRepTyp > {
 const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is this file's main public entry point, imported by name by the files that use persistence. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
 
 
-	ACC_SIG_STR : ACC_SIG_STR, // What: Account Signed-In String. Why: Whether this device has signed in is recorded under this key, which the boot sweep keeps. How: This re-exports ACC_SIG_STR under its own matching name.
-	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: This hands back the state iniStoFun loaded, synchronously. How: This re-exports cacStaFun under its own matching name.
-	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: This mirrors the state synchronously, for a page hide where an async save could be lost. How: This re-exports fluSynFun under its own matching name.
-	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: This loads the persisted state, before React mounts. How: This re-exports iniStoFun under its own matching name.
-	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: This marks the next save's pickLog as authoritative after an import or a reset. How: This re-exports logAutFun under its own matching name.
-	PER_ASK_STR : PER_ASK_STR, // What: Persist Ask String. Why: The persistence prompt is recorded under this key, which the boot sweep keeps. How: This re-exports PER_ASK_STR under its own matching name.
-	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: This reads the persisted state fresh, so an export never inherits a truncated in-memory pickLog. How: This re-exports reaPerFun under its own matching name.
-	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: This requests eviction-exempt storage. How: This re-exports reqPerFun under its own matching name.
-	savStaFun   : savStaFun,   // What: Save State Function. Why: This saves the current state. How: This re-exports savStaFun under its own matching name.
-	SIG_EMA_STR : SIG_EMA_STR, // What: Sign-In Email String. Why: A sign-in link's address is kept under this key, which the boot sweep keeps. How: This re-exports SIG_EMA_STR under its own matching name.
-	staRepFun   : staRepFun,   // What: Status Report Function. Why: This builds the storage status report. How: This re-exports staRepFun under its own matching name.
-	SYN_MET_STR : SYN_MET_STR, // What: Sync Meta String. Why: The sync record is kept under this key, which the boot sweep keeps. How: This re-exports SYN_MET_STR under its own matching name.
-	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: This tears down every stored copy for "Delete all data". How: This re-exports wipDatFun under its own matching name.
+	ACC_SIG_STR : ACC_SIG_STR, // What: Account Signed-In String. Why: Whether this device has signed in is recorded under this key, which the boot sweep keeps. How: This exports ACC_SIG_STR under its own matching name.
+	cacStaFun   : cacStaFun,   // What: Cached State Function. Why: This hands back the state iniStoFun loaded, synchronously. How: This exports cacStaFun under its own matching name.
+	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: This mirrors the state synchronously, for a page hide where an async save could be lost. How: This exports fluSynFun under its own matching name.
+	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: This loads the persisted state, before React mounts. How: This exports iniStoFun under its own matching name.
+	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: This marks the next save's pickLog as authoritative after an import or a reset. How: This exports logAutFun under its own matching name.
+	PER_ASK_STR : PER_ASK_STR, // What: Persist Ask String. Why: The persistence prompt is recorded under this key, which the boot sweep keeps. How: This exports PER_ASK_STR under its own matching name.
+	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: This reads the persisted state fresh, so an export never inherits a truncated in-memory pickLog. How: This exports reaPerFun under its own matching name.
+	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: This requests eviction-exempt storage. How: This exports reqPerFun under its own matching name.
+	savStaFun   : savStaFun,   // What: Save State Function. Why: This saves the current state. How: This exports savStaFun under its own matching name.
+	SIG_EMA_STR : SIG_EMA_STR, // What: Sign-In Email String. Why: A sign-in link's address is kept under this key, which the boot sweep keeps. How: This exports SIG_EMA_STR under its own matching name.
+	staRepFun   : staRepFun,   // What: Status Report Function. Why: This builds the storage status report. How: This exports staRepFun under its own matching name.
+	SYN_MET_STR : SYN_MET_STR, // What: Sync Meta String. Why: The sync record is kept under this key, which the boot sweep keeps. How: This exports SYN_MET_STR under its own matching name.
+	wipDatFun   : wipDatFun    // What: Wipe Data Function. Why: This tears down every stored copy for "Delete all data". How: This exports wipDatFun under its own matching name.
 
 
 };

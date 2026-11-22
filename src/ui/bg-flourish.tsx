@@ -868,7 +868,7 @@ function BacFloCom ( { meaEleRef, tabIdeStr } : BfcProTyp ) : React.JSX.Element 
 
 // #region Exports
 
-export { BacFloCom }; // What: Named Export. Why: The background flourish is this file's one public binding. How: This re-exports BacFloCom; every other binding in this file is internal-only.
+export { BacFloCom }; // What: Named Export. Why: The background flourish is this file's one public binding. How: This exports BacFloCom; every other binding in this file is internal-only.
 
 // #endregion Exports
 

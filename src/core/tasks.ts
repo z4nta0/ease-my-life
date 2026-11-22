@@ -1346,22 +1346,22 @@ function visTodFun ( tasLisArr : TasRcdTyp[], remOptObj : RemOptTyp | null | und
 const TAS_NAM_OBJ = { // What: Tasks Namespace Object. Why: Consumers import this one namespace object rather than several individual named exports. How: This maps each of this file's public functions onto an external property name matching its internal name exactly, so external and internal names never drift apart.
 
 
-	ancDatFun : ancDatFun, // What: Anchor Date Function. Why: Callers need the generator-anchored "what day is it" Date by this exact name. How: This re-exports ancDatFun under its own matching name.
-	curIsoFun : curIsoFun, // What: Current ISO Function. Why: Callers need today's own ISO date string by this exact name. How: This re-exports curIsoFun under its own matching name.
-	defOptFun : defOptFun, // What: Default Options Function. Why: Callers need the canonical default participation-options shape by this exact name. How: This re-exports defOptFun under its own matching name.
-	defTasFun : defTasFun, // What: Default Task Function. Why: Callers build a fully-defaulted task/reminder record by this exact name. How: This re-exports defTasFun under its own matching name.
-	dueTodFun : dueTodFun, // What: Due Today Function. Why: Callers need the due, non-hidden, stably-sorted task list by this exact name. How: This re-exports dueTodFun under its own matching name.
-	isaDonFun : isaDonFun, // What: Is-A Done Function. Why: Callers check whether a task's own occurrence is already completed by this exact name. How: This re-exports isaDonFun under its own matching name.
-	isaDueFun : isaDueFun, // What: Is-A Due Function. Why: Callers check whether a task is due on a given date by this exact name. How: This re-exports isaDueFun under its own matching name.
-	isaFulFun : isaFulFun, // What: Is-A Full Function. Why: A one-time task counts as finished once it has been completed, on whichever day. How: This re-exports isaFulFun under its own matching name.
-	isaReuFun : isaReuFun, // What: Is-A Recurring Function. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This re-exports isaReuFun under its own matching name.
-	isaStaFun : isaStaFun, // What: Is-A Stale Function. Why: Callers drop a previous-day completed one-time task by this exact name. How: This re-exports isaStaFun under its own matching name.
-	nexEliFun : nexEliFun, // What: Next Eligible Function. Why: Callers need a task's own next eligible occurrence by this exact name. How: This re-exports nexEliFun under its own matching name.
-	norOptFun : norOptFun, // What: Normalize Options Function. Why: Callers need a fully-shaped options object by this exact name. How: This re-exports norOptFun under its own matching name.
-	optForFun : optForFun, // What: Options For Function. Why: Callers need a specific task's own governing options object by this exact name. How: This re-exports optForFun under its own matching name.
-	sumTasFun : sumTasFun, // What: Summary Task Function. Why: Callers need a task's own human-readable schedule summary by this exact name. How: This re-exports sumTasFun under its own matching name.
-	todVisFun : todVisFun, // What: Today Visibility Function. Why: Callers need the full visible/cause/next advisory for a single task by this exact name. How: This re-exports todVisFun under its own matching name.
-	visTodFun : visTodFun  // What: Visible Today Function. Why: Callers need the actually-visible-on-Today task list by this exact name. How: This re-exports visTodFun under its own matching name.
+	ancDatFun : ancDatFun, // What: Anchor Date Function. Why: Callers need the generator-anchored "what day is it" Date by this exact name. How: This exports ancDatFun under its own matching name.
+	curIsoFun : curIsoFun, // What: Current ISO Function. Why: Callers need today's own ISO date string by this exact name. How: This exports curIsoFun under its own matching name.
+	defOptFun : defOptFun, // What: Default Options Function. Why: Callers need the canonical default participation-options shape by this exact name. How: This exports defOptFun under its own matching name.
+	defTasFun : defTasFun, // What: Default Task Function. Why: Callers build a fully-defaulted task/reminder record by this exact name. How: This exports defTasFun under its own matching name.
+	dueTodFun : dueTodFun, // What: Due Today Function. Why: Callers need the due, non-hidden, stably-sorted task list by this exact name. How: This exports dueTodFun under its own matching name.
+	isaDonFun : isaDonFun, // What: Is-A Done Function. Why: Callers check whether a task's own occurrence is already completed by this exact name. How: This exports isaDonFun under its own matching name.
+	isaDueFun : isaDueFun, // What: Is-A Due Function. Why: Callers check whether a task is due on a given date by this exact name. How: This exports isaDueFun under its own matching name.
+	isaFulFun : isaFulFun, // What: Is-A Full Function. Why: A one-time task counts as finished once it has been completed, on whichever day. How: This exports isaFulFun under its own matching name.
+	isaReuFun : isaReuFun, // What: Is-A Recurring Function. Why: Callers check whether a task belongs to the recurring (vs one-time) options class by this exact name. How: This exports isaReuFun under its own matching name.
+	isaStaFun : isaStaFun, // What: Is-A Stale Function. Why: Callers drop a previous-day completed one-time task by this exact name. How: This exports isaStaFun under its own matching name.
+	nexEliFun : nexEliFun, // What: Next Eligible Function. Why: Callers need a task's own next eligible occurrence by this exact name. How: This exports nexEliFun under its own matching name.
+	norOptFun : norOptFun, // What: Normalize Options Function. Why: Callers need a fully-shaped options object by this exact name. How: This exports norOptFun under its own matching name.
+	optForFun : optForFun, // What: Options For Function. Why: Callers need a specific task's own governing options object by this exact name. How: This exports optForFun under its own matching name.
+	sumTasFun : sumTasFun, // What: Summary Task Function. Why: Callers need a task's own human-readable schedule summary by this exact name. How: This exports sumTasFun under its own matching name.
+	todVisFun : todVisFun, // What: Today Visibility Function. Why: Callers need the full visible/cause/next advisory for a single task by this exact name. How: This exports todVisFun under its own matching name.
+	visTodFun : visTodFun  // What: Visible Today Function. Why: Callers need the actually-visible-on-Today task list by this exact name. How: This exports visTodFun under its own matching name.
 
 
 };

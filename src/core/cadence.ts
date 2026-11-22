@@ -727,15 +727,15 @@ function uniWorFun ( cadValStr : string | null | undefined, couValNum : number )
 const CAD_NAM_OBJ = { // What: Cadence Namespace Object. Why: This file's cadence logic is reached through one namespace object rather than several individual named exports. How: This maps each internal implementation another file uses onto an external property name matching it exactly.
 
 
-	enfWeeFun : enfWeeFun, // What: Enforce Weekly Function. Why: Callers need a weekly picker's own anchor day folded back into its selected days by this exact name. How: This re-exports enfWeeFun under its own matching name.
-	fulPerFun : fulPerFun, // What: Full Period Function. Why: Callers check whether a picker has already completed its own current period by this exact name. How: This re-exports fulPerFun under its own matching name.
-	isaCadFun : isaCadFun, // What: Is-A Cadence Function. Why: Callers validate an arbitrary string as a real cadence value by this exact name. How: This re-exports isaCadFun under its own matching name.
-	locTipFun : locTipFun, // What: Locked Tip Function. Why: Callers need the explanatory tooltip text for a weekly cadence's own locked anchor day by this exact name. How: This re-exports locTipFun under its own matching name.
-	norCadFun : norCadFun, // What: Normalize Cadence Function. Why: Callers need every cadence-related field a picker needs filled in, defaulted consistently, by this exact name. How: This re-exports norCadFun under its own matching name.
-	perKeyFun : perKeyFun, // What: Period Key Function. Why: Callers need a given date's own comparable period key by this exact name. How: This re-exports perKeyFun under its own matching name.
-	sumCadFun : sumCadFun, // What: Summary Cadence Function. Why: Callers need a picker's own human-readable cadence summary by this exact name. How: This re-exports sumCadFun under its own matching name.
-	tipMesFun : tipMesFun, // What: Tip Message Function. Why: Callers need the explanatory tooltip text for a given cadence by this exact name. How: This re-exports tipMesFun under its own matching name.
-	uniWorFun : uniWorFun  // What: Unit Word Function. Why: Callers need a cadence's own human-readable unit word (day/week/month/year) by this exact name. How: This re-exports uniWorFun under its own matching name.
+	enfWeeFun : enfWeeFun, // What: Enforce Weekly Function. Why: Callers need a weekly picker's own anchor day folded back into its selected days by this exact name. How: This exports enfWeeFun under its own matching name.
+	fulPerFun : fulPerFun, // What: Full Period Function. Why: Callers check whether a picker has already completed its own current period by this exact name. How: This exports fulPerFun under its own matching name.
+	isaCadFun : isaCadFun, // What: Is-A Cadence Function. Why: Callers validate an arbitrary string as a real cadence value by this exact name. How: This exports isaCadFun under its own matching name.
+	locTipFun : locTipFun, // What: Locked Tip Function. Why: Callers need the explanatory tooltip text for a weekly cadence's own locked anchor day by this exact name. How: This exports locTipFun under its own matching name.
+	norCadFun : norCadFun, // What: Normalize Cadence Function. Why: Callers need every cadence-related field a picker needs filled in, defaulted consistently, by this exact name. How: This exports norCadFun under its own matching name.
+	perKeyFun : perKeyFun, // What: Period Key Function. Why: Callers need a given date's own comparable period key by this exact name. How: This exports perKeyFun under its own matching name.
+	sumCadFun : sumCadFun, // What: Summary Cadence Function. Why: Callers need a picker's own human-readable cadence summary by this exact name. How: This exports sumCadFun under its own matching name.
+	tipMesFun : tipMesFun, // What: Tip Message Function. Why: Callers need the explanatory tooltip text for a given cadence by this exact name. How: This exports tipMesFun under its own matching name.
+	uniWorFun : uniWorFun  // What: Unit Word Function. Why: Callers need a cadence's own human-readable unit word (day/week/month/year) by this exact name. How: This exports uniWorFun under its own matching name.
 
 
 };

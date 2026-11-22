@@ -374,12 +374,12 @@ function tutProFun ( appStaObj : StaAppTyp ) : boolean {
 const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: This gathers the checklist helpers into one namespace object rather than several individual named exports. How: This maps every internal implementation onto an external property name matching it exactly.
 
 
-	cheStaFun : cheStaFun, // What: Checklist Status Function. Why: This is the checklist's summary counts. How: This re-exports cheStaFun under its own matching name.
-	entLooFun : entLooFun, // What: Entry Lookup Function. Why: This looks up one checklist item's own resolution. How: This re-exports entLooFun under its own matching name.
-	othRmnFun : othRmnFun, // What: Others Remaining Function. Why: This counts the open items other than the Generate card. How: This re-exports othRmnFun under its own matching name.
-	reaGenFun : reaGenFun, // What: Ready Generate Function. Why: This says whether the Generate card is actionable. How: This re-exports reaGenFun under its own matching name.
-	reaPicFun : reaPicFun, // What: Real Picker Function. Why: This counts the real, non-sample pickers. How: This re-exports reaPicFun under its own matching name.
-	tutProFun : tutProFun  // What: Tutorials Progress Function. Why: This says whether the tutorials are in progress. How: This re-exports tutProFun under its own matching name.
+	cheStaFun : cheStaFun, // What: Checklist Status Function. Why: This is the checklist's summary counts. How: This exports cheStaFun under its own matching name.
+	entLooFun : entLooFun, // What: Entry Lookup Function. Why: This looks up one checklist item's own resolution. How: This exports entLooFun under its own matching name.
+	othRmnFun : othRmnFun, // What: Others Remaining Function. Why: This counts the open items other than the Generate card. How: This exports othRmnFun under its own matching name.
+	reaGenFun : reaGenFun, // What: Ready Generate Function. Why: This says whether the Generate card is actionable. How: This exports reaGenFun under its own matching name.
+	reaPicFun : reaPicFun, // What: Real Picker Function. Why: This counts the real, non-sample pickers. How: This exports reaPicFun under its own matching name.
+	tutProFun : tutProFun  // What: Tutorials Progress Function. Why: This says whether the tutorials are in progress. How: This exports tutProFun under its own matching name.
 
 
 };

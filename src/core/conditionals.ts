@@ -608,12 +608,12 @@ function carFulFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 const CON_NAM_OBJ = { // What: Conditionals Namespace Object. Why: This is the single public entry point other files import. How: This maps each internal function another file uses, plus DEF_ODD_NUM, onto an external property name matching it exactly.
 
 
-	advValFun   : advValFun,   // What: Advance Value Function. Why: Callers advance a conditional's value on a dependent picker's first completion of the day by this exact name. How: This re-exports advValFun under its own matching name.
-	carFulFun   : carFulFun,   // What: Card Full Function. Why: Callers get the patch for a completed day-off card by this exact name. How: This re-exports carFulFun under its own matching name.
-	DEF_ODD_NUM : DEF_ODD_NUM, // What: Default Odds Number. Why: Callers fall back to the same odds for a conditional saved without its own by this exact name. How: This re-exports DEF_ODD_NUM under its own matching name.
-	modValFun   : modValFun,   // What: Mode Value Function. Why: Callers classify a conditional's own mode by this exact name. How: This re-exports modValFun under its own matching name.
-	resDayFun   : resDayFun,   // What: Resolve Day Function. Why: Callers roll or carry each conditional's triggered state for the day by this exact name. How: This re-exports resDayFun under its own matching name.
-	supGatFun   : supGatFun    // What: Suppress Gate Function. Why: Callers decide whether a dependent picker's day-off card shows instead of a real pick by this exact name. How: This re-exports supGatFun under its own matching name.
+	advValFun   : advValFun,   // What: Advance Value Function. Why: Callers advance a conditional's value on a dependent picker's first completion of the day by this exact name. How: This exports advValFun under its own matching name.
+	carFulFun   : carFulFun,   // What: Card Full Function. Why: Callers get the patch for a completed day-off card by this exact name. How: This exports carFulFun under its own matching name.
+	DEF_ODD_NUM : DEF_ODD_NUM, // What: Default Odds Number. Why: Callers fall back to the same odds for a conditional saved without its own by this exact name. How: This exports DEF_ODD_NUM under its own matching name.
+	modValFun   : modValFun,   // What: Mode Value Function. Why: Callers classify a conditional's own mode by this exact name. How: This exports modValFun under its own matching name.
+	resDayFun   : resDayFun,   // What: Resolve Day Function. Why: Callers roll or carry each conditional's triggered state for the day by this exact name. How: This exports resDayFun under its own matching name.
+	supGatFun   : supGatFun    // What: Suppress Gate Function. Why: Callers decide whether a dependent picker's day-off card shows instead of a real pick by this exact name. How: This exports supGatFun under its own matching name.
 
 
 };

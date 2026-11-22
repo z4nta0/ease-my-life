@@ -471,11 +471,11 @@ async function genNotFun () : Promise< boolean > {
 const NOT_NAM_OBJ = { // What: Notification Namespace Object. Why: This bundles this module's public operations behind one object, giving callers a single import. How: This maps five of this file's functions onto external properties of the same names.
 
 
-	askOncFun : askOncFun, // What: Ask Once Function. Why: A caller needs the one-time permission request. How: This re-exports askOncFun under its own matching name.
-	genNotFun : genNotFun, // What: Generated Notification Function. Why: A caller needs to show a notification after a daily-list generation. How: This re-exports genNotFun under its own matching name.
-	perCheFun : perCheFun, // What: Permission Check Function. Why: A caller needs the current permission to show its state. How: This re-exports perCheFun under its own matching name.
-	reqPerFun : reqPerFun, // What: Request Permission Function. Why: A caller needs to re-request permission on demand. How: This re-exports reqPerFun under its own matching name.
-	subAddFun : subAddFun  // What: Subscribe Add Function. Why: A caller needs to hear about live permission changes. How: This re-exports subAddFun under its own matching name.
+	askOncFun : askOncFun, // What: Ask Once Function. Why: A caller needs the one-time permission request. How: This exports askOncFun under its own matching name.
+	genNotFun : genNotFun, // What: Generated Notification Function. Why: A caller needs to show a notification after a daily-list generation. How: This exports genNotFun under its own matching name.
+	perCheFun : perCheFun, // What: Permission Check Function. Why: A caller needs the current permission to show its state. How: This exports perCheFun under its own matching name.
+	reqPerFun : reqPerFun, // What: Request Permission Function. Why: A caller needs to re-request permission on demand. How: This exports reqPerFun under its own matching name.
+	subAddFun : subAddFun  // What: Subscribe Add Function. Why: A caller needs to hear about live permission changes. How: This exports subAddFun under its own matching name.
 
 
 };
