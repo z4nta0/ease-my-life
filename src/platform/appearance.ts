@@ -25,9 +25,9 @@ import type { CusPalTyp } from '../core/data-model.ts'; // What: Custom Palette 
  *
  * appPalFun writes a resolved palette's own tokens onto the document's real
  * CSS custom properties, animating the cross-fade unless the user prefers
- * reduced motion. resCusFun derives a full palette from a user-picked custom
- * accent color (covHexFun/synTinFun handle the OKLCH conversion), and
- * resTheFun resolves which theme key is actually active, including "system"
+ * reduced motion. resCusFun derives a full palette from the three colors a
+ * user picks for a custom theme (background, text, accent), and resTheFun
+ * resolves which theme key is actually active, including "system"
  * auto-switching via THE_PAI_OBJ's own light/dark theme pairings.
  *
  * Sections:
@@ -718,7 +718,7 @@ const APP_NAM_OBJ = { // What: Appearance Namespace Object. Why: This gathers th
 
 
 
-export { APP_NAM_OBJ, type PalTokTyp }; // What: Named Exports. Why: The palettes and theme functions are exported through the one namespace object, and PalTokTyp types a previewed palette. How: This exports both by name at the very end of the file.
+export { APP_NAM_OBJ, type PalTokTyp }; // What: Named Exports. Why: The palettes and theme functions are exported through the one namespace object, and the palette type is exported beside it. How: This exports both by name at the very end of the file.
 
 // #endregion Exports
 

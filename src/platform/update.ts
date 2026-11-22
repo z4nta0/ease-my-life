@@ -102,7 +102,30 @@ function busNowFun () : boolean {
 
 
 
-const relNowFun = () => window.location.reload(); // What: Reload Now Function. Why: The new version runs only once the page reloads. How: This reloads the page, which the Reload note's button calls too.
+// #region relNowFun
+
+/**
+ * relNowFun = Reload Now Function
+ *
+ * @summary
+ * Reloads the page so the new version runs.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * relNowFun() // => void
+ * ```
+ *
+*/
+
+const relNowFun = () : void => window.location.reload(); // What: Reload Now Function. Why: The new version runs only once the page reloads. How: This reloads the page, which the Reload note's button calls too.
+
+// #endregion relNowFun
 
 
 
@@ -150,7 +173,30 @@ const synBusFun = ( newBusBoo : boolean ) : void => { // What: Sync Busy Functio
 
 
 
+// #region updReaFun
+
+/**
+ * updReaFun = Update Ready Function
+ *
+ * @summary
+ * Reports whether a new version has taken control of the page.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns True once an update is ready, false before.
+ *
+ * @example
+ * ```ts
+ * updReaFun() // => false
+ * ```
+ *
+*/
+
 const updReaFun = () : boolean => updReaBoo; // What: Update Ready Function. Why: The update note reads whether to show itself. How: This returns the current flag.
+
+// #endregion updReaFun
 
 // #endregion Helpers
 
