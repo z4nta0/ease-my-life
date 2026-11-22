@@ -280,7 +280,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 		emlTouObj.set( { prePayObj : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from an earlier step must not leak into whatever the picker form shows next. How: This clears the shared bus's own prePayObj field.
 
 
-	}, [] ); // What: Effect Dependency Array. Why: This callback closes over nothing that ever changes across renders. How: An empty array means there is no dependency that could ever change to trigger a re-creation.
+	}, [] ); // What: Callback Dependency Array. Why: This callback closes over nothing that ever changes across renders. How: An empty array means there is no dependency that could ever change to trigger a re-creation.
 
 	// #endregion finTouFun
 

@@ -745,7 +745,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		setOpeIteStr( buiIteObj.id );     // What: Open Item Set Call. Why: The freshly-created item's own editor should open immediately. How: This sets opeIteStr to the new id.
 
 
-	}, [ draIteArr, newDraStr, newPicObj, penAutBoo ] ); // What: Effect Dependency Array. Why: This only ever needs to run when the one-shot flag itself is set. How: penAutBoo is the value this effect's own guard is built around, so a re-run caused by the draft values returns at that guard unless the auto-add is pending.
+	}, [ draIteArr, newDraStr, newPicObj, penAutBoo ] ); // What: Effect Dependency Array. Why: This needs to act only once the one-shot flag is set, from the draft as it stands then. How: penAutBoo is the flag this effect's own guard is built around, while draIteArr, newDraStr, and newPicObj are the draft the new item is built from, so a re-run they cause returns at that guard unless the auto-add is pending.
 
 
 	// #region patNewFun
@@ -1120,7 +1120,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		return ( defFilBoo || resEntArr.length >= 2 ) ? [ { namStr : 'All', scoStr : 'all' }, ...resEntArr ] : resEntArr; // What: Show Entry Return. Why: A lone remaining entry would make "All" a redundant duplicate of that one card. How: This pins "All" first whenever defFilBoo holds or resEntArr still has 2+ entries, otherwise returns resEntArr as-is.
 
 
-	}, [ filGroStr, filTypStr, conIteArr.length, visPicArr ] ); // What: Memo Dependency Array. Why: This only ever needs recomputing when a filter changes or the underlying conditional/picker lists themselves change. How: Each of these 4 values independently affects which entries appear or how many there are.
+	}, [ filGroStr, filTypStr, conIteArr.length, visPicArr ] ); // What: Memo Dependency Array. Why: This only ever needs recomputing when the Group or Type filter, the conditionals count, or the visible pickers change. How: filGroStr and filTypStr decide whether "All" is pinned, filTypStr and conIteArr.length decide the Conditionals and Reminders entries, and visPicArr supplies the picker entries.
 
 
 	const shoAllBoo = shoEntArr.some( ( entCurObj ) => entCurObj.scoStr === 'all' ); // What: Show All Boolean. Why: The Show row's own render needs to know whether an "All" card is actually present this render. How: This checks shoEntArr for a 'all' scope entry.

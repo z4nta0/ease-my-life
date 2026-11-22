@@ -443,7 +443,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		};
 
 
-	}, [] ); // What: Effect Dependency Array. Why: This callback ref never needs to change identity; the element it receives is a normal parameter, not a dependency. How: An empty array means React never has to detach and reattach it across renders.
+	}, [] ); // What: Callback Dependency Array. Why: This callback ref never needs to change identity; the element it receives is a normal parameter, not a dependency. How: An empty array means React never has to detach and reattach it across renders.
 
 	// #endregion raiCalFun
 

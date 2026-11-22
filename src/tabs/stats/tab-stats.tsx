@@ -1494,7 +1494,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		return outCouFun( 'rejected', picLogArr, hidPicSet, scoValStr, cutIsoStr, isaRemBoo ); // What: Rejected Count Return. Why: The breakdown's Re-Rolled Away column reads this per-item map. How: This counts the 'rejected' rows through outCouFun.
 
 
-	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: These are the same inputs picRowArr reads, with isaRemBoo making outCouFun return an empty map.
+	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the raw log, the active scope, the range cutoff, the Reminders-scope flag, or the hidden-picker set changes. How: picLogArr is the log outCouFun counts, hidPicSet, scoValStr, and cutIsoStr feed its hidden, scope, and range checks, and isaRemBoo makes it return an empty map.
 
 
 	const skiCouMap = React.useMemo( () => { // What: Skipped Count Map Memo. Why: The Pick breakdown's own "Skipped" metric needs a per-item skip count under the same scope/range rules as picRowArr. How: This counts, through outCouFun, only 'skipped'-outcome rows matching the active filters. // Per-item count of skipped rows, range + scope aware.
@@ -1503,7 +1503,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		return outCouFun( 'skipped', picLogArr, hidPicSet, scoValStr, cutIsoStr, isaRemBoo ); // What: Skipped Count Return. Why: The breakdown's Skipped column reads this per-item map. How: This counts the 'skipped' rows through outCouFun.
 
 
-	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the same inputs picRowArr itself depends on change. How: These are the same inputs picRowArr reads, with isaRemBoo making outCouFun return an empty map.
+	}, [ picLogArr, scoValStr, cutIsoStr, isaRemBoo, hidPicSet ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the raw log, the active scope, the range cutoff, the Reminders-scope flag, or the hidden-picker set changes. How: picLogArr is the log outCouFun counts, hidPicSet, scoValStr, and cutIsoStr feed its hidden, scope, and range checks, and isaRemBoo makes it return an empty map.
 
 
 	const remRowArr = React.useMemo( () => ( // What: Reminder Row Array Memo. Why: Every reminder-shaped card below shares this one type/hidden/range-filtered view of the reminder completion log. How: This keeps only rows whose own type opts into Stats, whose own task isn't hidden, and whose own completion date is inside the active range. // Reminder rows for the active range.
@@ -2040,7 +2040,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		return outGapMap; // What: Frequency Gap Return. Why: This is the finished per-item gap map the Frequency metric reads from. How: This returns the map built above.
 
 
-	}, [ isaPicBoo, easDowBoo, picRowArr, actDatArr, vacCheObj ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the picker scope, the ease-down flag, the pick rows, the active dates, or the vacation-check api changes. How: Each dependency feeds one part of the grouping/averaging above.
+	}, [ isaPicBoo, easDowBoo, picRowArr, actDatArr, vacCheObj ] ); // What: Memo Dependency Array. Why: This map only ever needs rebuilding when the picker scope, the ease-down flag, the pick rows, the active dates, or the vacation check object changes. How: Each dependency feeds one part of the grouping/averaging above.
 
 
 	const speGapMap = React.useMemo( () => { // What: Spent Gap Map Memo. Why: The ease-down Spent metric needs a per-item average completed-cycle length, in both run-count and calendar-day units. How: This walks picRowArr's own dates in order, grouping consecutive same-item runs and keeping only ones that ended depleted. // Ease Down "Spent": measured from ACTUAL history, the average length of a completed depletion streak (consecutive runs of the same active item that ended when its charge hit 0, flagged depletedEnd). Abandoned streaks (re-roll / inactive / manual) never reach 0, so they're excluded, which is why recharging an abandoned item can't skew this. eliNum = runs; calNum = calendar days spanned. null when the item has no completed cycle in range.
