@@ -61,8 +61,8 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
  * Charging is per run (done-gated), and a cadence picker runs once per
  * period, so the ease Soonest/Latest stepper number is periods-until-due
  * in the cadence's own unit, not calendar days at all: there is no day
- * conversion anywhere in this file. Drift is 100 divided by periods,
- * exactly as the engine already stores it.
+ * conversion anywhere in this file. Drift is 100 divided by the number of
+ * periods.
  *
  * The exported CAD_NAM_OBJ namespace object's property names match the names
  * of the internal implementations they map to. The explicit `name : name`
@@ -463,8 +463,7 @@ function perKeyFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : st
  *
  * @returns Whether picCadObj's own lastRunPeriod is the current period, or
  * a done pick-log row for it exists dated on or after the current
- * period's own start. Always false for a daily cadence, handled by a
- * separate legacy path instead.
+ * period's own start. Always false for a daily cadence.
  *
  * @example
  * ```ts
