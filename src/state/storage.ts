@@ -845,14 +845,14 @@ function mirAdoFun ( idbStaObj : RawSavTyp, mirStaObj : RawSavTyp ) : RawSavTyp 
  *
  * @summary
  * Opens IndexedDB and loads the state iniStoFun should boot from: the stored
- * copy, the localStorage mirror when mirAdoFun finds it newer (written back
- * to IndexedDB at once), or, on a first IndexedDB run, the migrated legacy
- * localStorage data, keeping an untouched rollback snapshot until the new
- * store has proven it can read its own data back. It never sets curEngStr
- * or cacStaObj itself: iniStoFun races it against BOO_DEA_NUM and commits
- * the result only when it wins, so a boot that runs late can't switch an
- * app already running on localStorage over to IndexedDB. A connection that
- * opens after the deadline is closed again.
+ * copy, the localStorage mirror when mirAdoFun finds it newer (written back to
+ * IndexedDB at once), or, on a first IndexedDB run, the migrated legacy
+ * localStorage data, keeping an untouched rollback snapshot that iniStoFun
+ * retires after enough clean boots. It never sets curEngStr or cacStaObj
+ * itself: iniStoFun races it against BOO_DEA_NUM and commits the result only
+ * when it wins, so a boot that runs late can't switch an app already running
+ * on localStorage over to IndexedDB. A connection that opens after the
+ * deadline is closed again.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1500,7 +1500,7 @@ async function staRepFun () : Promise< StoRepTyp > {
 
 // #region Exports
 
-const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is this file's main public entry point, imported by name by the files that use persistence. How: This maps each of this file's own internal function/variable names onto an external property name matching it exactly.
+const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is this file's main public entry point, imported by name by the files that use persistence. How: This maps each of this file's own internal implementations used elsewhere onto an external property name matching it exactly.
 
 
 	ACC_SIG_STR : ACC_SIG_STR, // What: Account Signed-In String. Why: Whether this device has signed in is recorded under this key, which the boot sweep keeps. How: This exports ACC_SIG_STR under its own matching name.
