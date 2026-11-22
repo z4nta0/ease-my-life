@@ -314,10 +314,10 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 
-				{ !accSynObj.accLoaBoo && !accUsrObj && ( // What: Signed Out Check. Why: Nobody is signed in. How: This shows both ways to sign in.
+				{ !accSynObj.accLoaBoo && !accUsrObj && ( // What: Signed Out Check. Why: Nobody is signed in. How: This shows the Google row and, unless a link is waiting for its address, the email form.
 
 
-					<>{ /* What: Signed Out Fragment. Why: The Google row and the email form show together. How: This groups them. */ }
+					<>{ /* What: Signed Out Fragment. Why: The sign-in rows for a signed-out visitor belong together. How: This groups them. */ }
 
 
 						<div className={ cssModObj.setRowDiv }>{ /* What: Settings Row Div Element. Why: Google sign-in sits in the tab's usual text-and-control row. How: This holds its text and button. */ }

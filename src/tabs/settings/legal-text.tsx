@@ -141,7 +141,7 @@ function PriPolCom () : React.JSX.Element {
 
 					<p><strong>Personal Data</strong>{ /* What: Term Label Strong Element. Why: This bolds the defined term at the start of its own definition entry. How: This wraps the term text in a native strong tag for visual emphasis. */ } (or &quot;Personal Information&quot;) is any information that relates to an identified or identifiable individual.</p>{ /* What: Bolded Lead-In Paragraph Element. Why: This pairs a bolded lead-in term or phrase with the rest of its own sentence, as one entry in the list above it. How: This wraps the lead-in text in a strong element (rendered beside it) followed by the entry's own continuing text. */ }
 
-					<p>We use &quot;Personal Data&quot; and &quot;Personal Information&quot; interchangeably unless a law uses a specific term.</p>{ /* What: Labeled Fact Paragraph Element. Why: This states one plain labeled fact belonging to the list entry above it. How: This is plain static text. */ }
+					<p>We use &quot;Personal Data&quot; and &quot;Personal Information&quot; interchangeably unless a law uses a specific term.</p>{ /* What: Fact Paragraph Element. Why: This states one plain fact belonging to the list entry it sits in. How: This is plain static text. */ }
 
 
 				</li>

@@ -8,7 +8,7 @@ import React     from 'react';                     // What: React. Why: The comp
 
 
 import { APP_NAM_OBJ } from '../../platform/appearance.ts'; // What: Appearance Namespace Object. Why: The Theme section needs to look up each built-in theme's own preview colors. How: This is read as APP_NAM_OBJ.PAL_SET_OBJ[key] when rendering each preset theme row.
-import { CarSurCom   } from '../../ui/card-surface.tsx';    // What: Card Surface Component. Why: The Light and Dark theme cards sit inside the shared bordered container. How: This wraps each card in TheSecCom.
+import { CarSurCom   } from '../../ui/card-surface.tsx';    // What: Card Surface Component. Why: Each theme card's rows sit inside the shared bordered container. How: This wraps each card's rows in TheSecCom.
 
 
 import type { ActStoTyp } from '../../state/store.ts';         // What: Action Store Type. Why: The component changes state through the store's actions. How: This types its actStoObj.

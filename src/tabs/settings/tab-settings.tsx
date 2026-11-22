@@ -96,7 +96,7 @@ import type { StoRepTyp } from '../../state/storage.ts';   // What: Storage Repo
  *
 */
 
-const SET_SEC_ARR = [ // What: Settings Section Array. Why: This drives both the left nav (in this exact order) and the scroll-spy/jump-to logic, keeping the 2 in lockstep. How: This is mapped over in the rail's own nav links and read by the scroll-spy effect and jumSecFun.
+const SET_SEC_ARR = [ // What: Settings Section Array. Why: This drives both the section rail (in this exact order) and the scroll-spy/jump-to logic, keeping the 2 in lockstep. How: This is mapped over in the rail's own nav links and read by the scroll-spy effect and jumSecFun.
 
 
 	{ ideStr : 'appearance', labStr : 'Appearance'      }, // What: Appearance Section Object. Why: Theme, animation, and layout controls live here. How: This is the first rail link and the tab's own top section.
@@ -291,7 +291,7 @@ function LegRowCom ( { className, 'data-element-name-hook' : hooNamStr, labTexSt
 				type='button'
 
 				onClick={ onClick }
-			>View</button>{ /* What: View Button Element. Why: This is the actual trigger that opens the document inside LegModCom. How: This calls onClick when pressed. */ }
+			>View</button>{ /* What: Document Open Button Element. Why: This is the actual trigger that opens the document inside LegModCom. How: This calls onClick when pressed. */ }
 
 
 		</div>
@@ -449,7 +449,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	// #region Scroll-Spy And Jump-To
 
-	const [ actSecStr, setActSecStr ] = React.useState( 'daily' ); // What: Active Section String And Setter. Why: Both the rail's own highlighted link and the scroll-spy effect below need one shared source of truth for which section reads as current. How: This is written by the scroll-spy effect during normal scrolling and by jumSecFun when a rail link is clicked. // Mirrors the Today tab's own group rail. The scroll container is the app's main content element (hook appConMai); sections live in the right pane and the sticky rail on the left tracks and drives position.
+	const [ actSecStr, setActSecStr ] = React.useState( 'daily' ); // What: Active Section String And Setter. Why: Both the rail's own highlighted link and the scroll-spy effect below need one shared source of truth for which section reads as current. How: This is written by the scroll-spy effect during normal scrolling and by jumSecFun when a rail link is clicked. // Mirrors the Today tab's own group rail. The scroll container is the app's main content element (hook appConMai); sections live in the right pane and the sticky rail on the left above 760px wide, with the rail a sticky bar above the sections at 760px and below, tracks and drives position.
 	const [ legMinNum, setLegMinNum ] = React.useState( 0 );       // What: Legal Minimum Number And Setter. Why: Legal is the last section, so without extra room below it the page runs out of scroll before its own top can reach the spy's base line. How: This holds the minimum height the Legal section needs, measured by the Legal spacer effect below and applied as its own minHeight.
 
 	const secMapRef = React.useRef< Record< string, HTMLElement | null > >( {} ); // What: Section Map Reference. Why: Every section below registers itself here via its own ref callback, giving the scroll-spy/jump-to logic a live lookup from section id to DOM element. How: This is written to by each section's own ref prop and read throughout this component.
@@ -1469,7 +1469,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 			ref={ rooEleRef }
 
 			className={ cssModObj.tabPagDiv }
-		>{ /* What: Tab Settings Div Element. Why: This is TabSetCom's own root element, giving the scroll-spy effect a handle to find its nearest appConMai ancestor. How: This wraps the header, the section rail plus right-hand pane, and the Legal modal. */ }
+		>{ /* What: Tab Page Div Element. Why: This is TabSetCom's own root element, giving the scroll-spy effect a handle to find its nearest appConMai ancestor. How: This wraps the header, the section rail plus right-hand pane, and the Legal modal. */ }
 
 
 			<HelOveCom
@@ -1481,7 +1481,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-			<header className={ cssModObj.pagHeaHed }>{ /* What: Page Heading Header Element. Why: The page header holds a kicker row, a brand lockup, and an intro paragraph. How: This wraps the kicker/help-button row, the brand mark plus title, and the intro paragraph. */ }
+			<header className={ cssModObj.pagHeaHed }>{ /* What: Page Header Header Element. Why: The page header holds a kicker row, a brand lockup, and an intro paragraph. How: This wraps the kicker/help-button row, the brand mark plus title, and the intro paragraph. */ }
 
 
 				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The section kicker and the help toggle share one row. How: This wraps the kicker div and the HelButCom. */ }
@@ -1506,7 +1506,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					className={ cssModObj.heaLeaDiv }
 
 					data-element-name-hook='heaLeaDiv'
-				>{ /* What: Heading Lead Div Element. Why: The brand mark and the page title sit side by side in this lead row. How: This wraps the braMarBut button and the section title. Its data-element-name-hook is read by help mode. */ }
+				>{ /* What: Header Lead Div Element. Why: The brand mark and the page title sit side by side in this lead row. How: This wraps the braMarBut button and the section title. Its data-element-name-hook is read by help mode. */ }
 
 
 					<button
@@ -1620,7 +1620,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					</button>
 
 
-					<div className={ cssModObj.heaTitDiv }>{ /* What: Heading Title Div Element. Why: The page title needs its own small wrapper. How: This wraps the h1 title below. */ }
+					<div className={ cssModObj.heaTitDiv }>{ /* What: Header Title Div Element. Why: The page title needs its own small wrapper. How: This wraps the h1 title below. */ }
 
 
 						<h1 className={ cssModObj.pagTitHea }>Behind the scenes, of your <span className={ cssModObj.titAccSpa }>eased</span> life.</h1>{ /* What: Page Title Heading Element. Why: The page names itself with this title style. How: This renders the fixed title text, with "eased" set off in the shared accent span. */ }
@@ -1654,7 +1654,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 				>{ /* What: Settings Rail Aside Element. Why: This is the sticky/scrollable rail of section links tracked by scroll-spy and driven by jumSecFun. How: This wraps the rail's own kicker and the scrolling div that holds its list of section links. Its data-element-name-hook is read by help mode. */ }
 
 
-					<div className={ cssModObj.raiKicDiv }>Sections</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading, matching the kicker style used elsewhere. How: This renders the fixed text "Sections". */ }
+					<div className={ cssModObj.raiKicDiv }>Sections</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading, matching the kicker style used elsewhere. How: This renders the fixed text "Sections", hidden at 760px wide and below. */ }
 
 
 
@@ -1707,7 +1707,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-				<div className={ cssModObj.setSecDiv }>{ /* What: Settings Sections Div Element. Why: The right-hand pane holds every section's own real content, in the same fixed order as the rail. How: This renders one <section> per entry in SET_SEC_ARR, each registering itself into secMapRef via its own ref callback. */ }
+				<div className={ cssModObj.setSecDiv }>{ /* What: Settings Sections Div Element. Why: The sections' own real content, in the same fixed order as the rail, sits beside the rail above 760px wide and below it at 760px and below. How: This renders one <section> per entry in SET_SEC_ARR, each registering itself into secMapRef via its own ref callback. */ }
 
 
 					<section
@@ -1719,7 +1719,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Appearance Section Element. Why: This is the Appearance section's own root, registering itself for scroll-spy/jump-to. How: This wraps the system-preference row, the Theme cards, the 2 style pickers, and the tab-placement control. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
 							<span className={ cssModObj.secKicSpa }>Appearance</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Appearance". */ }
@@ -2029,7 +2029,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings CarSurCom. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
 							<span className={ cssModObj.secKicSpa }>Daily generator</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Daily generator". */ }
@@ -2256,7 +2256,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Holidays Section Element. Why: This is the Holidays section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and HolEdiCom's own CarSurCom. Its data-element-name-hook is read by the tours. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
 							<span className={ cssModObj.secKicSpa }>Holidays</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Holidays". */ }
@@ -2292,7 +2292,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Data Section Element. Why: This is the Data control section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the whole storage/export/import/reset CarSurCom. Its data-element-name-hook is read by the tours. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
 							<span className={ cssModObj.secKicSpa }>Data control</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Data control". */ }
@@ -2388,7 +2388,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 								</div>
 
-								<div className={ cssModObj.stoActDiv }>{ /* What: Store Actions Div Element. Why: The Install and Protect Data buttons need their own grouping, apart from the info block. How: This conditionally renders whichever of the 3 buttons currently applies. */ }
+								<div className={ cssModObj.stoActDiv }>{ /* What: Storage Actions Div Element. Why: The Install and Protect Data buttons need their own grouping, apart from the info block. How: This conditionally renders whichever of the 3 buttons currently applies. */ }
 
 
 									{ canInsBoo && ( // What: Install Button Check. Why: An Install button should only ever show while a real install prompt is actually available. How: This renders the ButBasCom only while canInsBoo is true.
@@ -2865,7 +2865,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Account Section Element. Why: This is the Account section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section's heading and AccSecCom. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
 							<span className={ cssModObj.secKicSpa }>Account</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Account". */ }
@@ -2888,7 +2888,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings About Section Element. Why: This is the About section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy plus 4 Cards: the app identity, the Buy Me a Coffee row, the replay-tour row, and ConSupCom. Its data-element-name-hook is read by the tours. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
 							<span className={ cssModObj.secKicSpa }>About</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "About". */ }
@@ -2922,9 +2922,9 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 								<span className={ cssModObj.aboVerSpa }>{ APP_VER_STR == null ? 'Version: 1.0' : `Version: ${ APP_VER_STR }` }</span>{ /* What: About Version Span Element. Why: The real build version belongs in this identity block. How: This renders APP_VER_STR, falling back to "1.0" when the build-time define is missing. */ }
 
-								<span className={ cssModObj.aboLinSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.dev/' rel='noopener noreferrer' target='_blank'>https://techgeek.dev/<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: About Link Span Element. Why: The identity block links to the creator's developer site. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboLinSpa }>Creator: <a className={ cssModObj.aboLinAnc } href='https://techgeek.dev/' rel='noopener noreferrer' target='_blank'>https://techgeek.dev/<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: About Line Span Element. Why: The identity block links to the creator's developer site. How: This renders a fixed external link, opened in a new tab. */ }
 
-								<span className={ cssModObj.aboLinSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' rel='noopener noreferrer' target='_blank'>https://github.com/z4nta0/ease-my-life<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: About Link Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
+								<span className={ cssModObj.aboLinSpa }>GitHub: <a className={ cssModObj.aboLinAnc } href='https://github.com/z4nta0/ease-my-life' rel='noopener noreferrer' target='_blank'>https://github.com/z4nta0/ease-my-life<span data-new-tab-note> (opens in a new tab)</span></a></span>{ /* What: About Line Span Element. Why: The identity block also links to the project's own source code. How: This renders a fixed external link, opened in a new tab. */ }
 
 
 							</div>
@@ -3054,7 +3054,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					>{ /* What: Settings Legal Section Element. Why: This is the Legal section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the Privacy Policy/Terms of Service rows. Its data-element-name-hook is read by the tours. */ }
 
 
-						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Heading Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
+						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
 
 
 							<span className={ cssModObj.secKicSpa }>Legal</span>{ /* What: Section Kicker Span Element. Why: The section's own name uses the shared small kicker style. How: This renders the fixed text "Legal". */ }

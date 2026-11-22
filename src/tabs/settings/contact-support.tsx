@@ -569,7 +569,7 @@ function ConSupCom () : React.JSX.Element {
 
 						</label>
 
-						<div className={ cssModObj.supFieDiv }>{ /* What: Support Field Div Element. Why: The message textarea needs its own explicit label element rather than an implicit wrapping label, since its id must differ from index.html's own static form (see the comment on that id below). How: This wraps the message label and the message textarea. */ }
+						<div className={ cssModObj.supFieDiv }>{ /* What: Support Field Div Element. Why: The message textarea sits beside a separate label tied to it by htmlFor, rather than inside a wrapping label like the subject field. How: This wraps the message label and the message textarea. */ }
 
 
 							<label
