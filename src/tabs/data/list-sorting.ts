@@ -140,11 +140,10 @@ function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeStr : s
  * sorEntFun = Sort Entries Function
  *
  * @summary
- * Shared sort vocabulary for lists of rows. Each list builds its own
- * array of { namStr, typStr, groStr, couNum, ranNum, oddNum, booNum,
- * datNum, actBoo } rows (fields that don't apply to a given row are
- * null) and sorts them with this one comparator, keyed by e.g.
- * 'name-asc' or 'count-desc'.
+ * Shared sort vocabulary for rows shaped like SorRowTyp ({ namStr, typStr,
+ * groStr, couNum, ranNum, oddNum, booNum, datNum, actBoo }, where a field
+ * that doesn't apply to a row is null), compared by one comparator keyed by
+ * e.g. 'name-asc' or 'count-desc'.
  *
  * groStr/datNum/actBoo are N/A (null) for a row with no meaningful
  * single value for that field: those sort to the top for the forward

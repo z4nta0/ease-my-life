@@ -192,7 +192,7 @@ function isaStaFun () : boolean {
 
 
 
-type InsStaTyp = 'installed' | 'ios' | 'mac' | 'pending' | 'ready' | 'standalone' | 'unsupported'; // What: Install State Type. Why: The Settings tab's install row shows a different message for each way this device can install, or has installed, the app. How: This lists every state insStaFun can report, as documented on it.
+type InsStaTyp = 'installed' | 'ios' | 'mac' | 'pending' | 'ready' | 'standalone' | 'unsupported'; // What: Install State Type. Why: The install state is one value that distinguishes every way this device can install, or has installed, the app. How: This lists every state insStaFun can report, as documented on it.
 
 // #region insStaFun
 
@@ -534,7 +534,7 @@ async function askPerFun ( forAskBoo : boolean ) : Promise< boolean > {
 
 	const askOkaBoo = await STG_NAM_OBJ.reqPerFun(); // What: Ask Okay Boolean. Why: The caller needs to know whether persistence is now actually granted. How: This awaits STG_NAM_OBJ's own reqPerFun call.
 
-	notSubFun(); // What: Notify Subscribers Call. Why: The Settings storage panel must re-read the now-possibly-changed persistence grant. How: This calls notSubFun.
+	notSubFun(); // What: Notify Subscribers Call. Why: Subscribers must re-read the now-possibly-changed persistence grant. How: This calls notSubFun.
 
 
 
