@@ -3022,7 +3022,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-				return;
+				return; // What: Sync Wait Return. Why: The period is waiting on sync, so no list may be built this pass. How: This leaves cheGenFun until the effect reruns.
 
 
 			}
@@ -3209,7 +3209,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		return !staAppObj.pickers.some( ( curPicObj ) => { // What: Runnable Picker Check. Why: A single picker able to run today means this empty state doesn't apply. How: This tests every picker against the four gates below.
+		return !staAppObj.pickers.some( ( curPicObj ) => { // What: Runnable Picker Check. Why: A single picker able to run today means this empty state doesn't apply. How: This tests pickers one by one against the four gates below until one passes.
 
 
 			const isaVisBoo = !curPicObj.hidden;                                                                    // What: Is-A Visible Boolean. Why: A still-hidden sample picker never runs. How: This negates the hidden flag.
@@ -3567,7 +3567,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		if ( genResBoo && !preResRef.current ) { // What: Fresh Resolve Branch. Why: The whole conclusion sequence only ever plays on a genuine false-to-true transition. How: This checks genResBoo against preResRef's own prior value.
 
 
-			const redMotBoo = redMotFun();                          // What: Reduced Motion Boolean. Why: Every timing below needs to collapse almost to nothing for a user who prefers reduced motion. How: This checks redMotFun once, reused for both timeouts below.
+			const redMotBoo = redMotFun();                          // What: Reduced Motion Boolean. Why: Every timing below needs to collapse almost to nothing for a user who prefers reduced motion. How: This checks redMotFun once, reused for both delay numbers below.
 			const celDelNum = redMotBoo ? 200 : durMilFun( 'p09' ); // What: Celebration Delay Number. Why: The exit animation must wait for the celebration to actually finish playing first. How: This is a short reduced-motion beat or the p09 duration step that outlasts the whole celebration. // Duration Base Plus 9 ~= 1983.0ms
 			const exiDelNum = redMotBoo ? 0 : durMilFun( 'p03' );   // What: Exit Delay Number. Why: The checklist's own conclusion must wait for the card-exit animation to finish too. How: This is 0 under reduced motion or the exit animation's own p03 duration step. // Duration Base Plus 3 ~= 366.9ms
 
@@ -3944,7 +3944,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										cx='18'
 										cy='18'
 										r='15.5'
-										strokeDasharray={ `${ ( donCouNum / Math.max( 1, totCouNum ) ) * 97.4 }, 97.4` }
+										strokeDasharray={ `${ ( donCouNum / Math.max( 1, totCouNum ) ) * 97.4 }, 97.4` } // What: Dash Array Attribute. Why: The arc must fill a share of the circle equal to donCouNum over totCouNum. How: This scales that share by 97.4, the circle's circumference for r 15.5, and uses the same figure as the gap length.
 									/>{ /* What: Ring Progress Circle Element. Why: This is the actual visible progress arc. How: This sets its own dash array to donCouNum over totCouNum, scaled to the circle's own circumference. */ }
 
 
@@ -4083,14 +4083,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						data-rail-wheel-scroll
 
 						aria-label='Groups'
-					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders one rail button per bloOrdArr entry, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tours and help mode. */ }
+					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, on mobile, the horizontal pill bar) listing every block. How: This renders a rail button for each bloOrdArr entry that has one, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<div className={ cssModObj.raiKicDiv }>Groups</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading label. How: This renders the literal word "Groups". */ }
 
 
 
-						<ul className={ cssModObj.raiLisUno }>{ /* What: Rail List Unordered Element. Why: Every rail button is one list item in this shared list. How: This maps bloOrdArr to one <li> per entry, dispatching by sentinel/real-group id. */ }
+						<ul className={ cssModObj.raiLisUno }>{ /* What: Rail List Unordered Element. Why: Every rail button is one list item in this shared list. How: This maps bloOrdArr to an <li> for each entry that has a rail button, dispatching by sentinel/real-group id. */ }
 
 
 							{ bloOrdArr.map( ( curIdeStr ) => { // What: Rail Button Map. Why: One rail button is needed per block, dispatched by whichever sentinel or real group id curIdeStr holds. How: This returns the Reminders button, the Page Tours button (when relevant), or a real group's own button.
@@ -4315,7 +4315,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						className={ cssModObj.todGroDiv }
 
-						style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
+						style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined } // What: Tour Top Padding Style. Why: A tour coach card may ask for extra room above the groups. How: This sets paddingTop to touBusObj.resTopNum when it is nonzero, otherwise sets no style.
 					>{ /* What: Today Groups Div Element. Why: This is the actual scrollable content column, reserving extra top space while a tour coach card asks for it. How: This renders the celebration overlay portal, the group blocks, the App Features section, the onboarding cards, and the footer. */ }
 
 
@@ -4432,7 +4432,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											ediModBoo={ ediModBoo }
 											leaTasSet={ leaTasSet }
 											logOpeBoo={ opeLogStr === '__reminders' }
-											secRefFun={ ( secCurEle ) => { secEleRef.current[ '__reminders' ] = secCurEle; } }
+											secRefFun={ ( secCurEle ) => { secEleRef.current[ '__reminders' ] = secCurEle; } } // What: Section Reference Callback. Why: The scroll-spy and jump code need the Reminders section's DOM node. How: This stores the node in secEleRef under '__reminders'.
 											setActEdiStr={ setActEdiStr }
 											staAppObj={ staAppObj }
 
@@ -4470,7 +4470,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 										<section
 											key='__pageTours'
-											ref={ ( secCurEle ) => { secEleRef.current[ '__pageTours' ] = secCurEle; } }
+											ref={ ( secCurEle ) => { secEleRef.current[ '__pageTours' ] = secCurEle; } } // What: Section Reference Callback. Why: The scroll-spy and jump code need the Page Tours section's DOM node. How: This stores the node in secEleRef under '__pageTours'.
 
 											className={ cssModObj.todGroSec }
 
@@ -4546,7 +4546,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 									<section
 										key={ curGroObj.namStr }
-										ref={ ( secCurEle ) => { secEleRef.current[ curGroObj.namStr ] = secCurEle; } }
+										ref={ ( secCurEle ) => { secEleRef.current[ curGroObj.namStr ] = secCurEle; } } // What: Section Reference Callback. Why: The scroll-spy and jump code need the group section's DOM node. How: This stores the node in secEleRef under the group's name.
 
 										className={ cssModObj.todGroSec }
 
@@ -4559,7 +4559,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											ediModBoo={ ediModBoo }
 											groNamStr={ curGroObj.namStr }
 											logOpeBoo={ opeLogStr === curGroObj.namStr && !ediModBoo }
-											merPenObj={ merProObj && merProObj.oldStr === curGroObj.namStr ? merProObj : null }
+											merPenObj={ merProObj && merProObj.oldStr === curGroObj.namStr ? merProObj : null } // What: Merge Pending Prop. Why: Only the group being renamed into an existing one shows the merge prompt. How: This passes merProObj when its old name is this group's name, otherwise null.
 											totCouNum={ curGroObj.entArr.length }
 
 											onCanMerFun={ () => setMerProObj( null ) }
@@ -4740,7 +4740,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 							<section
-								ref={ ( secCurEle ) => { secEleRef.current[ '__appFeatures' ] = secCurEle; } }
+								ref={ ( secCurEle ) => { secEleRef.current[ '__appFeatures' ] = secCurEle; } } // What: Section Reference Callback. Why: The scroll-spy and jump code need the App Features section's DOM node. How: This stores the node in secEleRef under '__appFeatures'.
 
 								className={ cssModObj.todGroSec }
 
@@ -4764,7 +4764,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								>{ /* What: Today List Div Element. Why: Every still-relevant feature card shares this one list column. How: This maps the filtered APP_FEA_ARR list to one AppFeaCom per entry. Its data-element-name-hook is read by Today's drag-to-reorder code. */ }
 
 
-									{ APP_FEA_ARR.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.ideStr ] ) ).map( ( curFeaObj ) => ( // What: App Feature Card List Render. Why: Every still-relevant feature needs its own card; a resolved one during replay drops out immediately instead of lingering with an Undo toggle. How: This maps APP_FEA_ARR, filtered per the design note above, to one AppFeaCom per entry, keyed by its own ideStr. // During a replay (fecDonBoo), a resolved card drops out the instant it resolves instead of sticking around with an Undo toggle, same "no closing card to synchronize a batch disappearance against anymore" reasoning as groEntFun's own replay-continuation cards. The ORIGINAL first-time pass is unaffected: every card stays until the whole section resolves together at the next real generation.
+									{ APP_FEA_ARR.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.ideStr ] ) ).map( ( curFeaObj ) => ( // What: App Feature Card List Render. Why: Every still-relevant feature needs its own card; a resolved one during replay drops out immediately instead of lingering with an Undo toggle. How: This maps APP_FEA_ARR, filtered per the replay note after this comment, to one AppFeaCom per entry, keyed by its own ideStr. // During a replay (fecDonBoo), a resolved card drops out the instant it resolves instead of sticking around with an Undo toggle, same "no closing card to synchronize a batch disappearance against anymore" reasoning as groEntFun's own replay-continuation cards. The ORIGINAL first-time pass is unaffected: every card stays until the whole section resolves together at the next real generation.
 
 
 										<AppFeaCom
