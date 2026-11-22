@@ -1747,7 +1747,7 @@
 
 }
 
-.spkPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle twinkles at its own spot. How: This draws a small accent glyph centered on its inline position that plays the shared twinkle. */
+.spkPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle twinkles at its own spot. How: This draws an accent glyph centered on its inline position that plays the shared twinkle. */
 
 
 	animation   : global( sparkleCelebrateTwinkle ) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Global sparkleCelebrateTwinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
@@ -2136,7 +2136,7 @@
 
 }
 .onbGenSpa[aria-disabled='true']:hover,
-.genLisSpa[aria-disabled='true']:hover { /* What: Hovered Disabled Onboarding Generate Span And Generate List Span. Why: A disabled stand-in shouldn't light up on hover. How: This holds a flat page-background fill and its own text color. */
+.genLisSpa[aria-disabled='true']:hover { /* What: Hovered Disabled Onboarding Generate Span And Generate List Span. Why: A disabled stand-in shouldn't light up on hover. How: This sets a flat page-background fill and an inherited text color. */
 
 
 	background : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */

@@ -979,7 +979,7 @@
 
 /* #region carMetDiv */
 
-.carMetDiv { /* What: Card Meta Div. Why: The reminder's schedule reads as quiet metadata above its name. How: This sets it in small muted mono type beside its icon, without the uppercase other cards use. */
+.carMetDiv { /* What: Card Meta Div. Why: The reminder's schedule reads as quiet metadata above its name. How: This sets it in small muted mono type beside its icon, with no uppercase. */
 
 
 	align-items    : center;

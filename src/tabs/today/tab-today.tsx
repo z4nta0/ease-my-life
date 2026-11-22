@@ -38,7 +38,7 @@ import { norGroFun    } from '../../core/pickers.ts';               // What: Nor
 import { NOT_NAM_OBJ  } from '../../platform/notify.ts';            // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.genNotFun() right after an auto run, its result deliberately ignored.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called for the checklist's state, such as its status.
 import { ONB_EPT_ARR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Explore-Page-Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
-import { ONB_GII_STR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Generate-Item-ID String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun/setCarFun wherever that specific card is read or resolved.
+import { ONB_GII_STR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Generate-Item-ID String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun and actStoObj.setCarFun wherever that specific card is read or resolved.
 import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own counts.
 import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Identifiers Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own tutorial-task counts.
 import { PagTouCom    } from './page-tour-card.tsx';                // What: Page Tour Component. Why: Each page tour gets a launcher card in the Page Tours group. How: This is rendered once per page tour.
@@ -2801,11 +2801,10 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 * first, rather than letting them vanish instantly, uses the PRE-
 		 * generate anchor (this genLisFun call hasn't bumped generatedAt
 		 * yet), matching what's actually on screen right now. Reminders
-		 * whose day arrived while the generator was overdue (this fix's
-		 * whole point) weren't shown a moment ago under the old anchor,
-		 * and are about to become visible under this genLisFun call's new
-		 * one; diffing the two id sets lets them get the entrance
-		 * animation instead of popping in.
+		 * whose day arrived while the generator was overdue weren't shown
+		 * a moment ago under the old anchor, and are about to become
+		 * visible under this genLisFun call's new one; diffing the two id
+		 * sets lets them get the entrance animation instead of popping in.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -3148,7 +3147,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const touBusObj = useEmlTouFun(); // What: Tour Bus Object. Why: Several onboarding-adjacent empty-state/create-flow checks below need to read the shared tour bus's own live fields. How: This calls useEmlTouFun.
 
 	const onbDonBoo = ONB_CHE_OBJ.cheStaFun( staAppObj ).fulBoo;    // What: Onboarding Done Boolean. Why: This replaces the old onboarding.dismissed flag (which only ever got set by the now-removed "Get started" checklist, so it was permanently stuck false); derived instead of stored, see onboarding-checklist.ts for what counts as done. How: This calls ONB_CHE_OBJ.cheStaFun and reads its own fulBoo field.
-	const onbCreBoo = !onbDonBoo && staAppObj.pickers.length === 0; // What: Onboarding Create Boolean. Why: This force-shows the create-picker onboarding card whenever onboarding isn't complete and the user has no pickers yet; a future "Create your first picker" mini-tour will need an equivalent force-render once it exists, keyed off its own step numbering. How: This is true only while onboarding isn't complete AND the user has no pickers at all.
+	const onbCreBoo = !onbDonBoo && staAppObj.pickers.length === 0; // What: Onboarding Create Boolean. Why: While onboarding isn't complete and the user has no pickers yet, the empty-state cards below stay hidden. How: This is true only while onboarding isn't complete AND the user has no pickers at all.
 	const notTouBoo = touBusObj.touPhaStr !== 'tour';               // What: Not Tour Boolean. Why: Every empty state below stays hidden while a guided tour is driving the page. How: This is true unless the tour bus reports the tour phase.
 	const zerPicBoo = staAppObj.pickers.length === 0;               // What: Zero Picker Boolean. Why: The "no pickers yet" empty state only applies with zero pickers. How: This checks the picker count.
 
@@ -3160,17 +3159,17 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * onbEmpBoo = Onboarding Empty Boolean
 	 *
 	 * @summary
-	 * The plain empty-state edge case: the user has no pickers and the
-	 * tour isn't running. Distinct from the onboarding create card:
-	 * plainer copy so it doesn't read as a bug, no coach highlight.
-	 * Tapping it jumps to Pickers with the create form open and the name
-	 * prefilled "Chores" (see begCreFun below, via the shared tour bus).
+	 * The plain empty-state edge case: the user has no pickers, the tour
+	 * isn't running, and onboarding is complete. Its copy is plain so it
+	 * doesn't read as a bug, with no coach highlight. Tapping it jumps to
+	 * Pickers with the create form open and the name prefilled "Chores"
+	 * (see begCreFun below, via the shared tour bus).
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	*/
 
-	const onbEmpBoo = !onbCreBoo && notTouBoo && zerPicBoo; // What: Onboarding Empty Boolean. Why: See the doc comment just above. How: This is true when the create card isn't showing, no tour is running, and there are no pickers.
+	const onbEmpBoo = !onbCreBoo && notTouBoo && zerPicBoo; // What: Onboarding Empty Boolean. Why: See the doc comment just above. How: This is true when onbCreBoo is false, no tour is running, and there are no pickers.
 
 	// #endregion onbEmpBoo
 
@@ -3187,7 +3186,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * generator at all, or the ones that are aren't scheduled for this
 	 * weekday (or sit out today's holiday). Same two gates the generator
 	 * itself applies, evaluated for the CURRENT day. Only surfaces when
-	 * the picker list is genuinely empty; reminders may still be present.
+	 * the Today entry list is genuinely empty; reminders may still be
+	 * present.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -3229,7 +3229,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	const hasTutBoo = shoCheBoo;                                                       // What: Has Tutorial Boolean. Why: idlTodBoo's own visibility is suppressed while the mini-tour checklist is still up (any launcher card, checked or not, until cheDonBoo), since the page isn't actually empty then, it's full of tutorial cards instead of real picks; reappears normally once the checklist concludes and there's still genuinely nothing to run. How: This is just shoCheBoo, given its own name here for readability at the call site below.
 	const zerEntBoo = todEntArr.length === 0;                                          // What: Zero Entry Boolean. Why: The idle empty state only replaces an empty list. How: This checks the entry count.
-	const shoIdlBoo = !onbCreBoo && notTouBoo && idlTodBoo && zerEntBoo && !hasTutBoo; // What: Show Idle Boolean. Why: This is the actual final gate the JSX below renders from. How: This combines every condition above: not the create card, not mid-tour, no runnable picker, no entries at all, and no tutorial cards masking the emptiness.
+	const shoIdlBoo = !onbCreBoo && notTouBoo && idlTodBoo && zerEntBoo && !hasTutBoo; // What: Show Idle Boolean. Why: This is the actual final gate the JSX below renders from. How: This combines every condition above: onbCreBoo is false, not mid-tour, no runnable picker, no entries at all, and no tutorial cards masking the emptiness.
 
 
 	const begCreFun = () => { // What: Begin Create Function. Why: The empty-state's own CTA needs to jump to Pickers with the create form already open and prefilled. How: This publishes a staCreObj request onto the shared tour bus, then navigates to the Pickers tab.
