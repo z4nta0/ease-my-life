@@ -91,12 +91,12 @@ const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Functi
  *
 */
 
-const stoGetFun = ( stoKeyStr : string ) => { // What: Storage Get Function. Why: localStorage can throw in some contexts (private browsing, a full quota), and a failed read should never crash the caller. How: This wraps getItem in a try/catch, returning null on any failure instead of throwing.
+const stoGetFun = ( stoKeyStr : string ) => { // What: Storage Get Function. Why: localStorage can throw when a browser blocks or breaks it, and a failed read should never crash the caller. How: This wraps getItem in a try/catch, returning null on any failure instead of throwing.
 
 
 	try { return localStorage.getItem( stoKeyStr ); } // What: Storage Get Try. Why: This is the actual read this function exists to perform. How: This returns whatever getItem resolves to for stoKeyStr, including null when the key isn't set.
 
-	catch { return null; } // What: Storage Get Guard. Why: A private-mode or full-quota localStorage can throw on read. How: This returns null instead of letting the error propagate.
+	catch { return null; } // What: Storage Get Guard. Why: A browser that blocks or breaks localStorage can throw on read. How: This returns null instead of letting the error propagate.
 
 
 };
