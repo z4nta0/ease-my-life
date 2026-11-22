@@ -2020,7 +2020,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		setWeiFun : ( tarIdeStr, weiValNum ) => setAppStaObj( ( curStaObj ) => ( { // What: Set Weight Function. Why: A direct weight override (Data tab) needs to patch just this one field on one item. How: This maps items, setting weight to weiValNum on the one matching tarIdeStr.
+		setWeiFun : ( tarIdeStr, weiValNum ) => setAppStaObj( ( curStaObj ) => ( { // What: Set Weight Function. Why: A direct weight override needs to patch just this one field on one item. How: This maps items, setting weight to weiValNum on the one matching tarIdeStr.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2170,12 +2170,11 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * updIteFun = Update Item Function
 		 *
 		 * @summary
-		 * The general per-item field patch (Fill, Refill, Reset boost, editor
-		 * saves). When the patch touches value, it also strips any stale
-		 * pending update for this item from every other Today entry, since
-		 * completing one of those entries later would otherwise silently
-		 * overwrite the value just set, and reworks the item's own Ease Down
-		 * entry so its decay starts from the new value.
+		 * The general per-item field patch. When the patch touches value, it
+		 * also strips any stale pending update for this item from every other
+		 * Today entry, since completing one of those entries later would
+		 * otherwise silently overwrite the value just set, and reworks the
+		 * item's own Ease Down entry so its decay starts from the new value.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2192,7 +2191,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		updIteFun : ( tarIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Item Function. Why: This is the general per-item field patch (Fill/Refill/Reset boost, editor saves, ...), which must ALSO strip any stale pending mutation a direct value edit would otherwise be silently overwritten by later (see spuDroFun above). How: This merges patValObj onto the one matching item, and when patValObj touches value, also drops stale pending rows for tarIdeStr from every other Today entry and reworks its own Ease Down entry's decay.
+		updIteFun : ( tarIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Item Function. Why: This is the general per-item field patch, which must also strip any stale pending mutation that a direct value edit would otherwise be overwritten by. How: This merges patValObj onto the one matching item, and when patValObj touches value, also drops stale pending rows for tarIdeStr from every other Today entry and reworks its own Ease Down entry's decay.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2207,7 +2206,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 					...curStaObj.today, // What: Current Today Spread. Why: Every other today field must carry over unchanged. How: This spreads curStaObj.today before the entries override below.
 
-					entries : rebPenFun( spuDroFun( curStaObj.today.entries, [ tarIdeStr ] ), curStaObj.pickers, tarIdeStr, patValObj.value! ) // What: Entries. Why: Any stale pending mutation targeting this item must be stripped, and the item's own Ease Down entry has to decay from its new value. How: This drops the stale rows with spuDroFun, then reworks the item's own entry with rebPenFun. // What: Non-Null Note. Why: This spread runs only when patValObj sets value, and every caller sets it to a number. How: The ! tells TypeScript the value is set.
+					entries : rebPenFun( spuDroFun( curStaObj.today.entries, [ tarIdeStr ] ), curStaObj.pickers, tarIdeStr, patValObj.value! ) // What: Entries. Why: Any stale pending mutation targeting this item must be stripped, and the item's own Ease Down entry has to decay from its new value. How: This drops the stale rows with spuDroFun, then reworks the item's own entry with rebPenFun. // What: Non-Null Note. Why: This spread runs only when 'value' in patValObj, and the value is set to a number there. How: The ! tells TypeScript the value is set.
 
 
 				}
@@ -2232,14 +2231,11 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * addTasFun = Add Task Function
 		 *
 		 * @summary
-		 * Statically-scheduled tasks shown atop Today, distinct from the
-		 * randomly-picked items above. fields.replaceId updates THIS existing
-		 * task in place (same id) instead of prepending a new one, mirroring
-		 * addPicFun's own replaceId, used when a reminder mini-tour is
-		 * replayed after already finishing once (see reminders-section.tsx's
-		 * own cmtAddFun, which looks up the prior real task via
-		 * createdFromSample). A new reminder due today reopens a fully done
-		 * day, so the streak is reconciled through stkSynFun.
+		 * Adds a statically-scheduled reminder to the front of the list, or,
+		 * when tasArgObj.replaceId is given, replaces that existing task in
+		 * place (same id), mirroring addPicFun's own replaceId. A new reminder
+		 * due today reopens a fully done day, so the streak is reconciled
+		 * through stkSynFun.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2257,7 +2253,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		addTasFun : ( tasArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Add Task Function. Why: Hidden reminders (onboarding's own sample reminders, plus any real reminder still hidden pending the checklist's closing Generate step) are excluded from the sibling-name check, same policy as addPicFun's own uniNamFun call, otherwise the FIRST real reminder a tutorial ever creates would collide with its own still-hidden sample template. How: This builds a default task via TAS_NAM_OBJ.defTasFun, resolves tasArgObj.replaceId, de-duplicates its own name, then replaces or prepends it.
+		addTasFun : ( tasArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Add Task Function. Why: Hidden reminders are excluded from the sibling-name check, the same policy as addPicFun's own uniNamFun call, so a new real reminder never collides with a hidden one. How: This builds a default task via TAS_NAM_OBJ.defTasFun, resolves tasArgObj.replaceId, de-duplicates its own name, then replaces or prepends it.
 
 
 			const newTasObj = TAS_NAM_OBJ.defTasFun( tasArgObj );  // What: New Task Object. Why: TAS_NAM_OBJ itself owns the real default shape for a brand-new task. How: This calls TAS_NAM_OBJ.defTasFun with the given tasArgObj.
@@ -2325,9 +2321,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * renTasFun = Rename Task Function
 		 *
 		 * @summary
-		 * Commits a reminder rename (on blur, Enter or Save). The name is
-		 * de-duplicated against every other reminder's own name, so the saved
-		 * name can differ from what was typed.
+		 * Renames a reminder. The name is de-duplicated against every other
+		 * reminder's own name, so the saved name can differ from what was
+		 * typed.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2343,7 +2339,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		renTasFun : ( tarIdeStr, newNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Task Function. Why: Commit-time reminder rename (blur/Enter/Save only) with de-duplication. How: This resolves a unique name against every OTHER task's own name, then writes it onto the one matching task.
+		renTasFun : ( tarIdeStr, newNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Task Function. Why: This renames a reminder, de-duplicating its name against every other reminder. How: This resolves a unique name against every OTHER task's own name, then writes it onto the one matching task.
 
 
 			const sibNamArr = curStaObj.tasks.filter( ( curTasObj ) => curTasObj.id !== tarIdeStr ).map( ( curTasObj ) => curTasObj.name ); // What: Sibling Name Array. Why: A reminder name only needs to be unique among every OTHER reminder. How: This filters curStaObj.tasks to every task but the one being renamed, then maps to their own names.
@@ -2368,7 +2364,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		setOptFun : ( tasTypStr, optKeyStr, optValBoo ) => setAppStaObj( ( curStaObj ) => { // What: Set Option Function. Why: This flips one participation switch for a reminder type ('once' | 'recurring'), without callers re-specifying every other switch. How: This normalizes the current options, then merges one key onto the matching type's own sub-object.
+		setOptFun : ( tasTypStr, optKeyStr, optValBoo ) => setAppStaObj( ( curStaObj ) => { // What: Set Option Function. Why: This flips one participation switch for a reminder type ('once' | 'recurring'), leaving every other switch as it was. How: This normalizes the current options, then merges one key onto the matching type's own sub-object.
 
 
 			const norOptObj = TAS_NAM_OBJ.norOptFun( curStaObj.reminderOpts ); // What: Normalized Options Object. Why: A patch must be applied against the FULL, normalized switch set, never a possibly-partial raw one. How: This calls TAS_NAM_OBJ.norOptFun with curStaObj's own reminderOpts.
@@ -2424,7 +2420,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		skiTasFun : ( tarIdeStr, untIsoStr ) => setAppStaObj( ( curStaObj ) => { // What: Skip Task Function. Why: This hides a reminder until its own next eligible day (computed by the caller from the reminder's own rules), without marking it done or logging a completion, but DOES append a skip row so Stats can tally per-reminder skips. How: This writes skipUntil onto the matching task and appends one row to reminderSkipLog.
+		skiTasFun : ( tarIdeStr, untIsoStr ) => setAppStaObj( ( curStaObj ) => { // What: Skip Task Function. Why: This hides a reminder until the given next eligible day, without marking it done or logging a completion, but it does append a skip row so Stats can tally per-reminder skips. How: This writes skipUntil onto the matching task and appends one row to reminderSkipLog.
 
 
 			const curTasObj = curStaObj.tasks.find( ( tasFinObj ) => tasFinObj.id === tarIdeStr ); // What: Current Task Object And Guard. Why: The skip row below needs this task's own name and recurrence type, when it still exists. How: This looks up tarIdeStr in curStaObj.tasks.
@@ -2579,7 +2575,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		updTasFun : ( tarIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Task Function. Why: Callers need to patch one existing task's own fields in place, without touching any other. How: This merges patValObj onto the one task whose own id matches tarIdeStr.
+		updTasFun : ( tarIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Task Function. Why: This patches one existing task's own fields in place, without touching any other. How: This merges patValObj onto the one task whose own id matches tarIdeStr.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2640,12 +2636,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * 'skipped'|'cancelled'} to resolve it, or null to
 		 * uncheck it back to pending (redo). Never touches the underlying
 		 * sample picker/task; resolution is tracked here only, which is
-		 * exactly what makes unchecking free. Also flags the exact moment
-		 * reaGenFun flips false-to-true, for tab-today.tsx's own
-		 * auto-scroll (see generateScrollPending's own migStaFun() comment
-		 * for why this has to be captured HERE, the actual mutation
-		 * point, rather than as a derived-value comparison inside
-		 * TabTodCom itself, which may not even be mounted right now).
+		 * exactly what makes unchecking free. It also sets
+		 * generateScrollPending the moment reaGenFun flips from false to true.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2713,7 +2705,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		setFeaFun : ( iteIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Feature Function. Why: App Features tutorials (see onboarding/app-features.tsx) resolve independently of the checklist, in their own separate map, for the same reasons documented on its own migStaFun() backfill. How: This mirrors setCarFun's own resolve/unresolve shape, but against onboarding.appFeatures instead.
+		setFeaFun : ( iteIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Feature Function. Why: App Features tutorials resolve independently of the checklist, in their own map, onboarding.appFeatures. How: This mirrors setCarFun's own resolve/unresolve shape, but against onboarding.appFeatures instead.
 
 
 			const appFeaObj = { ...( ( curStaObj.onboarding && curStaObj.onboarding.appFeatures ) || {} ) }; // What: App Features Object. Why: The resolve/unresolve below must patch a COPY, never curStaObj.onboarding.appFeatures directly. How: This shallow-copies curStaObj's own onboarding.appFeatures, defaulting to {}.
@@ -2757,7 +2749,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 				...curStaObj.onboarding, // What: Current Onboarding Spread. Why: Every onboarding flag the patch doesn't mention must carry over unchanged. How: This spreads curStaObj.onboarding.
-				...patValObj             // What: Patch Spread. Why: The caller's own flags must override the current ones. How: This spreads patValObj last, so its keys win.
+				...patValObj             // What: Patch Spread. Why: The patched flags must override the current ones. How: This spreads patValObj last, so its keys win.
 
 
 			}
@@ -2777,18 +2769,15 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * addPicFun = Add Picker Function
 		 *
 		 * @summary
-		 * Creates a brand-new picker from the Add-Picker flow. Builds a
-		 * fresh pool (Option B): each typed item becomes a new item owned
-		 * by this picker via pickerId. For ease modes each item carries its
-		 * OWN drift band; the picker-level easeMin/easeMax is just a
-		 * fallback span. Initial drift value depends on mode: ease-down
-		 * items start "charged" at the threshold, else 0. replaceId
-		 * updates THIS existing picker in place (same id) instead of
-		 * appending a new one, used when a picker mini-tour is replayed
-		 * after already finishing once; keeping the id alive is what makes
-		 * it "the same picker" rather than a renamed-on-collision
-		 * duplicate, so Stats history/pick log/daily generator membership
-		 * all keep pointing at it. Returns the new (or reused) picker id.
+		 * Creates a brand-new picker. Builds a fresh pool (Option B): each
+		 * typed item becomes a new item owned by this picker via pickerId. For
+		 * ease modes each item carries its OWN drift band; the picker-level
+		 * easeMin/easeMax is just a fallback span. Initial drift value depends
+		 * on mode: ease-down items start "charged" at the threshold, else 0.
+		 * replaceId updates THIS existing picker in place (same id) instead of
+		 * appending a new one; keeping the id alive means the pick log and the
+		 * daily generator's membership keep pointing at it. Returns the new
+		 * (or reused) picker id.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2805,7 +2794,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		addPicFun : ( picArgObj ) => { // What: Add Picker Function. Why: The Add-Picker flow needs to create a whole picker, its own item pool, and any new conditional in one step. How: This normalizes the submitted fields, builds the picker and its items, attaches or creates its conditional, updates daily membership, and returns the new (or replaced) picker's id.
+		addPicFun : ( picArgObj ) => { // What: Add Picker Function. Why: A picker, its own item pool, and any new conditional must be created together in one step. How: This normalizes the submitted fields, builds the picker and its items, attaches or creates its conditional, updates daily membership, and returns the new (or replaced) picker's id.
 
 
 			try { // What: First-Picker Persistence Request Guard. Why: The first picker a user creates is the first data worth protecting from browser storage eviction, so persistence is requested then. How: This calls PWA_NAM_OBJ.askFirFun only when this is genuinely the user's very first picker.
@@ -2826,10 +2815,10 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			// #region Identifier Resolution
 
 			const exiIdeStr = picArgObj.replaceId; // What: Existing Identifier String. Why: A replace must keep the existing picker's own id alive. How: This reads picArgObj.replaceId, undefined on an ordinary add.
-			const givIdeStr = picArgObj.id;        // What: Given Identifier String. Why: Onboarding's own sample pickers pass an explicit id so it matches the one baked into precomputed Stats history. How: This reads picArgObj.id, undefined when none was given.
-			const newIdeStr = ranIdeFun( 'pkr_' ); // What: New Identifier String. Why: Every other caller needs a fresh random id. How: This mints a 'pkr_' id from 6 random base-36 characters.
+			const givIdeStr = picArgObj.id;        // What: Given Identifier String. Why: A caller-supplied id, such as an onboarding sample picker's, must be kept. How: This reads picArgObj.id, undefined when none was given.
+			const newIdeStr = ranIdeFun( 'pkr_' ); // What: New Identifier String. Why: A picker with no existing or given id needs a fresh random one. How: This mints a 'pkr_' id from 6 random base-36 characters.
 
-			const picIdeStr = exiIdeStr || givIdeStr || newIdeStr; // What: Picker Identifier String. Why: An explicit id (a sample picker's, matching the id baked into precomputed Stats history) must win over a fresh random one. How: This prefers exiIdeStr, then givIdeStr, else newIdeStr.
+			const picIdeStr = exiIdeStr || givIdeStr || newIdeStr; // What: Picker Identifier String. Why: A replaced or explicitly given id must win over a fresh random one. How: This prefers exiIdeStr, then givIdeStr, else newIdeStr.
 
 			// #endregion Identifier Resolution
 
@@ -2898,7 +2887,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 				easeMax         : picArgObj.easeMax ?? 20,                                        // What: Ease Maximum. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMax, defaulting to 20.
 				easeMin         : picArgObj.easeMin ?? 10,                                        // What: Ease Minimum. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMin, defaulting to 10.
 				group           : picArgObj.group,                                                // What: Group. Why: The picker must land in the group chosen in the form. How: This is picArgObj.group.
-				hidden          : picArgObj.hidden === undefined ? false : picArgObj.hidden,      // What: Hidden Flag. Why: A picker created during onboarding must stay out of the real list until the closing Generate step, so the caller can pass it hidden. How: This copies picArgObj.hidden, defaulting to false when it was never given.
+				hidden          : picArgObj.hidden === undefined ? false : picArgObj.hidden,      // What: Hidden Flag. Why: A picker may be created hidden, so it stays out of the real list until it's un-hidden. How: This copies picArgObj.hidden, defaulting to false when it was never given.
 				id              : picIdeStr,                                                      // What: ID. Why: The picker keeps whichever id was resolved above (replaceId, a given id, or a fresh one). How: This is picIdeStr.
 				mode            : picArgObj.mode,                                                 // What: Mode. Why: The mode decides which selection algorithm this picker uses. How: This is picArgObj.mode.
 				name            : picArgObj.name,                                                 // What: Name. Why: This is the raw name; the de-duplicated one replaces it below, once state is available. How: This is picArgObj.name.
@@ -2934,34 +2923,14 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 				 * finNamStr = Final Name String
 				 *
 				 * @summary
-				 * Tidies and de-duplicates the picker name against existing,
-				 * VISIBLE pickers only (same policy as items/reminders, but
-				 * scoped globally since picker names are container-style
-				 * identifiers shown across every tab). Hidden ones
-				 * (onboarding's own sample pickers) are excluded: they're
-				 * invisible reference data the user can't see or tell apart
-				 * from, so a collision with something the user doesn't know
-				 * exists shouldn't cost a real picker an ugly " (2)" suffix
-				 * (seen concretely: the Picker mini-tour's own "Create
-				 * Picker" step recreates a sample by name, e.g. "Daily
-				 * Chores"). Excludes itself too, so a replaceId update
-				 * keeping the same name never collides with its own prior
-				 * name.
-				 *
-				 * Skipped entirely (name kept verbatim) when THIS call is
-				 * (re)seeding a sample itself, i.e. id is one of onboarding's
-				 * own fixed sample ids. A freshly (re)seeded sample starts
-				 * out visible (hidden defaults false; the tour's own later
-				 * step is what hides it), so if a real picker already
-				 * happens to share its exact name, the dedup below would
-				 * otherwise rename the SAMPLE before onboarding's own name-
-				 * collision suppression (group-entries.ts's groEntFun) ever
-				 * runs, which compares against the sample's own exact,
-				 * canonical name; that would silently defeat the
-				 * suppression instead of triggering it, since the renamed
-				 * sample would no longer match anything, so its own
-				 * "already have one" tutorial card would keep offering
-				 * itself.
+				 * Tidies and de-duplicates the picker name against the
+				 * existing visible pickers only, excluding the picker itself
+				 * so a replaceId update keeping its name never collides with
+				 * its own prior name. Hidden pickers (onboarding's sample
+				 * pickers) are excluded, since they can't be seen. The name is
+				 * kept verbatim, only tidied, when picArgObj.id is one of
+				 * onboarding's fixed sample ids, so a re-seeded sample keeps
+				 * its canonical name.
 				 *
 				 * @author z4nta0 <https://github.com/z4nta0>
 				 *
@@ -2993,11 +2962,11 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 					daily        : { ...curStaObj.daily, pickerIds : nexPiiArr },                                                     // What: Daily. Why: The picker's own daily-generator membership must be updated. How: This spreads curStaObj.daily with pickerIds replaced by nexPiiArr.
 
 					items : picArgObj.replaceId // What: Items Replace-Or-Append. Why: On a replace, the picker's own OLD items are dropped wholesale and rebuilt from this run's own payload, not merged with whatever was there before. How: This drops picArgObj.replaceId's own old items then appends newIteArr, or simply appends newIteArr when there's no picArgObj.replaceId.
-						? [ ...curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId !== picArgObj.replaceId ), ...newIteArr ] // What: Replace Items Branch. Why: A replayed tour rebuilds its picker's items from scratch. How: This drops the old picker's items, then appends the new ones.
+						? [ ...curStaObj.items.filter( ( curIteObj ) => curIteObj.pickerId !== picArgObj.replaceId ), ...newIteArr ] // What: Replace Items Branch. Why: A replace rebuilds the picker's items from scratch. How: This drops the old picker's items, then appends the new ones.
 						: [ ...curStaObj.items, ...newIteArr ],                                                                      // What: Append Items Branch. Why: A fresh picker only adds items. How: This appends the new items.
 
 					pickers : picArgObj.replaceId // What: Pickers Replace-Or-Append. Why: On a replace, the picker keeps its own slot and id instead of appearing twice. How: This swaps finPicObj in for the picker matching picArgObj.replaceId, or appends finPicObj when there's no replace.
-						? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === picArgObj.replaceId ? finPicObj : curPicObj ) // What: Replace Picker Branch. Why: A replayed tour keeps its picker's slot and id. How: This swaps finPicObj in for the matching picker.
+						? curStaObj.pickers.map( ( curPicObj ) => curPicObj.id === picArgObj.replaceId ? finPicObj : curPicObj ) // What: Replace Picker Branch. Why: A replace keeps the picker's slot and id. How: This swaps finPicObj in for the matching picker.
 						: [ ...curStaObj.pickers, finPicObj ]                                                                    // What: Append Picker Branch. Why: A fresh picker goes at the end. How: This appends finPicObj.
 
 
@@ -3114,7 +3083,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		filPicFun : ( picIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Fill Picker Function. Why: The Fill/Refill button needs to bring every item in a picker back to full charge at once. How: This raises every owned item's value to at least the threshold (never lowering an Ease Up overshoot) and clears any in-progress ease-down item.
+		filPicFun : ( picIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Fill Picker Function. Why: Every item in a picker must be brought back to full charge at once. How: This raises every owned item's value to at least the threshold (never lowering an Ease Up overshoot) and clears any in-progress ease-down item.
 
 
 			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === picIdeStr ); // What: Current Picker Object And Guard. Why: A stale picIdeStr (already removed) must be a no-op. How: This looks up picIdeStr in curStaObj.pickers.
@@ -3152,9 +3121,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * renPicFun = Rename Picker Function
 		 *
 		 * @summary
-		 * Commits a picker rename (on blur, Enter or Save). The name is tidied
-		 * to Title Case and de-duplicated against every other picker, so the
-		 * saved name can differ from what was typed.
+		 * Renames a picker. The name is tidied to Title Case and de-duplicated
+		 * against every other picker, so the saved name can differ from what
+		 * was typed.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -3170,7 +3139,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		renPicFun : ( picIdeStr, newNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Picker Function. Why: Commit-time picker rename (blur/Enter/Save only): tidy to Title Case and de-duplicate against every OTHER picker so 2 can't share a display name. How: This resolves a unique tidied name, then writes it onto the one matching picker.
+		renPicFun : ( picIdeStr, newNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Picker Function. Why: This renames a picker, tidying it to Title Case and de-duplicating it against every other picker so two can't share a display name. How: This resolves a unique tidied name, then writes it onto the one matching picker.
 
 
 			const sibNamArr = curStaObj.pickers.filter( ( curPicObj ) => curPicObj.id !== picIdeStr ).map( ( curPicObj ) => curPicObj.name ); // What: Sibling Name Array. Why: A picker name only needs to be unique among every OTHER picker. How: This filters curStaObj.pickers to every picker but the one being renamed, then maps to their own names.
@@ -3202,19 +3171,13 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * savEdiFun = Save Edit Function
 		 *
 		 * @summary
-		 * Commits an edit made via the Pickers page's own "Edit" button,
-		 * which reuses PicForCom's own Details step (items aren't
-		 * touched by this flow; those are edited via the Data tab or the
-		 * live Pickers-tab pool instead). Mirrors addPicFun's own field
-		 * normalization (name dedup, cadence/days, conditional attach) but
-		 * as an in-place UPDATE, and additionally resets every one of this
-		 * picker's own items to fresh defaults for the NEW mode whenever
-		 * mode actually changes: an item's own weight/value/easeMin/easeMax
-		 * from the OLD mode has no meaningful translation to the new one
-		 * (e.g. a Weighted item's own weight doesn't mean anything as an
-		 * Ease Up drift band). This deliberately resets rather than tries
-		 * to preserve old values; the user can revisit the item list after
-		 * saving to tune them for the new mode.
+		 * Commits edits to one picker's details in place, keeping its id and
+		 * history. It leaves the picker's items alone, except that when the
+		 * mode changes it resets every item the picker owns to fresh defaults
+		 * for the new mode, since an item's weight, value, and drift band from
+		 * the old mode have no meaning in the new one. Mirrors addPicFun's
+		 * field normalization (name de-duplication, cadence and days,
+		 * conditional attach).
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -3232,7 +3195,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		savEdiFun : ( picIdeStr, picArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Save Edit Function. Why: The Pickers page's own Edit button needs to save changed picker details in place, keeping its id and history. How: This mirrors addPicFun's own normalization as an in-place update, resetting every owned item to fresh defaults whenever mode actually changes.
+		savEdiFun : ( picIdeStr, picArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Save Edit Function. Why: This saves a picker's edited details in place, keeping its id and history. How: This mirrors addPicFun's own normalization as an in-place update, resetting every owned item to fresh defaults whenever mode actually changes.
 
 
 			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === picIdeStr ); // What: Current Picker Object And Guard. Why: A stale picIdeStr (already removed) must be a no-op. How: This looks up picIdeStr in curStaObj.pickers.
@@ -3283,7 +3246,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 				...curPicObj, // What: Current Picker Spread. Why: Every picker field this edit form can't change (id, threshold, activeItemId, ...) must carry over unchanged. How: This spreads curPicObj before the overrides below.
 
 				avoidDuplicates : !!picArgObj.avoidDuplicates,                                    // What: Avoid Duplicates. Why: The edit form can toggle whether this picker skips items already on today's list. How: This coerces picArgObj.avoidDuplicates to a real boolean.
-				conditionalId   : madConObj ? madConObj.id : ( picArgObj.conditionalId || null ), // What: Conditional ID Resolve. Why: Unlike addPicFun's own create-only flow, this can also DETACH a conditional the picker already had, so there's no bare "keep the old one" default to fall back on here. How: This prefers madConObj's own id, else the given conditionalId, else null.
+				conditionalId   : madConObj ? madConObj.id : ( picArgObj.conditionalId || null ), // What: Conditional ID Resolve. Why: A freshly made inline conditional wins over an explicitly passed one, and a missing one detaches the picker's conditional, so there is no keep-the-old default. How: This prefers madConObj's own id, else the given conditionalId, else null.
 				group           : picArgObj.group,                                                // What: Group. Why: The edit form can move the picker to another group. How: This is picArgObj.group.
 				mode            : picArgObj.mode,                                                 // What: Mode. Why: The edit form can switch the picker's selection algorithm. How: This is picArgObj.mode.
 				name            : finNamStr,                                                      // What: Name. Why: The committed name must be tidied and de-duplicated. How: This is finNamStr.
@@ -3411,12 +3374,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * reoGroFun = Reorder Groups Function
 		 *
 		 * @summary
-		 * groupOrder is the display order of the picker-based groups on
-		 * Today; pickerOrder maps a group label to the ordered picker ids
-		 * within it, driving per-row order. Unknown groups fall back to
-		 * first-occurrence order in the render layer. setOrdFun is the
-		 * bulk restore Edit Mode's own "Cancel" uses to revert to the
-		 * entry snapshot.
+		 * Replaces groupOrder, the display order of the picker-based groups on
+		 * Today, with a copy of ordGroArr.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -3434,7 +3393,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		reoGroFun : ( ordGroArr ) => setAppStaObj( ( curStaObj ) => ( { // What: Reorder Groups Function. Why: Edit Mode needs to persist a fresh group display order after a drag. How: This copies ordGroArr onto groupOrder.
+		reoGroFun : ( ordGroArr ) => setAppStaObj( ( curStaObj ) => ( { // What: Reorder Groups Function. Why: The saved group display order must change to the given one. How: This copies ordGroArr onto groupOrder.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -3448,7 +3407,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		reoPicFun : ( groNamStr, picIdeArr ) => setAppStaObj( ( curStaObj ) => ( { // What: Reorder Pickers Function. Why: Edit Mode needs to persist a fresh per-group row order after a drag. How: This copies picIdeArr onto pickerOrder's own entry for groNamStr.
+		reoPicFun : ( groNamStr, picIdeArr ) => setAppStaObj( ( curStaObj ) => ( { // What: Reorder Pickers Function. Why: One group's saved row order must change to the given one. How: This copies picIdeArr onto pickerOrder's own entry for groNamStr.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -3468,13 +3427,13 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		setOrdFun : ( ordGroArr, ordPicObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Set Order Function. Why: This is the bulk restore Edit Mode's own "Cancel" uses to revert both order structures to their entry snapshot at once. How: This copies ordGroArr onto groupOrder and deep-clones ordPicObj onto pickerOrder.
+		setOrdFun : ( ordGroArr, ordPicObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Set Order Function. Why: This restores both order structures to a given snapshot at once. How: This copies ordGroArr onto groupOrder and deep-clones ordPicObj onto pickerOrder.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
 
-			groupOrder  : ordGroArr.slice(),                        // What: Group Order. Why: Cancel must restore the group order snapshot taken on entry. How: This copies ordGroArr.
-			pickerOrder : JSON.parse( JSON.stringify( ordPicObj ) ) // What: Picker Order. Why: Cancel must restore every group's row order snapshot taken on entry. How: This deep-copies ordPicObj so nested arrays can't be shared with the snapshot.
+			groupOrder  : ordGroArr.slice(),                        // What: Group Order. Why: The group order must be restored to the given snapshot. How: This copies ordGroArr.
+			pickerOrder : JSON.parse( JSON.stringify( ordPicObj ) ) // What: Picker Order. Why: Every group's row order must be restored to the given snapshot. How: This deep-copies ordPicObj so nested arrays can't be shared with the snapshot.
 
 
 		} ) ),
@@ -3491,20 +3450,16 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * addEntFun = Add Entry Function
 		 *
 		 * @summary
-		 * Adds a NEW today entry for picIdeStr showing iteIdeStr. Multiple
-		 * entries per picker are allowed for other modes; the Pickers tab
-		 * uses this to ADD a choice, and the user prunes any they don't
-		 * want via each entry's own Skip button. Ease Down is the one
-		 * exception: since it's a single ongoing "active item", sending a
-		 * new pick REPLACES today's existing entry for that picker rather
-		 * than stacking a second one. A manual send stages its own value
-		 * mutation as `pending` (applied on DONE), so sending an item
-		 * doesn't change picker state until it's completed; the caller
-		 * (Pickers-tab spin) normally passes the full staged pick result,
-		 * falling back to the ease-down default (make this item active,
-		 * recharge the previously-active one on done) only when it
-		 * doesn't. The new entry starts unchecked, so a day that was fully
-		 * done gives its streak point back through stkSynFun.
+		 * Adds a new Today entry for picIdeStr showing iteIdeStr. Ease Down is
+		 * the exception: since it has a single ongoing "active item", the new
+		 * entry replaces that picker's existing entry instead of stacking a
+		 * second one. The entry's value mutation is staged as `pending`
+		 * (applied on DONE), so sending an item doesn't change picker state
+		 * until it's completed. penArgObj is the staged pick result; when it's
+		 * undefined, an Ease Down picker's default is staged (make this item
+		 * active, recharge the previously active one on done). The new entry
+		 * starts unchecked, so a day that was fully done gives its streak
+		 * point back through stkSynFun.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -3524,7 +3479,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		addEntFun : ( picIdeStr, iteIdeStr, penArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Add Entry Function. Why: The Pickers tab needs to send a chosen item to Today as its own new entry, without changing any picker state until that entry is completed. How: This appends a fresh entry (or, for Ease Down, replaces that picker's existing one) with its value consequences staged as pending, and logs a live pick-log row.
+		addEntFun : ( picIdeStr, iteIdeStr, penArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Add Entry Function. Why: A chosen item must be added to Today as its own new entry, without changing any picker state until that entry is completed. How: This appends a fresh entry (or, for Ease Down, replaces that picker's existing one) with its value consequences staged as pending, and logs a live pick-log row.
 
 
 			const curPicObj = curStaObj.pickers.find( ( picFinObj ) => picFinObj.id === picIdeStr ); // What: Current Picker Object And Guard. Why: Every branch below needs to know this picker's own mode/activeItemId/conditionalId. How: This looks up picIdeStr in curStaObj.pickers.
@@ -3538,10 +3493,10 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			// #region Pending Staging
 
-			let penValObj = penArgObj; // What: Pending Value Object. Why: The caller's own staged pick result is normally used as-is, but a fallback must be computed when none was given. How: This starts at penArgObj and is resolved below when it's undefined.
+			let penValObj = penArgObj; // What: Pending Value Object. Why: The given staged pick result is used as-is, but a fallback must be computed when none was given. How: This starts at penArgObj and is resolved below when it's undefined.
 
 
-			if ( penValObj === undefined ) { // What: Fallback-Pending Guard. Why: Only a caller that passed no pending at all needs the ease-down default computed here. How: This resolves penValObj to null, then to the ease-down default when applicable.
+			if ( penValObj === undefined ) { // What: Fallback-Pending Guard. Why: Only a call that passed no pending at all needs the ease-down default computed here. How: This resolves penValObj to null, then to the ease-down default when applicable.
 
 
 				penValObj = null; // What: Default Pending Reset. Why: Every mode besides ease-down's own re-activation case has no mutation to stage at all. How: This starts penValObj at null before the ease-down check below.
@@ -3552,7 +3507,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 					const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: The previously-active item (if any) must be staged to recharge back to this exact threshold. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM.
 
-					penValObj = { // What: Ease-Down Pending Object. Why: The caller needs a real pending payload staging both the recharge and the activation switch. How: This stages the previously-active item's own recharge (if any), the activeItemId patch, and the pick bump.
+					penValObj = { // What: Ease-Down Pending Object. Why: This is a pending payload staging both the recharge and the activation switch. How: This stages the previously-active item's own recharge (if any), the activeItemId patch, and the pick bump.
 
 
 						bumpPick    : false,                                                                               // What: Bump Pick. Why: A re-activation is not a fresh pick, so the item's own pick count must not rise. How: This is always false here.
@@ -3639,21 +3594,20 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * setEntFun = Set Entries Function
 		 *
 		 * @summary
-		 * Rebuilds the entire entries list from scratch (used by
-		 * Generate). lisEntArr holds 2 kinds of descriptors: a CARRIED
-		 * entry (has carBoo + entObj) is kept VERBATIM (same eid/itemId/
-		 * pending/done/revert/periodKey) so a cadence pick persists across
-		 * days until completed, log row included; a FRESH descriptor (no
-		 * eid) gets a new eid and a fresh 'auto' log row.
-		 * optArgObj.resBoo, when true, clears today.streakClaimed so the new
-		 * period starts unclaimed, and deliberately isn't derived from the
+		 * Rebuilds the entire entries list from scratch. lisEntArr holds 2
+		 * kinds of descriptors: a CARRIED entry (has carBoo + entObj) is kept
+		 * VERBATIM (same eid/itemId/pending/done/revert/periodKey) so a
+		 * cadence pick persists across days until completed, log row included;
+		 * a FRESH descriptor (no eid) gets a new eid and a fresh 'auto' log
+		 * row. optArgObj.resBoo, when true, clears today.streakClaimed so the
+		 * new period starts unclaimed, and deliberately isn't derived from the
 		 * date; this is what stops a user from "farming" extra streak points
 		 * by repeatedly regenerating and completing within the same day.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param lisEntArr - List Entry Array: The fresh entries this Generate
-		 *                    produced.
+		 * @param lisEntArr - List Entry Array: The entry descriptors to build
+		 *                    the list from.
 		 * @param optArgObj - Option Argument Object: Optional flags;
 		 *                    resBoo starts the new period unclaimed.
 		 *
@@ -3666,7 +3620,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		setEntFun : ( lisEntArr, optArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Entries Function. Why: Generate rebuilds the whole Today list at once, carrying unfinished cadence picks forward and adding fresh ones. How: This keeps every carried entry verbatim, gives every fresh descriptor a new eid and 'auto' log row, and clears streakClaimed only when optArgObj.resBoo is set.
+		setEntFun : ( lisEntArr, optArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Entries Function. Why: The whole Today list is rebuilt at once, carrying unfinished cadence picks forward and adding fresh ones. How: This keeps every carried entry verbatim, gives every fresh descriptor a new eid and 'auto' log row, and clears streakClaimed only when optArgObj.resBoo is set.
 
 
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: The fresh-row and pick-log-purge logic below both need today's own calendar day. How: This reads isoDayFun().
@@ -3724,7 +3678,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const nexTodObj = { ...curStaObj.today, entries : nexEntArr }; // What: Next Today Object. Why: The caller needs a fresh today object carrying the new entries. How: This spreads curStaObj.today with entries replaced by nexEntArr.
+			const nexTodObj = { ...curStaObj.today, entries : nexEntArr }; // What: Next Today Object. Why: Today needs a fresh object carrying the new entries. How: This spreads curStaObj.today with entries replaced by nexEntArr.
 
 
 			if ( optArgObj && optArgObj.resBoo ) nexTodObj.streakClaimed = false; // What: Streak-Claimed Reset Guard. Why: A reset request starts the new period unclaimed, per the summary above. How: This sets nexTodObj.streakClaimed to false only when optArgObj.resBoo is truthy.
@@ -3806,7 +3760,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * swaIteFun = Swap Item Function
 		 *
 		 * @summary
-		 * Replaces the item shown by ONE entry (Today's own Re-roll).
+		 * Replaces the item shown by one entry (a re-roll).
 		 * Instead of overwriting the row, the rolled-away row is marked
 		 * outcome:'rejected' (keeping its own itemId so it's known what
 		 * was rejected), and a fresh 'reroll' row is APPENDED for the item
@@ -3832,7 +3786,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		swaIteFun : ( entIdeStr, iteIdeStr, penArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Swap Item Function. Why: Today's own Re-roll must swap the item one entry shows while keeping a record of what was rolled away. How: This points the entry at the new item with freshly staged pending, marks the old live log row rejected, and appends a new 'reroll' row under the same eid.
+		swaIteFun : ( entIdeStr, iteIdeStr, penArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Swap Item Function. Why: A re-roll must swap the item one entry shows while keeping a record of what was rolled away. How: This points the entry at the new item with freshly staged pending, marks the old live log row rejected, and appends a new 'reroll' row under the same eid.
 
 
 			const { nexIteArr, nexLogArr, nexPicArr } = undEntFun( curStaObj, entIdeStr ); // What: Next Item Array. Why: A re-roll always lands not-done, so an already-completed entry's own staged mutation must be undone first. How: This reads the restored (or unchanged) items from undEntFun. // What: Next Log Array. Why: The undo may drop the entry's log row. How: This reads the restored (or unchanged) pick log. // What: Next Picker Array. Why: The undo may restore pickers. How: This reads the restored (or unchanged) pickers.
@@ -3904,7 +3858,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		togDonFun : ( entIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Toggle Done Function. Why: This is THE central done/undone mutation for a Today entry: it applies (or reverts) the entry's own staged pending, resolves conditional consequences, updates the live pick-log row, and reconciles the streak, all from one toggle. How: See the inline comments below for each step.
+		togDonFun : ( entIdeStr ) => setAppStaObj( ( curStaObj ) => { // What: Toggle Done Function. Why: This is THE central done/undone mutation for a Today entry: it applies (or reverts) the entry's own staged pending, resolves conditional consequences, updates the live pick-log row, and reconciles the streak, all from one toggle. How: This toggles the entry's done flag, applies or reverts its staged pending, resolves the conditional charge and log, updates the live pick-log row, and builds the next state through nexStaFun, which reconciles the streak.
 
 
 			const curEntObj = curStaObj.today.entries.find( ( entFinObj ) => entFinObj.eid === entIdeStr ); // What: Current Entry Object And Guard. Why: A stale entIdeStr (already removed) must be a no-op. How: This looks up entIdeStr in curStaObj.today.entries.
@@ -3982,7 +3936,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		// #endregion Today Entries
 
 
-	} ), [] ); // What: Actions Memo Dependency Array. Why: Every action closes over stable references (setAppStaObj, latStaRef, canPenFun), none of which ever change identity across renders, so this object never needs to be recomputed. How: An empty array means actStoObj is built exactly once, for the lifetime of this component.
+	} ), [] ); // What: Actions Memo Dependency Array. Why: Every action closes over setAppStaObj and latStaRef, which never change identity across renders, so this object never needs to be recomputed. How: An empty array means actStoObj is built exactly once, for the lifetime of this component.
 
 
 
