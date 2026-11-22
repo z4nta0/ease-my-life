@@ -1791,7 +1791,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 										aria-pressed={ !!appCurObj.autoSystem }
 
 										onClick={ () => actStoObj.setSysFun( !appCurObj.autoSystem ) }
-									>{ /* What: Toggle Switch Button Element. Why: This is the actual control that flips between automatic and manual theme selection. How: This calls actStoObj.setSysFun with the toggled value when clicked. Its data-element-name-hook is read by the test suites. */ }
+									>{ /* What: Toggle Switch Button Element. Why: This is the actual control that flips between automatic and manual theme selection. How: This calls actStoObj.setSysFun with the toggled value when clicked. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 										<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's aria-pressed. */ }
@@ -2096,7 +2096,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									aria-pressed={ daiModStr === 'auto' }
 
 									onClick={ () => actStoObj.daiModFun( daiModStr === 'auto' ? 'manual' : 'auto' ) }
-								>{ /* What: Toggle Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actStoObj.daiModFun with the toggled value when clicked. Its data-element-name-hook is read by the test suites. */ }
+								>{ /* What: Toggle Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actStoObj.daiModFun with the toggled value when clicked. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's aria-pressed. */ }

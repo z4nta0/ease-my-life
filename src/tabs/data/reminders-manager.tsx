@@ -567,7 +567,7 @@ function OptMatCom ( { actStoObj, onCloConFun, remOptObj } : OmcProTyp ) : React
 
 
 									} ) ) }
-								>{ /* What: Toggle Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips this pair in the matrix's draft. Its data-element-name-hook is read by the test suites. */ }
+								>{ /* What: Toggle Switch Button Element. Why: This is the actual toggle for this class/setting pair. How: This flips this pair in the matrix's draft. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: The switch's own CSS-driven thumb needs a real (if empty) element to animate. How: This renders an empty, purely decorative i element. */ }
@@ -1063,7 +1063,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 			className={ cssModObj.datCatSec }
 
 			data-element-name-hook='datCatSec remCatSec'
-		>{ /* What: Data Category Section Element. Why: This is RemManCom's own root element, matching the other Data tab categories' outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the tours, help mode, the Data tab's scroll code, and the test suites. */ }
+		>{ /* What: Data Category Section Element. Why: This is RemManCom's own root element, matching the other Data tab categories' outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the tours, help mode, the removal animation code, and the test suites. */ }
 
 
 			<header
@@ -1334,7 +1334,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 																onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
 																onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Shortcut. Why: Pressing Enter should finish typing the name. How: This blurs the input on Enter, leaving the name in the draft until the row is kept.
-															/>{ /* What: Row Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by help mode and the test suites. */ }
+															/>{ /* What: Row Name Input Element. Why: This is the row's own live-editable name field while carOpeBoo. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 														</span>

@@ -307,7 +307,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() } // What: Native Drag Block. Why: Reordering runs on pointer events, so the browser's own drag gesture is not wanted. How: This calls preventDefault on dragstart.
 							onPointerDown={ ( poiEveObj ) => onGriDowFun!( poiEveObj ) } // What: Non-Null Note. Why: The grip is drawn only in Edit Mode, when onGriDowFun is passed. How: The ! tells TypeScript the handler is set.
-						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by help mode. */ }
+						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<IcoSvgCom

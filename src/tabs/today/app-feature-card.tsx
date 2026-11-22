@@ -110,7 +110,7 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 			data-element-name-hook='todCarArt tutCarArt'
 
 			onClick={ onRowCliFun }
-		>{ /* What: Today Card Article Element. Why: This is AppFeaCom's own root, which also carries the tutCarArt hook. How: This renders a Play/Undo/blocked check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by help mode, Today's ripple and drag-to-reorder code, and the test suites. */ }
+		>{ /* What: Today Card Article Element. Why: This is AppFeaCom's own root, which also carries the tutCarArt hook. How: This renders a Play/Undo/blocked check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 			{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved App Feature card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, otherwise one of the 2 branches below.
@@ -254,7 +254,7 @@ function AppFeaCom ( { actStoObj, feaRcdObj, onPlaTutFun, onUncFeaFun, staAppObj
 					className={ cssModObj.carActDiv }
 
 					data-element-name-hook='carActDiv'
-				>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by help mode and this component's own code. */ }
+				>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by help mode and the card click handlers. */ }
 
 
 					<button

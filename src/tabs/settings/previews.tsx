@@ -326,7 +326,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 						className={ cssModObj.preCarDiv }
 
 						data-element-name-hook='preCarDiv'
-					>{ /* What: Preview Card Div Element. Why: This mirrors the real Today tab's own done-card markup so the ripple/confetti/sparkle effects render identically here. How: This renders the check glyph and the card's own picker/name text. Its data-element-name-hook is read by this component's own code. */ }
+					>{ /* What: Preview Card Div Element. Why: This mirrors the real Today tab's own done-card markup so the ripple/confetti/sparkle effects render identically here. How: This renders the check glyph and the card's own picker/name text. Its data-element-name-hook is read by the ripple animation code. */ }
 
 
 						<span

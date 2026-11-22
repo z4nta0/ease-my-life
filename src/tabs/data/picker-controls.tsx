@@ -983,7 +983,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								role='radio'
 
 								onClick={ () => patPicFun( { group : groCurStr } ) }
-							>{ groCurStr }</button> // What: Group Pill Button Element. Why: Clicking a pill selects that group for this picker. How: This marks itself checked when it matches draPicObj.group and commits groCurStr on click. Its data-element-name-hook is read by this component's own code.
+							>{ groCurStr }</button> // What: Group Pill Button Element. Why: Clicking a pill selects that group for this picker. How: This marks itself checked when it matches draPicObj.group and commits groCurStr on click. Its data-element-name-hook is read by the re-sort animation code.
 
 
 						) ) }
@@ -1072,7 +1072,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								type='button'
 
 								onClick={ () => setNewGroBoo( true ) }
-							>{ /* What: Group Pill Button Element. Why: This is the affordance that opens the inline create control, drawn as the dashed new-group variant of the pill. How: This opens newGroBoo on click, and plays its own return animation via pilRetBoo after a prior close. Its data-element-name-hook is read by this component's own code. */ }
+							>{ /* What: Group Pill Button Element. Why: This is the affordance that opens the inline create control, drawn as the dashed new-group variant of the pill. How: This opens newGroBoo on click, and plays its own return animation via pilRetBoo after a prior close. Its data-element-name-hook is read by the re-sort animation code. */ }
 
 
 								<IcoSvgCom
@@ -1259,7 +1259,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 						} }
-					><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for attaching a conditional. How: This flips conAttBoo and, when turning off, clears the picker's own conditionalId. Its data-element-name-hook is read by the test suites. */ }
+					><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for attaching a conditional. How: This flips conAttBoo and, when turning off, clears the picker's own conditionalId. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				</div>
@@ -1394,7 +1394,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 						aria-pressed={ draPicObj.includeInDaily }
 
 						onClick={ () => patPicFun( { includeInDaily : !draPicObj.includeInDaily } ) } // What: On Click Handler. Why: The switch adds or removes this picker from the daily generator, as part of the draft. How: This flips the draft's includeInDaily.
-					><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This flips the draft's includeInDaily on click. Its data-element-name-hook is read by the test suites. */ }
+					><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for daily-generator membership. How: This flips the draft's includeInDaily on click. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				</div>
@@ -1763,7 +1763,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								aria-pressed={ !!draPicObj.skipHolidays }
 
 								onClick={ () => patPicFun( { skipHolidays : !draPicObj.skipHolidays } ) }
-							><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips draPicObj.skipHolidays on click. Its data-element-name-hook is read by the test suites. */ }
+							><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for skipping holidays. How: This flips draPicObj.skipHolidays on click. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 						</div>
@@ -1837,7 +1837,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 						aria-pressed={ !!draPicObj.avoidDuplicates }
 
 						onClick={ () => patPicFun( { avoidDuplicates : !draPicObj.avoidDuplicates } ) }
-					><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips draPicObj.avoidDuplicates on click. Its data-element-name-hook is read by the test suites. */ }
+					><i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked or aria-pressed. */ }</button>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for avoiding duplicate items. How: This flips draPicObj.avoidDuplicates on click. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				</div>

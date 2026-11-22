@@ -3677,7 +3677,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			className={ cssModObj.todTabDiv }
 
 			data-element-name-hook='todTabDiv'
-		>{ /* What: Today Tab Div Element. Why: This is TabTodCom's own root wrapper. How: This renders the sticky header, the scrollable body (rail + groups + footer), and any reminder mini-tour/App Features intro overlay currently running. Its data-element-name-hook is read by Today's scroll code and the test suites. */ }
+		>{ /* What: Today Tab Div Element. Why: This is TabTodCom's own root wrapper. How: This renders the sticky header, the scrollable body (rail + groups + footer), and any reminder mini-tour/App Features intro overlay currently running. Its data-element-name-hook is read by layout and scroll code, and the test suites. */ }
 
 
 			<HelOveCom
@@ -4473,7 +4473,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											className={ cssModObj.todGroSec }
 
 											data-element-name-hook='pagTouSec todGroSec'
-										>{ /* What: Today Group Section Element. Why: This is the whole Page Tours block's own root. How: This renders GroHeaCom plus one PagTouCom per visTouArr entry. Its data-element-name-hook is read by the tours, help mode, Today's drag-to-reorder code, and the test suites. */ }
+										>{ /* What: Today Group Section Element. Why: This is the whole Page Tours block's own root. How: This renders GroHeaCom plus one PagTouCom per visTouArr entry. Its data-element-name-hook is read by the tours, help mode, the drag-to-reorder code, and the test suites. */ }
 
 
 											<GroHeaCom
@@ -4493,7 +4493,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												className={ cssModObj.todLisDiv }
 
 												data-element-name-hook='todLisDiv'
-											>{ /* What: Today List Div Element. Why: Every visible tour card shares this one list column. How: This maps visTouArr to one PagTouCom per entry. Its data-element-name-hook is read by Today's drag-to-reorder code. */ }
+											>{ /* What: Today List Div Element. Why: Every visible tour card shares this one list column. How: This maps visTouArr to one PagTouCom per entry. Its data-element-name-hook is read by the drag-to-reorder code. */ }
 
 
 												{ visTouArr.map( ( curTouObj ) => ( // What: Page Tour Card List Render. Why: One card is needed per visible page tour. How: This maps visTouArr to one PagTouCom per entry, keyed by its own id.
@@ -4549,7 +4549,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										className={ cssModObj.todGroSec }
 
 										data-element-name-hook='todGroSec'
-									>{ /* What: Today Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own todLisDiv list. Its data-element-name-hook is read by the tours, help mode, Today's drag-to-reorder code, and the test suites. */ }
+									>{ /* What: Today Group Section Element. Why: This is one whole group's own root, from its header down through its own card list. How: This renders GroHeaCom, an optional Day Log ColDisCom, then the group's own todLisDiv list. Its data-element-name-hook is read by the tours, help mode, the drag-to-reorder code, and the test suites. */ }
 
 
 										<GroHeaCom
@@ -4595,7 +4595,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											className={ cssModObj.todLisDiv }
 
 											data-element-name-hook='todLisDiv'
-										>{ /* What: Today List Div Element. Why: Every row in this group (real, loader, or tutorial) shares this one list column. How: This maps curGroObj's own entries to one EntCarCom (or LoaCarCom, mid-generation) per row, then any incoming placeholder slots. Its data-element-name-hook is read by Today's drag-to-reorder code. */ }
+										>{ /* What: Today List Div Element. Why: Every row in this group (real, loader, or tutorial) shares this one list column. How: This maps curGroObj's own entries to one EntCarCom (or LoaCarCom, mid-generation) per row, then any incoming placeholder slots. Its data-element-name-hook is read by the drag-to-reorder code. */ }
 
 
 											{ curGroObj.entArr.map( ( { entRcdObj, picRcdObj } ) => { // What: Group Row Map. Why: Every row in this group needs rendering, either as a live loader slot (mid-generation) or as a normal EntCarCom. How: This dispatches per genActBoo/genMapObj first, otherwise resolves the row's own item and renders EntCarCom plus its own inline editor.
@@ -4743,7 +4743,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								className={ cssModObj.todGroSec }
 
 								data-element-name-hook='todGroSec appFeaSec'
-							>{ /* What: Today Group Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. Its data-element-name-hook is read by the tours, help mode, Today's drag-to-reorder code, and the test suites. */ }
+							>{ /* What: Today Group Section Element. Why: This is the whole App Features block's own root. How: This renders GroHeaCom plus one AppFeaCom per still-relevant APP_FEA_ARR entry. Its data-element-name-hook is read by the tours, help mode, the drag-to-reorder code, and the test suites. */ }
 
 
 								<GroHeaCom
@@ -4759,7 +4759,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 									className={ cssModObj.todLisDiv }
 
 									data-element-name-hook='todLisDiv'
-								>{ /* What: Today List Div Element. Why: Every still-relevant feature card shares this one list column. How: This maps the filtered APP_FEA_ARR list to one AppFeaCom per entry. Its data-element-name-hook is read by Today's drag-to-reorder code. */ }
+								>{ /* What: Today List Div Element. Why: Every still-relevant feature card shares this one list column. How: This maps the filtered APP_FEA_ARR list to one AppFeaCom per entry. Its data-element-name-hook is read by the drag-to-reorder code. */ }
 
 
 									{ APP_FEA_ARR.filter( ( curFeaObj ) => !( fecDonBoo && feaStaObj[ curFeaObj.ideStr ] ) ).map( ( curFeaObj ) => ( // What: App Feature Card List Render. Why: Every still-relevant feature needs its own card; a resolved one during replay drops out immediately instead of lingering with an Undo toggle. How: This maps APP_FEA_ARR, filtered per the replay note after this comment, to one AppFeaCom per entry, keyed by its own ideStr. // During a replay (fecDonBoo), a resolved card drops out the instant it resolves instead of sticking around with an Undo toggle, same "no closing card to synchronize a batch disappearance against anymore" reasoning as groEntFun's own replay-continuation cards. The ORIGINAL first-time pass is unaffected: every card stays until the whole section resolves together at the next real generation.

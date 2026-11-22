@@ -184,7 +184,7 @@ function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element 
 
 			data-element-name-hook='todCarArt'
 			data-slot-pending-active={ sloStaStr === 'pending' || undefined } // What: Slot Pending Active Attribute. Why: A slot still waiting its turn gets a lighter card and faded text from its module. How: This sets the presence-only attribute while sloStaStr is 'pending' and removes it otherwise.
-		>{ /* What: Today Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. Its data-element-name-hook is read by help mode, Today's ripple and drag-to-reorder code, and the test suites. */ }
+		>{ /* What: Today Card Article Element. Why: This is one picker's own regeneration slot, styled per its own current status. How: This renders a disabled-looking check spot, the body below, and an empty actions strip for layout parity with a real EntCarCom. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 			<span

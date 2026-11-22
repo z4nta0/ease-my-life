@@ -152,7 +152,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEl
 				role='switch'
 
 				onClick={ onClick }
-			>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for the setting. How: This calls onClick when pressed. Its data-element-name-hook is read by the test suites. */ }
+			>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for the setting. How: This calls onClick when pressed. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 				<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent switch's own aria-checked state. */ }
@@ -1575,7 +1575,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									role='switch'
 
 									onClick={ () => setConAttBoo( ( preValBoo ) => !preValBoo ) }
-								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by the test suites. */ }
+								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }

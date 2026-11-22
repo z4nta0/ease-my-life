@@ -243,7 +243,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 								aria-pressed={ holEnaBoo }
 
 								onClick={ () => actStoObj.togHolFun( holCurObj.keyStr ) }
-							>{ /* What: Toggle Switch Button Element. Why: A computed holiday needs a way to toggle it off and on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by the test suites. */ }
+							>{ /* What: Toggle Switch Button Element. Why: A computed holiday needs a way to toggle it off and on without deleting it outright. How: This calls actStoObj.togHolFun with this row's own key when clicked. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 								<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-pressed state. */ }

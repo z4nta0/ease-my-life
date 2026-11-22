@@ -877,7 +877,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 			className={ cssModObj.datCatSec }
 
 			data-element-name-hook='datCatSec conCatSec'
-		>{ /* What: Data Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the tours, help mode, the Data tab's scroll code, and the test suites. */ }
+		>{ /* What: Data Category Section Element. Why: This is ConManCom's own root element, matching every other Data tab category's own outer landmark. How: This renders the header, then the ColDisCom-wrapped body below. Its data-element-name-hook is read by the tours, help mode, the removal animation code, and the test suites. */ }
 
 
 			<header
@@ -1126,7 +1126,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 												onBlur={ () => { if ( tidNamStr ) setConDraObj( { ...conDraObj, name : tidNamStr } ); } } // What: On Blur Function. Why: The typed name should settle into its tidy casing once the person leaves the field. How: This replaces the draft name with tidNamStr only when tidNamStr is not empty.
 												onChange={ ( chaEveObj ) => setConDraObj( { ...conDraObj, name : chaEveObj.target.value } ) }
 												onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: On Key Down Function. Why: Enter should finish the name edit the way leaving the field does. How: This blurs the input only when the key is Enter.
-											/>{ /* What: Row Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This writes every keystroke into the draft, and tidies the name on blur. Its data-element-name-hook is read by help mode and the test suites. */ }
+											/>{ /* What: Row Name Input Element. Why: A conditional's own name is edited live, right in the row header. How: This writes every keystroke into the draft, and tidies the name on blur. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 										</span>

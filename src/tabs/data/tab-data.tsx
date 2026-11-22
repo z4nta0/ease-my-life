@@ -2103,7 +2103,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 							} }
-						>{ /* What: Data Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via rmvPicStr/onAnimationEnd, and renders the header + ColDisCom-wrapped body below. Its data-element-name-hook is read by the tours, help mode, the Data tab's scroll code, and the test suites. */ }
+						>{ /* What: Data Category Section Element. Why: This is one picker's own top-level card, matching every other Data tab category's own outer landmark. How: This plays the removal animation via rmvPicStr/onAnimationEnd, and renders the header + ColDisCom-wrapped body below. Its data-element-name-hook is read by the tours, help mode, the removal animation code, and the test suites. */ }
 
 
 							<header
@@ -2492,7 +2492,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 																		onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
 																		onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Key Blur Guard. Why: Pressing Enter should finish editing the name. How: This blurs the input only when the key pressed is Enter.
-																	/>{ /* What: Row Name Input Element. Why: An item's own name is edited right in the row header. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by help mode and the test suites. */ }
+																	/>{ /* What: Row Name Input Element. Why: An item's own name is edited right in the row header. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 																</span>

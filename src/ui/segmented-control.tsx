@@ -251,7 +251,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 					aria-pressed={ value === optConObj.keyStr }
 
 					onClick={ () => onChange( optConObj.keyStr ) }
-				>{ optConObj.labStr }</button> // What: Segment Control Button Element. Why: This is the clickable control for selecting this specific option. How: This marks itself pressed when its own keyStr matches value, and calls onChange with its keyStr when clicked. Its data-element-name-hook is read by the tours and this component's own code.
+				>{ optConObj.labStr }</button> // What: Segment Control Button Element. Why: This is the clickable control for selecting this specific option. How: This marks itself pressed when its own keyStr matches value, and calls onChange with its keyStr when clicked. Its data-element-name-hook is read by the tours and layout code.
 
 
 			) ) }

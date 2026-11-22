@@ -429,7 +429,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 				data-element-name-hook='todCarArt tutCarArt'
 
 				onClick={ onRowCliFun }
-			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a mini-tour launcher row, which also carries the tutorial variant class. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by help mode, Today's ripple and drag-to-reorder code, and the test suites. */ }
+			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a mini-tour launcher row, which also carries the tutorial variant class. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 				{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved sample card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.
@@ -550,7 +550,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 						className={ cssModObj.carActDiv }
 
 						data-element-name-hook='carActDiv'
-					>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by help mode and this component's own code. */ }
+					>{ /* What: Card Actions Div Element. Why: A pending card offers a Cancel action distinct from resolving it. How: This wraps the single Cancel icon-button below. Its data-element-name-hook is read by help mode and the card click handlers. */ }
 
 
 						<button
@@ -614,7 +614,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 				data-element-name-hook='todCarArt daoCarArt'
 
 				onClick={ onPlaCliFun }
-			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a day-off row, which also carries the day-off variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) a disabled re-roll/edit plus a working Skip. Its data-element-name-hook is read by help mode, Today's ripple and drag-to-reorder code, and the test suites. */ }
+			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a day-off row, which also carries the day-off variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) a disabled re-roll/edit plus a working Skip. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 
@@ -664,7 +664,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 						className={ cssModObj.carActDiv }
 
 						data-element-name-hook='carActDiv'
-					>{ /* What: Card Actions Div Element. Why: A day-off row still shows the full 3-icon action strip for layout parity, but re-roll/edit are disabled since neither concept applies. How: This wraps the disabled Re-Roll InfTipCom, a working Skip button, and the disabled Edit InfTipCom. Its data-element-name-hook is read by help mode and this component's own code. */ }
+					>{ /* What: Card Actions Div Element. Why: A day-off row still shows the full 3-icon action strip for layout parity, but re-roll/edit are disabled since neither concept applies. How: This wraps the disabled Re-Roll InfTipCom, a working Skip button, and the disabled Edit InfTipCom. Its data-element-name-hook is read by help mode and the card click handlers. */ }
 
 
 
@@ -726,7 +726,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 				data-element-name-hook='todCarArt chrCarArt'
 
 				onClick={ onPlaCliFun }
-			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a charging row, which also carries the charging variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. Its data-element-name-hook is read by help mode, Today's ripple and drag-to-reorder code, and the test suites. */ }
+			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a charging row, which also carries the charging variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 
@@ -765,7 +765,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 						className={ cssModObj.carActDiv }
 
 						data-element-name-hook='carActDiv'
-					>{ /* What: Card Actions Div Element. Why: A charging row still shows the full 3-icon action strip for layout parity, but every one of them is disabled since none of those concepts apply here. How: This wraps 3 disabled InfTipCom-wrapped icons. Its data-element-name-hook is read by help mode and this component's own code. */ }
+					>{ /* What: Card Actions Div Element. Why: A charging row still shows the full 3-icon action strip for layout parity, but every one of them is disabled since none of those concepts apply here. How: This wraps 3 disabled InfTipCom-wrapped icons. Its data-element-name-hook is read by help mode and the card click handlers. */ }
 
 
 
@@ -915,7 +915,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 			data-element-name-hook='todCarArt'
 
 			onClick={ onRowCliFun }
-		>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for an ordinary picked-item row, which carries no variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body (a text field while editing), and (outside Edit Mode) the re-roll/skip/edit actions. Its data-element-name-hook is read by help mode, Today's ripple and drag-to-reorder code, and the test suites. */ }
+		>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for an ordinary picked-item row, which carries no variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body (a text field while editing), and (outside Edit Mode) the re-roll/skip/edit actions. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 
@@ -961,7 +961,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 						onChange={ ( chaEveObj ) => onRenIteFun( chaEveObj.target.value ) }
 						onClick={ ( cliEveObj ) => cliEveObj.stopPropagation() } // What: Row Click Stop. Why: A click into the name field must not also reach the card's own row click. How: This stops the click's propagation.
 						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Blur Handler. Why: Enter should finish typing the name. How: This blurs the input when the key is Enter.
-					/> // What: Entry Name Input Element. Why: This is the actual editable field for renaming the item in place. How: This writes every change into the editor's draft through onRenIteFun, and blurs on Enter. Its data-element-name-hook is read by help mode, this component's own code, and the test suites.
+					/> // What: Entry Name Input Element. Why: This is the actual editable field for renaming the item in place. How: This writes every change into the editor's draft through onRenIteFun, and blurs on Enter. Its data-element-name-hook is read by help mode, the card click handlers, and the test suites.
 
 
 				) : ( // What: Plain Name Branch. Why: Outside editing, the plain non-editable name div belongs here instead. How: This renders the else branch, taken while isaEdiBoo is false.
@@ -983,7 +983,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 					className={ cssModObj.carActDiv }
 
 					data-element-name-hook='carActDiv'
-				>{ /* What: Card Actions Div Element. Why: An ordinary pick row's own re-roll/skip/edit controls sit together. How: This wraps a working-or-disabled Re-Roll, a working-or-disabled Skip, and an always-working Edit toggle. Its data-element-name-hook is read by help mode and this component's own code. */ }
+				>{ /* What: Card Actions Div Element. Why: An ordinary pick row's own re-roll/skip/edit controls sit together. How: This wraps a working-or-disabled Re-Roll, a working-or-disabled Skip, and an always-working Edit toggle. Its data-element-name-hook is read by help mode and the card click handlers. */ }
 
 
 					{ canRerBoo ? ( // What: Reroll Availability Check. Why: Re-Roll's own working control only makes sense while canRerBoo actually allows it. How: This renders the working button while canRerBoo is true, an explained disabled one otherwise.

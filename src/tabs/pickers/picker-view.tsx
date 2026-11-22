@@ -1292,7 +1292,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								kinValStr='ghost'
 
 								onClick={ () => aftExiFun( rerActFun ) }
-							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Hook Design Note. Why: The picRerBut hook lets App Features' own manual-pick tour target this specific button (cptSelStr, see onboarding/app-features.tsx) without also matching Send to Today or Done. How: disabled and data-tour-disabled-active above still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. Its data-element-name-hook is read by the tours. */ }
+							>Re-Roll</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to abandon this exact pick and get a fresh one, playing the shared exit animation first. How: This calls aftExiFun(rerActFun), disabled only during the page tour's own intercepted step. */ }{ /* What: Reroll Hook Design Note. Why: The picRerBut hook lets the tours target this specific button without also matching Send to Today or Done. How: disabled and data-tour-disabled-active above still only ever check intSenBoo (the ORIGINAL Pickers page tour), unchanged; App Features leaves Re-Roll fully usable on purpose, see disDonBoo's own comment above. Its data-element-name-hook is read by the tours. */ }
 
 
 
