@@ -430,7 +430,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 				data-element-name-hook='todCarArt tutCarArt'
 
 				onClick={ onRowCliFun }
-			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a mini-tour launcher row, which also carries the tutorial variant class. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
+			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a mini-tour launcher row, which also carries the tutorial variant class. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its removing modifier slides it out and collapses it once the checklist exits. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 				{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved sample card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.
@@ -615,7 +615,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 				data-element-name-hook='todCarArt daoCarArt'
 
 				onClick={ onPlaCliFun }
-			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a day-off row, which also carries the day-off variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) a disabled re-roll/edit plus a working Skip. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
+			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a day-off row, which also carries the day-off variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) a disabled re-roll/edit plus a working Skip. Its fresh and removing modifiers play its check ripple and its slide-out. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 
@@ -727,7 +727,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 				data-element-name-hook='todCarArt chrCarArt'
 
 				onClick={ onPlaCliFun }
-			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a charging row, which also carries the charging variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
+			>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for a charging row, which also carries the charging variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body, and (outside Edit Mode) 3 fully-disabled actions. Its fresh and removing modifiers play its check ripple and its slide-out. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 
@@ -916,7 +916,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 			data-element-name-hook='todCarArt'
 
 			onClick={ onRowCliFun }
-		>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for an ordinary picked-item row, which carries no variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body (a text field while editing), and (outside Edit Mode) the re-roll/skip/edit actions. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
+		>{ /* What: Today Card Article Element. Why: This is EntCarCom's own root for an ordinary picked-item row, which carries no variant class. How: This renders a grip (Edit Mode) or check button, the meta/name body (a text field while editing), and (outside Edit Mode) the re-roll/skip/edit actions. Its fresh, removing, and rolling modifiers play its check ripple, its slide-out, and its re-roll tumble. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 

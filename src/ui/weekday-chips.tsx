@@ -124,7 +124,7 @@ const WeeChiCom = ( { desIdeStr, locDayNum = null, locTipStr = '', onChange, siz
 			aria-describedby={ desIdeStr }
 			aria-label='Days of the week'
 			role='group'
-		>{ /* What: Day-Of-Week Chips Div Element. Why: This groups all 7 weekday chips as one accessible group. How: This renders one chip per WEE_LAB_ARR entry below, locked or toggleable depending on locDayNum. Its data-element-name-hook is read by help mode. */ }
+		>{ /* What: Day-Of-Week Chips Div Element. Why: This groups all 7 weekday chips as one accessible group. How: This renders one chip per WEE_LAB_ARR entry below, locked or toggleable depending on locDayNum. Its small modifier shrinks every chip for compact contexts. Its data-element-name-hook is read by help mode. */ }
 
 
 			{ WEE_LAB_ARR.map( ( labChaStr, dayIndNum ) => { // What: Weekday Chip Map. Why: One chip is needed per day of the week. How: This maps WEE_LAB_ARR to either a locked InfTipCom chip or a toggleable button chip, keyed by dayIndNum.

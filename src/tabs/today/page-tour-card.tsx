@@ -105,7 +105,7 @@ function PagTouCom ( { actStoObj, cheExiBoo, onPlaTutFun, onUncTutFun, staAppObj
 			data-element-name-hook='todCarArt tutCarArt'
 
 			onClick={ onRowCliFun }
-		>{ /* What: Today Card Article Element. Why: This is PagTouCom's own root. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
+		>{ /* What: Today Card Article Element. Why: This is PagTouCom's own root. How: This renders a Play/Undo check button, the meta/name body, and (while unresolved) a Cancel action. Its removing modifier slides it out and collapses it once the checklist exits. Its data-element-name-hook is read by help mode, the ripple and drag-to-reorder code, and the test suites. */ }
 
 
 			{ tutDonBoo ? ( // What: Tutorial Done Check. Why: A resolved page-tour card's checkbox behaves differently from a pending one. How: This renders the undo-check button while tutDonBoo is true, the play-check button otherwise.

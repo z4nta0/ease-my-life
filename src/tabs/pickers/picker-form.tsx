@@ -2115,7 +2115,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											{ conDelStr === curIteObj.id ? ( // What: Delete Confirm Check. Why: A row pending delete confirmation replaces its own normal content entirely. How: This renders the confirm row while conDelStr matches this item, otherwise the row's real content below.
 
 
-												<div className={` ${ cssModObj.delConDiv }   ${ conLeaStr === curIteObj.id ? cssModObj.delConDivLeaving : '' } `}>{ /* What: Delete Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps delMesSpa and delActDiv. */ }
+												<div className={` ${ cssModObj.delConDiv }   ${ conLeaStr === curIteObj.id ? cssModObj.delConDivLeaving : '' } `}>{ /* What: Delete Confirm Div Element. Why: The delete question and its Cancel/Delete buttons form one block. How: This wraps delMesSpa and delActDiv. Its leaving modifier slides it back out once the delete is cancelled. */ }
 
 
 													<span className={ cssModObj.delMesSpa }>Delete <strong>{ curIteObj.name }</strong>?</span>{ /* What: Delete Message Span Element. Why: The user must see exactly which item they're about to remove from the draft. How: This renders curIteObj.name inside the fixed question text. */ }

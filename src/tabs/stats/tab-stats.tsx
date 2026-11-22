@@ -3459,7 +3459,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 											key={ conMetStr + conSorStr }
 
 											className={` ${ cssModObj.ranLisUno }   ${ cssModObj.ranLisUnoBreakdown }   ${ cssModObj.ranLisUnoFade }   ${ ( conMetStr === 'interval' || conMetStr === 'last' ) ? cssModObj.ranLisUnoWide : '' } `}
-										>{ /* What: Rank List Unordered Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps conBreArr to one list item per conditional. */ }
+										>{ /* What: Rank List Unordered Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps conBreArr to one list item per conditional. Its wide modifier adds room above it under the interval and last metrics' unit note. */ }
 
 
 											{ conBreArr.map( ( conRowObj ) => { // What: Conditional Row Render. Why: Every conditional in the breakdown needs its own list item showing its name, mode-intrinsic target, and the active metric's own value. How: This computes that row's own target suffix, then returns the list item.
@@ -3541,7 +3541,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 															{ conMetStr === 'interval' && ( conRowObj.intNum != null ? ( // What: Interval Value Check. Why: The interval metric's own value/placeholder display only belongs on this one metric. How: This renders it only while conMetStr is 'interval'.
 
 
-																<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaInterval } `}>every { conRowObj.intNum } { conRowObj.intNum === 1 ? 'day' : 'days' }</span> // What: Metric Value Span Element. Why: A conditional that fired at least twice has a real average gap. How: This renders "every N days", pluralized.
+																<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaInterval } `}>every { conRowObj.intNum } { conRowObj.intNum === 1 ? 'day' : 'days' }</span> // What: Metric Value Span Element. Why: A conditional that fired at least twice has a real average gap. How: This renders "every N days", pluralized. Its interval modifier fixes its width, so the pill before it holds still.
 
 
 															) : ( // What: No Interval Branch. Why: Fewer than two fires means no gap to average. How: This renders the else branch, taken while intNum is null.
@@ -3551,7 +3551,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 																	className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaInterval } `}
 
 																	data-value-dim-active
-																>{ conRowObj.firNum === 1 ? 'Fired Once' : 'Not Fired' }</span> // What: Metric Value Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it fired once or never, since an interval needs two fires.
+																>{ conRowObj.firNum === 1 ? 'Fired Once' : 'Not Fired' }</span> // What: Metric Value Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it fired once or never, since an interval needs two fires. Its interval modifier fixes its width, so the pill before it holds still.
 
 
 															) ) }
@@ -3559,7 +3559,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 															{ conMetStr === 'last' && ( conRowObj.lasStr ? ( // What: Last Value Check. Why: The last-fired metric's own value/placeholder display only belongs on this one metric. How: This renders it only while conMetStr is 'last'.
 
 
-																<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaFired } `}>{ conDayFun( conRowObj.lasStr ) }</span> // What: Metric Value Span Element. Why: A conditional that fired has a real last date. How: This renders lasStr via conDayFun.
+																<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaFired } `}>{ conDayFun( conRowObj.lasStr ) }</span> // What: Metric Value Span Element. Why: A conditional that fired has a real last date. How: This renders lasStr via conDayFun. Its fired modifier fixes its width, so the pill before it holds still.
 
 
 															) : ( // What: Never Fired Branch. Why: A conditional that never fired has no date. How: This renders the else branch, taken while lasStr is null.
@@ -3569,7 +3569,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 																	className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaFired } `}
 
 																	data-value-dim-active
-																>Never</span> // What: Metric Value Span Element. Why: The row still needs a dimmed placeholder. How: This renders the fixed word "Never".
+																>Never</span> // What: Metric Value Span Element. Why: The row still needs a dimmed placeholder. How: This renders the fixed word "Never". Its fired modifier fixes its width, so the pill before it holds still.
 
 
 															) ) }
@@ -4752,7 +4752,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 									key={ effMetStr + sorDirStr }
 
 									className={` ${ cssModObj.ranLisUno }   ${ cssModObj.ranLisUnoBreakdown }   ${ cssModObj.ranLisUnoFade }   ${ ( effMetStr === 'freq' || effMetStr === 'last' ) ? cssModObj.ranLisUnoWide : '' } `}
-								>{ /* What: Rank List Unordered Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps breLisArr to one list item per item. */ }
+								>{ /* What: Rank List Unordered Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps breLisArr to one list item per item. Its wide modifier adds room above it under the frequency and last metrics' unit note. */ }
 
 
 									{ breLisArr.map( ( iteCurObj ) => { // What: Breakdown Row Render. Why: Every item in the breakdown needs its own list item showing its name, suffix, tags, and the active metric's own value. How: This looks up the item's own suffix, then returns the list item.
@@ -4842,7 +4842,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 													{ effMetStr === 'freq' && ( freDisObj ? ( // What: Frequency Value Check. Why: The Frequency metric's own value/placeholder display only belongs on this one metric. How: This renders it only while effMetStr is 'freq'.
 
 
-														<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaFreq } `}>every { freDisObj.numStr } { freDisObj.worStr }</span> // What: Metric Value Span Element. Why: A gapped item shows its own average gap. How: This renders freDisObj's own number and unit word.
+														<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaFreq } `}>every { freDisObj.numStr } { freDisObj.worStr }</span> // What: Metric Value Span Element. Why: A gapped item shows its own average gap. How: This renders freDisObj's own number and unit word. Its frequency modifier fixes its width, so the tag before it holds still.
 
 
 													) : ( // What: No Frequency Branch. Why: An item picked fewer than twice has no gap. How: This renders the else branch, taken while freDisObj is null.
@@ -4852,7 +4852,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 															className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaFreq } `}
 
 															data-value-dim-active
-														>{ iteCurObj.freNum === 1 ? 'Picked Once' : 'Not Picked' }</span> // What: Metric Value Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it was picked once or never.
+														>{ iteCurObj.freNum === 1 ? 'Picked Once' : 'Not Picked' }</span> // What: Metric Value Span Element. Why: The row still needs a dimmed placeholder. How: This says whether it was picked once or never. Its frequency modifier fixes its width, so the tag before it holds still.
 
 
 													) ) }
@@ -4860,7 +4860,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 													{ effMetStr === 'spent' && ( speDisObj ? ( // What: Spent Value Check. Why: The Spent metric's own value/placeholder display only belongs on this one metric. How: This renders it only while effMetStr is 'spent'.
 
 
-														<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaFreq } `}>&asymp; { speDisObj.numStr } { speDisObj.worStr }</span> // What: Metric Value Span Element. Why: An item with a completed cycle shows its own average cycle length. How: This renders speDisObj's own number and unit word, marked approximate.
+														<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaFreq } `}>&asymp; { speDisObj.numStr } { speDisObj.worStr }</span> // What: Metric Value Span Element. Why: An item with a completed cycle shows its own average cycle length. How: This renders speDisObj's own number and unit word, marked approximate. Its frequency modifier fixes its width, so the tag before it holds still.
 
 
 													) : ( // What: No Spent Branch. Why: An item with no completed cycle has nothing to average. How: This renders the else branch, taken while speDisObj is null.
@@ -4870,7 +4870,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 															className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaFreq } `}
 
 															data-value-dim-active
-														>{ /* What: Metric Value Span Element. Why: The row still needs a dimmed N/A placeholder with an explanation. How: This wraps the N/A text and its info tip. */ }
+														>{ /* What: Metric Value Span Element. Why: The row still needs a dimmed N/A placeholder with an explanation. How: This wraps the N/A text and its info tip. Its frequency modifier fixes its width, so the tag before it holds still. */ }
 
 
 															N/A{ ' ' }
@@ -4890,7 +4890,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 													{ effMetStr === 'last' && ( iteCurObj.lasNum != null ? ( // What: Last Picked Value Check. Why: The Last Picked metric's own value/placeholder display only belongs on this one metric. How: This renders it only while effMetStr is 'last'.
 
 
-														<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaLast } `}>{ lasForFun( iteCurObj.lasNum, lasModStr ) }</span> // What: Metric Value Span Element. Why: A picked item shows how long ago it was last picked. How: This formats lasNum via lasForFun in the active unit.
+														<span className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaLast } `}>{ lasForFun( iteCurObj.lasNum, lasModStr ) }</span> // What: Metric Value Span Element. Why: A picked item shows how long ago it was last picked. How: This formats lasNum via lasForFun in the active unit. Its last modifier sets it smaller at a fixed width, so the tag before it holds still.
 
 
 													) : ( // What: Never Picked Branch. Why: A never-picked item has no last date. How: This renders the else branch, taken while lasNum is null.
@@ -4900,7 +4900,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 															className={` ${ cssModObj.metValSpa }   ${ cssModObj.metValSpaLast } `}
 
 															data-value-dim-active
-														>Not Picked</span> // What: Metric Value Span Element. Why: The row still needs a dimmed placeholder. How: This renders the fixed words "Not Picked".
+														>Not Picked</span> // What: Metric Value Span Element. Why: The row still needs a dimmed placeholder. How: This renders the fixed words "Not Picked". Its last modifier sets it smaller at a fixed width, so the tag before it holds still.
 
 
 													) ) }

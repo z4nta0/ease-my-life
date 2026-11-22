@@ -4006,7 +4006,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						data-element-name-hook='ediBanDiv'
 
 						role='status'
-					>{ /* What: Edit Banner Div Element. Why: This is the explanatory banner shown while Edit Mode is active. How: This renders the fixed explanatory copy plus a Cancel/Done pair. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
+					>{ /* What: Edit Banner Div Element. Why: This is the explanatory banner shown while Edit Mode is active. How: This renders the fixed explanatory copy plus a Cancel/Done pair. Its closing modifier folds it away as Edit Mode ends. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 						<span className={ cssModObj.banMesSpa }>{ /* What: Banner Message Span Element. Why: The icon and the explanatory text read as one inline cluster. How: This wraps the grip icon and the fixed copy below. */ }
@@ -4794,7 +4794,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								className={` ${ cssModObj.onbCarDiv }   ${ cssModObj.onbCarDivGenerate }   ${ cheExiBoo ? cssModObj.onbCarDivRemoving : '' }   ${ onbReaBoo ? cssModObj.onbCarDivPulsing : '' } `}
 
 								data-card-needed-active={ !onbReaBoo || undefined } // What: Card Needed Active Attribute. Why: A Generate card still waiting on its tutorials reads as unfinished. How: This sets the presence-only attribute while onbReaBoo is false.
-							>{ /* What: Onboarding Card Div Element. Why: This is the closing "Generate a real list" checklist card. How: This renders its own icon/heading/explanation plus either a working or a disabled Generate button, depending on onbReaBoo. */ }
+							>{ /* What: Onboarding Card Div Element. Why: This is the closing "Generate a real list" checklist card. How: This renders its own icon/heading/explanation plus either a working or a disabled Generate button, depending on onbReaBoo. Its removing modifier slides it away once the list is made, and its pulsing modifier sends a ping out while it is ready. */ }
 
 
 								<div className={ cssModObj.onbIcoDiv }>{ /* What: Onboarding Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed check icon. */ }
@@ -4887,7 +4887,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						{ shoIdlBoo && ( // What: No-Run Empty State Visibility Check. Why: This CTA only belongs to a user with real pickers but nothing runnable today. How: This renders the card only while shoIdlBoo is true.
 
 
-							<div className={` ${ cssModObj.onbCarDiv }   ${ cssModObj.onbCarDivIdle } `}>{ /* What: Onboarding Card Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. */ }
+							<div className={` ${ cssModObj.onbCarDiv }   ${ cssModObj.onbCarDivIdle } `}>{ /* What: Onboarding Card Div Element. Why: A user with real pickers but nothing runnable today needs its own explanatory empty state, distinct from the "no pickers at all" one above. How: This renders its own icon/heading/explanation with links out to the Data and Pickers tabs. Its idle modifier drops its paragraphs' margins, since it has no button. */ }
 
 
 								<div className={ cssModObj.onbIcoDiv }>{ /* What: Onboarding Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed calendar icon. */ }

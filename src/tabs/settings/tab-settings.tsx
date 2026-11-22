@@ -1963,7 +1963,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											key={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' }
 
 											className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade }   ${ cssModObj.setSubSpaLayout } `}
-										>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the selected placement, and should fade between versions. How: This remounts (via its own placement key) and renders whichever of 3 explanatory sentences matches the current placement. */ }
+										>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the selected placement, and should fade between versions. How: This remounts (via its own placement key) and renders whichever of 3 explanatory sentences matches the current placement. Its layout modifier caps its width so the segmented control keeps room on its line. */ }
 
 
 											{ ( ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' ) === 'bottom' ? ( // What: Bottom Placement Check. Why: The description names wherever the tab bar currently sits. How: This renders the bottom copy while tabPlacement is 'bottom' (or unset).
@@ -2113,7 +2113,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 								data-element-name-hook='runTimDiv'
 								data-row-disabled-active={ daiModStr !== 'auto' || undefined } // What: Row Disabled Active Attribute. Why: The run time does nothing while the generator runs manually, so the row dims. How: This is present only while daiModStr isn't 'auto'.
-							>{ /* What: Run Time Div Element. Why: The run-time input is only meaningful while auto mode is on, so this whole row visually disables itself otherwise. How: This wraps the info block and the time input. Its data-element-name-hook is read by help mode. */ }
+							>{ /* What: Run Time Div Element. Why: The run-time input is only meaningful while auto mode is on, so this whole row visually disables itself otherwise. How: This wraps the info block and the time input. Its sub modifier sets it under its toggle as a dependent row that dims while unused. Its data-element-name-hook is read by help mode. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the input. How: This wraps the name span and the description span. */ }
@@ -2668,7 +2668,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								{ penImpObj ? ( // What: Pending Import Check. Why: A staged backup awaiting confirmation replaces the plain Import trigger with its own confirm pair. How: This renders the confirm pair while penImpObj holds a value, the plain trigger otherwise.
 
 
-									<div className={` ${ cssModObj.rowConDiv }   ${ impLeaBoo ? cssModObj.rowConDivLeaving : '' } `}>{ /* What: Row Confirm Div Element. Why: The Import/Cancel confirm pair needs its own grouping, replacing the single Import trigger while a backup is staged. How: This wraps the confirm's own Import and Cancel buttons. */ }
+									<div className={` ${ cssModObj.rowConDiv }   ${ impLeaBoo ? cssModObj.rowConDivLeaving : '' } `}>{ /* What: Row Confirm Div Element. Why: The Import/Cancel confirm pair needs its own grouping, replacing the single Import trigger while a backup is staged. How: This wraps the confirm's own Import and Cancel buttons. Its leaving modifier swaps it back out once the confirm is cancelled. */ }
 
 
 										<ButBasCom
@@ -2755,7 +2755,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								{ conResBoo ? ( // What: Reset Confirm Check. Why: An in-progress reset confirmation replaces the trigger with its own Reset/Cancel pair. How: This renders the confirm pair while conResBoo is true.
 
 
-									<div className={` ${ cssModObj.rowConDiv }   ${ resLeaBoo ? cssModObj.rowConDivLeaving : '' } `}>{ /* What: Row Confirm Div Element. Why: The Reset/Cancel confirm pair needs its own grouping, replacing the single Reset trigger while confirmation is pending. How: This wraps the confirm's own Reset and Cancel buttons. */ }
+									<div className={` ${ cssModObj.rowConDiv }   ${ resLeaBoo ? cssModObj.rowConDivLeaving : '' } `}>{ /* What: Row Confirm Div Element. Why: The Reset/Cancel confirm pair needs its own grouping, replacing the single Reset trigger while confirmation is pending. How: This wraps the confirm's own Reset and Cancel buttons. Its leaving modifier swaps it back out once the confirm is cancelled. */ }
 
 
 										<ButBasCom

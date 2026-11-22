@@ -925,13 +925,13 @@ function ValCelCom ( { aftValNum, genValNum, hasValBoo, offValNum = 0 } : VccPro
 					className={` ${ cssModObj.celDelSpa }   ${ cssModObj.celDelSpaFlat } `}
 
 					data-element-name-hook='logDelSpa'
-				>—</span>{ /* What: Cell Delta Span Element. Why: With no real value, there is no real delta either. How: This renders the shared em-dash placeholder glyph (a display character, not prose). Its data-element-name-hook is read by help mode. */ }
+				>—</span>{ /* What: Cell Delta Span Element. Why: With no real value, there is no real delta either. How: This renders the shared em-dash placeholder glyph (a display character, not prose). Its flat modifier fades it to a muted color. Its data-element-name-hook is read by help mode. */ }
 
 				<span
 					className={` ${ cssModObj.celAftSpa }   ${ cssModObj.celAftSpaEmpty } `}
 
 					data-element-name-hook='logAftSpa'
-				><span className={ cssModObj.notAppSpa }>N/A</span>{ /* What: Not Applicable Span Element. Why: A value that doesn't apply reads faint. How: This renders the literal text "N/A". */ }</span>{ /* What: Cell After Span Element. Why: There is no current value to show either. How: This renders the shared notAppSpa "N/A" placeholder. Its data-element-name-hook is read by help mode. */ }
+				><span className={ cssModObj.notAppSpa }>N/A</span>{ /* What: Not Applicable Span Element. Why: A value that doesn't apply reads faint. How: This renders the literal text "N/A". */ }</span>{ /* What: Cell After Span Element. Why: There is no current value to show either. How: This renders the shared notAppSpa "N/A" placeholder. Its empty modifier keeps the placeholder at its row's own weight. Its data-element-name-hook is read by help mode. */ }
 
 
 			</React.Fragment>
@@ -2065,7 +2065,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 
 
 
-							{ rowStaStr === 'due' && <span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaDue } `}>Due today</span> }{ /* What: Due Status Visibility Check. Why: A due-today row shows a plain Due pill. How: This renders only while rowStaStr is 'due'. */ }
+							{ rowStaStr === 'due' && <span className={` ${ cssModObj.staPilSpa }   ${ cssModObj.staPilSpaDue } `}>Due today</span> }{ /* What: Due Status Visibility Check. Why: A due-today row shows a plain Due pill. How: This renders only while rowStaStr is 'due'. Its due modifier tints the pill in the soft accent. */ }
 
 
 

@@ -366,7 +366,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 
 							} }
-						/> // What: Group Name Input Element. Why: This is the actual editable field for renaming this group. How: This is a plain, maxLength-capped text input, committed on blur/Enter and cancelled on Escape. Its data-element-name-hook is read by the tours, help mode, and the test suites.
+						/> // What: Group Name Input Element. Why: This is the actual editable field for renaming this group. How: This is a plain, maxLength-capped text input, committed on blur/Enter and cancelled on Escape. Its closing modifier slides it back out as the edit ends. Its data-element-name-hook is read by the tours, help mode, and the test suites.
 
 
 					) : ediModBoo ? ( // What: Rename Button Branch. Why: While Edit Mode is on but the field is closed, the name itself acts as a button that opens it. How: This renders a button showing groNamStr plus an edit glyph, wired to staEdiFun.
