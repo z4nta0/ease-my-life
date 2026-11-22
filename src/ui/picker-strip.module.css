@@ -336,7 +336,7 @@
 
 }
 
-.spoRowDiv { /* What: Spotlight Row Div. Why: Each candidate is a padded rounded row the highlight can land on. How: This sets it in muted text, centers its name both ways inside the row, and fades as the highlight moves. */
+.spoRowDiv { /* What: Spotlight Row Div. Why: Each candidate is a padded rounded row the highlight can land on. How: This sets it in muted text, centers its name both ways inside the row, and eases its background, color, and scale as the highlight moves. */
 
 
 	align-items     : center;

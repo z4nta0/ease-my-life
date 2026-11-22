@@ -454,7 +454,7 @@ function FreFieCom ( { ancHinEle, ariLabStr, desIdeStr, intValNum, maxValStr, on
 					key={ intValNum || 1 }
 
 					className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-				>shows on the Today page <strong>every { ( intValNum || 1 ) > 1 ? `${ intValNum } ${ uniWorStr }s` : uniWorStr }</strong></span>{ /* What: Field Subtitle Span Element. Why: This is the live cadence summary, re-fading whenever the interval changes. How: This picks between the plain unit word and an "every N" phrase with the plural unit word, based on intValNum. */ }
+				>shows on the Today page <strong>every { ( intValNum || 1 ) > 1 ? `${ intValNum } ${ uniWorStr }s` : uniWorStr }</strong></span>{ /* What: Field Subtitle Span Element. Why: This is the live cadence summary, re-fading whenever the interval changes. How: This picks between the plain unit word and an "every N" phrase with the plural unit word, based on intValNum. Its fieSubSpaFading class plays the fade. */ }
 
 
 			</div>
@@ -705,7 +705,7 @@ type VncProTyp = { kinValStr : string, notIdeStr : string, staAppObj : StaAppTyp
  * @param props.kinValStr - Kind Value String: Which placement this instance
  *                          renders for, 'settings' (the Repeat row) or
  *                          'schedule' (the specific schedule subsection).
- * @param props.notIdeStr - Note Identifier String: The dom id to assign to
+ * @param props.notIdeStr - Note Identifier String: The DOM ID to assign to
  *                          this note's own live region, so a control above it
  *                          can reference it via aria-describedby.
  * @param props.staAppObj - State App Object: The shared app state, read for
@@ -781,7 +781,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 			return (
 
 
-				<p className={` ${ cssModObj.visNotPar }   ${ cssModObj.visNotParNever } `}>{ /* What: Visibility Note Paragraph Element. Why: This is the red dead-configuration warning shown only in kinValStr 'schedule'. How: This holds the warning label, the reason sentence, and the bolded word "never". */ }
+				<p className={` ${ cssModObj.visNotPar }   ${ cssModObj.visNotParNever } `}>{ /* What: Visibility Note Paragraph Element. Why: This is the red dead-configuration warning shown only in kinValStr 'schedule'. How: This holds the warning label, the reason sentence, and the bolded word "never". Its visNotParNever class turns the note red. */ }
 					<strong>WARNING:</strong>{ /* What: Warning Label Element. Why: This flags the paragraph's own severity ahead of the explanation. How: This renders the literal bolded word "WARNING:". */ } Because of the values that you are using and because { whyTexEle }, this
 					item will <strong>never</strong>{ /* What: Never Emphasis Element. Why: This is the paragraph's own key word, bolded for emphasis. How: This renders the literal bolded word "never". */ } show up in your todo list.
 				</p>
@@ -796,7 +796,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 
 		// #region Advisory Text
 
-		const nexLabStr = nexDatFun( visResObj.nexObj, tasRcdObj.repeat === 'annual' );  // What: Next Label String. Why: Every body branch below names the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own nexObj date, always including the year for an annual reminder.
+		const nexLabStr = nexDatFun( visResObj.nexObj, tasRcdObj.repeat === 'annual' );  // What: Next Label String. Why: The advisory renders the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own nexObj date, always including the year for an annual reminder.
 		const kinWorStr = TAS_NAM_OBJ.isaReuFun( tasRcdObj ) ? 'recurring' : 'one-time'; // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
 
 		let bodTexEle; // What: Body Text Element. Why: The actual advisory sentence depends on which of the 3 branches below applies, assigned in exactly one of them. How: This is declared here and read by the shared return at the end of this branch.
@@ -958,7 +958,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 	const [ oncEdiBoo, setOncEdiBoo ] = React.useState( false ); // What: Once Editing Boolean And Setter. Why: A one-time reminder's own start date can likewise be amended inline. How: This toggles between the plain date link and a native date input in oncFieEle below.
 
 	const oncIsoStr = tasRcdObj.onceDate || TAS_NAM_OBJ.curIsoFun(); // What: Once ISO String. Why: An older task may have no onceDate set at all. How: This falls back to TAS_NAM_OBJ.curIsoFun() when onceDate is missing.
-	const oncFutBoo = oncIsoStr > TAS_NAM_OBJ.curIsoFun();           // What: Once Future Boolean. Why: A one-time reminder defaults to due right away; this decides whether it's instead deferred to a future start date. How: This compares oncIsoStr against today's own iso string.
+	const oncFutBoo = oncIsoStr > TAS_NAM_OBJ.curIsoFun();           // What: Once Future Boolean. Why: A one-time reminder defaults to due right away; this decides whether it's instead deferred to a future start date. How: This compares oncIsoStr against today's own ISO string.
 
 
 	const oncLabStr = ( () => { // What: Once Label String. Why: The start-date link's own visible text needs a locale-formatted date. How: This parses oncIsoStr into a real Date and formats it.
@@ -979,8 +979,8 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 	// #region Visibility Note Ids
 
-	const schNotStr = `schVisDiv--${ tasRcdObj.id }`; // What: Schedule Note String. Why: The schedule-subsection VisNotCom instance below needs a stable dom id so a control can reference it via aria-describedby. How: This is passed as that instance's own notIdeStr prop.
-	const repNotStr = `repVisDiv--${ tasRcdObj.id }`; // What: Repeat Note String. Why: The Repeat row's own VisNotCom instance below needs its own distinct dom id for the same reason. How: This is passed as that instance's own notIdeStr prop.
+	const schNotStr = `schVisDiv--${ tasRcdObj.id }`; // What: Schedule Note String. Why: The schedule-subsection VisNotCom instance below needs a stable DOM ID so a control can reference it via aria-describedby. How: This is passed as that instance's own notIdeStr prop.
+	const repNotStr = `repVisDiv--${ tasRcdObj.id }`; // What: Repeat Note String. Why: The Repeat row's own VisNotCom instance below needs its own distinct DOM ID for the same reason. How: This is passed as that instance's own notIdeStr prop.
 
 	// #endregion Visibility Note Ids
 
@@ -1036,7 +1036,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 					key={ oncFutBoo ? 'future' : 'now' } // What: Start State Key. Why: The summary should re-fade only when the start flips between future and immediate. How: This keys on oncFutBoo.
 
 					className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-				>{ /* What: Field Subtitle Span Element. Why: This is the live summary of when the reminder will actually start showing. How: This re-keys (and so re-fades) whenever oncFutBoo flips, rendering one of the 2 branches below. */ }
+				>{ /* What: Field Subtitle Span Element. Why: This is the live summary of when the reminder will actually start showing. How: This re-keys (and so re-fades) whenever oncFutBoo flips, rendering one of the 2 branches below. Its fieSubSpaFading class plays the fade. */ }
 
 
 					{ oncFutBoo // What: Start Phrase Pick. Why: A future start date defers the reminder, while a today-or-past one shows at once. How: This picks the phrase below based on oncFutBoo.
@@ -1060,7 +1060,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 					desIdeStr={ schNotStr }
 
-					onChange={ ( datIsoStr ) => onPatTasFun( { onceDate : datIsoStr < TAS_NAM_OBJ.curIsoFun() ? TAS_NAM_OBJ.curIsoFun() : datIsoStr } ) } // What: Clamped Once Date Commit. Why: The input's min limits the picker's choices but doesn't stop a typed earlier date, so a past pick still has to be clamped here. How: This commits the date, clamped up to today when it's earlier.
+					onChange={ ( datIsoStr ) => onPatTasFun( { onceDate : datIsoStr < TAS_NAM_OBJ.curIsoFun() ? TAS_NAM_OBJ.curIsoFun() : datIsoStr } ) } // What: Clamped Once Date Commit. Why: A date earlier than today must never be committed as the start date. How: This commits the date, clamped up to today when it's earlier.
 					onEdiSetFun={ setOncEdiBoo }
 				/>{ /* What: Date Link Component. Why: A one-time reminder's start date can be amended in place, never earlier than today. How: This shows oncLabStr as a link, or an inline date input while oncEdiBoo is true. */ }
 			</p>
@@ -1086,7 +1086,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 		return (
 
 
-			<React.Fragment>{ /* What: Extra Fields Fragment. Why: Up to 2 of the 6 conditional blocks below can render at once (monthly and annual each split into 2), so a single wrapping element is needed with no dom footprint of its own. How: This groups every conditional block below as one returned value. */ }
+			<React.Fragment>{ /* What: Extra Fields Fragment. Why: Up to 2 of the 6 conditional blocks below can render at once (monthly and annual each split into 2), so a single wrapping element is needed with no DOM footprint of its own. How: This groups every conditional block below as one returned value. */ }
 
 
 				{ curRepStr === 'weekly' && ( // What: Weekly Visibility Check. Why: Only the schedule subsection matching the current repeat kind should render. How: This renders the weekly subsection only while curRepStr is 'weekly'.
@@ -1104,7 +1104,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								key={ tasRcdObj.interval || 1 }
 
 								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which days and how often the reminder shows. How: This re-keys (and so re-fades) whenever interval changes, rendering one of the 2 branches below. */ }
+							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which days and how often the reminder shows. How: This re-keys (and so re-fades) whenever interval changes, rendering one of the 2 branches below. Its fieSubSpaFading class plays the fade. */ }
 
 
 								{ ( tasRcdObj.daysOfWeek && tasRcdObj.daysOfWeek.length ) // What: Days Chosen Check. Why: The summary can only name days once at least one is chosen. How: This picks the chosen-days phrase while daysOfWeek has entries, the prompt otherwise.
@@ -1242,7 +1242,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								key={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Key. Why: The summary should re-fade only when the date mode flips. How: This keys on 'nthWeekday' or 'date' by tasRcdObj's own dateMode.
 
 								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. */ }
+							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. Its fieSubSpaFading class plays the fade. */ }
 								shows on the Today page <strong>{ tasRcdObj.dateMode === 'nthWeekday' // What: Date Mode Check. Why: The monthly target reads differently for each date mode. How: This picks the nth-weekday or plain-date phrase below based on dateMode.
 									? <>on the { ordSufFun( tasRcdObj.nthOrdinal || 1 ) } { DAY_FUL_ARR[ tasRcdObj.nthWeekday ?? 0 ] }</> // What: Nth-Weekday Summary Phrase. Why: In this mode the target reads as an ordinal weekday, e.g. "the 2nd Tuesday". How: This names tasRcdObj's own nthOrdinal and nthWeekday.
 									: <>every { ordSufFun( tasRcdObj.dayOfMonth || 1 ) }</>                                               // What: Plain Date Summary Phrase. Why: In the default mode the target reads as a plain ordinal day, e.g. "every 15th". How: This names tasRcdObj's own dayOfMonth.
@@ -1380,7 +1380,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								key={ tasRcdObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Key. Why: The summary should re-fade only when the date mode flips. How: This keys on 'nthWeekday' or 'date' by tasRcdObj's own dateMode.
 
 								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. */ }
+							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which day targeting mode is active, re-fading on mode switch. How: This renders one of the 2 branches below depending on tasRcdObj's own dateMode. Its fieSubSpaFading class plays the fade. */ }
 								shows on the Today page <strong>{ tasRcdObj.dateMode === 'nthWeekday' // What: Date Mode Check. Why: The yearly target reads differently for each date mode. How: This picks the nth-weekday or plain-date phrase below based on dateMode.
 									? <>the { ordSufFun( tasRcdObj.nthOrdinal || 1 ) } { DAY_FUL_ARR[ tasRcdObj.nthWeekday ?? 0 ] } of { MON_FUL_ARR[ ( tasRcdObj.month || 1 ) - 1 ] }</> // What: Nth-Weekday Summary Phrase. Why: In this mode the target reads as an ordinal weekday within a named month, e.g. "the 2nd Tuesday of June". How: This names tasRcdObj's own nthOrdinal, nthWeekday, and month.
 									: <>{ MON_FUL_ARR[ ( tasRcdObj.month || 1 ) - 1 ] } { tasRcdObj.day || 1 }</>                                                                         // What: Plain Date Summary Phrase. Why: In the default mode the target reads as a plain month/day, e.g. "June 15". How: This names tasRcdObj's own month and day.
@@ -1537,7 +1537,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						key={ tasRcdObj.repeat }
 
 						className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
-					>{ ( REP_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === tasRcdObj.repeat ) || {} ).subEle }</span>{ /* What: Field Subtitle Span Element. Why: This is the live sub-explanation matching the currently-selected repeat kind. How: This looks up REP_OPT_ARR by tasRcdObj's own repeat and renders that entry's own subEle. */ }
+					>{ ( REP_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === tasRcdObj.repeat ) || {} ).subEle }</span>{ /* What: Field Subtitle Span Element. Why: This is the live sub-explanation matching the currently-selected repeat kind. How: This looks up REP_OPT_ARR by tasRcdObj's own repeat and renders that entry's own subEle. Its fieSubSpaFading class plays the fade. */ }
 
 
 				</div>
@@ -1651,7 +1651,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 // #region Exports
 
-export { SchEdiCom }; // What: Named Export. Why: The reminder schedule editor is one shared component. How: This exports SchEdiCom by name; VisNotCom, reaPhrFun, and REP_OPT_ARR stay private to this file.
+export { SchEdiCom }; // What: Named Export. Why: The reminder schedule editor is one shared component. How: This exports SchEdiCom by name; every other binding in this file stays private to it.
 
 // #endregion Exports
 
