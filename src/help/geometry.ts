@@ -665,14 +665,12 @@ function badBoxFun ( lefBadNum : number, topBadNum : number ) : BadRecTyp {
  * tip anchored to it should point: a p02-step circle overlapping the
  * highlighted box's own top-right corner (matching the "small corner marker"
  * design, distinct from InfTipCom's own inline-trigger placement). This falls
- * back to the top-LEFT corner instead when the target's own right edge sits
- * past the viewport, e.g. a horizontally-scrollable row (Today's group nav)
- * whose own rect is its full unclipped content width, not just what is
- * currently visible; the target's LEFT edge is what is in view when such a row
- * starts scrolled to 0. cenBadBoo, true for groStr items, centers the badge
- * over the column's own top edge instead, since a column group member's own
- * right edge is a shared, touching boundary with its neighbor rather than a
- * free edge with neutral space past it.
+ * back to the top-LEFT corner instead when the top-right placement would run
+ * the badge past the viewport's right edge, e.g. a target whose right edge
+ * sits at or near the viewport's edge. cenBadBoo, true for groStr items,
+ * centers the badge over the column's own top edge instead, since a column
+ * group member's own right edge is a shared, touching boundary with its
+ * neighbor rather than a free edge with neutral space past it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

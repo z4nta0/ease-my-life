@@ -18,9 +18,9 @@ import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why
  *
  * Copy is largely forked from onboarding/page-steps.tsx's own SET_TAR_OBJ
  * catalog, same targets, same underlying explanation, with directive tour
- * language ("click Next", "click Done when ready", "these buttons are
- * disabled for this tutorial") stripped out, since a help-mode tip has no
- * steps to advance through and nothing it points at is ever disabled.
+ * language ("click Next", "click Done when ready", "these buttons are disabled
+ * for this tutorial") stripped out, since a help-mode tip has no steps to
+ * advance through and no tutorial disables anything it points at.
  *
  * One item per DISTINCT piece of functionality, not one per DOM element, so
  * a row of related controls gets one tip explaining what the whole row does

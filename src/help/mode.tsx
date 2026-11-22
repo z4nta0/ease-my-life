@@ -413,7 +413,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 					// #region Element Clipping
 
-					let tarRecObj = cliHorFun( curTarEle.getBoundingClientRect(), curTarEle ); // What: Target Rect Object. Why: A scrolled-out-of-view instance (e.g. a card off the bottom of a scrollable list) must not draw a bogus highlight. How: This runs curTarEle's own bounding rect through cliHorFun.
+					let tarRecObj = cliHorFun( curTarEle.getBoundingClientRect(), curTarEle ); // What: Target Rect Object. Why: A target scrolled past the edge of a horizontally scrollable row (e.g. a picker tab) must not draw a bogus highlight. How: This runs curTarEle's own bounding rect through cliHorFun.
 
 
 					if ( !tarRecObj ) return; // What: Fully Clipped Guard. Why: An element clipped away entirely has nothing to highlight. How: This skips this element once cliHorFun returned null.

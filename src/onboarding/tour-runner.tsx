@@ -1519,7 +1519,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		const getScrFun = ( curTarEle : Element ) => { // What: Get Scroller Function. Why: The ACTUAL scrolling ancestor of the target must be resolved, since the target's scroller is not always the appConMai element (an inner panel can scroll instead, or nothing overflows and the page itself is the scroller), and a hardcoded appConMai would leave the target below the fold with the coach and spot off-screen, the dim-only "no highlight" state. How: This walks up from the target's parent to the first ancestor that actually scrolls, falling back to the document's own scroller.
 
 
-			let ancCurEle = curTarEle && curTarEle.parentElement; // What: Ancestor Current Element And Walker. Why: The walk needs to start from the target's own parent. How: This starts at curTarEle's own parentElement, or undefined when curTarEle itself is falsy.
+			let ancCurEle = curTarEle && curTarEle.parentElement; // What: Ancestor Current Element And Walker. Why: The walk needs to start from the target's own parent. How: This starts at curTarEle's own parentElement, or at curTarEle's own falsy value when it is missing.
 
 
 			while ( ancCurEle && ancCurEle !== document.body ) { // What: Ancestor Walk Loop. Why: Every ancestor between the target and the document body is a candidate scroller. How: This walks upward one parentElement at a time until it reaches document.body or runs out of ancestors.
