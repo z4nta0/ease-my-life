@@ -7,12 +7,11 @@
  * @summary
  * Fades out the boot splash index.html paints while the app loads. It lives in
  * its own file rather than an inline script so the Content-Security-Policy's
- * script-src can stay 'self', with no hash or 'unsafe-inline' needed (see
- * public/_headers). The splash normally fades once two things are true: the
- * app has mounted, and the equation has finished assembling, so it doesn't
- * vanish mid-animation. A safety timeout dismisses it regardless, so a boot
- * that never signals can't trap the page behind it. The build minifies this
- * file.
+ * script-src needs no hash or 'unsafe-inline' for it (see public/_headers).
+ * The splash normally fades once two things are true: the app has mounted, and
+ * the equation has finished assembling, so it doesn't vanish mid-animation. A
+ * safety timeout dismisses it regardless, so a boot that never signals can't
+ * trap the page behind it. The build minifies this file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
