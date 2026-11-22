@@ -40,12 +40,13 @@ import React from 'react'; // What: React. Why: useRaiWheFun attaches and remove
  * wheScrFun = Wheel Scroll Function
  *
  * @summary
- * Scrolls the marked rail under the pointer sideways by a vertical wheel
- * turn, and cancels the page's own scroll so the two don't move together. It
- * leaves alone a wheel event that's mostly sideways already (a trackpad
- * swipe, or Shift plus the wheel), a pinch zoom (which arrives with ctrlKey
- * set), and any turn that would push a rail past its first or last pill, so
- * the page scrolls on as usual once the rail can't go any further.
+ * Scrolls the marked rail under the pointer sideways by a vertical wheel turn,
+ * and cancels the page's own scroll so the two don't move together. It leaves
+ * alone a wheel event that's mostly sideways already (a trackpad swipe, or
+ * Shift plus the wheel), a pinch zoom (which arrives with ctrlKey set), a rail
+ * with nothing to scroll, and any turn that would push a rail past its first
+ * or last pill, so the page scrolls on as usual once the rail can't go any
+ * further.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

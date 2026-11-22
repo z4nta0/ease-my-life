@@ -114,9 +114,8 @@ function useRcdDraFun< T extends { id : string } > ( rcdDatObj : T | null ) : { 
  * useIteDraFun = Use Item Draft Function
  *
  * @summary
- * An item editor's draft (see useRcdDraFun), plus cmtDraFun, which writes
- * every field that differs from the item as it was when the draft started
- * back through tarActObj.
+ * An item editor's draft (see useRcdDraFun), plus cmtDraFun, which writes each
+ * changed editable field (the name, for one) back through tarActObj.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

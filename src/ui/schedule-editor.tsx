@@ -440,7 +440,7 @@ function FreFieCom ( { ancHinEle, ariLabStr, desIdeStr, intValNum, maxValStr, on
 	return (
 
 
-		<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N control and its own anchor hint as one schedule subsection. How: This renders the number input plus the shared anchor hint, collapsed until the interval is above 1. */ }
+		<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N control and its own anchor hint as one schedule subsection. How: This renders the number input plus the shared anchor hint, which stays collapsed until the interval is above 1. */ }
 
 
 			<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
