@@ -150,7 +150,7 @@ test( 'a paid owner creates its manifest at revision 1 and moves it one revision
 
 
 
-test( 'a manifest or version with an unexpected field is refused', async () => { // What: Shape Test. Why: A malformed copy would break the next sync. How: This writes extra fields and checks each write fails, while a clean version succeeds.
+test( 'a manifest or version with an unexpected field is refused', async () => { // What: Shape Test. Why: A malformed copy would break the next sync. How: This writes a manifest and a version with an extra field and a version whose text is a number, checking each write fails, while a clean version succeeds.
 
 
 	const aliStoObj = accStoFun( 'alice', PAI_TOK_OBJ ); // What: Alice Store Object. Why: Alice is a paid owner. How: This acts as her.
