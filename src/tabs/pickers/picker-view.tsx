@@ -1181,7 +1181,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 							<div className={ cssModObj.senNamDiv }>{ picResObj.picObj.name }</div>{ /* What: Sent Name Div Element. Why: The user should see exactly which item just landed on Today. How: This renders picResObj.picObj.name. */ }
 
-							<div className={ cssModObj.staLabDiv }>Added to Today</div>{ /* What: Sent Label Div Element. Why: In the sent stage, the confirmation needs a short caption. How: This renders the fixed literal text. */ }
+							<div className={ cssModObj.staLabDiv }>Added to Today</div>{ /* What: Stage Label Div Element. Why: In the sent stage, the confirmation needs a short caption. How: This renders the fixed literal text. */ }
 
 
 						</div>
@@ -1198,7 +1198,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 							<div className={ cssModObj.staNumDiv }>&mdash;</div>{ /* What: Stage Number Div Element. Why: In the empty stage, a dash stands in for "nothing to count" in the same slot the idle count normally uses. How: This renders a literal em dash glyph, the documented display-character exception to the no-em-dash copy rule. */ }
 
-							<div className={ cssModObj.staLabDiv }>{ /* What: Empty Label Div Element. Why: In the empty stage, each mode empties out for a different reason and needs its own explanation. How: This picks one of three fixed sentences based on picDatObj.mode. */ }
+							<div className={ cssModObj.staLabDiv }>{ /* What: Stage Label Div Element. Why: In the empty stage, each mode empties out for a different reason and needs its own explanation. How: This picks one of three fixed sentences based on picDatObj.mode. */ }
 
 
 								{ picDatObj.mode === 'ease-up' // What: Ease Up Check. Why: An ease-up picker empties because nothing has drifted to eligibility yet. How: This picks the ease-up sentence when the mode matches.

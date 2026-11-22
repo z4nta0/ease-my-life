@@ -13,10 +13,10 @@
  * holding the Add Item button), each ending in its own footer. The add-item
  * and edit-item cards in that slot are styled by the item card's own module.
  * The step, chip, mode, and conditional choices key off presence-only
- * data-*-active attributes, the rails' fades off the scroll fade attributes, a
- * switch off its own aria-checked, and a blocked Delete tip off its own
- * aria-disabled. The pool row and confirm animations are this file's own
- * module classes.
+ * data-*-active attributes, the conditional rail's fades off the scroll fade
+ * attributes, a switch off its own aria-checked, and a blocked Delete tip off
+ * its own aria-disabled. The pool row and confirm animations are this file's
+ * own module classes.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

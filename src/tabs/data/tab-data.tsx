@@ -1869,7 +1869,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 				className={ cssModObj.datLisDiv }
 
 				data-element-name-hook='datLisDiv'
-			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed when the Group filter, the scope, or the Conditionals filter changes so section entrance animations replay. How: This renders an empty-state message when nothing matches, otherwise every entry in shoSecArr plus the Create Picker trigger. Its data-element-name-hook is read by the tours and help mode. */ }
+			>{ /* What: Data List Div Element. Why: This is the actual rendered list, re-keyed when the Group filter, the scope, or the Conditionals filter changes so section entrance animations replay. How: This renders an empty-state message when no section or picker card matches, then every entry in shoSecArr (the draft card included) plus the Create Picker trigger when it shows. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 				{ shoEmpBoo && ( // What: Empty State Check. Why: Every filter combined leaving nothing at all needs its own explanatory message. How: This renders only while all 3 sections are absent.

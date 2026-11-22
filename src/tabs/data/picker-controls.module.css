@@ -153,7 +153,7 @@
 
 
 }
-.basGroDiv { /* What: Basics Group Div. Why: The group pills can wrap onto several lines, so the label stays at the top. How: This aligns the row to its start. */
+.basGroDiv { /* What: Basics Group Div. Why: The group pills can wrap onto several lines above 640px wide, so the label stays at the top. How: This aligns the row to its start. */
 
 
 	align-items : flex-start;
