@@ -495,8 +495,7 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  * chrome clamp, the click-guard, the not-found watchdog, tab-sync, the mobile
  * rail auto-open, resume-on-reload persistence); a specific tour's own
  * content lives entirely in its steObjArr prop, authored by a caller such as
- * onboarding/welcome-tour.tsx or one of the onboarding-*-tours.jsx mini-tour
- * modules.
+ * onboarding/welcome-tour.tsx or one of the mini-tour modules beside it.
  *
  * Each step object in steObjArr carries these fields (every one optional
  * except bodEle, priStr, selStr, and titStr):
@@ -1612,7 +1611,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const briTarFun = () => { // What: Bring Target Function. Why: This brings the target(s) into view once when the step opens. How: This finds the step's targets, then scrolls their scroller by the step's own flags, or by just enough to fit the target and the coach.
+		const briTarFun = () => { // What: Bring Target Function. Why: This brings the target(s) into view when the step opens and again when the layout settles at a new size or the pulse target stops matching. How: This finds the step's targets, then scrolls their scroller by the step's own flags, or by just enough to fit the target and the coach.
 
 
 			// #region Target Lookup
@@ -1775,7 +1774,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		briTarFun(); // What: Initial Bring Call. Why: The target needs bringing into view once as soon as the step opens. How: This calls briTarFun for the first time; every subsequent call to it happens from inside the loop below.
+		briTarFun(); // What: Initial Bring Call. Why: The target needs bringing into view once as soon as the step opens. How: This calls briTarFun for the first time; later calls come from the per-frame loop below and from briTarFun's own reserve retry.
 
 		// #endregion Bring Target Into View
 

@@ -49,7 +49,7 @@ type PrePayTyp = Partial< PicRcdTyp & TasRcdTyp > & { items? : Partial< IteRcdTy
 type TouBusTyp = { // What: Tour Bus Type. Why: The tours, the tour runner, and the tabs coordinate through one shared state. How: This describes it, every field optional since each is written by whichever module needs it.
 
 
-	draActBoo? : boolean;                                                         // What: Draft Active Boolean. Why: A tour waits while a draft editor is open. How: This is true while one is.
+	draActBoo? : boolean;                                                         // What: Drag Active Boolean. Why: A tour's coach card hides while a drag gesture is in progress. How: This is true from the start of a drag until it ends.
 	draRepStr? : string | null;                                                   // What: Draft Repeat String. Why: A reminder tour reads the draft's repeat kind. How: This holds it, or null while no draft is open.
 	exiIdeStr? : string | null;                                                   // What: Existing Identifier String. Why: A replayed tour reuses what it made before. How: This holds that record's id, or null once a tour clears it.
 	iteMaxNum? : number | null;                                                   // What: Item Maximum Number. Why: A tour can stage an added item's ease band. How: This holds its easeMax, or null once a tour clears it.
