@@ -129,7 +129,33 @@ const relNowFun = () : void => window.location.reload(); // What: Reload Now Fun
 
 
 
-const relSafFun = () => { if ( updReaBoo && document.visibilityState === 'hidden' && !busNowFun() ) relNowFun(); }; // What: Reload Safe Function. Why: A quiet reload must happen only out of sight and with nothing being edited. How: This reloads once an update is ready, the app is hidden, and busNowFun finds nothing under way.
+// #region relSafFun
+
+/**
+ * relSafFun = Reload Safe Function
+ *
+ * @summary
+ * Reloads the page only when it is safe to do so quietly: a new version has
+ * taken control, the app is hidden, and busNowFun finds nothing under way.
+ * Otherwise it does nothing, leaving the update marked ready for the Reload
+ * note.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param void - This function takes no parameters.
+ *
+ * @returns This function does not return anything.
+ *
+ * @example
+ * ```ts
+ * relSafFun() // => void
+ * ```
+ *
+*/
+
+const relSafFun = () : void => { if ( updReaBoo && document.visibilityState === 'hidden' && !busNowFun() ) relNowFun(); }; // What: Reload Safe Function. Why: A quiet reload must happen only out of sight and with nothing being edited. How: This reloads once an update is ready, the app is hidden, and busNowFun finds nothing under way.
+
+// #endregion relSafFun
 
 
 
