@@ -425,7 +425,7 @@
 
 /* #region scoTabBut */
 
-.scoTabBut { /* What: Scope Tab Button. Why: Each scope in the Show strip is a card-like tab, sliding in as it mounts. How: This draws a bordered, snapping card with the name over its kind, and eases its press and focus ring. */
+.scoTabBut { /* What: Scope Tab Button. Why: Each scope in the Show strip is a card-like tab, sliding in as it mounts. How: This draws a bordered, snapping card with the name over its kind, and eases its hover and selected colors, press, and focus ring. */
 
 
 	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) backwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the tab's transform and keep its press from showing. How: The tab holds the first frame only while it waits to start, and its own styles, which match the last frame, take over once it ends. */
@@ -2466,7 +2466,7 @@
 
 }
 
-.valHelSpa { /* What: Value Help Span. Why: A small circled "?" beside an N/A value explains it without competing with it. How: This draws a small muted round badge that brightens on hover. */
+.valHelSpa { /* What: Value Help Span. Why: A small circled "?" beside an N/A value explains it without competing with it. How: This draws a small muted round badge that fades to the accent colors on hover. */
 
 
 	align-items     : center;
