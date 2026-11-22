@@ -1199,7 +1199,7 @@ type PlcProTyp = { dayKeyStr : string, isaSupBoo : boolean, picRcdObj : PicRcdTy
  * header (name, mode pill, item/done summary or expand chevron) plus,
  * while expanded, one row per item showing its own subline, value
  * cells and status chips. A picker suppressed today by a triggered
- * conditional (and with no manual-override rows of its own) instead
+ * conditional (and with no pick-log rows of its own today) instead
  * renders as a single static "Rested" row.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -1236,7 +1236,7 @@ function PicBloCom ( { dayKeyStr, isaSupBoo, picRcdObj, staAppObj } : PlcProTyp 
 
 
 
-	if ( !hasRowBoo && isaSupBoo ) { // What: Suppressed Rest Guard. Why: A picker suppressed today with no manual-override rows renders as a single static rested row instead of its full table. How: This checks both conditions before returning the rested-row branch below.
+	if ( !hasRowBoo && isaSupBoo ) { // What: Suppressed Rest Guard. Why: A picker suppressed today with no pick-log rows of its own today renders as a single static rested row instead of its full table. How: This checks both conditions before returning the rested-row branch below.
 
 
 		const conRcdObj = staAppObj.conditionals.find( ( curConObj ) => curConObj.id === picRcdObj.conditionalId ); // What: Conditional Record Object. Why: The rested row below names which conditional actually suppressed this picker. How: This finds staAppObj's own conditional matching picRcdObj's own conditionalId.

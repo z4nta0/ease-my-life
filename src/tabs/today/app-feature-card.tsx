@@ -48,9 +48,10 @@ type AfcProTyp = { actStoObj : ActStoTyp, feaRcdObj : { ideStr : string, labStr 
  * AppFeaCom = App Feature Component
  *
  * @summary
- * An "App Features" launcher card: it starts one app-feature tour from the
- * onboarding appFeatures map in staAppObj, with Play and uncheck controls,
- * and shows an explanation when the tour is blocked.
+ * An "App Features" launcher card: it starts one app-feature tour through
+ * onPlaTutFun, reads whether that tour is done from the onboarding appFeatures
+ * map in staAppObj, offers Play and uncheck controls, and shows an explanation
+ * when the tour is blocked.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

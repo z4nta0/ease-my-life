@@ -117,7 +117,7 @@
 
 
 }
-.groNamInp[data-name-invalid-active] { /* What: Invalid Group Name Input. Why: A name that collides with another group should be flagged as it's typed. How: This switches the frame to the warm color. */
+.groNamInp[data-name-invalid-active] { /* What: Invalid Group Name Input. Why: A name that collides with another group should be flagged once its commit is refused. How: This switches the frame to the warm color until the next keystroke. */
 
 
 	border-color : var( --acc-sec-col ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
