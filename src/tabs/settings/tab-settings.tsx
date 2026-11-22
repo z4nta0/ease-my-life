@@ -1715,7 +1715,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 					<section
-						ref={ ( secCurEle ) => { secMapRef.current[ 'appearance' ] = secCurEle; } }
+						ref={ ( secCurEle ) => { secMapRef.current[ 'appearance' ] = secCurEle; } } // What: Section Reference Callback. Why: The rail's scroll tracking and jump links look each section up by its id. How: This writes the section's element into secMapRef under its 'appearance' key.
 
 						className={ cssModObj.setAppSec }
 
@@ -2025,7 +2025,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 					<section
-						ref={ ( secCurEle ) => { secMapRef.current[ 'daily' ] = secCurEle; } }
+						ref={ ( secCurEle ) => { secMapRef.current[ 'daily' ] = secCurEle; } } // What: Section Reference Callback. Why: The rail's scroll tracking and jump links look each section up by its id. How: This writes the section's element into secMapRef under its 'daily' key.
 
 						className={ cssModObj.setDaiSec }
 
@@ -2252,7 +2252,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 					<section
-						ref={ ( secCurEle ) => { secMapRef.current[ 'holidays' ] = secCurEle; } }
+						ref={ ( secCurEle ) => { secMapRef.current[ 'holidays' ] = secCurEle; } } // What: Section Reference Callback. Why: The rail's scroll tracking and jump links look each section up by its id. How: This writes the section's element into secMapRef under its 'holidays' key.
 
 						className={ cssModObj.setHolSec }
 
@@ -2288,7 +2288,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 					<section
-						ref={ ( secCurEle ) => { secMapRef.current[ 'data' ] = secCurEle; } }
+						ref={ ( secCurEle ) => { secMapRef.current[ 'data' ] = secCurEle; } } // What: Section Reference Callback. Why: The rail's scroll tracking and jump links look each section up by its id. How: This writes the section's element into secMapRef under its 'data' key.
 
 						className={ cssModObj.setDatSec }
 
@@ -2861,7 +2861,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 					<section
-						ref={ ( secCurEle ) => { secMapRef.current[ 'account' ] = secCurEle; } }
+						ref={ ( secCurEle ) => { secMapRef.current[ 'account' ] = secCurEle; } } // What: Section Reference Callback. Why: The rail's scroll tracking and jump links look each section up by its id. How: This writes the section's element into secMapRef under its 'account' key.
 
 						className={ cssModObj.setAccSec }
 
@@ -2884,7 +2884,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 					<section
-						ref={ ( secCurEle ) => { secMapRef.current[ 'about' ] = secCurEle; } }
+						ref={ ( secCurEle ) => { secMapRef.current[ 'about' ] = secCurEle; } } // What: Section Reference Callback. Why: The rail's scroll tracking and jump links look each section up by its id. How: This writes the section's element into secMapRef under its 'about' key.
 
 						className={ cssModObj.setAboSec }
 
@@ -3048,7 +3048,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 					<section
-						ref={ ( secCurEle ) => { secMapRef.current[ 'legal' ] = secCurEle; } }
+						ref={ ( secCurEle ) => { secMapRef.current[ 'legal' ] = secCurEle; } } // What: Section Reference Callback. Why: The rail's scroll tracking and jump links look each section up by its id. How: This writes the section's element into secMapRef under its 'legal' key.
 
 						className={ cssModObj.setLegSec }
 
