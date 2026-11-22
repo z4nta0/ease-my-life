@@ -281,12 +281,10 @@ let __tinProObj : CanvasRenderingContext2D | null = null; // What: Tint Probe Ob
  * the user pick (background, text, accent), using CSS relative-color
  * syntax so the derived tokens (surface/border/muted/soft accent) are
  * computed by the browser itself off the literal color the user chose,
- * with no color-math library needed here. Dark mode floors the derived
- * lightness rather than using a plain offset, since a plain offset
- * breaks down at the black end of the gamma-encoded sRGB scale (a flat
- * +0.04 lightness step lands very differently near true black than it
- * does a few steps away from it); light mode has no matching hazard, so
- * it keeps the plain offset.
+ * with no color-math library needed here. Dark mode raises the derived
+ * lightness by the offset but never below a floor, so a surface or border
+ * near black stays distinct from true black; light mode keeps the plain
+ * offset.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -326,7 +324,7 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
 
 	const modSigNum = modKeyStr === 'dark' ? 1 : -1; // What: Mode Sign Number. Why: The mutStr and acsStr tokens need to move toward the page background, which is darker in dark mode and lighter in light mode. How: This is 1 in dark mode and -1 in light mode, flipping the sign of their lightness offset below.
 
-	const calOffFun = ( offAmoNum : number, floValNum : number ) => ( modKeyStr === 'dark' // What: Calculate Offset Function. Why: Dark mode needs a floored lightness offset to avoid the near-black gamma-encoding hazard described above, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
+	const calOffFun = ( offAmoNum : number, floValNum : number ) => ( modKeyStr === 'dark' // What: Calculate Offset Function. Why: Dark mode needs a floored lightness offset so derived tokens near black stay distinct from true black, while light mode can use a plain one. How: This returns the appropriate CSS calc() expression string for whichever mode is active.
 
 		? `calc(max(l + ${ offAmoNum }, ${ floValNum }))` // What: Dark Mode Calc Expression. Why: Flooring the result keeps surface/border from vanishing into true black. How: This raises the lightness by offAmoNum, but never below floValNum.
 

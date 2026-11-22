@@ -1749,7 +1749,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			const resPrdBoo = notCatBoo && notDecBoo && hasPrdBoo; // What: Reserve Predict Boolean. Why: The reserve prediction below only applies when all 3 checks above hold. How: This ANDs the 3 checks above.
 
 
-			if ( resPrdBoo ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the same fits-below/fits-above checks decResFun uses below, deciding proactively instead of reactively: decResFun alone used to decide this, which meant a visibly separate second "jump then re-scroll" once it found the overlap, reproduced live as jank when a target overlapped the coach at its settled position. How: This reserves extra room below the target when the coach would fit neither below nor above its predicted landing position.
+			if ( resPrdBoo ) { // What: Reserve Prediction Guard. Why: This plugs the predicted landing position into the same fits-below/fits-above checks decResFun uses below, deciding proactively instead of reactively: decResFun alone used to decide this, which meant a visibly separate second "jump then re-scroll" once it found the overlap, reproduced live as jank when a target overlapped the coach at its settled position. How: This reserves top space at the head of the page content for the coach when the coach would fit neither below nor above its predicted landing position.
 
 
 				const vieHeiNum = window.innerHeight;                                                                                    // What: Viewport Height Number. Why: The fit checks below need the current viewport height. How: This is read fresh from window.innerHeight.

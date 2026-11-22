@@ -100,7 +100,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 		const butActEle = segCurEle.querySelector< HTMLButtonElement >( '[data-element-name-hook~="segConBut"][aria-pressed="true"]' ); // What: Button Active Element. Why: This is the specific option button the thumb needs to sit under. How: This is found via its hook and aria-pressed state inside the group.
 
 
-		if ( !butActEle ) return; // What: No Active Button Guard. Why: No option is currently marked active, such as mid-transition. How: This bails out of the rest of the placement when there is nothing to measure against.
+		if ( !butActEle ) return; // What: No Active Button Guard. Why: No option is currently marked active, such as when value matches none of optIteArr's keys. How: This bails out of the rest of the placement when there is nothing to measure against.
 
 		// #endregion Element Lookup
 

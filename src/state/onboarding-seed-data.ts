@@ -531,7 +531,7 @@ const ONB_TAS_ARR : ( TasArgTyp & Required< Pick< TasArgTyp, 'id' | 'name' > > )
 */
 
 const ONB_SPI_ARR = ONB_ASP_ARR.map( ( curPicObj ) => curPicObj.id ); // What: Onboarding Sample-Picker-Identifiers Array. Why: This is every seeded sample picker's own id, flattened into one array (see the comment above this declaration). How: This maps every ONB_ASP_ARR entry down to just its own id field.
-const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id ); // What: Onboarding Sample-Task-Identifiers Array. Why: This is every seeded sample task's own id, flattened into one array (see the comment above ONB_SPI_ARR above). How: This maps every ONB_TAS_ARR entry down to just its own id field.
+const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id ); // What: Onboarding Sample-Task-Identifiers Array. Why: This is every seeded sample task's own id, flattened into one array (see the comment above ONB_SPI_ARR). How: This maps every ONB_TAS_ARR entry down to just its own id field.
 
 // #endregion Constants
 
@@ -549,7 +549,8 @@ const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id ); // What: O
  * src/state/onboarding-stats-data.ts and scripts/build-onboarding-stats.mts)
  * into real pickLog / reminderLog / reminderSkipLog rows, dated relative to
  * the ACTUAL current date rather than whenever that file happened to be
- * generated. Pure date arithmetic over the precomputed rows.
+ * generated. Its only work is date arithmetic over the precomputed rows,
+ * anchored on the current date.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
