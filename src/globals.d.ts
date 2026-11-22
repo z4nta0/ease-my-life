@@ -36,7 +36,7 @@ interface ImportMetaEnv { // What: Import Meta Env Interface. Why: Vite's own ty
 
 
 
-interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two navigator features TypeScript's DOM types lack. How: This merges both into Navigator, each optional since most browsers don't have them.
+interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two navigator features TypeScript's DOM types lack. How: This merges both into Navigator, each optional since a browser may not have them.
 
 
 	getInstalledRelatedApps? : () => Promise< RelAppTyp[] >; // What: Get Installed Related Apps. Why: Chromium can tell whether this app is already installed elsewhere on the device. How: This is the method that lists those installs.
@@ -51,7 +51,7 @@ interface Window { // What: Window Interface. Why: TypeScript's built-in Window 
 
 
 	__dismissBootSplash? : () => void;  // What: Dismiss Boot Splash. Why: main.tsx fades out index.html's boot splash once the app has mounted. How: This is the function public/boot-splash.js assigns.
-	__emlGenerate?       : () => void;  // What: Ease My Life Generate. Why: The Welcome Tour runs the real list generator on a first run. How: This is the function the Today tab assigns while it's mounted.
+	__emlGenerate?       : () => void;  // What: Ease My Life Generate. Why: The Welcome Tour runs the real list generator on a first run. How: This is the function the Today tab assigns when it mounts.
 	__escBound?          : boolean;     // What: Escape Bound. Why: The document-level Escape listener must be attached only once, however many times its module loads. How: This is set true once ui/escape-cancel.ts attaches it.
 	__escStack?          : EscEntTyp[]; // What: Escape Stack. Why: Several editors can be open at once, and Escape should cancel only the most recent. How: This is the array ui/escape-cancel.ts pushes each open editor's entry onto.
 
