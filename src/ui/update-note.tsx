@@ -22,7 +22,7 @@ import type { JSX } from 'react'; // What: JSX. Why: The component declares the 
  *
  * @summary
  * The note the app shows at the top of the open tab once a new version has
- * taken over while something was being edited, so the update waits for the
+ * taken over while something was under way, so the update waits for the
  * person instead of reloading under them. Its status region is in the page
  * from the first render and stays empty until then.
  *
@@ -96,7 +96,7 @@ function UpdNotCom () : JSX.Element {
 						sizValStr='sm'
 
 						onClick={ UPD_NAM_OBJ.relNowFun }
-					>Reload</ButBasCom>{ /* What: Button Base Component. Why: The person chooses when to load the new version, once their edit is done. How: This reloads the page when pressed. */ }
+					>Reload</ButBasCom>{ /* What: Button Base Component. Why: The person chooses when to load the new version, once whatever was under way is done. How: This reloads the page when pressed. */ }
 
 
 				</div>
