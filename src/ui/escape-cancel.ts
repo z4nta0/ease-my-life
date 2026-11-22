@@ -16,8 +16,8 @@ import React from 'react'; // What: React. Why: useEscCanFun registers and clean
  * Escape-to-cancel for the app's inline editors and add forms. An open editor
  * registers itself on one shared stack through useEscCanFun, and a single
  * document-level listener runs only the innermost entry, skipping while a
- * tooltip or modal scrim owns Escape. The stack and the listener are window
- * globals so repeated module evaluation never double-binds them.
+ * tooltip or modal scrim owns Escape. The stack and a bound marker are window
+ * globals so repeated module evaluation never double-binds the listener.
  *
  * Sections:
  *  - Module State

@@ -680,7 +680,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 													) )
 
 
-												) : ( // What: Fallback Hint Branch. Why: A mode with no conditional-specific override still needs its own hint text. How: This renders a single span from CON_HIN_OBJ or, failing that, SED_NAM_OBJ.MOD_DEF_OBJ.
+												) : ( // What: Fallback Hint Branch. Why: A mode with no conditional-specific override still needs its own hint text. How: This renders a single span of modConObj's own hint from SED_NAM_OBJ.MOD_DEF_OBJ, since this branch runs only when CON_HIN_OBJ holds no array for the mode.
 
 
 													<span className={ cssModObj.modHinSpa }>{ CON_HIN_OBJ[ modKeyStr ] || modConObj.hinArr }</span> // What: Mode Hint Span Element. Why: This is the selected mode's own fallback hint, shown when CON_HIN_OBJ holds no array for the mode. How: This renders modConObj's own hint, which the || fallback reaches since CON_HIN_OBJ holds no value for the mode here.

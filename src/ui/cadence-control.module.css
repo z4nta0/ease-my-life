@@ -5,10 +5,10 @@
  * cadence-control.module.css = Cadence Control Module
  *
  * @summary
- * Styles for CadConCom, the "How often?" editor in the new-picker form: the
+ * Styles for CadConCom, the "How often?" editor for a picker's cadence: the
  * cadence field with its label, help bubble, and live summary above the
- * segmented control, and, for a non-daily cadence, the anchor field that
- * fades in below it with its inline selects and clamp hints.
+ * segmented control, and, for a non-daily cadence, the anchor field that fades
+ * in below it with its inline selects and clamp hints.
  *
  * Its fields share their look with the reminder schedule editor and the app's
  * other forms, so their declarations are copied here, under the names those

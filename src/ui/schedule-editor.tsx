@@ -542,7 +542,7 @@ function MonSelCom ( { desIdeStr, onChange, value } : MecProTyp ) : React.JSX.El
 		>{ /* What: Anchor Pick Select Element. Why: This is the target-month picker. How: This hands the chosen option's own 1-indexed value to onChange. */ }
 
 
-			{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own monNamStr, valued by its own 1-indexed monIndNum.
+			{ MON_ABB_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per month. How: This maps MON_ABB_ARR to one option per entry, keyed by its own monNamStr and valued by its own monIndNum plus 1.
 
 
 				<option
@@ -1168,7 +1168,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N-days control and its own anchor hint/visibility note as one schedule subsection. How: This renders the number input plus the shared anchor hint, always visible (unlike weekly/monthly/annual, which collapse it below N of 1). */ }
 
 
-						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the (non-fading, since interval always shows the hint) summary span below. */ }
+						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the summary span below, which doesn't fade because the interval kind's summary has no alternate phrasing. */ }
 
 
 							<span className={ cssModObj.fieLabSpa }>Frequency</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
