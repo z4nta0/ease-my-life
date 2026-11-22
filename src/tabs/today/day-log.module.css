@@ -1327,7 +1327,7 @@
 
 }
 
-.vacNotSpa { /* What: Vacation Note Span. Why: An item on vacation says so where its status would be. How: This sets small uppercase faded mono text. */
+.vacNotSpa { /* What: Vacation Note Span. Why: An item on vacation says so where its status would be. How: This sets small uppercase muted mono text. */
 
 
 	color          : var( --tex-mut-col );  /* Text Muted Color = oklch( 0.5 0.012 250 ) */ /* What: Full Muted Color. Why: At its old reduced opacity the small text fell below 4.5:1 contrast on an upcoming row. How: This reads the muted text role whole, as the row's muted name does. */
