@@ -412,7 +412,7 @@
 
 /* #region scoTabBut */
 
-.scoTabBut { /* What: Scope Tab Button. Why: Everything and each filtered item is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the kind, and eases its press and focus ring. */
+.scoTabBut { /* What: Scope Tab Button. Why: Everything and each filtered item is a card-like tab in the Show strip, sliding in as it mounts. How: This draws a bordered, snapping card with the name over the kind, and eases its hover and selected colors, press, and focus ring. */
 
 
 	animation         : global( tabGroupSlideIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ) backwards; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global tabGroupSlideIn Keyframes. Why: The tabGroupSlideIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Backwards Fill. Why: A fill that held the last frame would hold the tab's transform and keep its press from showing. How: The tab holds the first frame only while it waits to start, and its own styles, which match the last frame, take over once it ends. */
