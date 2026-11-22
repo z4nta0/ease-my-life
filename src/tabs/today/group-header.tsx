@@ -20,9 +20,9 @@ import { LogChiCom } from './day-log.tsx';         // What: Log Chip Component. 
  * group-header.tsx = Group Header
  *
  * @summary
- * One group's sticky header on the Today tab: its name (inline-editable in
- * Edit Mode), its done/total count and progress bar, its Day Log toggle, and
- * the merge confirmation and name error shown beneath it.
+ * One group's header on the Today tab: its name (inline-editable in Edit
+ * Mode), its done/total count and progress bar, its Day Log toggle, and the
+ * merge confirmation and name error shown beneath it.
  *
  * Sections:
  *  - Components
@@ -44,7 +44,7 @@ type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, 
  * GroHeaCom = Group Header Component
  *
  * @summary
- * Renders one group's own sticky header: its name (plain text, or an
+ * Renders one group's own header: its name (plain text, or an
  * inline-editable field/button while Edit Mode is on), its done/total
  * count, the dash-bar progress row, and (outside Edit Mode) its own Day
  * Log toggle chip. Also renders the group-merge confirm prompt and any

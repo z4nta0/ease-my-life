@@ -10,11 +10,11 @@ import React     from 'react';                // What: React. Why: This is the U
 import { CAD_NAM_OBJ } from '../../core/cadence.ts';      // What: Cadence Namespace Object. Why: An ease-mode item's subline needs CAD_NAM_OBJ.uniWorFun to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.
 import { ColDisCom   } from '../../ui/collapse.tsx';      // What: Collapse Disclosure Component. Why: PicBloCom's own item table only needs to exist in the DOM while its block is actually expanded. How: This wraps that table, driven by PicBloCom's own open/closed state.
 import { CON_NAM_OBJ } from '../../core/conditionals.ts'; // What: Conditionals Namespace Object. Why: ConSecCom needs CON_NAM_OBJ.modValFun to know whether a given conditional's own mode even has a value to show, and the odds labels fall back to the shared default odds. How: This is called once per conditional row inside ConSecCom below, and read for DEF_ODD_NUM.
-import { InfTipCom   } from '../../ui/info-tip.tsx';      // What: Info Tip Component. Why: The item, conditional, reminder, and mode labels in this file can truncate and need the shared reveal-on-truncation tooltip. How: This wraps those labels in PicBloCom, ConSecCom, NamModCom, and RemLogCom.
+import { InfTipCom   } from '../../ui/info-tip.tsx';      // What: Info Tip Component. Why: The item, conditional, reminder, and mode labels in this file can truncate and need the shared reveal-on-truncation tooltip. How: This wraps those labels in the panel components below.
 import { isoDayFun   } from '../../utils/date.ts';        // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { PIC_NAM_OBJ } from '../../core/pickers.ts';      // What: Pickers Namespace Object. Why: Ease day-range math in this file divides the shared full-charge ceiling by a drift band, and a conditional's own range falls back to the pickers' default band. How: This reads PIC_NAM_OBJ.THR_VAL_NUM in both day-range conversions and DEF_EAS_OBJ in conSubFun's fallback.
 import { SED_NAM_OBJ } from '../../state/seed.ts';        // What: Seed Namespace Object. Why: PicBloCom and ConSecCom label a mode with the same display names the mode radios use. How: This reads MOD_DEF_OBJ's own labStr for a picker's or conditional's mode.
-import { TAS_NAM_OBJ } from '../../core/tasks.ts';        // What: Tasks Namespace Object. Why: RemLogCom needs the reminders engine's own scheduling helpers (ancDatFun, visTodFun, isaDonFun, nexEliFun, sumTasFun). How: These are called throughout RemLogCom below.
+import { TAS_NAM_OBJ } from '../../core/tasks.ts';        // What: Tasks Namespace Object. Why: RemLogCom needs the reminders engine's own scheduling helpers, such as the anchor date. How: These are called in RemLogCom below.
 
 
 import type { ConRcdTyp } from '../../core/data-model.ts'; // What: Conditional Record Type. Why: The log describes each conditional gating a group. How: This types conSubFun's conRcdObj.
@@ -31,14 +31,14 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
  * day-log.tsx = Day Log
  *
  * @summary
- * A per-group, today-only audit of what the generator did, surfaced by
- * a "Log" chip on each group title (and the Reminders title). The
- * panel shows, per picker, a table of every item's value at generation
- * versus after, plus status icons derived from the pick log
- * (auto-picked, pushed, rolled off, skipped, completed). Conditionals
- * attached to the group's pickers get their own blue section (same row
- * shape, a Triggered/Not-triggered pill, and a strip listing the
- * pickers they affect). Reminders get a schedule-based log instead.
+ * A per-group, today-only audit of what the generator did, surfaced by a "Log"
+ * chip on each group title (and the Reminders title). The panel shows, per
+ * picker, a table of every item's value at generation versus after, plus
+ * status icons derived from the pick log (auto-picked, pushed, rolled off,
+ * skipped, completed). Conditionals attached to the group's pickers get their
+ * own section (same row shape, a Triggered/Not-triggered pill, and a strip
+ * listing the pickers they affect). Reminders get a schedule-based log
+ * instead.
  *
  * All picker-event data already lives in state.pickLog (source:
  * auto/manual/reroll, outcome: rejected/skipped, done). The only
@@ -274,7 +274,7 @@ function forDueFun ( dueDatObj : Date | null, dayKeyStr : string ) : string {
 
 
 
-const forTimFun = ( isoTimStr : string | null ) => { // What: Format Time Function. Why: GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoTimStr and formats it via toLocaleTimeString, swallowing an invalid input as an empty string.
+const forTimFun = ( isoTimStr : string | null ) => { // What: Format Time Function. Why: GroLogCom's kicker needs a plain "3:42 PM" style time for when the day was generated. How: This builds a Date from isoTimStr and formats it via toLocaleTimeString, returning an empty string when isoTimStr is missing.
 
 
 	if ( !isoTimStr ) return ''; // What: Missing Time Guard. Why: A day that hasn't been generated yet has no time to show, and new Date( null ) would read as the epoch. How: This returns an empty string when isoTimStr is missing.
@@ -283,7 +283,7 @@ const forTimFun = ( isoTimStr : string | null ) => { // What: Format Time Functi
 
 	try { return new Date( isoTimStr ).toLocaleTimeString( [], { hour : 'numeric', minute : '2-digit' } ); } // What: Format Attempt. Why: An otherwise-valid isoTimStr should render as a plain local time. How: This builds a Date from isoTimStr and formats it with no seconds.
 
-	catch { return ''; } // What: Format Error Guard. Why: A missing/invalid isoTimStr must not crash whichever caller invoked this. How: This returns an empty string instead of letting the error propagate.
+	catch { return ''; } // What: Format Error Guard. Why: A formatting error must not crash the caller. How: This returns an empty string instead of letting the error propagate.
 
 
 };
@@ -997,11 +997,10 @@ type CncProTyp = { picGroArr : PicRcdTyp[], staAppObj : StaAppTyp }; // What: Co
  * ConSecCom = Conditional Section Component
  *
  * @summary
- * The blue section listing every conditional attached to a visible picker
- * in the current group, one row per conditional (name/mode subline, value
- * cells, Triggered/Not-triggered pill) plus a strip naming which
- * pickers it affects. Renders nothing at all when the group has no
- * attached conditionals.
+ * The section listing every conditional attached to a visible picker in the
+ * current group, one row per conditional (name/mode subline, value cells,
+ * Triggered/Not-triggered pill) plus a strip naming which pickers it affects.
+ * Renders nothing at all when the group has no attached conditionals.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1041,7 +1040,7 @@ function ConSecCom ( { picGroArr, staAppObj } : CncProTyp ) : React.JSX.Element 
 			className={ cssModObj.logConDiv }
 
 			data-element-name-hook='logConDiv'
-		>{ /* What: Log Conditionals Div Element. Why: This is ConSecCom's own root element, tinted blue via its own logConDiv class. How: This renders a static header plus the conditional table below. Its data-element-name-hook is read by help mode. */ }
+		>{ /* What: Log Conditionals Div Element. Why: This is ConSecCom's own root element, divided from the block above by a hairline via its own logConDiv class. How: This renders a static header plus the conditional table below. Its data-element-name-hook is read by help mode. */ }
 
 
 			<div className={ cssModObj.bloHeaDiv }>{ /* What: Block Header Div Element. Why: This mirrors PicBloCom's own static header shape. How: This renders the section's own title plus a count pill. */ }
