@@ -141,7 +141,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 
 // #region Exports
 
-export { NAV_TAR_OBJ }; // What: Named Export. Why: The nav target catalog is this file's one public binding. How: This re-exports NAV_TAR_OBJ, the sole binding this file defines.
+export { NAV_TAR_OBJ }; // What: Named Export. Why: The nav target catalog is this file's one public binding. How: This exports NAV_TAR_OBJ, the sole binding this file defines.
 
 // #endregion Exports
 

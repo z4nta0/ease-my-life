@@ -133,7 +133,7 @@ const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own ic
  *
 */
 
-const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp, hidTasBoo : boolean ) : void => { // What: Seed Tasks Function. Why: The Generate step and skiEndFun both seed the same sample reminders. How: This adds each ONB_TAS_ARR entry unless one already exists, pinning a weekly one to today and hiding them when hidTasBoo is true.
+const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp, hidTasBoo : boolean ) : void => { // What: Seed Tasks Function. Why: The welcome tour needs its sample reminders seeded once, hidden or visible, without ever duplicating them. How: This adds each ONB_TAS_ARR entry unless one already exists, pinning a weekly one to today and hiding them when hidTasBoo is true.
 
 
 	if ( staAppObj.tasks.some( ( curTasObj ) => ONB_STI_ARR.includes( curTasObj.id ) ) ) return; // What: Sample Tasks Present Guard. Why: A Skip that runs twice, a Replay that already seeded these, or a Back-then-Forward through the Generate step must never duplicate the sample reminders. How: This returns early when any sample task id already exists.
