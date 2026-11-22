@@ -1302,7 +1302,7 @@
 
 
 }
-.lisIteDiv--tour:first-of-type { /* What: First List Item Div Tour. Why: Only the first target row draws the top edge, since each row's bottom border is the line shared with the next; :first-of-type skips the Add button, which is always the first child. How: This adds the top border and rounds the top corners. */
+:not( .lisIteDiv--tour ) + .lisIteDiv--tour { /* What: First List Item Div Tour. Why: Only the first target row draws the top edge, since each row's bottom border is the line shared with the next. How: This matches the target row right after a sibling that isn't one (the Add control, or the Sort control once there are 2 or more items), adds the top border, and rounds the top corners. */
 
 
 	border-top              : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
