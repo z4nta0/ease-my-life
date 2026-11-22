@@ -1211,7 +1211,7 @@
 
 
 }
-.hetCelBut { /* What: Heat Cell Button. Why: Each day in the grid is tappable, so its button chrome goes. How: This strips the native look, fills its column, and readies an outline and a hover grow. */
+.hetCelBut { /* What: Heat Cell Button. Why: Each day in the grid is tappable, so its button chrome goes. How: This strips the native look, fills its column, and readies an outline and a hover grow, easing its focus ring color and its hover grow and press. */
 
 
 	-webkit-appearance : none;

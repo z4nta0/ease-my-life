@@ -7,7 +7,7 @@ import cssModObj from './reminders-section.module.css'; // What: CSS Module Obje
 import React     from 'react';                          // What: React. Why: The components use React's own APIs directly (hooks, Fragment, and types). How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
 
 
-import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: The quick-add form and each reminder card's own actions need consistently-styled buttons. How: This is rendered throughout RemCarCom and RemSecCom.
+import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: The quick-add form and each reminder card's own actions need consistently-styled buttons. How: This is rendered by RemSecCom for its buttons, such as the quick-add form's Add.
 import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: The Reminders log, each inline editor, and each skip confirm need to animate open and closed instead of snapping. How: This wraps each of those in RemSecCom, driven by its own open state.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EdiFooCom    } from '../../ui/editor-footer.tsx';          // What: Editor Footer Component. Why: A saved reminder's inline editor ends with the shared Delete/Cancel/Save row. How: This is rendered at the bottom of InlEdiCom.

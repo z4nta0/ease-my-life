@@ -484,7 +484,7 @@
 
 }
 
-.addNamInp { /* What: Add Name Input. Why: The name field fills the row. How: This draws a bordered field that grows across the row and borders in the accent color on focus. */
+.addNamInp { /* What: Add Name Input. Why: The name field fills the row. How: This draws a bordered field that grows across the row, and eases its border to the accent color on focus. */
 
 
 	background    : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -1017,7 +1017,7 @@
 /* #endregion carMetDiv */
 
 
-.remNamInp { /* What: Reminder Name Input. Why: An editing card renames its reminder in place, styled like the name it replaces. How: This draws a borderless field with only an underline. */
+.remNamInp { /* What: Reminder Name Input. Why: An editing card renames its reminder in place, styled like the name it replaces. How: This draws a borderless field with only an underline, and eases the underline's color on focus. */
 
 
 	background     : none;
