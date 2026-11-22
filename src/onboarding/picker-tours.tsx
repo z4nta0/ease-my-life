@@ -83,9 +83,7 @@ const FIR_PAR_ELE = <>Pickers are where the magic happens. They have rules for w
  * @summary
  * Content for the picker mini-tours ("Set up a {picker name} picker"), keyed
  * by the sample picker's own id (see onboarding-seed-data.ts's own
- * ONB_EXA_OBJ/ONB_ESP_ARR). bodEle/preStr for every non-daily sample here
- * is a first pass, not yet manually verified live the way Daily Chores' own
- * tour was; expect touch-ups once each one gets its own dedicated pass.
+ * ONB_EXA_OBJ/ONB_ESP_ARR).
  *
  * Every entry shares this exact shape, and none of the entries below repeat
  * these same fields' own boilerplate comments on their own lines (see the
@@ -880,9 +878,8 @@ const buiNewFun = ( picIdeStr : string, staAppObj : StaAppTyp ) : TouSteTyp => (
  * .ediRowDiv position is a Weight stepper instead); PicTouCom only includes
  * this step when the sample's own mode is one of the ease modes (see its own
  * isaEasBoo below). The whole body is per-picker (picCopObj.sooEle),
- * defaulting to the original Ease Up/"task item"/"week" wording; Daily Chores
- * is the only sample this has been manually verified against so far, and Ease
- * Down samples (Relax) reuse a dedicated sooEle override rather than the
+ * defaulting to the original Ease Up/"task item"/"week" wording, and Ease Down
+ * samples (Relax) reuse a dedicated sooEle override rather than the
  * ease-up-flavored default, for the "Shortest" label and ease-down's reversed
  * stays-picked-until-discharged semantics. No new one-way DOM transition
  * happens between buiNamFun's own step and here (the editor stays open the
