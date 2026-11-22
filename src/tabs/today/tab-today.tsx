@@ -51,7 +51,7 @@ import { rhyPixFun    } from '../../utils/rhythm.ts';               // What: Rhy
 import { scrBehFun    } from '../../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tasks Namespace Object. Why: Reminders due today, their anchor date, and their ring/rail eligibility are all computed through this shared namespace. How: This is called throughout for its reminder helpers, such as visTodFun.
 import { TOD_HEL_ARR  } from '../../help/today-catalog.tsx';        // What: Today Help Array. Why: Help mode needs this tab's own catalog of coach-mark targets. How: This is passed straight to HelOveCom.
-import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
+import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: The group rail's sideways-scrolling pill row hides each edge fade once that edge is reached. How: This is called by the rail's own scroll and resize handlers.
 import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease-My-Life Tour Function. Why: The rendered tip/reserved-space fields the tour bus publishes need to be read reactively, not just written to. How: This is called to subscribe to the same bus emlTouObj writes onto.
 import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use Item Draft Function. Why: The open item editor edits a local draft, committed only on Save. How: This is called once with whichever item's editor is open.
 
@@ -2244,7 +2244,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 	// #region Regenerate
 
-	const [ genMapObj, setGenMapObj ] = React.useState< Record< string, GenSloTyp > | null >( null ); // What: Generate Map Object And Setter. Why: Every LoaCarCom rendered during a regeneration needs its own live { canArr, ideStr, kinStr, staStr, texStr } record to read from. How: This is populated by genLisFun below and cleared once the cascade finishes.
+	const [ genMapObj, setGenMapObj ] = React.useState< Record< string, GenSloTyp > | null >( null ); // What: Generate Map Object And Setter. Why: Every LoaCarCom rendered during a regeneration needs its own live { canArr, conStr, ideStr, kinStr, staStr, texStr } record to read from. How: This is populated by genLisFun below and cleared once the cascade finishes.
 
 	const [ leaEntSet, setLeaEntSet ] = React.useState( () => new Set() );           // What: Leaving Entry Set And Setter. Why: A regenerate can drop an entry entirely (its own picker produced no new pick, e.g. its last eligible item just went inactive) without a loader card to cover it, so without this it would sit untouched through the whole generation and then blink out; this flags it to play the normal removal animation instead. How: This is staged by genLisFun below right before the commit and cleared right after.
 	const [ leaTasSet, setLeaTasSet ] = React.useState( () => new Set< string >() ); // What: Leaving Task Set And Setter. Why: A completed one-time reminder a Generate is about to purge needs the same played-out removal animation, on the reminder card itself, before actStoObj.setEntFun actually removes it. How: This is staged by genLisFun below and cleared right after, and is passed straight through to RemSecCom as its own leaTasSet prop.
@@ -2520,7 +2520,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 						picStr : picIdeStr, // What: Picker String. Why: Slots are keyed by the picker that produced them. How: This passes picIdeStr.
 
-						infObj : { // What: Info Object. Why: This is the record LoaCarCom reads for this slot. How: This bundles the slot's own kind, candidates, and card text.
+						infObj : { // What: Info Object. Why: This is the record LoaCarCom reads for this slot. How: This bundles the slot's own kind, candidates, conditional id, and card text.
 
 
 							canArr : [],           // What: Candidate Array. Why: LoaCarCom's reel cycles through these. How: This passes the slot's own candidate list.
@@ -3691,7 +3691,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				className={ cssModObj.todPagHed }
 
 				data-element-name-hook='todPagHed'
-			>{ /* What: Today Page Header Element. Why: This is the sticky header every scroll-spy/offset calculation in this file measures against. How: This renders the date/streak/help row and the brand mark/title/ring row beneath it. Its data-element-name-hook is read by the tours and help mode. */ }
+			>{ /* What: Today Page Header Element. Why: This is the sticky header the sticky-offset effect measures to publish the offset that the scroll code reads. How: This renders the date/streak/help row and the brand mark/title/ring row beneath it. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 				<div className={ cssModObj.heaInnDiv }>{ /* What: Header Inner Div Element. Why: The header's own content needs an inner wrapper distinct from the sticky element itself. How: This wraps the header-left column below. */ }
@@ -4077,7 +4077,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 						data-rail-wheel-scroll
 
 						aria-label='Groups'
-					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, at 760px wide and below, the horizontal pill bar) listing every block. How: This renders a rail button for each bloOrdArr entry that has one, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tours and help mode. */ }
+					>{ /* What: Group Rail Aside Element. Why: This is the sticky sidebar (or, at 760px wide and below, the horizontal pill bar) listing every block. How: This renders the "Groups" kicker, a rail button for each bloOrdArr entry that has one, then the App Features entry (pinned last), then the Edit Mode toggle. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<div className={ cssModObj.raiKicDiv }>Groups</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading label. How: This renders the literal word "Groups". */ }
@@ -4364,7 +4364,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											'--con-tra-off' : `${ curParObj.disNum }px`,
 											animationDelay  : `${ curParObj.delNum }ms`
 										}}
-									/> // What: Confetti Piece Italic Element. Why: This is one single confetti piece, positioned/rotated/timed entirely via inline CSS custom properties. How: This renders curParObj's own randomized angle/distance/rotation/opacity/delay.
+									/> // What: Confetti Piece Italic Element. Why: This is one single confetti piece, positioned, rotated, and timed through its inline style, with custom properties carrying its angle, spin, travel, and opacity. How: This renders curParObj's own randomized angle/distance/rotation/opacity/delay.
 
 
 								) ) }
