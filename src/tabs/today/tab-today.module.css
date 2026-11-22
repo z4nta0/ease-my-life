@@ -8,7 +8,7 @@
  * Styles for the Today tab's own markup, from its sticky header to its footer,
  * such as the group rail that becomes a scrolling pill row at 760px wide and
  * below. An animation trigger (a pulse, bump, or closing class) is a module
- * class this file adds itself, while a state keys off an aria or data
+ * class the tab adds itself, while a state keys off an aria or data
  * attribute, such as a selected rail button's data-rail-select-active. The
  * footer's Edit Mode button hides through --but-bas-dis, which ButBasCom
  * reads.
@@ -1177,7 +1177,7 @@
 
 
 }
-.ediBanDiv.ediBanDiv--closing { /* What: Edit Banner Div Closing. Why: Leaving Edit Mode folds the banner away so the list slides back up. How: This plays the fold once, and the banner stays mounted until a timer of the same duration clears the closing class. */
+.ediBanDiv.ediBanDiv--closing { /* What: Edit Banner Div Closing. Why: Leaving Edit Mode folds the banner away so the list slides back up. How: This plays the fold once while the closing class is set. */
 
 
 	animation : ediBanDivCloseFadeOut var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */

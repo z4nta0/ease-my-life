@@ -488,7 +488,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-	React.useEffect( () => { emlTouObj.set( { shoCheBoo : shoCheBoo } ); }, [ shoCheBoo ] ); // What: Checklist Bus Publish Effect. Why: reminders-section.tsx's staAddFun needs to hide ANY reminder created while the checklist is up, not just ones a mini-tour itself creates, so a user manually clicking "+" mid-onboarding doesn't clutter the list alongside the still-open launcher cards either (see the unhide side in the genResBoo effect further below). How: This republishes shoCheBoo onto the shared tour bus under its own shoCheBoo field.
+	React.useEffect( () => { emlTouObj.set( { shoCheBoo : shoCheBoo } ); }, [ shoCheBoo ] ); // What: Checklist Bus Publish Effect. Why: Reminders created while the checklist is up must be hidden, so the shared tour bus has to carry shoCheBoo (see the unhide side in the genResBoo effect further below). How: This republishes shoCheBoo onto the shared tour bus under its own shoCheBoo field.
 
 
 

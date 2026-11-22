@@ -411,7 +411,7 @@ function merOrdFun ( fulOrdArr : string[] | null | undefined, prsNewArr : string
 
 	// #region Splice Back Absent Keys
 
-	const fulDefArr = fulOrdArr || []; // What: Full Default Array. Why: The caller may pass a nullish saved order. How: This falls back to an empty array so the loop below always has something safe to iterate.
+	const fulDefArr = fulOrdArr || []; // What: Full Default Array. Why: The saved order may be null or undefined. How: This falls back to an empty array so the loop below always has something safe to iterate.
 	const offAncMap = new Map();       // What: Offset Anchor Map. Why: Several sibling absent keys can share the same preceding anchor, and each one must land right after the one before it, not all at the same spot. How: This tracks, per anchor, how many absent keys have already been spliced in after it.
 
 

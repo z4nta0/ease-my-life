@@ -1974,7 +1974,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 			</div>
 
 
-			<div className={` ${ cssModObj.logBodDiv }   ${ cssModObj.logBodDivRem } `}>{ /* What: Log Body Div Element. Why: The reminders table sits inset under the panel header, its header cells carrying their own data-element-name-hook values for help mode instead of borrowing the data rows' styled classes. How: This renders the header row plus one row per remRowArr entry below. */ }
+			<div className={` ${ cssModObj.logBodDiv }   ${ cssModObj.logBodDivRem } `}>{ /* What: Log Body Div Element. Why: The reminders table sits inset under the panel header. How: This renders the header row plus one row per remRowArr entry below, padded more evenly by its logBodDivRem modifier class. */ }
 
 
 				<div className={ cssModObj.remHeaDiv }>{ /* What: Reminders Header Div Element. Why: This table needs its own 3-column header row. How: This renders the 3 column-header spans. */ }
