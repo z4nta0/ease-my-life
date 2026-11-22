@@ -1363,7 +1363,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const advSteFun = () => { // What: Advance Step Function. Why: solo steps (see their own doc comment in GuiTouCom's own JSDoc above) always finish on their one button regardless of its label, since a solo step is never actually followed by a real "next" step, so relying on priStr === 'Done' (every other step's own signal) would send it past the end of the array on a step whose button reads something else, like "Dismiss". How: This calls finTouFun for a 'Done' or solo step, otherwise moves to the next step index.
+		const advSteFun = () => { // What: Advance Step Function. Why: Solo steps (see their own doc comment in GuiTouCom's own JSDoc above) always finish on their one button regardless of its label, since a solo step is never actually followed by a real "next" step, so relying on priStr === 'Done' (every other step's own signal) would send it past the end of the array on a step whose button reads something else, like "Dismiss". How: This calls finTouFun for a 'Done' or solo step, otherwise moves to the next step index.
 
 
 			if ( curSteObj.priStr === 'Done' || curSteObj.solBoo ) finTouFun(); // What: Finish Branch. Why: A 'Done'-labeled or solo step ends the tour instead of advancing further. How: This calls finTouFun with no arguments.

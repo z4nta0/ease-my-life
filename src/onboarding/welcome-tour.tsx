@@ -237,7 +237,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 			actStoObj.sedHisFun( hydStaFun( ONB_STA_OBJ ) ); // What: Seed History Call. Why: The Stats tab needs a full year of matching history for the sample pickers to look genuinely used, not brand new. How: This hydrates ONB_STA_OBJ's own day-offsets into real dates and persists them as pick/reminder log rows.
 
 
-		} ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Import Failure Catch. Why: The import can fail, such as when a reload cuts it short, and a failed import must not break the tour. How: This logs it instead, and the next launch seeds the history.
+		} ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Import Failure Catch. Why: The import can fail, such as when a reload cuts it short, and a failed import must not break the tour. How: This logs it instead, and the Stats history backfill seeds the history later.
 
 
 	}, [ actStoObj, onbStaObj.welcomed, staAppObj.pickers ] ); // What: Effect Dependency Array. Why: This must re-run whenever the persisted welcomed flag flips, the same trigger the reopen effect above reacts to, and reads the actions and pickers too. How: actStoObj never changes identity, and a re-run caused by the pickers returns at the guard once the samples exist or welcomed is true.

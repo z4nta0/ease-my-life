@@ -621,7 +621,7 @@ const TOD_TAR_OBJ = { // What: Today Target Object. Why: buiTesFun below spreads
  * button's own aria-label ("Rename group {name}") before it disappears behind
  * the input. Lets a Back to the gghObj step reset the input to a genuine no-op
  * edit (draft === name) rather than an actual rename, without this module
- * otherwise needing to know the live app state (PagTouCom itself is only ever
+ * otherwise needing to know the live app state (buiTesFun and forNamFun are
  * passed `actStoObj`, not `staAppObj`, for this purpose).
  *
  * @author z4nta0 <https://github.com/z4nta0>
