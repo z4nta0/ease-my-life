@@ -311,7 +311,7 @@ const STA_RCD_ARR : StaRcdTyp[] = [ // What: State Record Array. Why: The checks
 
 
 	{ fixBoo : true,  heiNum : 800, ideStr : 'today-desktop',    tabStr : 'today',    widNum : 1280 }, // What: Today Desktop State. Why: The day's list is the app's main screen. How: This opens Today at 1,280px.
-	{ fixBoo : true,  heiNum : 812, ideStr : 'today-phone',      tabStr : 'today',    widNum : 375  }, // What: Today Phone State. Why: On a phone the tab bar sits at the bottom. How: This opens Today at 375px.
+	{ fixBoo : true,  heiNum : 812, ideStr : 'today-phone',      tabStr : 'today',    widNum : 375  }, // What: Today Phone State. Why: The day's list and the tab bar lay out differently on a phone. How: This opens Today at 375px.
 	{ fixBoo : true,  heiNum : 800, ideStr : 'pickers-desktop',  tabStr : 'picker',   widNum : 1280 }, // What: Pickers Desktop State. Why: Pickers are spun and managed here. How: This opens Pickers at 1,280px.
 	{ fixBoo : true,  heiNum : 812, ideStr : 'pickers-phone',    tabStr : 'picker',   widNum : 375  }, // What: Pickers Phone State. Why: The picker rails scroll sideways on a phone. How: This opens Pickers at 375px.
 	{ fixBoo : true,  heiNum : 800, ideStr : 'stats-desktop',    tabStr : 'stats',    widNum : 1280 }, // What: Stats Desktop State. Why: The charts and tables carry the most text and color. How: This opens Stats at 1,280px.
