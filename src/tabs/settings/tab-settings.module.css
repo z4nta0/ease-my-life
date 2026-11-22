@@ -1237,7 +1237,7 @@
 
 }
 
-.docOpeBut { /* What: Document Open Button. Why: Each legal row opens its document with a small secondary button at the row's end. How: This draws a small outlined pill that never shrinks or wraps and presses in slightly, and eases its press and focus ring. */
+.docOpeBut { /* What: Document Open Button. Why: Each legal row opens its document with a small secondary button at the row's end. How: This draws a small outlined pill that never shrinks or wraps and presses in slightly, and eases its hover border, press, and focus ring. */
 
 
 	align-items    : center;

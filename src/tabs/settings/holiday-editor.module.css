@@ -5,7 +5,7 @@
  * holiday-editor.module.css = Holiday Editor Module
  *
  * @summary
- * Styles for HolEdiCom, Settings' Days off list and its add form. Each
+ * Styles for HolEdiCom, Settings' Holidays list and its add form. Each
  * built-in holiday is a row with its name, landing date, and an optional
  * "observed" note on the left and a switch on the right; turning a holiday off
  * mutes its name and draws a line through its date. A custom day off shows its
