@@ -182,8 +182,7 @@ const EXT_PIC_ARR : ( PicForTyp & { id : string } )[] = [ // What: Extra Picker 
  * @summary
  * One reminder per recurrence kind (see tasks.ts's own header comment
  * for the 5 repeat kinds); the real onboarding samples only cover once
- * and weekly. Data's reminder list shows every reminder regardless of
- * whether it's due today, so these don't need engineered due-dates.
+ * and weekly.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -421,7 +420,7 @@ const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 // #region Exports
 
-export { clePicFun, cleTasFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: Help mode's sample data is seeded and cleared one page's slice at a time through these functions. How: This exports all 4 seed and clear functions by name.
+export { clePicFun, cleTasFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: These four functions seed and clear help mode's sample pickers and reminders. How: This exports all 4 seed and clear functions by name.
 
 // #endregion Exports
 

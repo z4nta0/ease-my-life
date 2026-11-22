@@ -259,11 +259,9 @@ function finTarFun ( selLisStr : string ) : HTMLElement[] {
  * uniRecFun = Union Rect Function
  *
  * @summary
- * Unions a group of matched elements into one bounding rect, the same
- * "union of matched elements" idea a tour step's own multi-element
- * spotlight uses. Each element's own rect is first passed through
- * {@link cliHorFun} so a scrolled-away portion of any one of them never
- * stretches the union into empty space.
+ * Unions a group of matched elements into one bounding rect. Each element's
+ * own rect is first passed through {@link cliHorFun} so a scrolled-away
+ * portion of any one of them never stretches the union into empty space.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -560,24 +558,11 @@ function claPadFun ( tarRecObj : EdgRecTyp, padHorNum : number, padVerNum : numb
  * detEdgFun = Detect Edge Function
  *
  * @summary
- * Clips a rect against the app's own always-on-top navigation chrome
- * (the Today page's sticky header, its stacked group-filter rail, and
- * the tab bar in whatever placement it currently renders, bottom, top
- * or side) so a target scrolled underneath one of them does not draw
- * its highlight on top of it. The dim layer sits above ordinary page
- * content, which also puts it above this chrome's own, much lower
- * z-index; the chrome's own opacity does not hide a highlight painted
- * above it in stacking order. The header/rail are hardcoded elsewhere
- * as top-anchored, a structural fact about this app's layout rather
- * than something worth detecting at runtime (getComputedStyle cannot
- * tell us anyway, since a position:fixed element's own top resolves to
- * a real computed pixel value in Chromium even when only bottom was
- * ever set in CSS). Only the tab bar's own placement genuinely varies,
- * and since it is position:fixed rather than sticky, this geometric
- * edge-detection is safe for that one specifically. This picks the
- * viewport edge the rect sits CLOSEST to rather than requiring it to
- * literally touch that edge, since the tab bar renders as a floating
- * inset pill and never sits flush against any edge at all.
+ * Picks the viewport edge a chrome element's rect sits closest to, returning
+ * 'top', 'bottom', 'left', or 'right', so a caller knows which side that
+ * chrome is anchored on. It takes the closest edge rather than requiring the
+ * rect to touch it, so a chrome element that floats a little inside the
+ * viewport still gets a side.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
