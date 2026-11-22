@@ -506,7 +506,7 @@ function advValFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
 
 
 
-	return null; // What: Default Return. Why: Every value-family mode is already handled above, so this only fires for an unrecognized mode, which has nothing defined to advance. How: This is the function's own final fallback.
+	return null; // What: Default Return. Why: Every value-family mode is already handled above, so this line is only a type-level fallback. How: This is the function's own final fallback.
 
 
 }
