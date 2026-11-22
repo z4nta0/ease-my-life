@@ -17,7 +17,7 @@
 
 /* #region updNotDiv */
 
-.updNotDiv { /* What: Update Note Div. Why: The note has to reach screen reader users from a region in the page since its first render. How: This holds the note as a grid item. */
+.updNotDiv { /* What: Update Note Div. Why: The note has to reach screen reader users from a region in the page since its first render. How: This makes the region a grid that holds the note's panel. */
 
 
 	display : grid;
@@ -68,7 +68,7 @@
 
 }
 
-.updMesSpa { /* What: Update Message Span. Why: The message says what the button does. How: This sets it in the main text color at the body size. */
+.updMesSpa { /* What: Update Message Span. Why: The message tells the person a new version is waiting. How: This sets it in the main text color at the body size. */
 
 
 	color     : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */

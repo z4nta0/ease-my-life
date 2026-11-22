@@ -76,7 +76,7 @@ function UpdNotCom () : JSX.Element {
 			data-element-name-hook='updNotDiv'
 
 			role='status'
-		>{ /* What: Update Note Div Element. Why: The note has to reach screen reader users, and a region added at the moment it speaks is often missed. How: This stays in the tab from the first render, empty until an update is ready. */ }
+		>{ /* What: Update Note Div Element. Why: The note has to reach screen reader users, and a region added at the moment it speaks is often missed. How: This stays in the tab from the first render, empty until an update is ready. Its data-element-name-hook is read by the test suites. */ }
 
 
 			{ updReaBoo && ( // What: Update Ready Check. Why: The note exists only once a new version is waiting. How: This renders the panel only while updReaBoo is true.

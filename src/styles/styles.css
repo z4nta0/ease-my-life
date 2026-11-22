@@ -691,7 +691,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 }
 
-[data-rail-wheel-scroll] { /* What: Pill Rail. Why: A keyboard-focused pill that scrolls into view should land clear of the rail's edge fade. How: This sets the rail's inline scroll padding to its own fade width, read from --fad-edg-off and falling back to none. */
+[data-rail-wheel-scroll] { /* What: Pill Rail. Why: A keyboard-focused pill that scrolls into view should land clear of the rail's edge fade. How: This sets the rail's inline scroll padding to its own fade width, read from --fad-edg-off and falling back to 0. */
 
 
 	scroll-padding-inline : var( --fad-edg-off, 0 ); /* Fade Edge Offset, set by each faded rail's module, falling back to 0 */
