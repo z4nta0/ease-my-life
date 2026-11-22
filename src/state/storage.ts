@@ -191,7 +191,7 @@ let mirWriBoo : boolean               = true;      // What: Mirror Write Boolean
 function opeDatFun () : Promise< IDBDatabase > {
 
 
-	return new Promise( ( resValFun, rejErrFun ) => { // What: Open Database Promise. Why: The caller needs a real Promise it can await, not indexedDB.open's own request-object callback style. How: This wraps the whole open/upgrade/timeout sequence below and settles resValFun/rejErrFun exactly once.
+	return new Promise( ( resValFun, rejErrFun ) => { // What: Open Database Promise. Why: The caller needs a real Promise it can await, not indexedDB.open's own request-object callback style. How: This wraps the whole open/upgrade/timeout sequence below, and the Promise settles through resValFun or rejErrFun, whichever runs first.
 
 
 		if ( !window.indexedDB ) return rejErrFun( new Error( 'no indexedDB' ) ); // What: No IndexedDB Guard. Why: A missing indexedDB global leaves nothing to open. How: This rejects immediately rather than calling indexedDB.open on an object that does not exist.
@@ -658,6 +658,7 @@ function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
  * @param void - This function takes no parameters.
  *
  * @returns The loaded state object, or null before iniStoFun has run.
+ * @see {@link cacStaObj}
  *
  * @example
  * ```ts
