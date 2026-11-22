@@ -96,7 +96,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  *
 */
 
-const MOD_DEF_OBJ : Record< string, { hinArr : string[], labStr : string } > = { // What: Mode Definition Object. Why: Every place that needs a picker mode's display label and explanatory hint text reads this shared table. How: This maps each of pickers.ts's own 5 selection-algorithm keys to its own { label, hint } pair.
+const MOD_DEF_OBJ : Record< string, { hinArr : string[], labStr : string } > = { // What: Mode Definition Object. Why: Every place that needs a picker mode's display label and explanatory hint text reads this shared table. How: This maps each of pickers.ts's own 5 selection-algorithm keys to its own { labStr, hinArr } pair.
 
 
 	'random' : { // What: Random Mode Entry. Why: This documents the random selection algorithm for the user. How: This pairs a display label with a 2-paragraph hint (ruleset, then explanation).
@@ -371,7 +371,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every row needs its own unique id, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per row created below.
 
-	const ranBetFun = ( lowBouNum : number, higBouNum : number ) => lowBouNum + Math.random() * ( higBouNum - lowBouNum ); // What: Random Between Function. Why: Several places below need a random value somewhere inside a given range, not just 0 to 1. How: This scales Math.random()'s own 0-1 output into the [ lowBouNum, higBouNum ] range.
+	const ranBetFun = ( lowBouNum : number, higBouNum : number ) => lowBouNum + Math.random() * ( higBouNum - lowBouNum ); // What: Random Between Function. Why: Several places below need a random value somewhere inside a given range, not just 0 to 1. How: This scales Math.random()'s own 0-1 output into the range from lowBouNum up to, but never reaching, higBouNum.
 
 
 
@@ -398,6 +398,39 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 
 	// #region Daily Simulation
+
+	// #region logPicFun
+
+	/**
+	 * logPicFun = Log Pick Function
+	 *
+	 * @summary
+	 * Builds one simulated pick-log row and pushes it onto picRowArr. A row
+	 * whose outcome is 'rejected' is never done and has no completion time,
+	 * and an outcome or depletedEnd key is added only when given.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param datValObj - Date Value Object: The simulated day the row belongs
+	 *                    to.
+	 * @param curPicObj - Current Picker Object: The picker the row belongs to.
+	 * @param curIteObj - Current Item Object: The item that was picked.
+	 * @param donValBoo - Done Value Boolean: Whether the pick was completed.
+	 * @param souValStr - Source Value String: How the pick was made: 'auto',
+	 *                    'manual', or 'reroll'.
+	 * @param outValStr - Outcome Value String: The row's outcome ('rejected'
+	 *                    or 'skipped'); omitted for an ordinary pick.
+	 * @param depEndBoo - Depleted End Boolean: Whether the row ends an Ease
+	 *                    Down depletion streak; omitted otherwise.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * logPicFun(datValObj, curPicObj, curIteObj, true, 'auto') // => void
+	 * ```
+	 *
+	*/
 
 	const logPicFun = ( datValObj : Date, curPicObj : PicRcdTyp, curIteObj : IteRcdTyp, donValBoo : boolean, souValStr : PclSouTyp, outValStr? : PclOutTyp, depEndBoo? : boolean ) => { // What: Log Pick Function. Why: Every simulated pick, toss, skip, or Ease Down tick below shares the same row-building logic. How: This builds one pickLog row shaped to state.pickLog's own contract and pushes it onto picRowArr.
 
@@ -432,8 +465,37 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 	};
 
+	// #endregion logPicFun
+
+
+
+	// #region isaOffFun
+
+	/**
+	 * isaOffFun = Is-An Off Function
+	 *
+	 * @summary
+	 * Decides whether a simulated day is skipped entirely. Day 11 is always
+	 * off and days 0 to 10 are always active, so the most recent 10 days hold
+	 * the headline streak; every older day is off at a 13% chance.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param dayIndNum - Day Index Number: How many days before today the
+	 *                    simulated day falls.
+	 *
+	 * @returns Whether the simulated day is off.
+	 *
+	 * @example
+	 * ```ts
+	 * isaOffFun(11) // => true
+	 * ```
+	 *
+	*/
 
 	const isaOffFun = ( dayIndNum : number ) => dayIndNum === 11 ? true : ( dayIndNum <= 10 ? false : Math.random() < 0.13 ); // What: Is-An Off Function. Why: A sprinkling of fully skipped days makes the simulated streaks below read as honest rather than mechanically perfect, while the most recent 10 days are forced active so the headline streak holds. How: This forces day 11 off, forces days 0-10 active, and otherwise rolls a 13% chance of being off.
+
+	// #endregion isaOffFun
 
 
 	for ( let dayIndNum = totDayNum - 1; dayIndNum >= 1; dayIndNum-- ) { // What: Daily Simulation Loop. Why: Every past day (excluding today, added separately from today.entries) needs its own simulated picks. How: This walks backward from totDayNum - 1 days ago to 1 day ago.

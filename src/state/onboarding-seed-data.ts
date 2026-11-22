@@ -143,7 +143,7 @@ type RawStaTyp = { pickLog : RawPicTyp[], reminderLog : RawRemTyp[], reminderSki
  *
 */
 
-const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > )[] = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This joins ONB_EXA_OBJ in ONB_ASP_ARR, which onboarding/welcome-tour.tsx's own seeding effect spreads into actStoObj.addPicFun, exactly like a real, user-created picker.
+const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > )[] = [ // What: Onboarding Extra-Sample-Pickers Array. Why: This is the extra sample-picker pool described above, seeded alongside ONB_EXA_OBJ. How: This joins ONB_EXA_OBJ in ONB_ASP_ARR, whose entries are seeded exactly like a real, user-created picker.
 
 
 	{ // What: Monthly Chores Entry. Why: This is a second, less-frequent Chores-group picker alongside ONB_EXA_OBJ's own "Daily Chores," rounding out a generated day with deeper, longer-cycle cleaning tasks. How: This is read by the picker engine exactly like any real picker, its own 5 items (oven, whole-house dust, fridge, under-furniture vacuum, mop) themed around chores done far less often than the Daily Chores picker's own pool.
@@ -346,7 +346,7 @@ const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > 
  *
 */
 
-const ONB_EXA_OBJ : PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is spread into actStoObj.addPicFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created picker.
+const ONB_EXA_OBJ : PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > = { // What: Onboarding Example Object. Why: This is the sample "Daily Chores" picker seeded alongside the Welcome Tour (see the comment above this declaration). How: This is the first entry of ONB_ASP_ARR, seeded exactly like a real, user-created picker.
 
 
 	group : 'Chores',
@@ -503,7 +503,7 @@ const ONB_RCT_OBJ : Record< string, { kicStr? : string, namStr : string, timStr 
  *
 */
 
-const ONB_TAS_ARR : ( TasArgTyp & Required< Pick< TasArgTyp, 'id' | 'name' > > )[] = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This is spread into actStoObj.addTasFun by onboarding/welcome-tour.tsx's own seeding effect, exactly like a real, user-created task.
+const ONB_TAS_ARR : ( TasArgTyp & Required< Pick< TasArgTyp, 'id' | 'name' > > )[] = [ // What: Onboarding Task Array. Why: This is the sample-reminder pool described above, seeded alongside the pickers. How: This lists the two sample tasks, each seeded exactly like a real, user-created task.
 
 
 	{ id : 'tk_ob_meds',  name : 'Pick up prescription', repeat : 'once'                                       }, // What: One-Time Reminder Entry. Why: This is the one-time sample reminder's own entry (see the comment above this array for why it stays pending). How: This is read by the reminders engine (tasks.ts) exactly like any real, user-created task.
@@ -724,7 +724,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 // #region Exports
 
-export { hydStaFun, ONB_ASP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: The onboarding sample data is shared by name. How: This exports the sample pickers, their combined list, tasks, id lists, card copy tables and the stats hydrator.
+export { hydStaFun, ONB_ASP_ARR, ONB_EXA_OBJ, ONB_PCT_OBJ, ONB_RCT_OBJ, ONB_SPI_ARR, ONB_STI_ARR, ONB_TAS_ARR, type RawStaTyp }; // What: Named Exports. Why: The onboarding sample data and its stats type are shared by name. How: This exports the sample data, the stats hydrator, and the RawStaTyp type.
 
 // #endregion Exports
 
