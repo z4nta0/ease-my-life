@@ -58,11 +58,10 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
  * then opens a fresh period. "Completed this period" means a done
  * pick-log row dated on or after the current period's own start.
  *
- * Charging is per run (done-gated), and a cadence picker runs once per
- * period, so the ease Soonest/Latest stepper number is periods-until-due
- * in the cadence's own unit, not calendar days at all: there is no day
- * conversion anywhere in this file. Drift is 100 divided by the number of
- * periods.
+ * Charging is per run (done-gated), and a cadence picker runs once per period,
+ * so the ease Soonest/Latest stepper number is periods-until-due in the
+ * cadence's own unit, not calendar days at all: there is no day conversion
+ * anywhere in this file. pickers.ts turns this into each item's drift.
  *
  * The exported CAD_NAM_OBJ namespace object's property names match the names
  * of the internal implementations they map to. The explicit `name : name`
@@ -340,7 +339,7 @@ function perStaFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : Da
 
 		const ancDowNum = picCadObj.anchorDow ?? midDatObj.getDay();  // What: Anchor Day-Of-Week Number. Why: A weekly period's own start is whichever weekday anchorDow names. How: This reads picCadObj's own anchorDow, defaulting to midDatObj's own weekday (a no-op) when missing.
 		const bacDayNum = ( midDatObj.getDay() - ancDowNum + 7 ) % 7; // What: Back Day Number. Why: The period start is whatever anchor weekday most recently occurred on or before midDatObj. How: This computes how many days to step back from midDatObj's own weekday to reach ancDowNum, wrapping via modulo 7.
-		const weeStaObj = new Date( midDatObj );                      // What: Weekly Start Object. Why: The actual period-start date must be built from a fresh Date, since setDate below mutates in place. How: This copies midDatObj so the mutation below doesn't affect the caller's own cheDatObj.
+		const weeStaObj = new Date( midDatObj );                      // What: Weekly Start Object. Why: The actual period-start date must be built from a fresh Date, since setDate below mutates in place. How: This copies midDatObj so the setDate call below mutates the copy and leaves midDatObj unchanged.
 
 
 		weeStaObj.setDate( midDatObj.getDate() - bacDayNum ); // What: Weekly Start Date Set. Why: This is the actual step back to the most recent anchor weekday. How: This mutates weeStaObj in place to midDatObj's own date minus bacDayNum.

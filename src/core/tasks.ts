@@ -1310,7 +1310,7 @@ function visTodFun ( tasLisArr : TasRcdTyp[], remOptObj : RemOptTyp | null | und
 	return dueTodFun( tasLisArr, cheDatObj ).filter( ( curTasObj ) => { // What: Visible Today Return. Why: A task can be due yet still hidden, by its own class's switches or a manual skip. How: This filters dueTodFun's own result down further, per curTasObj's own governing options.
 
 
-		const optNorObj = optForFun( curTasObj, remOptObj ); // What: Options Normalized Object. Why: The 3 guards below all read from curTasObj's own governing class. How: This calls optForFun once per task and reuses the result.
+		const optNorObj = optForFun( curTasObj, remOptObj ); // What: Options Normalized Object. Why: The 2 exclusion guards below both read from curTasObj's own governing class. How: This calls optForFun once per task and reuses the result.
 
 
 		if ( optNorObj.excludeWeekends && isaWkdBoo ) return false; // What: Weekend Exclusion Guard. Why: This class has opted out of showing on a weekend, and today is one. How: This returns false when both conditions hold.

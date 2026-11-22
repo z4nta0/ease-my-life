@@ -89,7 +89,7 @@ const dimCouFun = ( yeaValNum : number, monOneNum : number ) : number => new Dat
  *
 */
 
-const isoDayFun = ( datInpObj : Date = new Date() ) : string => { // What: ISO Day Function. Why: Dated state fields (pick-log dates, reminder dates) need one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
+const isoDayFun = ( datInpObj : Date = new Date() ) : string => { // What: ISO Day Function. Why: Dated state fields (pick-log dates, say) need one local-calendar day format. How: This formats datInpObj, defaulting to now, as a local YYYY-MM-DD string.
 
 
 	const datCopObj = new Date( datInpObj ); // What: Date Copy Object. Why: datInpObj itself must not be mutated by the timezone shift below. How: This constructs a fresh Date instance from datInpObj.

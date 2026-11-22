@@ -65,7 +65,7 @@ const DEF_EAS_OBJ = { easeMax : 14, easeMin : 7 }; // What: Default Ease Object.
 
 
 
-const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N charge step (100/3, say) can land a hair under thrValNum on the very cycle it was planned to become eligible, and this tolerance must be the ONE place that's decided, not re-derived per caller. How: This is read directly by easEliFun below, the one place the eligibility tolerance is decided.
+const EAS_TOL_NUM = 0.5; // What: Ease Tolerance Number. Why: A threshold/N charge step (100/3, say) can land a hair under thrValNum on the very cycle it was planned to become eligible, so eligibility allows this much slack. How: This is read directly by easEliFun below, the one place the eligibility tolerance is applied.
 
 
 
@@ -513,9 +513,9 @@ const modEliFun = ( iteRcdObj : IteRcdTyp, picRcdObj : PicRcdTyp | null | undefi
  * reaValFun = Readiness Value Function
  *
  * @summary
- * Computes a 0-1 readiness number for one item under its own picker's
- * mode, meant as a visual progress indicator. Modes with no meaningful
- * readiness concept (random, weighted) return null.
+ * Computes a readiness number, at most 1 for ease-up and dynamic, for one
+ * item under its own picker's mode, meant as a visual progress indicator.
+ * Modes with no meaningful readiness concept (random, weighted) return null.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -525,12 +525,12 @@ const modEliFun = ( iteRcdObj : IteRcdTyp, picRcdObj : PicRcdTyp | null | undefi
  *                    threshold, defaulting to THR_VAL_NUM to match the
  *                    other threshold defaults in this file.
  *
- * @returns A 0-1 readiness number, or null when modKeyStr has no
- * meaningful readiness concept.
+ * @returns A readiness number, at most 1 for ease-up and dynamic, or null
+ * when modKeyStr has no meaningful readiness concept.
  *
  * @example
  * ```ts
- * reaValFun(iteRcdObj, modKeyStr, thrValNum) // => 0-1 readiness or null
+ * reaValFun(iteRcdObj, modKeyStr, thrValNum) // => readiness number or null
  * ```
  *
 */
@@ -1107,26 +1107,24 @@ function picIteFun ( picRcdObj : PicRcdTyp, iteAllArr : IteRcdTyp[], optConObj? 
 			 *
 			 * @summary
 			 * Perpetual fair-rotation model. Two things drive it, tracked
-			 * separately. value is the active item's own remaining
-			 * CHARGE: it decays each run while active, and at or below
-			 * EAS_TOL_NUM's own tolerance the item auto-recharges to full
-			 * and is released back into the pool, never depleting
-			 * permanently. weight is a system-managed FAIRNESS counter
-			 * (NOT a user preference, not surfaced in the UI): it changes
-			 * ONLY when a NEW active item is chosen, never on the
-			 * intermediate decay runs. At that moment the chosen item
+			 * separately. value is the active item's own remaining CHARGE: it
+			 * decays each run while active, and at or below half a unit (0.5)
+			 * the item auto-recharges to full and is released back into the
+			 * pool, never depleting permanently. weight is a system-managed
+			 * FAIRNESS counter (NOT a user preference, not surfaced in the
+			 * UI): it changes ONLY when a NEW active item is chosen, never on
+			 * the intermediate decay runs. At that moment the chosen item
 			 * resets to 0 and every OTHER item gains +1. A weight of 0 is
 			 * excluded from selection, so exactly one item (the
-			 * most-recently-picked) is barred from being re-picked on the
-			 * very next draw; it re-enters at weight 1 on the following
-			 * pick. Long-ignored items climb and grow steadily more
-			 * likely, fixing truly-random's own "an item can be ignored
-			 * forever / picked twice in a row" failure mode. A newly
-			 * chosen item rolls a target N cycles uniformly in its own
-			 * [shortest, longest] range and decays by a fixed step
-			 * (thrValNum/N), emptying in exactly N cycles; chargeStep
-			 * persists that plan across the streak, and a legacy item
-			 * with none lazily rolls one via getSteFun.
+			 * most-recently-picked) is barred from being re-picked on the very
+			 * next draw; it re-enters at weight 1 on the following pick.
+			 * Long-ignored items climb and grow steadily more likely, fixing
+			 * truly-random's own "an item can be ignored forever / picked
+			 * twice in a row" failure mode. A newly chosen item rolls a target
+			 * N cycles uniformly in its own [shortest, longest] range and
+			 * decays by a fixed step (thrValNum/N), emptying in exactly N
+			 * cycles; chargeStep persists that plan across the streak, and a
+			 * legacy item with none lazily rolls one via getSteFun.
 			 *
 			 * @author z4nta0 <https://github.com/z4nta0>
 			 *

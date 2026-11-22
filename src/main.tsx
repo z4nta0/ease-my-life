@@ -5,7 +5,7 @@
 
 import { AppRooCom   } from './app.tsx';          // What: App Root Component. Why: This is the single component the whole app renders as, owning every tab and overlay. How: This is rendered into the mounted root inside booAppFun.
 import { createRoot  } from 'react-dom/client';   // What: Create Root. Why: This is the React 18 API for creating a concurrent-mode root to render into. How: This is called once against the #appMouDiv DOM node inside booAppFun.
-import { STG_NAM_OBJ } from './state/storage.ts'; // What: Storage Namespace Object. Why: The mount must wait for persisted state to finish loading so store.ts's own loaStaFun() can stay synchronous. How: This is awaited below, and its own boot deadline keeps a slow or hung IndexedDB from blocking the app.
+import { STG_NAM_OBJ } from './state/storage.ts'; // What: Storage Namespace Object. Why: The mount must wait for persisted state to finish loading so store.ts's own loaStaFun() can stay synchronous. How: This is called below, and its promise settles once storage has loaded, while its own boot deadline keeps a slow or hung IndexedDB from blocking the app.
 
 
 import './styles/fonts.css';  // What: Fonts Stylesheet Import. Why: The app's own stylesheets below assume the self-hosted font faces are already registered. How: This is imported first, purely for its side effect, so its @font-face rules register before styles.css is parsed.
@@ -21,7 +21,7 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
  * @summary
  * The app's real entry point, imported nowhere else. It first replaces any
  * address but the root with the root, since the host serves the app at every
- * path and the app answers only at its root. It then awaits
+ * path and the app answers only at its root. It then waits on
  * STG_NAM_OBJ.iniStoFun(), which gives up on a slow or hung IndexedDB by
  * itself and falls back to localStorage, then calls booAppFun either way.
  * The deadline lives in storage.ts rather than here, so the app can never
