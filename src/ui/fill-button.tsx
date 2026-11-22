@@ -57,7 +57,7 @@ type FbcProTyp = { isaDisBoo : boolean, labTexStr : string, onFilActFun : () => 
  *                            action, called once the disabled guard passes.
  *
  * @returns The lever rendered as a ButBasCom, with its own spin-on-click
- * behavior layered on top.
+ *          behavior layered on top.
  *
  * @example
  * ```tsx

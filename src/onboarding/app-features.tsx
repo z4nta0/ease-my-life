@@ -311,7 +311,7 @@ const TIP_STE_OBJ = { // What: Tip Step Object. Why: FeaTipCom's own GuiTouCom n
  * @param staAppObj - State App Object: The entire app's own persisted state.
  *
  * @returns A user-facing reason string whenever this feature is blocked,
- * otherwise null.
+ *          otherwise null.
  *
  * @example
  * ```ts
@@ -369,7 +369,7 @@ function bloReaFun ( feaIdeStr : string, staAppObj : StaAppTyp ) : string | null
  *                    first step.
  *
  * @returns This feature's own steps beyond Step 1, as GuiTouCom step objects,
- * or an empty array for any other feature id.
+ *          or an empty array for any other feature id.
  *
  * @example
  * ```ts
@@ -981,7 +981,7 @@ type FocProTyp = { actIdeStr : string, actStoObj : ActStoTyp, feaIdeStr : string
  *                            persisted state.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running guided
- * tour (touPhaStr 'tour'), depending on this feature's own phase.
+ *          tour (touPhaStr 'tour'), depending on this feature's own phase.
  *
  * @example
  * ```tsx

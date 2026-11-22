@@ -147,8 +147,8 @@ function conSubFun ( conRcdObj : ConRcdTyp ) : string {
  * @param dayKeyStr - Day Key String: Which day's own rows to keep, as a
  *                    "YYYY-MM-DD" key from {@link isoDayFun}.
  *
- * @returns A Map from itemId to its own { anyBoo, autBoo, donBoo,
- * pusBoo, rolBoo, skiBoo } flags.
+ * @returns A Map from itemId to its own { anyBoo, autBoo, donBoo, pusBoo,
+ *          rolBoo, skiBoo } flags.
  * @see {@link iteFlaMap}
  *
  * @example
@@ -333,8 +333,8 @@ const hasValFun = ( picModStr : string ) => { // What: Has Value Function. Why: 
  *                    snapshot (dynamic mode only), or null when not
  *                    applicable.
  *
- * @returns The item's own subline, as either a plain string or a
- * small React.Fragment.
+ * @returns The item's own subline, as either a plain string or a small
+ *          React.Fragment.
  *
  * @example
  * ```ts
@@ -655,8 +655,8 @@ type ShcProTyp = { iteFlaObj : IteFlaTyp | undefined }; // What: Status-Chip-Com
  *                          from {@link dayFlaFun}, or undefined when the item
  *                          has no pick-log rows today at all.
  *
- * @returns This item's own run of status icon chips, or a placeholder
- * span when there is nothing to show.
+ * @returns This item's own run of status icon chips, or a placeholder span
+ *          when there is nothing to show.
  *
  * @example
  * ```tsx
@@ -893,8 +893,8 @@ type VccProTyp = { aftValNum : number, genValNum : number | null | undefined, ha
  * @param props.offValNum - Offset Value Number: The base weight to add to both
  *                          cells (dynamic items only); defaults to 0.
  *
- * @returns This row's own 3 value cells (at generation, delta, after),
- * as a React.Fragment.
+ * @returns This row's own 3 value cells (at generation, delta, after), as a
+ *          React.Fragment.
  *
  * @example
  * ```tsx
@@ -1008,8 +1008,7 @@ type CncProTyp = { picGroArr : PicRcdTyp[], staAppObj : StaAppTyp }; // What: Co
  *                          non-hidden pickers, in saved order.
  * @param props.staAppObj - State App Object: The whole app state object.
  *
- * @returns This group's own conditionals section, or null once it has
- * none.
+ * @returns This group's own conditionals section, or null once it has none.
  *
  * @example
  * ```tsx
@@ -1212,8 +1211,8 @@ type PlcProTyp = { dayKeyStr : string, isaSupBoo : boolean, picRcdObj : PicRcdTy
  *                          renders.
  * @param props.staAppObj - State App Object: The whole app state object.
  *
- * @returns This picker's own block, either a static rested row or its
- * full collapsible item table.
+ * @returns This picker's own block, either a static rested row or its full
+ *          collapsible item table.
  *
  * @example
  * ```tsx

@@ -299,8 +299,8 @@ let __tinProObj : CanvasRenderingContext2D | null = null; // What: Tint Probe Ob
  *                    bg/text/accent keys stay as-is rather than following the
  *                    palette-shape renames.
  *
- * @returns A full 8-token palette object in the same shape as a
- * PAL_SET_OBJ entry, ready to hand to appPalFun.
+ * @returns A full 8-token palette object in the same shape as a PAL_SET_OBJ
+ *          entry, ready to hand to appPalFun.
  *
  * @example
  * ```ts
@@ -380,7 +380,7 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
  *                    dark mode.
  *
  * @returns The theme key that should actually be applied, e.g. 'ink' or
- * 'customDark'.
+ *          'customDark'.
  *
  * @example
  * ```ts
@@ -448,9 +448,9 @@ function resTheFun ( appSetObj : AppSetTyp, sysDarBoo : boolean ) : string {
  * @param cssColStr - CSS Color String: The CSS color string to resolve, e.g.
  *                    an oklch() palette token.
  *
- * @returns A hex color string (e.g. '#a1b2c3'), or null if the browser
- * cannot parse the given color or does not support a 2D canvas context
- * at all.
+ * @returns A hex color string (e.g. '#a1b2c3'), or null if the browser cannot
+ *          parse the given color or does not support a 2D canvas context at
+ *          all.
  * @see {@link hexResStr}
  *
  * @example

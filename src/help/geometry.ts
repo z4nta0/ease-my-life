@@ -90,8 +90,8 @@ const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appT
  *                    tarRecObj belongs to, needed to read its own and its
  *                    ancestors' overflow-x styling.
  *
- * @returns A clipped { bottom, left, right, top } rect, or null once
- * the element ends up fully clipped away.
+ * @returns A clipped { bottom, left, right, top } rect, or null once the
+ *          element ends up fully clipped away.
  *
  * @example
  * ```ts
@@ -268,8 +268,8 @@ function finTarFun ( selLisStr : string ) : HTMLElement[] {
  * @param tarEleArr - Target Element Array: The matched elements to union
  *                    together.
  *
- * @returns A { bottom, height, left, right, top, width } rect spanning
- * every element in tarEleArr that survived clipping.
+ * @returns A { bottom, height, left, right, top, width } rect spanning every
+ *          element in tarEleArr that survived clipping.
  *
  * @example
  * ```ts
@@ -368,8 +368,8 @@ function uniRecFun ( tarEleArr : HTMLElement[] ) : BoxRecTyp {
  *                    element(s), used to detect which chrome item (if any)
  *                    this target is itself part of.
  *
- * @returns The clipped rect, or null once it collapses to zero or
- * negative width/height.
+ * @returns The clipped rect, or null once it collapses to zero or negative
+ *          width/height.
  *
  * @example
  * ```ts
@@ -502,8 +502,8 @@ function cliChrFun ( tarRecObj : EdgRecTyp, chrIteArr : ChrIteTyp[], tarEleArr :
  * @param tarEleArr - Target Element Array: The target's own matched
  *                    element(s); forwarded to cliChrFun.
  *
- * @returns { padBotNum, padLefNum, padRigNum, padTopNum }, each the
- * actual pad that survived clipping on that side.
+ * @returns { padBotNum, padLefNum, padRigNum, padTopNum }, each the actual pad
+ *          that survived clipping on that side.
  *
  * @example
  * ```ts
@@ -570,7 +570,7 @@ function claPadFun ( tarRecObj : EdgRecTyp, padHorNum : number, padVerNum : numb
  *                    rect.
  *
  * @returns Whichever of 'top', 'bottom', 'left' or 'right' chrRecObj sits
- * closest to.
+ *          closest to.
  *
  * @example
  * ```ts
@@ -623,7 +623,7 @@ function detEdgFun ( chrRecObj : EdgRecTyp ) : string {
  * @param topBadNum - Top Badge Number: The badge's top edge, in pixels.
  *
  * @returns { bottom, height, left, top, width } for the badge's own
- * fixed-position placement.
+ *          fixed-position placement.
  *
  * @example
  * ```ts
@@ -683,7 +683,7 @@ function badBoxFun ( lefBadNum : number, topBadNum : number ) : BadRecTyp {
  *                    instead of using the usual corner placement.
  *
  * @returns { bottom, height, left, top, width } for the badge's own
- * fixed-position placement.
+ *          fixed-position placement.
  *
  * @example
  * ```ts
@@ -817,8 +817,8 @@ function defRadFun () : ShaRadTyp {
  * @param shaOveStr - Shape Override String: 'circle' to skip CSS inspection
  *                    and force a perfect ellipse; otherwise omitted.
  *
- * @returns { radXcoNum, radYcoNum } for the SVG mask cutout and the
- * highlight div's own border-radius.
+ * @returns { radXcoNum, radYcoNum } for the SVG mask cutout and the highlight
+ *          div's own border-radius.
  *
  * @example
  * ```ts

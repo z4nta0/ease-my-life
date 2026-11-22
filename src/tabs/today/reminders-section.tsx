@@ -193,8 +193,8 @@ type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string
  *                            mini-tour has already been resolved; only
  *                            meaningful while isaTutBoo.
  *
- * @returns Either the mini-tour launcher card's own markup (isaTutBoo)
- * or the real reminder row's own markup.
+ * @returns Either the mini-tour launcher card's own markup (isaTutBoo) or the
+ *          real reminder row's own markup.
  *
  * @example
  * ```tsx
@@ -675,9 +675,9 @@ type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet :
  * @param props.staAppObj    - State App Object: The entire app's own persisted
  *                             state.
  *
- * @returns The full Reminders section: its header, optional day-log
- * panel, and its list of tutorial cards, quick-add form, and real
- * reminder cards.
+ * @returns The full Reminders section: its header, optional day-log panel, and
+ *          its list of tutorial cards, quick-add form, and real reminder
+ *          cards.
  *
  * @example
  * ```tsx

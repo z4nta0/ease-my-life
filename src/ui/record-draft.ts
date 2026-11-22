@@ -60,7 +60,7 @@ import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Typ
  *                    null when no record is open.
  *
  * @returns The draft record, the record it started from, and a function
- * merging fields into the draft.
+ *          merging fields into the draft.
  *
  * @example
  * ```ts
@@ -126,8 +126,8 @@ function useRcdDraFun< T extends { id : string } > ( rcdDatObj : T | null ) : { 
  * @param iteDatObj - Item Data Object: The item open for editing, or null
  *                    when no item is open.
  *
- * @returns The draft item, a function merging fields into it, and a
- * function committing it.
+ * @returns The draft item, a function merging fields into it, and a function
+ *          committing it.
  *
  * @example
  * ```ts
@@ -243,7 +243,7 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
  *                    when no reminder is open.
  *
  * @returns The draft reminder, a function merging fields into it, and a
- * function committing it.
+ *          function committing it.
  *
  * @example
  * ```ts

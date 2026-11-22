@@ -232,8 +232,8 @@ function bloAroFun ( bloGriArr : boolean[][], rowIndNum : number, colIndNum : nu
  * @param pooFacFun - Pool Factory Function: A zero-argument function that
  *                    produces a fresh pool array each time it's called.
  *
- * @returns A zero-argument function that returns one value from
- * pooFacFun's pool per call, reshuffling automatically once exhausted.
+ * @returns A zero-argument function that returns one value from pooFacFun's
+ *          pool per call, reshuffling automatically once exhausted.
  *
  * @example
  * ```ts
@@ -323,7 +323,8 @@ function ranArrFun ( lenValNum : number ) : number[] { return Array.from( Array(
  * @param couValNum - Count Value Number: How many values to produce.
  *
  * @returns An array of couValNum values, evenly spaced from minValNum to
- * maxValNum inclusive (or just [minValNum] when couValNum is 1 or less).
+ *          maxValNum inclusive (or just [minValNum] when couValNum is 1 or
+ *          less).
  *
  * @example
  * ```ts
@@ -368,7 +369,7 @@ function eveSpaFun ( minValNum : number, maxValNum : number, couValNum : number 
  *                    untouched; a shuffled copy is returned instead.
  *
  * @returns A new array holding the same elements as souEleArr, in random
- * order.
+ *          order.
  * @see {@link copSouArr}
  *
  * @example
@@ -424,8 +425,8 @@ function shuArrFun< T > ( souEleArr : T[] ) : T[] {
  * @param colCouNum - Column Count Number: How many columns the grid has.
  * @param rowCouNum - Row Count Number: How many rows the grid has.
  *
- * @returns An array of { colIndNum, isaBigBoo, rowIndNum } placements, one
- * per glyph.
+ * @returns An array of { colIndNum, isaBigBoo, rowIndNum } placements, one per
+ *          glyph.
  * @see {@link plaIteArr}
  *
  * @example
@@ -517,8 +518,8 @@ function plaGriFun ( colCouNum : number, rowCouNum : number ) : { colIndNum : nu
  * @param conHeiNum - Content Height Number: The tab's own measured content
  *                    height, in pixels.
  *
- * @returns An array of styled glyph items ready to render, or an empty
- * array when the gutter is too narrow to bother decorating at all.
+ * @returns An array of styled glyph items ready to render, or an empty array
+ *          when the gutter is too narrow to bother decorating at all.
  *
  * @example
  * ```ts
@@ -622,8 +623,8 @@ function genSidFun ( gutWidNum : number, conHeiNum : number ) : FloIteTyp[] {
  *                    own centered-column container, whose real measured
  *                    width/height the grid is generated against.
  *
- * @returns The tab's own { lefArr, rigArr } generated flourish items, or
- * null before the first measurement has completed.
+ * @returns The tab's own { lefArr, rigArr } generated flourish items, or null
+ *          before the first measurement has completed.
  * @see {@link floIteObj}
  *
  * @example
@@ -725,8 +726,8 @@ type FccProTyp = { floIteArr : FloIteTyp[], sidKeyStr : string }; // What: Flour
  *                          'left' or 'right'; flips which CSS inset property
  *                          each item's own insNum applies to.
  *
- * @returns This side's own flourish items, each as one absolutely-
- * positioned decorative span, or null when there is nothing to render.
+ * @returns This side's own flourish items, each as one absolutely- positioned
+ *          decorative span, or null when there is nothing to render.
  *
  * @example
  * ```tsx
@@ -813,8 +814,8 @@ type BfcProTyp = { meaEleRef : React.RefObject< HTMLElement | null >, tabIdeStr 
  * @param props.tabIdeStr - Tab Identifier String: The current tab's own id,
  *                          used as the cache key.
  *
- * @returns Both of this tab's own gutters, each as one FloColCom
- * instance, or null before the first measurement has completed.
+ * @returns Both of this tab's own gutters, each as one FloColCom instance, or
+ *          null before the first measurement has completed.
  *
  * @example
  * ```tsx

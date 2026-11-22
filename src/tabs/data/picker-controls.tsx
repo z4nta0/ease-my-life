@@ -346,7 +346,7 @@ type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : Con
  * @param props.picIteArr   - Picker Item Array: This picker's own items.
  *
  * @returns This picker's own Controls body: its groups of settings, the
- * footer, and the unmount watcher.
+ *          footer, and the unmount watcher.
  *
  * @example
  * ```tsx

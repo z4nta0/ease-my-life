@@ -62,8 +62,8 @@ type LrcProTyp = { canIteArr : NonNullable< GenSloTyp[ 'canArr' ] > }; // What: 
  *                          picker's own slot is drawing from, cycled purely
  *                          for visual effect.
  *
- * @returns The currently-shown candidate's own name, in a span keyed by
- * its own index so each tick replays a fade.
+ * @returns The currently-shown candidate's own name, in a span keyed by its
+ *          own index so each tick replays a fade.
  *
  * @example
  * ```tsx
@@ -148,7 +148,7 @@ type LacProTyp = { infRcdObj : GenSloTyp | undefined, picRcdObj : Partial< PicRc
  *                          belongs to.
  *
  * @returns This slot's own loader card, whose visible state follows
- * infRcdObj.staStr.
+ *          infRcdObj.staStr.
  *
  * @example
  * ```tsx

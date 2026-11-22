@@ -167,8 +167,8 @@ const modValFun = ( modKeyStr : string | undefined ) : boolean => !!modKeyStr &&
  *                    own conditionalId may not resolve to a live conditional
  *                    at all).
  *
- * @returns True when conCurObj currently suppresses its own dependent
- * pickers, false otherwise.
+ * @returns True when conCurObj currently suppresses its own dependent pickers,
+ *          false otherwise.
  *
  * @example
  * ```ts
@@ -199,8 +199,8 @@ function supGatFun ( conCurObj : ConRcdTyp | null | undefined ) : boolean { retu
  * @param conCurObj - Conditional Current Object: The conditional to resolve
  *                    odds for.
  *
- * @returns A probability in [0, 1] that this conditional resolves
- * true this run.
+ * @returns A probability in [0, 1] that this conditional resolves true this
+ *          run.
  *
  * @example
  * ```ts
@@ -251,9 +251,9 @@ function truOddFun ( conCurObj : ConRcdTyp ) : number {
  *                    resolve for the day, in no particular order; a missing or
  *                    empty array yields an empty patch.
  *
- * @returns A patch object keyed by conditional id, each value holding
- * the fields (triggered, chargedToday) to apply to that conditional
- * before today's picker gating runs.
+ * @returns A patch object keyed by conditional id, each value holding the
+ *          fields (triggered, chargedToday) to apply to that conditional
+ *          before today's picker gating runs.
  * @see {@link patIdeObj}
  *
  * @example
@@ -338,8 +338,7 @@ function resDayFun ( conAllArr : ConRcdTyp[] | null | undefined ) : Record< stri
  * @param thrValNum - Threshold Value Number: The conditional's own resolved
  *                    charge ceiling.
  *
- * @returns The fixed per-cycle charge/discharge step this new plan
- * commits to.
+ * @returns The fixed per-cycle charge/discharge step this new plan commits to.
  *
  * @example
  * ```ts
@@ -416,9 +415,9 @@ const steResFun = ( conCurObj : ConRcdTyp, thrValNum : number ) => ( conCurObj.c
  *                    being applied.
  *
  * @returns A patch object with whichever of value/triggered/
- * chargedToday/chargeStep actually changed, or null when conCurObj is
- * missing, disabled, not a value-family mode, or already charged
- * today.
+ *          chargedToday/chargeStep actually changed, or null when conCurObj is
+ *          missing, disabled, not a value-family mode, or already charged
+ *          today.
  *
  * @example
  * ```ts
@@ -530,9 +529,9 @@ function advValFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
  * @param conCurObj - Conditional Current Object: The conditional whose own
  *                    day-off card was just completed.
  *
- * @returns A patch object with whichever of value/triggered/
- * chargeStep actually changed, or null for a missing conCurObj or a
- * probability-family mode.
+ * @returns A patch object with whichever of value/triggered/ chargeStep
+ *          actually changed, or null for a missing conCurObj or a
+ *          probability-family mode.
  *
  * @example
  * ```ts

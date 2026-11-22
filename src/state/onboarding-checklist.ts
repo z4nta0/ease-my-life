@@ -220,8 +220,8 @@ function cheStaFun ( appStaObj : StaAppTyp ) : { donNum : number, fulBoo : boole
  * @param appStaObj - App State Object: The full app state object, read for its
  *                    own onboarding.checklist map via entLooFun above.
  *
- * @returns How many non-Generate checklist items still have no
- * resolution at all, as a plain count.
+ * @returns How many non-Generate checklist items still have no resolution at
+ *          all, as a plain count.
  *
  * @example
  * ```ts
@@ -260,8 +260,8 @@ function othRmnFun ( appStaObj : StaAppTyp ) : number { return CHE_IDE_ARR.filte
  * @param appStaObj - App State Object: The full app state object, read for its
  *                    own pickers array.
  *
- * @returns How many of appStaObj's own pickers are real (not one of
- * the seeded samples), as a plain count.
+ * @returns How many of appStaObj's own pickers are real (not one of the seeded
+ *          samples), as a plain count.
  *
  * @example
  * ```ts
@@ -327,8 +327,8 @@ function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRmnFun( appSt
  * @param appStaObj - App State Object: The full app state object, read for its
  *                    own onboarding/pickers/tasks fields.
  *
- * @returns Whether tutorial-gated controls should currently stay
- * disabled, as a boolean.
+ * @returns Whether tutorial-gated controls should currently stay disabled, as
+ *          a boolean.
  *
  * @example
  * ```ts

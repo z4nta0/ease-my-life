@@ -456,8 +456,7 @@ type BacProTyp = { 'data-element-name-hook'? : string, empMesStr : string, kicTe
  *                                       every segment's own share is computed
  *                                       against.
  *
- * @returns The card containing the stacked bar and legend, or the empty
- * state.
+ * @returns The card containing the stacked bar and legend, or the empty state.
  *
  * @example
  * ```tsx
@@ -655,8 +654,8 @@ type PncProTyp = { alwShoBoo? : boolean, curPagNum : number, onChange : ( nexPag
  * @param props.uniWorStr - Unit Word String: Unit word shown after the
  *                          total; defaults to 'items'.
  *
- * @returns The pager row, or nothing at all when the list fits on one
- * page and alwShoBoo is false.
+ * @returns The pager row, or nothing at all when the list fits on one page and
+ *          alwShoBoo is false.
  *
  * @example
  * ```tsx
@@ -865,7 +864,7 @@ type TtcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns The Stats tab's own root element, including its header, filter
- * rows, and every scope-dependent card.
+ *          rows, and every scope-dependent card.
  *
  * @example
  * ```tsx
@@ -2370,7 +2369,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	 *                    shows as is.
 	 *
 	 * @returns A { numStr, worStr } pair: the number to show and its unit
-	 * word.
+	 *          word.
 	 *
 	 * @example
 	 * ```ts

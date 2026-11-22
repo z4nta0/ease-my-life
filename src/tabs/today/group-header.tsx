@@ -79,7 +79,7 @@ type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, 
  *                            when it is fine.
  *
  * @returns This group's own header element, plus any merge-confirm or
- * name-error banner beneath it.
+ *          name-error banner beneath it.
  *
  * @example
  * ```tsx

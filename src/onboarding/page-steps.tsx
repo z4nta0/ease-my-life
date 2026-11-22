@@ -836,7 +836,7 @@ const forNamFun = ( actStoObj : ActStoTyp ) : void => { // What: Force Name Func
  *                    called directly by the Today tour's own last step.
  *
  * @returns This page tour's own steps beyond Step 1, as GuiTouCom step
- * objects, or an empty array for any other page id.
+ *          objects, or an empty array for any other page id.
  *
  * @example
  * ```ts

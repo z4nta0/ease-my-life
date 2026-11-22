@@ -116,7 +116,7 @@ const COA_HEI_NUM = 220; // What: Coach Height Number. Why: This is a conservati
  * @param coaWidNum - Coach Width Number: The coach's own width, in px.
  *
  * @returns The arrow's own horizontal offset in px, written to the coach's
- * --coa-arr-off custom property.
+ *          --coa-arr-off custom property.
  *
  * @example
  * ```ts
@@ -207,7 +207,7 @@ const isaDocFun = ( curScrEle : Element ) : boolean => curScrEle === document.sc
  * @param void - This function takes no parameters.
  *
  * @returns The bottom tab bar's own top edge in px, or window.innerHeight when
- * there is no bottom bar.
+ *          there is no bottom bar.
  *
  * @example
  * ```ts
@@ -268,7 +268,7 @@ const safBotFun = () : number => { // What: Safe Bottom Function. Why: A bottom-
  *                          omitting it measures the chrome.
  *
  * @returns The lowest bottom edge in px among the sticky header, the mobile
- * group rail, and the Edit Mode banner, or 0 for the coach.
+ *          group rail, and the Edit Mode banner, or 0 for the coach.
  *
  * @example
  * ```ts
@@ -349,8 +349,8 @@ const safTopFun = ( { forCoaBoo } : { forCoaBoo? : boolean } = {} ) : number => 
  *                    px.
  *
  * @returns A { arrStr, left, top } layout: the arrow direction class
- * (coaCarDiv--up when below the target, coaCarDiv--down when above it) and the
- * coach's own screen position in px.
+ *          (coaCarDiv--up when below the target, coaCarDiv--down when above
+ *          it) and the coach's own screen position in px.
  *
  * @example
  * ```ts
@@ -691,7 +691,7 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  *                            labels the tour for persistence.
  *
  * @returns The tour's own dim/spotlight/coach overlay, portaled onto
- * document.body.
+ *          document.body.
  *
  * @example
  * ```tsx
@@ -903,7 +903,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	 *                    being guarded.
 	 *
 	 * @returns True when the live step names a cptSelStr and one of its
-	 * elements contains the event's own target.
+	 *          elements contains the event's own target.
 	 *
 	 * @example
 	 * ```ts
@@ -1508,7 +1508,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *                    scroller is needed.
 		 *
 		 * @returns The nearest scrolling ancestor, or the document's own
-		 * scrolling element when none qualifies.
+		 *          scrolling element when none qualifies.
 		 *
 		 * @example
 		 * ```ts
@@ -1830,7 +1830,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *                    checked for chrome membership.
 		 *
 		 * @returns The rect with its top, bottom, and height clamped to the
-		 * safe area, or curRecObj unchanged for a target inside the chrome.
+		 *          safe area, or curRecObj unchanged for a target inside the
+		 *          chrome.
 		 *
 		 * @example
 		 * ```ts
@@ -1883,7 +1884,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *                    claChrFun.
 		 *
 		 * @returns The rect with its left, right, and width clamped to the
-		 * viewport, inset by spoPadNum.
+		 *          viewport, inset by spoPadNum.
 		 *
 		 * @example
 		 * ```ts
@@ -1928,7 +1929,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *                    matched for the current step.
 		 *
 		 * @returns The clamped rect it placed, for the caller to commit to
-		 * React state.
+		 *          React state.
 		 * @see {@link tarRecObj}
 		 *
 		 * @example

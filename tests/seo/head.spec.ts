@@ -234,7 +234,7 @@ function imaSizFun ( imaBufObj : Buffer ) : [ number, number ] {
  * @param htmTexStr - HTML Text String: The page's raw HTML.
  *
  * @returns One pair per meta tag, its name or property first and its decoded
- * content second, in the page's order.
+ *          content second, in the page's order.
  *
  * @example
  * ```ts

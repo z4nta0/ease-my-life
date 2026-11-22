@@ -190,9 +190,8 @@ type WtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, selTabFun : ( tabI
  * @param props.staAppObj - State App Object: The entire app's own
  *                          persisted state.
  *
- * @returns Either null (phase 'off'), the intro modal (phase
- * 'welcome'), or the running guided tour (phase 'tour'), depending on
- * onbPhaStr.
+ * @returns Either null (phase 'off'), the intro modal (phase 'welcome'), or
+ *          the running guided tour (phase 'tour'), depending on onbPhaStr.
  *
  * @example
  * ```tsx

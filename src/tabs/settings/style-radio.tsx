@@ -66,8 +66,8 @@ type SrcProTyp = { groLabStr : string, groNamStr : string, onChange : ( optValSt
  * @param props.value       - Value: The currently-selected option's own
  *                            value.
  *
- * @returns A fieldset wrapping one radio row per entry in radOptArr,
- * each with an optional Preview button.
+ * @returns A fieldset wrapping one radio row per entry in radOptArr, each with
+ *          an optional Preview button.
  *
  * @example
  * ```tsx

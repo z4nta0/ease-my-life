@@ -50,8 +50,8 @@ import { redMotFun } from '../../utils/motion.ts'; // What: Reduced Motion Funct
  *
  * @param void - This function takes no parameters.
  *
- * @returns The confirming and leaving ids, the confirming id's setter, and
- * the Cancel handler.
+ * @returns The confirming and leaving ids, the confirming id's setter, and the
+ *          Cancel handler.
  *
  * @example
  * ```ts

@@ -162,8 +162,8 @@ type CpcProTyp = { repTokNum : number, styKeyStr : string }; // What: Celebratio
  * @param props.repTokNum - Replay Token Number: {@link celTokNum}
  * @param props.styKeyStr - Style Key String: {@link celStyStr}
  *
- * @returns The preview stage: the mock done-cards row plus whichever
- * particles the current effect has staged on top of it.
+ * @returns The preview stage: the mock done-cards row plus whichever particles
+ *          the current effect has staged on top of it.
  *
  * @example
  * ```tsx
@@ -467,9 +467,9 @@ type PacProTyp = { repTokNum : number, styKeyStr : string }; // What: Picker-Ani
  *                          animation styles to preview: 'reel',
  *                          'spotlight', or 'dissolve'.
  *
- * @returns Either the live PicStrCom cycle (once Play has been pressed
- * at least once) or a static preview of the fixed landing candidate's
- * own name beforehand.
+ * @returns Either the live PicStrCom cycle (once Play has been pressed at
+ *          least once) or a static preview of the fixed landing candidate's
+ *          own name beforehand.
  *
  * @example
  * ```tsx

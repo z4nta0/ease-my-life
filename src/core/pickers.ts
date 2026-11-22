@@ -100,8 +100,8 @@ const THR_VAL_NUM = 100; // What: Threshold Value Number. Why: The ease drift/da
  * @param rawNamStr - Raw Name String: The raw, possibly messy, user-typed name
  *                    to tidy, or undefined when none was given.
  *
- * @returns The tidied, Title Cased name, or an empty string when
- * rawNamStr had nothing but separator characters.
+ * @returns The tidied, Title Cased name, or an empty string when rawNamStr had
+ *          nothing but separator characters.
  *
  * @example
  * ```ts
@@ -146,8 +146,8 @@ function titCasFun ( rawNamStr : string | undefined ) : string {
  * @param rawNamStr - Raw Name String: The raw, possibly messy, user-typed
  *                    conditional name, or undefined when none was given.
  *
- * @returns The tidied, Title Cased conditional name, or an empty string
- * when rawNamStr had nothing but separator characters.
+ * @returns The tidied, Title Cased conditional name, or an empty string when
+ *          rawNamStr had nothing but separator characters.
  *
  * @example
  * ```ts
@@ -184,8 +184,8 @@ function norConFun ( rawNamStr : string | undefined ) : string { return titCasFu
  *                    check entirely.
  *
  * @returns The existing group's own exact spelling on a case-insensitive
- * match, the freshly Title Cased name otherwise, or an empty string when
- * rawNamStr had nothing but separator characters.
+ *          match, the freshly Title Cased name otherwise, or an empty string
+ *          when rawNamStr had nothing but separator characters.
  *
  * @example
  * ```ts
@@ -244,7 +244,7 @@ function norGroFun ( rawNamStr : string, exiGroArr? : string[] ) : string {
  *                    picker name, or undefined when none was given.
  *
  * @returns The tidied, Title Cased picker name, or an empty string when
- * rawNamStr had nothing but separator characters.
+ *          rawNamStr had nothing but separator characters.
  *
  * @example
  * ```ts
@@ -285,8 +285,8 @@ function norPicFun ( rawNamStr : string | undefined ) : string { return titCasFu
  *                    band should be averaged, or undefined for an unsaved
  *                    picker, which matches no items.
  *
- * @returns { easeMin, easeMax }, averaged from iteAllArr's own matching
- * items, or a copy of DEF_EAS_OBJ when none exist at all.
+ * @returns { easeMin, easeMax }, averaged from iteAllArr's own matching items,
+ *          or a copy of DEF_EAS_OBJ when none exist at all.
  *
  * @example
  * ```ts
@@ -340,8 +340,7 @@ function aveEasFun ( iteAllArr : IteRcdTyp[], picIdeStr : string | undefined ) :
  *
  * @param dayCouNum - Day Count Number: The number of days to convert.
  *
- * @returns The drift value that takes that many days to cross the
- * threshold.
+ * @returns The drift value that takes that many days to cross the threshold.
  *
  * @example
  * ```ts
@@ -441,8 +440,7 @@ const easEliFun = ( iteRcdObj : IteRcdTyp, thrValNum : number ) : boolean => ( i
  *
  * @param iteSouArr - Item Source Array: The items to filter.
  *
- * @returns A new array holding only iteSouArr's own non-vacationing
- * items.
+ * @returns A new array holding only iteSouArr's own non-vacationing items.
  *
  * @example
  * ```ts
@@ -525,8 +523,8 @@ const modEliFun = ( iteRcdObj : IteRcdTyp, picRcdObj : PicRcdTyp | null | undefi
  *                    threshold, defaulting to THR_VAL_NUM to match the
  *                    other threshold defaults in this file.
  *
- * @returns A readiness number, at most 1 for ease-up and dynamic, or null
- * when modKeyStr has no meaningful readiness concept.
+ * @returns A readiness number, at most 1 for ease-up and dynamic, or null when
+ *          modKeyStr has no meaningful readiness concept.
  *
  * @example
  * ```ts

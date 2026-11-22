@@ -67,9 +67,9 @@ type SorRowTyp = { actBoo? : boolean | null, booNum? : number | null, couNum? : 
  *                     persists the frozen { ideStr, indNum } record across
  *                     renders.
  *
- * @returns sorLisArr unmodified when nothing is open or the open row
- * isn't in this list, otherwise the same rows with the open one
- * reinserted at its own frozen position.
+ * @returns sorLisArr unmodified when nothing is open or the open row isn't in
+ *          this list, otherwise the same rows with the open one reinserted at
+ *          its own frozen position.
  *
  * @example
  * ```ts
@@ -164,9 +164,9 @@ function freEdiFun< T extends { id : string } > ( sorLisArr : T[], opeIdeStr : s
  *                    field, the part after it names the direction ('asc'
  *                    or 'desc').
  *
- * @returns A standard Array.prototype.sort comparator result: negative
- * when rowOneObj sorts first, positive when rowTwoObj sorts first, 0 on a
- * genuine tie.
+ * @returns A standard Array.prototype.sort comparator result: negative when
+ *          rowOneObj sorts first, positive when rowTwoObj sorts first, 0 on a
+ *          genuine tie.
  *
  * @example
  * ```ts

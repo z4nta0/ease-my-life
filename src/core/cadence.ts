@@ -117,9 +117,9 @@ const CAD_STR_ARR : string[] = [ 'daily', 'weekly', 'monthly', 'yearly' ]; // Wh
  * @param picCadObj - Picker Cadence Object: The picker-shaped object to
  *                    check.
  *
- * @returns The corrected daysOfWeek array (with the anchor day added
- * when it was missing), or the same array unchanged when nothing needs
- * adding.
+ * @returns The corrected daysOfWeek array (with the anchor day added when it
+ *          was missing), or the same array unchanged when nothing needs
+ *          adding.
  *
  * @example
  * ```ts
@@ -203,9 +203,9 @@ type CadNorTyp = Required< Pick< PicRcdTyp, 'anchorDay' | 'anchorDom' | 'anchorD
  *                    normalize, defaulting to an empty object for a
  *                    brand new draft with nothing set yet.
  *
- * @returns A full { cadence, anchorDow, anchorDom, anchorMonth,
- * anchorDay, dateMode, nthOrdinal, nthWeekday } object, every field
- * either taken from picLikObj or defaulted against the current date.
+ * @returns A full { cadence, anchorDow, anchorDom, anchorMonth, anchorDay,
+ *          dateMode, nthOrdinal, nthWeekday } object, every field either taken
+ *          from picLikObj or defaulted against the current date.
  *
  * @example
  * ```ts
@@ -280,8 +280,8 @@ const midDatFun = ( inpDatObj : Date ) => new Date( inpDatObj.getFullYear(), inp
  *                    'anchorDom' or 'anchorDay'.
  *
  * @returns The resolved day-of-month, from picCadObj's own plain value
- * (clamped to the month's own real length) or, in nth-weekday mode,
- * from nwmDayFun.
+ *          (clamped to the month's own real length) or, in nth-weekday mode,
+ *          from nwmDayFun.
  *
  * @example
  * ```ts
@@ -313,8 +313,7 @@ function tdmResFun ( picCadObj : CadFieTyp, yeaValNum : number, monOneNum : numb
  * @param cheDatObj - Check Date Object: The date whose own period start
  *                    is wanted, defaulting to right now.
  *
- * @returns The Date (at midnight) that starts cheDatObj's own current
- * period.
+ * @returns The Date (at midnight) that starts cheDatObj's own current period.
  *
  * @example
  * ```ts
@@ -460,9 +459,9 @@ function perKeyFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : st
  * @param cheDatObj - Check Date Object: The date to resolve the current
  *                    period against, defaulting to right now.
  *
- * @returns Whether picCadObj's own lastRunPeriod is the current period, or
- * a done pick-log row for it exists dated on or after the current
- * period's own start. Always false for a daily cadence.
+ * @returns Whether picCadObj's own lastRunPeriod is the current period, or a
+ *          done pick-log row for it exists dated on or after the current
+ *          period's own start. Always false for a daily cadence.
  *
  * @example
  * ```ts

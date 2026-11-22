@@ -203,8 +203,8 @@ type PocProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () =
  * @param props.staAppObj   - State App Object: The entire app's own
  *                            persisted state.
  *
- * @returns Either the intro modal (touPhaStr 'intro') or the running
- * guided tour (touPhaStr 'tour'), depending on this page's own phase.
+ * @returns Either the intro modal (touPhaStr 'intro') or the running guided
+ *          tour (touPhaStr 'tour'), depending on this page's own phase.
  *
  * @example
  * ```tsx

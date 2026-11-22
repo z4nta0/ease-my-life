@@ -218,8 +218,8 @@ type PfcProTyp = { conObjArr? : ConRcdTyp[], exiGroArr : string[], iniForObj? : 
  *                            payload when an edit is submitted (isaEdiBoo
  *                            true).
  *
- * @returns The form's own current step (Details or Items), or, while
- * isaEdiBoo is true, only ever the Details step.
+ * @returns The form's own current step (Details or Items), or, while isaEdiBoo
+ *          is true, only ever the Details step.
  *
  * @example
  * ```tsx

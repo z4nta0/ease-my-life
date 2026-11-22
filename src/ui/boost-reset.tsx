@@ -56,8 +56,8 @@ type BrcProTyp = { booValNum : number, onResBooFun : () => void, sufTexStr? : st
  *                            the number (e.g. a unit); defaults to an empty
  *                            string.
  *
- * @returns The boost value span and the Reset button, as sibling
- * elements with no shared wrapper.
+ * @returns The boost value span and the Reset button, as sibling elements with
+ *          no shared wrapper.
  *
  * @example
  * ```tsx

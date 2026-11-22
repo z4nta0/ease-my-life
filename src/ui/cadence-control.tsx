@@ -540,9 +540,9 @@ type CccProTyp = { onChange : ( patValObj : CadFieTyp ) => void, value : CadFieT
  *                         an in-progress draft), normalized on every render
  *                         via CAD_NAM_OBJ.norCadFun.
  *
- * @returns The full cadence editor: the cadence picker plus, for
- * every mode but daily, the matching anchor subsection inside an
- * animated ColDisCom.
+ * @returns The full cadence editor: the cadence picker plus, for every mode
+ *          but daily, the matching anchor subsection inside an animated
+ *          ColDisCom.
  *
  * @example
  * ```tsx

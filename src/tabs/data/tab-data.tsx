@@ -356,8 +356,8 @@ type TdcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  *                            by id.
  * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
- * @returns The Data tab's entire rendered content: its header, its
- * filters, the section sort bar, and the list of sections.
+ * @returns The Data tab's entire rendered content: its header, its filters,
+ *          the section sort bar, and the list of sections.
  *
  * @example
  * ```tsx

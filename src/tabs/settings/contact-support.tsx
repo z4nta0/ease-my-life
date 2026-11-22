@@ -111,8 +111,8 @@ const SUP_EMA_STR = 'support@easemylife.app'; // What: Support Email String. Why
  *
  * @param void - This function takes no parameters.
  *
- * @returns A short "Name X.Y" label for a recognized browser, or the
- * raw navigator.userAgent string otherwise.
+ * @returns A short "Name X.Y" label for a recognized browser, or the raw
+ *          navigator.userAgent string otherwise.
  *
  * @example
  * ```ts
@@ -181,8 +181,8 @@ function detBroFun () : string {
  *
  * @param props - This component does not use any props.
  *
- * @returns The "Having problems?" trigger card, plus the collapsible
- * support form beneath it.
+ * @returns The "Having problems?" trigger card, plus the collapsible support
+ *          form beneath it.
  *
  * @example
  * ```tsx

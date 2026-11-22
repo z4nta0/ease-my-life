@@ -69,8 +69,8 @@ type LmcProTyp = { legDocStr : 'privacy' | 'terms' | null, onCloModFun : () => v
  *                            animation (or the instant reduced-motion path)
  *                            finishes.
  *
- * @returns The modal's own backdrop-and-panel markup, portaled into <body>,
- * or null while legDocStr is null.
+ * @returns The modal's own backdrop-and-panel markup, portaled into <body>, or
+ *          null while legDocStr is null.
  *
  * @example
  * ```tsx

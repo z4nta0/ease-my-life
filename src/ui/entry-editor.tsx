@@ -298,8 +298,8 @@ type EecProTyp = { isaNewBoo? : boolean, iteCouNum? : number, iteDatObj : IteRcd
  *                            a fallback ease band for an unstamped item,
  *                            defaulting to none.
  *
- * @returns The editor's rows and footer, or the delete confirm prompt
- * while one is showing.
+ * @returns The editor's rows and footer, or the delete confirm prompt while
+ *          one is showing.
  *
  * @example
  * ```tsx

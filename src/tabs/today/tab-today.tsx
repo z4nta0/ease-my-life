@@ -175,9 +175,9 @@ type TocProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  * @param props.synNeeFun   - Sync Needed Function: {@link useSynRunFun}'s
  *                            check for whether that wait applies.
  *
- * @returns The Today tab's entire rendered content: its header, its
- * grouped list (or empty-state CTAs), and any reminder mini-tour/App
- * Features intro overlay currently running.
+ * @returns The Today tab's entire rendered content: its header, its grouped
+ *          list (or empty-state CTAs), and any reminder mini-tour/App Features
+ *          intro overlay currently running.
  *
  * @example
  * ```tsx
@@ -514,7 +514,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * @param rawValStr - Raw Value String: The typed rename.
 	 *
 	 * @returns An error message naming the colliding group, or null when the
-	 * name is empty or free.
+	 *          name is empty or free.
 	 *
 	 * @example
 	 * ```ts
@@ -604,7 +604,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * @param allRcdArr - All Record Array: Every picker or task of that kind.
 	 *
 	 * @returns Whether the sample's launcher card counts toward the ring and
-	 * rail.
+	 *          rail.
 	 *
 	 * @example
 	 * ```ts

@@ -260,8 +260,8 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	 *
 	 * @param void - This function takes no parameters.
 	 *
-	 * @returns The sibling index the dragged element should currently
-	 * be considered over.
+	 * @returns The sibling index the dragged element should currently be
+	 *          considered over.
 	 * @see {@link tarCanNum}
 	 *
 	 * @example

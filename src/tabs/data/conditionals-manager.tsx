@@ -168,8 +168,8 @@ type CecProTyp = { actStoObj : ActStoTyp, conDraObj : Partial< ConRcdTyp >, curC
  *                             already normalized to the app's tidy-casing
  *                             rule.
  *
- * @returns This conditional's own editor body: any name error, the
- * shared CodConCom fields, and the footer.
+ * @returns This conditional's own editor body: any name error, the shared
+ *          CodConCom fields, and the footer.
  *
  * @example
  * ```tsx
@@ -397,8 +397,8 @@ type CmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Cond
  * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
  * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
- * @returns The Conditionals section: its own header, the "Add a
- * conditional" control, and every conditional's own collapsible row.
+ * @returns The Conditionals section: its own header, the "Add a conditional"
+ *          control, and every conditional's own collapsible row.
  *
  * @example
  * ```tsx

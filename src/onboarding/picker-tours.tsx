@@ -959,7 +959,7 @@ type PucProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () =
  *                            state.
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running guided
- * tour (touPhaStr 'tour'), depending on this picker's own phase.
+ *          tour (touPhaStr 'tour'), depending on this picker's own phase.
  *
  * @example
  * ```tsx

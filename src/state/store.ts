@@ -571,7 +571,7 @@ function nexStaFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], chaStaObj :
  * @param entIdeStr - Entry Identifier String: The entry's own eid.
  *
  * @returns { curEntObj, nexIteArr, nexLogArr, nexPicArr }: the entry (or
- * undefined) and the items, pick log, and pickers to build on.
+ *          undefined) and the items, pick log, and pickers to build on.
  *
  * @example
  * ```ts
@@ -685,8 +685,8 @@ function wriStaFun ( curStaObj : StaAppTyp ) : void {
  *                    loaStaFun(); perBoo: false disables the idle-save/flush
  *                    effects entirely. Omitted for normal, persisted use.
  *
- * @returns [state, actions]: the current app state, and the memoized
- * object of state-transition functions that mutate it.
+ * @returns [state, actions]: the current app state, and the memoized object of
+ *          state-transition functions that mutate it.
  *
  * @example
  * ```ts

@@ -336,8 +336,8 @@ type TecProTyp = { accSynObj : AccSynTyp, actStoObj : ActStoTyp, onNavHomFun? : 
  *                            arbitrary tab by id.
  * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
- * @returns The tab's own header, the section rail, and every section's
- * content in the right-hand pane, plus the Legal modal.
+ * @returns The tab's own header, the section rail, and every section's content
+ *          in the right-hand pane, plus the Legal modal.
  *
  * @example
  * ```tsx

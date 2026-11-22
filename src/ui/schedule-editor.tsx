@@ -165,9 +165,8 @@ const REP_OPT_ARR : { keyStr : RepNamTyp, labStr : string, subEle : React.JSX.El
  *                    TAS_NAM_OBJ.todVisFun}'s own result object, carrying the
  *                    causes array and holiday name fields this function reads.
  *
- * @returns The joined reason phrase, e.g. 'weekends and the Christmas
- * Day holiday', or an empty string when no settings-based cause
- * applies.
+ * @returns The joined reason phrase, e.g. 'weekends and the Christmas Day
+ *          holiday', or an empty string when no settings-based cause applies.
  *
  * @example
  * ```ts
@@ -710,9 +709,9 @@ type VncProTyp = { kinValStr : string, notIdeStr : string, staAppObj : StaAppTyp
  * @param props.tasRcdObj - Task Record Object: The reminder/task record to
  *                          advise about.
  *
- * @returns The note's own always-mounted live region, holding the
- * advisory paragraph when one applies to this instance's own
- * kinValStr, or nothing.
+ * @returns The note's own always-mounted live region, holding the advisory
+ *          paragraph when one applies to this instance's own kinValStr, or
+ *          nothing.
  *
  * @example
  * ```tsx
@@ -902,8 +901,8 @@ type SecProTyp = { aniExtBoo? : boolean, layVarStr : string, onPatTasFun : ( pat
  * @param props.tasRcdObj   - Task Record Object: The caller's draft of the
  *                            reminder being edited.
  *
- * @returns The full schedule editor: the Repeat row plus whichever
- * detail subsection matches the current (or last non-once) repeat kind.
+ * @returns The full schedule editor: the Repeat row plus whichever detail
+ *          subsection matches the current (or last non-once) repeat kind.
  *
  * @example
  * ```tsx

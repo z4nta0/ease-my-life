@@ -134,8 +134,8 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
  *                    neither-selected phrasing, defaulting to 'and' ('nor'
  *                    reads better for a negatively-phrased verb).
  *
- * @returns A function of (oncEnaBoo, reuEnaBoo) that renders the correct
- * one of the 4 mutually-exclusive sub-explanation phrases.
+ * @returns A function of (oncEnaBoo, reuEnaBoo) that renders the correct one
+ *          of the 4 mutually-exclusive sub-explanation phrases.
  *
  * @example
  * ```ts
@@ -385,7 +385,7 @@ type OmcProTyp = { actStoObj : ActStoTyp, onCloConFun : () => void, remOptObj : 
  *                            recurring } participation options object.
  *
  * @returns The full participation matrix: its head row, one row per
- * REM_MAT_ARR entry, and its own Cancel/Save foot.
+ *          REM_MAT_ARR entry, and its own Cancel/Save foot.
  *
  * @example
  * ```tsx
@@ -715,9 +715,9 @@ type RmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Remi
  * @param props.staAppObj - State App Object: The entire app's own persisted
  *                          state.
  *
- * @returns The Reminders category: its header, the Controls
- * disclosure (OptMatCom), and the Items disclosure (one row per
- * reminder, expanding into SchEdiCom plus EdiFooCom).
+ * @returns The Reminders category: its header, the Controls disclosure
+ *          (OptMatCom), and the Items disclosure (one row per reminder,
+ *          expanding into SchEdiCom plus EdiFooCom).
  *
  * @example
  * ```tsx

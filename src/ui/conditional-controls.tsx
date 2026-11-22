@@ -374,9 +374,9 @@ type CocProTyp = { conDraObj : Partial< ConRcdTyp >, hidNamBoo? : boolean, layVa
  * @param props.onChange  - On Change: Called with the whole next draft object
  *                          whenever any field changes.
  *
- * @returns The full editor: the name/card-text fields (name optional),
- * the mode radio, whichever mode-specific settings block matches the
- * current mode, and the Active toggle.
+ * @returns The full editor: the name/card-text fields (name optional), the
+ *          mode radio, whichever mode-specific settings block matches the
+ *          current mode, and the Active toggle.
  *
  * @example
  * ```tsx

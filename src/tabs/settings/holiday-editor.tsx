@@ -61,8 +61,8 @@ type HecProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Holi
  * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
  * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
- * @returns The holiday list (computed rows plus custom rows) and the
- * "add a holiday" form beneath it, as a fragment.
+ * @returns The holiday list (computed rows plus custom rows) and the "add a
+ *          holiday" form beneath it, as a fragment.
  *
  * @example
  * ```tsx

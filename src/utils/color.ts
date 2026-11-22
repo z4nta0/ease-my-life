@@ -41,8 +41,8 @@
  * @param hexColStr - Hex Color String: The '#rrggbb' (or '#rgb') color to
  *                    invert.
  *
- * @returns The inverted color, as a '#rrggbb' string, or hexColStr
- * itself unchanged if the conversion throws.
+ * @returns The inverted color, as a '#rrggbb' string, or hexColStr itself
+ *          unchanged if the conversion throws.
  *
  * @example
  * ```ts

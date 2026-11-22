@@ -56,8 +56,7 @@ type EfcProTyp = { isaNewBoo? : boolean, onCanTasFun : () => void, onDelTasFun :
  *                            Delete.
  * @param props.onDonTasFun - On Done Task Function: Called on Save.
  *
- * @returns The plain footer, or the delete confirm prompt while it is
- * open.
+ * @returns The plain footer, or the delete confirm prompt while it is open.
  *
  * @example
  * ```tsx

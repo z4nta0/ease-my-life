@@ -90,8 +90,7 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  *                            text, used as both the visible <h2> and the
  *                            dialog's own aria-label.
  *
- * @returns The modal's own scrim-and-card markup, portaled into
- * document.body.
+ * @returns The modal's own scrim-and-card markup, portaled into document.body.
  *
  * @example
  * ```tsx

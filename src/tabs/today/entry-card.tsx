@@ -360,9 +360,9 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
  *                            row).
  * @param props.staAppObj   - State App Object: The shared app state.
  *
- * @returns Exactly one of the tutorial/day-off/charging/real-pick
- * article elements, chosen by entRcdObj.kind, or null when the row's own
- * item can no longer be found at all.
+ * @returns Exactly one of the tutorial/day-off/charging/real-pick article
+ *          elements, chosen by entRcdObj.kind, or null when the row's own item
+ *          can no longer be found at all.
  *
  * @example
  * ```tsx

@@ -87,8 +87,8 @@ type TccProTyp = { actStoObj : ActStoTyp, actTheBoo : boolean, cusColObj : CusPa
  *                          selecting which of the 2 custom themes this row
  *                          edits.
  *
- * @returns One theRowDiv div holding 3 live color inputs, a name input,
- * and (while active) a checkmark.
+ * @returns One theRowDiv div holding 3 live color inputs, a name input, and
+ *          (while active) a checkmark.
  *
  * @example
  * ```tsx
@@ -230,8 +230,8 @@ type TrcProTyp = { actTheBoo : boolean, darModBoo? : boolean, onActTheFun : () =
  *                            preview, read from
  *                            APP_NAM_OBJ.PAL_SET_OBJ[theKeyStr].
  *
- * @returns One theRowDiv div, acting as a radio option within its own
- * card's implicit radio group.
+ * @returns One theRowDiv div, acting as a radio option within its own card's
+ *          implicit radio group.
  *
  * @example
  * ```tsx

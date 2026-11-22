@@ -61,8 +61,8 @@ type CdcProTyp = { children : React.ReactNode, className? : string, isaInsBoo? :
  *                          Controls section); defaults to false.
  * @param props.open      - Open: Whether this section should be expanded.
  *
- * @returns The section's own animated wrapper and its children, or
- * null while fully closed and unmounted.
+ * @returns The section's own animated wrapper and its children, or null while
+ *          fully closed and unmounted.
  *
  * @example
  * ```tsx

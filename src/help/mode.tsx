@@ -223,8 +223,8 @@ const RAI_HAN_OBJ : HelIteTyp = { // What: Rail Handle Object. Why: The side rai
  *
  * @param curRecObj - Current Rect Object: The measured help rect to draw.
  *
- * @returns { padBotNum, padLefNum, padRigNum, padTopNum, radXcoNum,
- * radYcoNum }, each in pixels.
+ * @returns { padBotNum, padLefNum, padRigNum, padTopNum, radXcoNum, radYcoNum
+ *          }, each in pixels.
  *
  * @example
  * ```ts
@@ -301,9 +301,8 @@ type HocProTyp = { actModBoo : boolean, helIteArr : HelIteTyp[], onCloAllFun : (
  *                            itself should close entirely, as opposed to just
  *                            closing one open tip.
  *
- * @returns The whole overlay (dim layer, highlight spots, badges, and
- * at most one open tip), portaled to document.body, or null while
- * inactive.
+ * @returns The whole overlay (dim layer, highlight spots, badges, and at most
+ *          one open tip), portaled to document.body, or null while inactive.
  *
  * @example
  * ```tsx

@@ -477,9 +477,8 @@ type RtcProTyp = { actStoObj : ActStoTyp, onCloForFun : () => void, onCloTouFun 
  * @param props.varKeyStr   - Variant Key String: Which sample reminder this
  *                            mounts for, 'once' or 'recurring'.
  *
- * @returns Either the intro modal (touPhaStr 'intro') or the running
- * guided tour (touPhaStr 'tour'), depending on this varKeyStr's own
- * phase.
+ * @returns Either the intro modal (touPhaStr 'intro') or the running guided
+ *          tour (touPhaStr 'tour'), depending on this varKeyStr's own phase.
  *
  * @example
  * ```tsx

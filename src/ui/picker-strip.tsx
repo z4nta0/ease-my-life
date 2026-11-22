@@ -74,8 +74,8 @@ type PscProTyp = { canIteArr : Pick< IteRcdTyp, 'id' | 'name' >[], forMotBoo? : 
  *                            styles to render: 'reel', 'spotlight', or
  *                            'dissolve'.
  *
- * @returns The current cycle frame for the given style, or the settled
- * end state directly when reduced motion applies.
+ * @returns The current cycle frame for the given style, or the settled end
+ *          state directly when reduced motion applies.
  *
  * @example
  * ```tsx

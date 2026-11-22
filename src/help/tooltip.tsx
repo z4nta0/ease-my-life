@@ -71,8 +71,8 @@ import type { HelRecTyp } from './geometry.ts';     // What: Help Rect Type. Why
  * @param tipHeiNum - Tip Height Number: The tip's own real, already-measured
  *                    height.
  *
- * @returns { arrHorNum, lefTipNum, maxHeiNum, tipClaStr, topTipNum } for
- * the tip's own inline style and scroll-capping.
+ * @returns { arrHorNum, lefTipNum, maxHeiNum, tipClaStr, topTipNum } for the
+ *          tip's own inline style and scroll-capping.
  *
  * @example
  * ```ts

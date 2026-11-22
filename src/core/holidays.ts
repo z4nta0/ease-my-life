@@ -156,8 +156,7 @@ const REG_DEF_OBJ : Record< string, { defArr : HolDefTyp[] } > = { US : { defArr
  * @param dayIndNum - Day Index Number: The target weekday, matching
  *                    Date.getDay()'s own encoding (Sun = 0 ... Sat = 6).
  *
- * @returns The resolved Date for the month's last occurrence of that
- * weekday.
+ * @returns The resolved Date for the month's last occurrence of that weekday.
  *
  * @example
  * ```ts
@@ -245,8 +244,8 @@ function nthDayFun ( yeaValNum : number, monOneNum : number, dayIndNum : number,
  * @param actDatObj - Actual Date Object: The holiday's own true, un-shifted
  *                    calendar date.
  *
- * @returns The observed Date: actDatObj itself, unless it fell on a
- * Saturday or Sunday, in which case the shifted weekday instead.
+ * @returns The observed Date: actDatObj itself, unless it fell on a Saturday
+ *          or Sunday, in which case the shifted weekday instead.
  *
  * @example
  * ```ts
@@ -299,8 +298,8 @@ function obsDatFun ( actDatObj : Date ) : Date {
  * @param yeaValNum - Year Value Number: The calendar year to resolve the date
  *                    within.
  *
- * @returns The resolved Date, or null if holDefObj carries none of the
- * 3 recognized rule shapes.
+ * @returns The resolved Date, or null if holDefObj carries none of the 3
+ *          recognized rule shapes.
  *
  * @example
  * ```ts
@@ -352,8 +351,8 @@ function datDefFun ( holDefObj : HolDefTyp, yeaValNum : number ) : Date | null {
  *                    holidays for, defaulting to 'US' (the only region this
  *                    module currently defines a rule table for).
  *
- * @returns An array of resolved holiday records, one per definition in
- * the resolved region's own table.
+ * @returns An array of resolved holiday records, one per definition in the
+ *          resolved region's own table.
  *
  * @example
  * ```ts
@@ -551,8 +550,8 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
  *                    to check against, in the same shape actYeaFun accepts.
  * @param cheDatObj - Check Date Object: The date being checked.
  *
- * @returns The matching full holiday/custom-day record, or null if
- * cheDatObj is not an active day off.
+ * @returns The matching full holiday/custom-day record, or null if cheDatObj
+ *          is not an active day off.
  *
  * @example
  * ```ts
@@ -605,8 +604,8 @@ function holInfFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date 
  *                    to check against, in the same shape actYeaFun accepts.
  * @param cheDatObj - Check Date Object: The date being checked.
  *
- * @returns The matching holiday/custom-day's own name, or null if
- * cheDatObj is not an active day off.
+ * @returns The matching holiday/custom-day's own name, or null if cheDatObj is
+ *          not an active day off.
  *
  * @example
  * ```ts

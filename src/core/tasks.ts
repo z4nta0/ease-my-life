@@ -281,8 +281,8 @@ const difYeaFun = ( ancIsoStr : string, cheDatObj : Date ) => cheDatObj.getFullY
  *                    default against, defaulting to an empty object for a
  *                    brand new draft with nothing set yet.
  *
- * @returns A fully-defaulted task/reminder record, in the persisted
- * shape documented at the top of this file.
+ * @returns A fully-defaulted task/reminder record, in the persisted shape
+ *          documented at the top of this file.
  *
  * @example
  * ```ts
@@ -435,8 +435,8 @@ function isaFulFun ( tasRcdObj : TasRcdTyp ) : boolean { return tasRcdObj.repeat
  * @param cheDatObj - Check Date Object: The date to check due-ness against,
  *                    defaulting to right now.
  *
- * @returns Whether tasRcdObj is due on cheDatObj, per its own repeat
- * kind's rule.
+ * @returns Whether tasRcdObj is due on cheDatObj, per its own repeat kind's
+ *          rule.
  *
  * @example
  * ```ts
@@ -578,8 +578,8 @@ function isaDueFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
  * @param cheDatObj - Check Date Object: The date to check due-ness against,
  *                    defaulting to right now.
  *
- * @returns The due, non-hidden subset of tasLisArr, sorted one-time
- * first, then newest createdAt first.
+ * @returns The due, non-hidden subset of tasLisArr, sorted one-time first,
+ *          then newest createdAt first.
  *
  * @example
  * ```ts
@@ -662,8 +662,8 @@ const isaReuFun = ( tasRcdObj : TasRcdTyp ) : boolean => tasRcdObj.repeat !== 'o
  * @param cheDatObj - Check Date Object: The date to check staleness against,
  *                    defaulting to right now.
  *
- * @returns Whether tasRcdObj is a 'once' task completed on some day
- * other than cheDatObj.
+ * @returns Whether tasRcdObj is a 'once' task completed on some day other than
+ *          cheDatObj.
  * @see {@link isaStaBoo}
  *
  * @example
@@ -930,8 +930,8 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
  *
  * @param void - This function takes no parameters.
  *
- * @returns The canonical default { once, recurring } participation-
- * options object.
+ * @returns The canonical default { once, recurring } participation- options
+ *          object.
  *
  * @example
  * ```ts
@@ -978,8 +978,7 @@ function defOptFun () : RemOptTyp {
  * @param remOptObj - Reminder Option Object: The raw, possibly partial or
  *                    missing reminderOpts state to normalize.
  *
- * @returns A fully-shaped { once, recurring } participation-options
- * object.
+ * @returns A fully-shaped { once, recurring } participation-options object.
  *
  * @example
  * ```ts
@@ -1030,8 +1029,8 @@ function norOptFun ( remOptObj : RemOptTyp | null | undefined ) : RemOptTyp {
  * @param remOptObj - Reminder Option Object: The raw reminderOpts state to
  *                    normalize and choose from.
  *
- * @returns tasRcdObj's own governing options object, either
- * remOptObj's normalized once or recurring class.
+ * @returns tasRcdObj's own governing options object, either remOptObj's
+ *          normalized once or recurring class.
  *
  * @example
  * ```ts
@@ -1084,9 +1083,9 @@ function optForFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
  * @param resSkiBoo - Respect Skip Boolean: Whether to also respect an
  *                    already-active skipUntil, defaulting to false.
  *
- * @returns The next eligible Date, or null if nothing qualifies within
- * this function's own search horizon (e.g. an annual task that always
- * lands on an excluded holiday).
+ * @returns The next eligible Date, or null if nothing qualifies within this
+ *          function's own search horizon (e.g. an annual task that always
+ *          lands on an excluded holiday).
  *
  * @example
  * ```ts
@@ -1191,8 +1190,8 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
  *                    defaulting to right now.
  *
  * @returns A { visBoo, cauStr, cauArr, holStr, cusBoo, nexObj } advisory
- * object; see this function's own @summary above for
- * what each field means.
+ *          object; see this function's own @summary above for what each field
+ *          means.
  *
  * @example
  * ```ts
@@ -1288,8 +1287,8 @@ function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
  * @param cheDatObj - Check Date Object: The date to check visibility against,
  *                    defaulting to right now.
  *
- * @returns The subset of tasLisArr that's both due and not excluded
- * on cheDatObj.
+ * @returns The subset of tasLisArr that's both due and not excluded on
+ *          cheDatObj.
  *
  * @example
  * ```ts

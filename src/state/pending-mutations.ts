@@ -191,7 +191,7 @@ function depDonFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], conIdeStr :
  *                     or was just un-done (false).
  *
  * @returns The updated conditionalLog array, or the same reference when
- * nothing about it actually changes.
+ *          nothing about it actually changes.
  *
  * @example
  * ```ts
@@ -348,8 +348,8 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
  * @param nowDonBoo - Now Done Boolean: Whether togEntObj is now done (true)
  *                     or was just un-done (false).
  *
- * @returns The updated conditionals array, or the same reference when
- * nothing about it actually changes.
+ * @returns The updated conditionals array, or the same reference when nothing
+ *          about it actually changes.
  *
  * @example
  * ```ts
@@ -511,9 +511,9 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
  * @param curEntObj - Current Entry Object: The Today entry whose own pending
  *                    is being applied.
  *
- * @returns { items, pickers, pickLog, revert } with pending applied, or
- * the same items/pickers/pickLog and revert:null when curEntObj has no
- * pending at all.
+ * @returns { items, pickers, pickLog, revert } with pending applied, or the
+ *          same items/pickers/pickLog and revert:null when curEntObj has no
+ *          pending at all.
  *
  * @example
  * ```ts
@@ -702,9 +702,9 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
  * @param curEntObj - Current Entry Object: The Today entry being un-done,
  *                    whose own revert snapshot drives the restoration.
  *
- * @returns { items, pickers, pickLog } restored to their pre-apply
- * values, or the state's own arrays untouched when curEntObj has no
- * revert snapshot at all.
+ * @returns { items, pickers, pickLog } restored to their pre-apply values, or
+ *          the state's own arrays untouched when curEntObj has no revert
+ *          snapshot at all.
  *
  * @example
  * ```ts
@@ -811,8 +811,8 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
  * @param iteIdeStr - Item Identifier String: The item whose value was set.
  * @param newValNum - New Value Number: The value the item was just set to.
  *
- * @returns The same todEntArr reference when nothing changed, else a new
- * array with the reworked entries.
+ * @returns The same todEntArr reference when nothing changed, else a new array
+ *          with the reworked entries.
  *
  * @example
  * ```ts
@@ -920,8 +920,8 @@ function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr
  * @param iteIdeArr - Item Identifier Array: The item ids whose stale
  *                    pending rows should be dropped.
  *
- * @returns The same todEntArr reference when nothing changed, else a new
- * array with the affected entries' own pending.updates filtered.
+ * @returns The same todEntArr reference when nothing changed, else a new array
+ *          with the affected entries' own pending.updates filtered.
  *
  * @example
  * ```ts

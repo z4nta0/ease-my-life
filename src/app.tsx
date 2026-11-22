@@ -115,8 +115,9 @@ type TbcProTyp = { actIdeStr : string, className? : string, onChange : ( tabIdeS
  *                            animation; defaults to false.
  *
  * @returns The tab bar's own nav element, including each tab button, the
- * sliding indicator, the brand button, and the rail pull handle (drawn only
- * in the side placement when the app is 720px wide or less).
+ *          sliding indicator, the brand button, and the rail pull handle
+ *          (drawn only in the side placement when the app is 720px wide or
+ *          less).
  *
  * @example
  * ```tsx
@@ -417,9 +418,9 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
  *
  * @param props - This component does not use any props.
  *
- * @returns The app's rendered shell, including the current tab bar, the
- * active tab's own content, and any onboarding overlay that's currently
- * running.
+ * @returns The app's rendered shell, including the current tab bar, the active
+ *          tab's own content, and any onboarding overlay that's currently
+ *          running.
  *
  * @example
  * ```tsx

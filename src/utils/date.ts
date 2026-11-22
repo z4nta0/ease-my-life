@@ -184,8 +184,8 @@ function nexDatFun ( nexDatObj : Date | null, alwYeaBoo : boolean ) : string | n
  * @param weeValNum - Weekday Value Number: The target weekday, 0 for
  *                    Sunday through 6 for Saturday.
  *
- * @returns The day-of-month (1 through 31) of that Nth weekday
- * occurrence, clamped to the 4th when a requested 5th doesn't exist.
+ * @returns The day-of-month (1 through 31) of that Nth weekday occurrence,
+ *          clamped to the 4th when a requested 5th doesn't exist.
  *
  * @example
  * ```ts
@@ -226,8 +226,7 @@ function nwmDayFun ( yeaValNum : number, monOneNum : number, nthValNum : number,
  *
  * @param ordValNum - Ordinal Value Number: The number to suffix.
  *
- * @returns ordValNum followed by its correct ordinal suffix, as a
- * string.
+ * @returns ordValNum followed by its correct ordinal suffix, as a string.
  *
  * @example
  * ```ts

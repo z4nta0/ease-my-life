@@ -147,8 +147,8 @@ type TpcProTyp = { actStoObj : ActStoTyp, aniStyStr : string, onNavHomFun? : () 
  *                            arbitrary tab by id.
  * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
- * @returns The whole Pickers page: its header, filter rows, the Show tab
- * row, and whichever of PicForCom/PicVieCom currently applies.
+ * @returns The whole Pickers page: its header, filter rows, the Show tab row,
+ *          and whichever of PicForCom/PicVieCom currently applies.
  *
  * @example
  * ```tsx

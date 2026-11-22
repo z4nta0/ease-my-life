@@ -342,7 +342,7 @@ type EasStaTyp = Record< string, { activeItemId : string | null, charge : number
  *                    counting back from today; defaults to 365.
  *
  * @returns The generated rows plus each Ease Down picker's own final
- * in-progress state.
+ *          in-progress state.
  *
  * @example
  * ```ts

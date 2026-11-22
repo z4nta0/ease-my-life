@@ -61,8 +61,8 @@ type SccProTyp< T extends string > = { ariLabStr : string, desIdeStr? : string, 
  *                          entries this control renders one button per.
  * @param props.value     - Value: The currently-selected entry's own key.
  *
- * @returns The segmented control's own group element, including the
- * sliding thumb span and one button per entry in props.optIteArr.
+ * @returns The segmented control's own group element, including the sliding
+ *          thumb span and one button per entry in props.optIteArr.
  *
  * @example
  * ```tsx

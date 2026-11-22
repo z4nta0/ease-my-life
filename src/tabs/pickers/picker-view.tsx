@@ -88,9 +88,9 @@ type PvcProTyp = { actStoObj : ActStoTyp, aniStyStr : string, picDatObj : PicRcd
  *                          picker record this view renders.
  * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
- * @returns Either the picker's own edit form (PicForCom, while ediOpeBoo
- * is true) or the full picker view: its run stage, its action buttons,
- * and its pool list.
+ * @returns Either the picker's own edit form (PicForCom, while ediOpeBoo is
+ *          true) or the full picker view: its run stage, its action buttons,
+ *          and its pool list.
  *
  * @example
  * ```tsx

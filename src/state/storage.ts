@@ -177,9 +177,9 @@ let mirWriBoo : boolean               = true;      // What: Mirror Write Boolean
  *
  * @param void - This function takes no parameters.
  *
- * @returns A promise that resolves with the opened IDBDatabase instance,
- * and rejects when IndexedDB is unavailable, blocked by another tab, or
- * hangs past its own open timeout.
+ * @returns A promise that resolves with the opened IDBDatabase instance, and
+ *          rejects when IndexedDB is unavailable, blocked by another tab, or
+ *          hangs past its own open timeout.
  *
  * @example
  * ```ts
@@ -270,8 +270,8 @@ const reqProFun = < T >( idbReqObj : IDBRequest< T > ) : Promise< T > => new Pro
  * @param modValStr - Mode Value String: The transaction mode, 'readonly' or
  *                    'readwrite'.
  *
- * @returns The requested IDBObjectStore, opened within a brand new
- * transaction on datConObj.
+ * @returns The requested IDBObjectStore, opened within a brand new transaction
+ *          on datConObj.
  *
  * @example
  * ```ts
@@ -299,9 +299,9 @@ function traStoFun ( stoNamStr : string, modValStr : IDBTransactionMode ) : IDBO
  *
  * @param void - This function takes no parameters.
  *
- * @returns A promise that resolves with the full persisted state object
- * with its own pickLog merged back in, or null when the state store has
- * nothing written to it yet (a fresh install).
+ * @returns A promise that resolves with the full persisted state object with
+ *          its own pickLog merged back in, or null when the state store has
+ *          nothing written to it yet (a fresh install).
  *
  * @example
  * ```ts
@@ -438,9 +438,9 @@ async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
  *
  * @param void - This function takes no parameters.
  *
- * @returns Every localStorage key this app currently owns, or an empty
- * array if localStorage itself cannot be read at all (private mode, a
- * blocked/opaque origin, ...).
+ * @returns Every localStorage key this app currently owns, or an empty array
+ *          if localStorage itself cannot be read at all (private mode, a
+ *          blocked/opaque origin, ...).
  *
  * @example
  * ```ts
@@ -479,8 +479,8 @@ function ownKeyFun () : string[] {
  *
  * @param void - This function takes no parameters.
  *
- * @returns The parsed localStorage state object, or null when nothing
- * is stored under MIR_KEY_STR, or the stored value fails to parse.
+ * @returns The parsed localStorage state object, or null when nothing is
+ *          stored under MIR_KEY_STR, or the stored value fails to parse.
  *
  * @example
  * ```ts
@@ -772,7 +772,7 @@ function logAutFun () : void { logSusBoo = false; } // What: Log Authoritative B
  *                    localStorage mirror, or null when there is none.
  *
  * @returns The state to adopt in place of IndexedDB's, or null when
- * IndexedDB's copy should be kept.
+ *          IndexedDB's copy should be kept.
  * @see {@link adoStaObj}
  *
  * @example
@@ -857,9 +857,9 @@ function mirAdoFun ( idbStaObj : RawSavTyp, mirStaObj : RawSavTyp ) : RawSavTyp 
  *
  * @param void - This function takes no parameters.
  *
- * @returns A promise that resolves with the state to boot from, or null
- * for a fresh install. It rejects when IndexedDB can't be opened or read,
- * or a first migration can't be verified.
+ * @returns A promise that resolves with the state to boot from, or null for a
+ *          fresh install. It rejects when IndexedDB can't be opened or read,
+ *          or a first migration can't be verified.
  *
  * @example
  * ```ts
@@ -975,8 +975,8 @@ async function idbBooFun () : Promise< RawSavTyp > {
  *
  * @param void - This function takes no parameters.
  *
- * @returns A promise that resolves with the loaded state object, or null
- * for a genuinely fresh install with nothing persisted anywhere yet.
+ * @returns A promise that resolves with the loaded state object, or null for a
+ *          genuinely fresh install with nothing persisted anywhere yet.
  * @see {@link cacStaObj}
  *
  * @example
@@ -1246,7 +1246,7 @@ async function wipDatFun () : Promise< void > {
  * @param void - This function takes no parameters.
  *
  * @returns A promise that resolves with the authoritative persisted state
- * object, or null when it cannot be read at all.
+ *          object, or null when it cannot be read at all.
  *
  * @example
  * ```ts
@@ -1311,9 +1311,9 @@ async function reaPerFun () : Promise< RawSavTyp > {
  *
  * @param void - This function takes no parameters.
  *
- * @returns A promise that resolves with the exact byte size of the
- * persisted state's own JSON serialization, or null when there is nothing
- * persisted yet or no way to measure it in this environment.
+ * @returns A promise that resolves with the exact byte size of the persisted
+ *          state's own JSON serialization, or null when there is nothing
+ *          persisted yet or no way to measure it in this environment.
  *
  * @example
  * ```ts
@@ -1374,8 +1374,8 @@ async function datBytFun () : Promise< number | null > {
  *
  * @param void - This function takes no parameters.
  *
- * @returns A promise that resolves with whether persistent storage was
- * already granted, or was just successfully requested.
+ * @returns A promise that resolves with whether persistent storage was already
+ *          granted, or was just successfully requested.
  *
  * @example
  * ```ts

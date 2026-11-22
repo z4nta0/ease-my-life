@@ -153,8 +153,8 @@ const canInsFun = () : boolean => !!insCapObj; // What: Can Install Function. Wh
  *
  * @param void - This function takes no parameters.
  *
- * @returns Whether this page is currently running standalone, or false
- * when the check itself throws.
+ * @returns Whether this page is currently running standalone, or false when
+ *          the check itself throws.
  * @see {@link isaStaBoo}
  *
  * @example
@@ -434,8 +434,8 @@ function proSupFun () : void {
  * @param void - This function takes no parameters.
  *
  * @returns A promise that resolves with 'accepted', 'dismissed', or
- * 'unavailable' when there was no captured event to show, or showing it
- * failed.
+ *          'unavailable' when there was no captured event to show, or showing
+ *          it failed.
  *
  * @example
  * ```ts
@@ -499,8 +499,8 @@ async function askInsFun () : Promise< 'accepted' | 'dismissed' | 'unavailable' 
  *                    device has already been asked before.
  *
  * @returns A promise that resolves with whether this call's request left
- * persistent storage granted, or false when this device was already
- * asked and the call was not forced.
+ *          persistent storage granted, or false when this device was already
+ *          asked and the call was not forced.
  *
  * @example
  * ```ts

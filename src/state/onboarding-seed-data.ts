@@ -555,8 +555,8 @@ const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id ); // What: O
  *
  * @param staRawObj - Stats Raw Object: {@link ONB_STA_OBJ}
  *
- * @returns The same 3 logs, converted into real dated rows ready to
- * append onto app state.
+ * @returns The same 3 logs, converted into real dated rows ready to append
+ *          onto app state.
  *
  * @example
  * ```ts
