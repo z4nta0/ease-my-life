@@ -584,19 +584,6 @@
 
 
 }
-@container appRooDiv ( max-width : 500px ) { /* What: Narrowest Brand Wordmark Span In App Tab Nav Top. Why: On the narrowest screens the top bar keeps only the mark so five tabs still fit. How: This applies only when the app is 500px wide or less. */
-
-
-	.appTabNav--top .braWorSpa { /* What: Mark-Only Brand Wordmark Span In App Tab Nav Top. Why: With the text gone, the gap is empty space. How: This drops the gap. */
-
-
-		gap : 0;
-
-
-	}
-
-
-}
 
 /* #region worMarSpa */
 
