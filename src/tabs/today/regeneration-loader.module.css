@@ -260,7 +260,7 @@
 
 
 	.reeNamSpa,
-	.setNamSpa { /* What: Still Reel Name Span And Settled Name Span. Why: The name should simply be there, in the accent color. How: This turns the animations off and holds the name fully visible in place. */
+	.setNamSpa { /* What: Still Reel Name Span And Settled Name Span. Why: The names should simply be there, the settled name staying in the accent color. How: This turns the animations off and holds each name fully visible in place. */
 
 
 		animation : none;

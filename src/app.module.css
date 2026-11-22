@@ -949,7 +949,7 @@
 	display    : none;
 	inset      : 0;
 	position   : fixed;
-	z-index    : 17;                                                                  /* What: Scrim Stack Level. Why: The scrim has to dim the tab bars at 15 and their exiting ghost at 16, but not the drawer at 18. How: 17 sits between them. */
+	z-index    : 17;                                                                  /* What: Scrim Stack Level. Why: The scrim has to dim the tab bars at 15, but not the drawer at 18. How: 17 sits between them. */
 
 
 }
