@@ -203,7 +203,7 @@ function ConSupCom () : React.JSX.Element {
 	const [ shoErrBoo, setShoErrBoo ] = React.useState( false ); // What: Show Error Boolean And Setter. Why: Pressing Send with an empty field needs to surface a validation message. How: This is set true by senForFun's own guard and cleared once a send attempt passes validation.
 	const [ senFaiBoo, setSenFaiBoo ] = React.useState( false ); // What: Send Failed Boolean And Setter. Why: A failed POST needs to surface the fallback address instead of leaving the user stuck. How: This is set inside senForFun's own catch handler.
 	const [ adrCopBoo, setAdrCopBoo ] = React.useState( false ); // What: Address Copied Boolean And Setter. Why: The fallback "Copy address" button needs to confirm the copy actually happened. How: This is set true by copAdrFun and cleared 2400ms later.
-	const [ botFieStr, setBotFieStr ] = React.useState( '' );    // What: Bot Field String And Setter. Why: A spam bot filling this hidden field is the signal a real human never would. How: This is posted alongside the real fields and left for Netlify's own spam filtering to act on. // Honeypot. Humans never see this field, so a non-empty value means a bot filled it, and we silently accept and drop the submission.
+	const [ botFieStr, setBotFieStr ] = React.useState( '' );    // What: Bot Field String And Setter. Why: A spam bot filling this hidden field is the signal a real human never would. How: This is posted alongside the real fields and left for Netlify's own spam filtering to act on.
 	const [ isaSenBoo, setIsaSenBoo ] = React.useState( false ); // What: Is-A Sending Boolean And Setter. Why: A second Send press must not fire a second overlapping request while one is already in flight. How: This gates senForFun's own guard and disables the Send button while true.
 
 	const broNamStr = React.useMemo( () => detBroFun(), [] );           // What: Browser Name String. Why: The diagnostic fields need the detected browser, computed once rather than on every render. How: This memoizes detBroFun's own return value with an empty dependency array.
@@ -403,7 +403,7 @@ function ConSupCom () : React.JSX.Element {
 
 
 			body    : reqBodStr,                                                // What: Body. Why: This is the encoded form payload. How: This passes reqBodStr.
-			headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }, // What: Headers. Why: Netlify only parses a form-encoded body. How: This sets the matching Content-Type.
+			headers : { 'Content-Type' : 'application/x-www-form-urlencoded' }, // What: Headers. Why: Netlify Forms expects a form-encoded body. How: This sets the matching Content-Type.
 			method  : 'POST'                                                    // What: Method. Why: A form submission is a POST. How: This sets the request method.
 
 
@@ -485,7 +485,7 @@ function ConSupCom () : React.JSX.Element {
 				>{ /* What: Support Trigger Div Element. Why: The label/description and the trigger button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the Contact Support button. Its data-element-name-hook is read by help mode. */ }
 
 
-					<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name/description/sent-note need their own grouping, apart from the button. How: This wraps the name span, the description span, and (conditionally) the sent-confirmation span. */ }
+					<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name/description/sent-note need their own grouping, apart from the button. How: This wraps the name span, the description span, and the sent status span. */ }
 
 
 						<span className={ cssModObj.setNamSpa }>Having problems?</span>{ /* What: Settings Name Span Element. Why: A Settings row names itself with this span. How: This renders the fixed label "Having problems?". */ }
@@ -576,7 +576,7 @@ function ConSupCom () : React.JSX.Element {
 								className={ cssModObj.supLabLab }
 
 								htmlFor='supMesTex--app'
-							>Message</label>{ /* What: Support Label Label Element. Why: The message textarea needs a visible, properly-associated label. How: This points at the textarea below via its own distinct id. */ }{ /* The id is supMesTex--app, not supMesTex, since that id is already taken by index.html's hidden static Netlify form (see its own comment above the <form name="support">), and duplicate ids on the page confused the browser's label matching (both labels applied, announcing "Message Message"). */ }
+							>Message</label>{ /* What: Support Label Label Element. Why: The message textarea needs a visible, properly-associated label. How: This points at the textarea below via its own distinct id. */ }{ /* The id is supMesTex--app, not supMesTex, since index.html's hidden static Netlify form already uses supMesTex and an id must be unique on the page. */ }
 
 							<textarea
 								id='supMesTex--app'

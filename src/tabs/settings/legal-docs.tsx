@@ -186,7 +186,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 
 
-		const focDelTim = setTimeout( () => { if ( panEleRef.current ) panEleRef.current.focus(); }, 20 ); // What: Focus Delay Timeout. Why: Moving focus into the panel lets Esc and scroll work immediately. How: This focuses panEleRef's current element after 20ms, guarded so it no-ops if the ref is not attached.
+		const focDelTim = setTimeout( () => { if ( panEleRef.current ) panEleRef.current.focus(); }, 20 ); // What: Focus Delay Timeout. Why: The opened dialog should hold keyboard focus. How: This focuses panEleRef's current element after 20ms, guarded so it no-ops if the ref is not attached.
 
 
 
@@ -212,7 +212,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 		};
 
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: modDisFun is recreated every render, and listing it would re-lock the scroller and re-move focus each time. How: The open-time copy of modDisFun stays correct, since it reads only redMotFun, a state setter, and the onCloModFun it received at open.
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: modDisFun is recreated every render, and listing it would re-lock the scroller and re-move focus each time. How: The open-time copy of modDisFun stays correct, since it reads only redMotFun, durMilFun, a state setter, and the onCloModFun it received at open.
 	}, [ legDocStr ] ); // What: Effect Dependency Array. Why: This effect must re-run every time a different document (or no document) is requested. How: legDocStr changes both whether the modal is shown at all and which document's own title/body renders inside it.
 
 

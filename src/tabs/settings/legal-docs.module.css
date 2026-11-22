@@ -268,7 +268,7 @@
 
 /* #region panBodDiv */
 
-.panBodDiv { /* What: Panel Body Div. Why: A long document has to scroll inside the panel while the head stays put. How: This pads the body and lets it scroll on its own, with momentum on iOS. */
+.panBodDiv { /* What: Panel Body Div. Why: A long document has to scroll inside the panel while the head stays put. How: This pads the body and lets it scroll on its own. */
 
 
 	-webkit-overflow-scrolling : touch;
