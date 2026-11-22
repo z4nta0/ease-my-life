@@ -705,7 +705,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 	// #region State, Refs And Coach Height Tracking
 
-	const { draActBoo }               = useEmlTouFun();                                                                                    // What: Drag Active Boolean. Why: The coach card can sit right over whatever is being dragged, so a reorder gesture's flag on the bus hides it. How: This reads the shared bus's own draActBoo field; only the coach hides while it is true, the spotlight/dim stay so the highlighted target is still visible to drop onto.
+	const { draActBoo }               = useEmlTouFun();                                                                                    // What: Drag Active Boolean. Why: The coach card can sit right over whatever is being dragged, so a reorder gesture's flag on the bus hides it. How: This reads the shared bus's own draActBoo field; only the coach hides while it is true, and the spotlight keeps its border but drops its dimming shadow (data-spot-drag-active), so the page underneath stays visible to drop onto.
 	const [ curSteNum, setCurSteNum ] = React.useState( resSteNum || 0 );                                                                  // What: Current Step Number And Setter. Why: This is the tour's own live position in `steObjArr`. How: This starts at resSteNum (or 0), then only setCurSteNum ever advances/rewinds it.
 	const [ curRecObj, setCurRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Current Rect Object And Setter. Why: The render function needs the current step's own clamped highlight rect to position the spotlight and coach. How: This starts null (nothing to show yet) and is written by the position-tracking effect below.
 	const [ resTopNum, setResTopNum ] = React.useState( 0 );                                                                               // What: Reserve Top Number And Setter. Why: Extra top-space (px) reserved above the Today list when the current step's highlight is too tall for the coach to fit above or below it. How: This is published on the bus (see the effect below) so the active tab can push its content down by this amount instead of the coach card overlaying part of what is highlighted; it is driven by rect/viewport math rather than any specific step.
@@ -738,7 +738,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 	// #region Bus And Resume Publishing Effects
 
-	React.useEffect( () => { // What: Bus Phase Effect. Why: Other tabs read bus.touPhaStr === 'tour' to know a guided tour of SOME kind is active, without caring which one (e.g. tab-today.tsx's own empty-state gating, app.tsx's rail sync). How: This is published for the duration this component is mounted and cleared back to 'off' on unmount, however that happens.
+	React.useEffect( () => { // What: Bus Phase Effect. Why: Other tabs read bus.touPhaStr === 'tour' to know a guided tour of SOME kind is active, without caring which one (e.g. the Today tab's empty states stay hidden while it is). How: This is published for the duration this component is mounted and cleared back to 'off' on unmount, however that happens.
 
 
 		emlTouObj.set( { touPhaStr : 'tour' } ); // What: Phase Publish. Why: Other modules gating on "is any tour running" needs this flipped on the instant this component mounts. How: This writes touPhaStr : 'tour' onto the shared bus.
@@ -1516,7 +1516,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		*/
 
-		const getScrFun = ( curTarEle : Element ) => { // What: Get Scroller Function. Why: The ACTUAL scrolling ancestor of the target must be resolved, since on narrow/mobile layouts the scroller is not ".main" (the page/body scrolls instead), and a hardcoded ".main" would leave the target below the fold with the coach and spot off-screen, the dim-only "no highlight" state. How: This walks up from the target's parent to the first ancestor that actually scrolls, falling back to the document's own scroller.
+		const getScrFun = ( curTarEle : Element ) => { // What: Get Scroller Function. Why: The ACTUAL scrolling ancestor of the target must be resolved, since the target's scroller is not always the appConMai element (an inner panel can scroll instead, or nothing overflows and the page itself is the scroller), and a hardcoded appConMai would leave the target below the fold with the coach and spot off-screen, the dim-only "no highlight" state. How: This walks up from the target's parent to the first ancestor that actually scrolls, falling back to the document's own scroller.
 
 
 			let ancCurEle = curTarEle && curTarEle.parentElement; // What: Ancestor Current Element And Walker. Why: The walk needs to start from the target's own parent. How: This starts at curTarEle's own parentElement, or undefined when curTarEle itself is falsy.
