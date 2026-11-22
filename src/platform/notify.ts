@@ -306,7 +306,8 @@ async function reqPerFun () : Promise< PerStaTyp > {
  * service worker's own showNotification() over the page-level Notification
  * constructor: on Android Chrome the constructor throws (Failed to construct
  * 'Notification'), since it requires a service worker registration there.
- * The click behavior for the service-worker path lives in
+ * It waits up to 3 seconds for an active worker, then falls back to the
+ * constructor. The click behavior for the service-worker path lives in
  * public/sw-notify.js instead, since SW-owned notifications never reach
  * page-level handlers.
  *
@@ -380,16 +381,17 @@ async function genNotFun () : Promise< boolean > {
 
 	// #region Notification Delivery
 
-	try { // What: Service Worker Notification Attempt. Why: The service worker's own showNotification() is the only path that works at all on Android Chrome, where the page-level constructor throws. How: This tries the service-worker path first and falls through to the page-level constructor below on any failure.
+	try { // What: Service Worker Notification Attempt. Why: The service worker's own showNotification() is the only path that works at all on Android Chrome, where the page-level constructor throws. How: This tries the service-worker path first and falls through to the page-level constructor below on any failure, or when no worker is active in time.
 
 
 		if ( navigator.serviceWorker && navigator.serviceWorker.ready ) { // What: Service Worker Ready Guard. Why: A browser without service worker support has no showNotification() to call. How: This gates the await below on both the API and the ready promise actually existing.
 
 
-			const worRegObj = await navigator.serviceWorker.ready; // What: Worker Registration Object. Why: The registration itself is what actually exposes showNotification(). How: This awaits the ready promise to get the live registration.
+			const worTimPro = new Promise< null >( ( resFun ) => setTimeout( () => resFun( null ), 3000 ) ); // What: Worker Timeout Promise. Why: The ready promise never settles on a page whose worker never becomes active, which would hold back the page-level fallback forever. How: This resolves with null after 3,000ms, a literal behavior timeout that leaves a worker still activating time to finish.
+			const worRegObj = await Promise.race( [ navigator.serviceWorker.ready, worTimPro ] );           // What: Worker Registration Object. Why: The registration itself is what actually exposes showNotification(). How: This races the ready promise against worTimPro, giving the live registration, or null once the timeout wins.
 
 
-			if ( worRegObj && worRegObj.showNotification ) { // What: Show Notification Method Guard. Why: A registration without showNotification() has nothing to call. How: This checks the method actually exists before calling it below.
+			if ( worRegObj && worRegObj.showNotification ) { // What: Show Notification Method Guard. Why: A timed-out wait or a registration without showNotification() has nothing to call. How: This checks for a registration and its method before calling it below, falling through to the page-level path otherwise.
 
 
 				await worRegObj.showNotification( notTitStr, notOptObj ); // What: Service Worker Notification Call. Why: This is the actual notification display call for this path. How: This hands the fixed title/options to the registration's own showNotification().
@@ -411,10 +413,10 @@ async function genNotFun () : Promise< boolean > {
 
 
 
-	try { // What: Page Notification Attempt. Why: This is the fallback path for a browser without service worker support. How: This constructs the notification, wires its click handler, and reports success, falling through to the catch below on any failure.
+	try { // What: Page Notification Attempt. Why: This is the fallback path for a browser without service worker support or a page with no active worker. How: This constructs the notification, wires its click handler, and reports success, falling through to the catch below on any failure.
 
 
-		const pagNotObj = new Notification( notTitStr, notOptObj ); // What: Page Notification Object. Why: This is the fallback path for a browser without service worker support. How: This constructs a page-level Notification directly from the fixed title/options.
+		const pagNotObj = new Notification( notTitStr, notOptObj ); // What: Page Notification Object. Why: This is the fallback path for a browser without service worker support or a page with no active worker. How: This constructs a page-level Notification directly from the fixed title/options.
 
 
 		pagNotObj.onclick = () => { // What: Page Notification Click Handler. Why: Clicking the notification should focus the existing window, never regenerate, since the list it's about has already been built. How: This is assigned once, right after construction, and runs the 2 cleanup calls below on click.
