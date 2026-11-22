@@ -270,10 +270,10 @@ function norPicFun ( rawNamStr : string | undefined ) : string { return titCasFu
  *
  * @summary
  * Computes a fallback easeMin/easeMax drift band for an ease-up/ease-down item
- * with no band of its own, by averaging the OTHER items already on the same
- * picker (each falling back to DEF_EAS_OBJ itself, so a single bare sibling
- * can't skew this into NaN), rather than keeping a separate per-picker default
- * in sync by hand. Its result is the band a freshly added item starts with,
+ * with no band of its own, by averaging the items already on the same picker
+ * (each falling back to DEF_EAS_OBJ itself, so a single bare sibling can't
+ * skew this into NaN), rather than keeping a separate per-picker default in
+ * sync by hand. Its result is the band a freshly added item starts with,
  * and the fallback band picIteFun rolls from for an item with no band of its
  * own.
  *
