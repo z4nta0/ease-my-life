@@ -17,18 +17,10 @@ import type { TasRcdTyp } from '../../src/core/data-model.ts'; // What: Task Rec
  *
  * @summary
  * Adds a fixed set of pickers and reminders to the real data, so every
- * schedule the simulation should cover is present whatever the backup
- * holds. Every added name starts with "Sim", and the real records are left
- * untouched.
- *
- * The pickers: a monthly Ease Up on the 31st, which has to clamp to the last
- * day of shorter months; a yearly random picker on January 2; a weekly
- * weighted picker anchored on Wednesday and limited to Monday, Wednesday, and
- * Friday; a daily dynamic picker that skips holidays; and a weekday random
- * picker that avoids duplicates and shares item names with the holiday picker,
- * so the duplicate rule gets exercised. The reminders: a yearly one on
- * December 31, a monthly one on the 31st, and a weekly one every other week on
- * Tuesdays and Thursdays.
+ * schedule the simulation should cover is present whatever the backup holds,
+ * such as a monthly Ease Up picker on the 31st, which has to clamp to the last
+ * day of shorter months. Every added name starts with "Sim", and the real
+ * records are left untouched.
  *
  * Sections:
  *  - Constants

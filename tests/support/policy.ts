@@ -17,12 +17,11 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The policy hel
  * policy.ts = Policy
  *
  * @summary
- * The helpers that run a page under the app's own security policy. Neither
- * the dev server nor vite preview reads Netlify's headers file, so
- * polSetFun gives every response the headers the built dist/_headers sends
- * with its path and records each violation the browser reports, polVioFun
- * reads those violations back, and relCheFun checks that every link opening
- * a new tab is closed off.
+ * The helpers that run a page under the app's own security policy. Neither the
+ * dev server nor vite preview reads Netlify's headers file, so a page is given
+ * the headers the built dist/_headers sends with each response's path, and the
+ * helpers read back what the browser reports under them, such as each policy
+ * violation.
  *
  * Sections:
  *  - Helpers

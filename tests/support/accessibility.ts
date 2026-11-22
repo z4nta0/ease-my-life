@@ -14,10 +14,10 @@ import type { Result } from 'axe-core';         // What: Result. Why: The violat
  * accessibility.ts = Accessibility
  *
  * @summary
- * The accessibility targets and readings the scanning specs share: the
- * axe-core rule sets a scan runs, for WCAG 2.2 AA plus axe's best practices,
- * the width the reflow checks open a page at, and helpers that put a scan's
- * violations into readable lines and measure a page's sideways overflow.
+ * The accessibility settings and readings the scanning specs share, such as
+ * the axe-core rule sets a scan runs for WCAG 2.2 AA plus axe's best
+ * practices, and helpers that turn what a scan or a page reports into lines
+ * and numbers a spec can assert on.
  *
  * Sections:
  *  - Constants

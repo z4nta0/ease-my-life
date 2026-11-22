@@ -20,15 +20,10 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Opening a stat
  * @summary
  * The app states the accessibility and feedback suites visit, and the helper
  * that opens one. A state is a tab at a width on the real-data backup,
- * sometimes with something opened on it: the shared list holds every tab at
- * phone and desktop widths, help mode, the Privacy Policy panel, and the
- * welcome modal a fresh install opens with, and two more lists hold the
- * opened editors and forms, and the open tips and support form only the
- * accessibility suite visits. ALL_STA_ARR joins all three, and LEG_PAT_ARR
- * lists the legal pages' addresses, which sit outside the app's states.
- * opeStaFun sizes the viewport, loads the backup (or an empty install),
- * switches tabs, waits for the fonts, runs the state's own action, and then
- * waits for running animations to settle so nothing is measured mid-fade.
+ * sometimes with something opened on it, and the states are kept in lists,
+ * such as the shared list of every tab at phone and desktop widths. Opening a
+ * state waits for the fonts before its action and for running animations to
+ * settle after it, so nothing is measured mid-fade.
  *
  * Sections:
  *  - Types

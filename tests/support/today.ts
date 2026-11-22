@@ -13,9 +13,9 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * today.ts = Today
  *
  * @summary
- * What the Today suites share for finding and counting cards: selectors for
- * the real entry and reminder cards, leaving out the tutorial cards beside
- * them, and a count of the entries a saved state has checked off.
+ * What the Today suites share for finding and counting cards, such as
+ * selectors for the real entry and reminder cards that leave out the tutorial
+ * cards beside them.
  *
  * Sections:
  *  - Constants

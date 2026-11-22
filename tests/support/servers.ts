@@ -13,10 +13,9 @@ import { fileURLToPath } from 'node:url'; // What: File URL To Path. Why: The re
  * servers.ts = Servers
  *
  * @summary
- * Where the test run's servers live: the address the preview server answers
- * on, serving the production build, and the repo root the servers start from.
- * It imports only Node's own modules, so the Playwright config can load it
- * before any test runs.
+ * Where the test run's servers live, such as the address the preview server
+ * answers on, serving the production build. It imports only Node's own
+ * modules, so the Playwright config can load it before any test runs.
  *
  * Sections:
  *  - Constants

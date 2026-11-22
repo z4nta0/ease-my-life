@@ -16,10 +16,10 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The clock help
  * Fakes the page's clock in the app's own timezone, America/Chicago, the
  * timezone the real data was made in, so "10 AM on October 5" has to mean 10
  * AM Chicago time whatever timezone the machine running the tests is in, and
- * whether daylight saving applies that day or not. insClcFun installs
- * Playwright's fake clock at such a moment before the app loads, and setClcFun
- * moves it to another day; time keeps flowing normally from wherever it's set.
- * locDayFun turns a saved timestamp back into the Chicago date it falls on.
+ * whether daylight saving applies that day or not. Its helpers set the fake
+ * clock to such a moment, before the app loads or later on, with time flowing
+ * normally from wherever it's set, and convert to and from Chicago time, such
+ * as turning a saved timestamp back into the Chicago date it falls on.
  *
  * Sections:
  *  - Constants

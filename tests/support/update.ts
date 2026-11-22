@@ -13,12 +13,11 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * update.ts = Update
  *
  * @summary
- * Helpers for the specs that check how the app takes a newly deployed
- * version. The suites block service workers, so an init script fakes the
- * parts the app reads: a worker already controlling the page, a registration
- * whose update call it counts, and the page's visibility, which each spec
- * switches. The page's own flags are typed here, and the update note's
- * message is kept here for the specs that look for it.
+ * Helpers for the specs that check how the app takes a newly deployed version,
+ * with the types and text those specs share, such as the update note's
+ * message. The suites block service workers, so an init script fakes the parts
+ * the app reads: a worker already controlling the page, a registration whose
+ * update call it counts, and the page's visibility, which each spec switches.
  *
  * Sections:
  *  - Types

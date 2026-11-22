@@ -14,15 +14,9 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The name and k
  *
  * @summary
  * The name and keyboard checks axe-core can't make, written once for any spec
- * to run. Names: every link and button in the accessibility tree has a name,
- * no name carries a decorative glyph such as an arrow, and every shown link
- * that opens a new tab says so. Keyboard: no element takes a positive
- * tabindex, and a Tab walk reaches its end without getting trapped, never
- * moves backwards through the document, lands only on stops that are on
- * screen, not covered by anything else, and visibly changed by focus, leaves
- * no stop it should reach unreached, and finds a state's open pop-up closed
- * once focus moves past it. Each check returns a list of the problems it
- * finds, by element, for its spec to assert empty.
+ * to run, such as a Tab walk that fails a stop that's off screen, covered by
+ * something else, or unchanged by focus. Each check returns a list of the
+ * problems it finds, by element, for its spec to assert empty.
  *
  * Sections:
  *  - Constants
