@@ -116,7 +116,7 @@ const SOU_FIE_OBJ = { auto : 'autNum', manual : 'manNum', reroll : 'rerNum' }; /
 const SOU_MET_ARR = [ // What: Source Meta Array. Why: This defines how each Today pick came to be. How: This is joined with each source's own live count for the "How picks were chosen" BreBarCom card.
 
 
-	{ colStr : 'var(--acc-mai-col)',                                             keyStr : 'auto',   labStr : 'Auto Generated' }, // What: Auto Source Object. Why: Most picks come from the Daily generator. How: This colors them with the plain accent. // Accent Main Color = oklch( 0.5 0.14 250 )
+	{ colStr : 'var(--acc-mai-col)',                                             keyStr : 'auto',   labStr : 'Auto Generated' }, // What: Auto Source Object. Why: Auto-generated picks come from the Daily generator. How: This colors them with the plain accent. // Accent Main Color = oklch( 0.5 0.14 250 )
 	{ colStr : 'oklch(from var(--acc-mai-col) calc(l + 0.22) calc(c - 0.05) h)', keyStr : 'reroll', labStr : 'Re-Rolled'      }, // What: Reroll Source Object. Why: A re-rolled pick replaced an earlier one on Today. How: This colors it with a lighter, softer accent. // Accent Main Color = oklch( 0.5 0.14 250 )
 	{ colStr : 'var(--acc-sec-col)',                                             keyStr : 'manual', labStr : 'Hand Picked'    }  // What: Manual Source Object. Why: A hand-picked item was chosen with Pick One on the Pickers page. How: This colors it with the warm tone. // Accent Secondary Color = oklch( 0.62 0.13 50 )
 
@@ -201,8 +201,8 @@ const STA_RAN_ARR = [ // What: Stat Range Array. Why: This defines the fixed set
 const TYP_MET_ARR = [ // What: Type Meta Array. Why: This defines the one-time versus recurring split shown for reminders, sharing the same visual language as SOU_MET_ARR. How: This is joined with each type's own live count for the "By reminder type" BreBarCom card.
 
 
-	{ colStr : 'var(--acc-mai-col)', keyStr : 'recurring', labStr : 'Recurring' }, // What: Recurring Type Object. Why: Recurring reminders make up the bulk of most logs. How: This colors them with the plain accent. // Accent Main Color = oklch( 0.5 0.14 250 )
-	{ colStr : 'var(--acc-sec-col)', keyStr : 'once',      labStr : 'One-Time'  }  // What: Once Type Object. Why: One-time reminders are the smaller, distinct share. How: This colors them with the warm tone. // Accent Secondary Color = oklch( 0.62 0.13 50 )
+	{ colStr : 'var(--acc-mai-col)', keyStr : 'recurring', labStr : 'Recurring' }, // What: Recurring Type Object. Why: This is the recurring half of the one-time versus recurring split. How: This colors them with the plain accent. // Accent Main Color = oklch( 0.5 0.14 250 )
+	{ colStr : 'var(--acc-sec-col)', keyStr : 'once',      labStr : 'One-Time'  }  // What: Once Type Object. Why: This is the one-time half of the one-time versus recurring split. How: This colors them with the warm tone. // Accent Secondary Color = oklch( 0.62 0.13 50 )
 
 
 ];
@@ -475,7 +475,7 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 		<CarSurCom data-element-name-hook={ hooNamStr }>{ /* What: Card Surface Component. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
-			<div className={ cssModObj.staKicDiv }>{ kicTexStr }</div>{ /* What: Stats Kicker Div Element. Why: Every card on this page opens with a small labelled kicker. How: This renders the caller's own kicTexStr. */ }
+			<div className={ cssModObj.staKicDiv }>{ kicTexStr }</div>{ /* What: Stats Kicker Div Element. Why: A breakdown card opens with a small labelled kicker. How: This renders the caller's own kicTexStr. */ }
 
 
 
