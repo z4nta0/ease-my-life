@@ -280,7 +280,7 @@ for ( const heaRowObj of PAG_HEA_ARR ) { // What: Raw Head Loop. Why: Every inde
 		expect( canHreArr ).toEqual( [ heaRowObj.canStr ] );                       // What: Single Canonical Assertion. Why: Every address Netlify serves the page at should count as its live one. How: This checks the page names exactly its row's canonical address.
 		expect( heaRowObj.canStr.startsWith( LIV_URL_STR ) ).toBe( true );         // What: Absolute Canonical Assertion. Why: A canonical address has to be absolute, on this domain, over HTTPS. How: This checks it starts with the live site's address.
 		expect( metTagFun( rawHtmStr ).filter( ( [ tagKeyStr ] ) => tagKeyStr === 'author' ).map( ( [ , tagConStr ] ) => tagConStr ) ).toEqual( [ 'techgeek.dev' ] ); // What: Author Assertion. Why: The page names techgeek.dev, who built the app, as its author. How: This checks the one author tag.
-		expect( rawHtmStr ).not.toContain( 'noindex' );                            // What: Indexable Page Assertion. Why: The page has to stay findable. How: This checks no tag in it asks search engines to skip it.
+		expect( rawHtmStr ).not.toContain( 'noindex' );                            // What: Indexable Page Assertion. Why: The page has to stay findable. How: This checks the page's raw HTML holds no noindex at all.
 		expect( heaPatFun( heaRowObj.patStr )[ 'x-robots-tag' ] ).toBeUndefined(); // What: Indexable Header Assertion. Why: A robots header would keep the page out as surely as a tag. How: This checks the built headers file sends none with its path.
 
 		// #endregion Head Assertions

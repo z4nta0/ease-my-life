@@ -48,7 +48,7 @@ const APP_KEY_ARR = [ // What: App Key Array. Why: Every key the app writes is d
 	'easemylife.signedin',         // What: Signed In Key. Why: Firebase loads at launch only on a device that signed in. How: This holds a flag, never a token.
 	'easemylife.signinemail',      // What: Sign-In Email Key. Why: An emailed link finishes in the browser that asked for it. How: This holds the address until the link is used.
 	'easemylife.snapshot.pre-idb', // What: Pre-IndexedDB Snapshot Key. Why: The first IndexedDB migration kept a rollback copy for a few boots. How: This holds that copy.
-	'easemylife.syncmeta',         // What: Sync Meta Key. Why: Each sync compares against what this device last synced. How: This holds hashes, a revision, and the account's ID, never a token.
+	'easemylife.syncmeta',         // What: Sync Meta Key. Why: Each sync compares against what this device last synced. How: This holds when it last changed, hashes, a revision, and the account's ID, never a token.
 	'easemylife.v2'                // What: Warm Mirror Key. Why: A boot that can't open IndexedDB in time runs on this copy. How: This holds the state, without its pick log in a normal session.
 
 

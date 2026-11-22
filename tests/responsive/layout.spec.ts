@@ -22,14 +22,14 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * @summary
  * Measures every tab's layout on real data at phone, tablet, and desktop
  * widths, from 375 pixels up. Each page state (a tab as it opens, plus a few
- * expanded states such as an open editor) is loaded at each width and
- * checked three ways: the page or the main area scrolling sideways;
- * visible content reaching past the screen's edges, or text spilling out of
- * its own box, outside any container meant to clip or scroll it; and
- * controls (buttons, inputs, tabs) overlapping one another. Each problem
- * names the element by its hook, label, or text. A full-page screenshot of
- * every state lands in tests/output/responsive for a look by eye, since no
- * measurement catches everything that looks wrong.
+ * expanded states such as an open editor) is loaded at each width and checked
+ * three ways: the page or the main area scrolling sideways; visible content
+ * reaching past the screen's edges, or text spilling out of its own box,
+ * outside any container that scrolls sideways; and controls (buttons, inputs,
+ * tabs) overlapping one another. Each problem names the element by its hook,
+ * label, or text. A full-page screenshot of every state lands in
+ * tests/output/responsive for a look by eye, since no measurement catches
+ * everything that looks wrong.
  *
  * Sections:
  *  - Constants

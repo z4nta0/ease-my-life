@@ -130,7 +130,7 @@ type TogTarTyp = { // What: Toggle Target Type. Why: Each kind of element with a
 const TOG_TAR_ARR : TogTarTyp[] = [ // What: Toggle Target Array. Why: A switched state is feedback as much as a hover, and has to ease in and out. How: This lists each kind of element to flip.
 
 
-	{ // What: Current Tab Row. Why: The tab bar's current tab reads in the text color. How: This flips each tab button's aria-current.
+	{ // What: Current Tab Row. Why: The tab bar's current tab reads in the accent color. How: This flips each tab button's aria-current.
 
 
 		actStr : 'page',
