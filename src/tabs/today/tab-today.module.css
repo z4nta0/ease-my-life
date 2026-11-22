@@ -5,19 +5,14 @@
  * tab-today.module.css = Today Tab Module
  *
  * @summary
- * Styles for the Today tab's own markup: the sticky header with its date
- * kicker, streak chip, brand mark, cross-fading title, and progress ring;
- * the Edit Mode banner; the group rail (a sticky sidebar that becomes a
- * scrolling pill row on narrow widths); the group sections the cards stack
- * in; the confetti and sparkle celebration overlay; the onboarding Generate
- * and empty-state cards; and the footer with its regenerate confirm. The
- * ring's pulse and celebration classes, the streak's bump class, the banner's
- * closing class, and the onboarding card's removing and pulse classes are
- * animation triggers this file adds itself. A title state keys off its own
- * aria-hidden, a selected rail button off data-rail-select-active, the Edit
- * Mode button off data-edit-mode-active, a blocked Generate card off
- * data-card-needed-active, and a disabled-looking tip button off the
- * aria-disabled its info tip sets. The footer's Edit Mode button hides
+ * Styles for the Today tab's own markup: the sticky header with its streak
+ * chip, brand mark, title, and progress ring; the Edit Mode banner; the group
+ * rail, a sticky sidebar that becomes a scrolling pill row at 760px wide and
+ * below; the group sections the cards stack in; the celebration overlay; the
+ * onboarding cards; and the footer with its regenerate confirm. An animation
+ * trigger (a pulse, bump, or closing class) is a module class this file adds
+ * itself, while a state keys off an aria or data attribute, such as a selected
+ * rail button's data-rail-select-active. The footer's Edit Mode button hides
  * through --but-bas-dis, which ButBasCom reads.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -1999,7 +1994,7 @@
 
 }
 
-.onbTitBol { /* What: Onboarding Title Bold. Why: The card's bold line reads as its heading. How: This sets it a size up in semibold. */
+.onbTitBol { /* What: Onboarding Title Bold. Why: The card's bold line reads as its heading. How: This sets it in semibold at the body size, a step above the card's paragraph. */
 
 
 	font-size   : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
