@@ -640,7 +640,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 			>{ /* What: Page Body Div Element. Why: A running tour can reserve extra top padding to keep its own coach clear of the header. How: This wraps every filter row, the Show row, and the active create/view content below. */ }
 
 
-				<div className={ cssModObj.pagFilDiv }>{ /* What: Page Filters Div Element. Why: The Group row, the Type row, and the Show row all belong to one shared filter block the Pickers page tour can target together. How: This wraps the Group row, the Type row, and the Show row. */ }
+				<div className={ cssModObj.pagFilDiv }>{ /* What: Page Filters Div Element. Why: The Group row, the Type row, and the Show row sit together as one filter block. How: This wraps the Group row, the Type row, and the Show row. */ }
 
 
 					{ exiGroArr.length > 1 && ( // What: Group Row Check. Why: A single-group install has nothing to actually filter by. How: This renders the whole Group filter row only once more than one distinct group exists.
