@@ -2,7 +2,7 @@
 
 
 
-<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><!-- What: URL Set Element. Why: A sitemap lists a site's pages inside one url set. How: This uses the sitemaps.org namespace crawlers recognize. --><!-- The app is one page, and its legal documents each have a page of their own. -->
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><!-- What: URL Set Element. Why: A sitemap lists a site's pages inside one url set. How: This uses the sitemaps.org namespace crawlers recognize, and holds the app's page and its two legal pages. -->
 
 
 	<url><!-- What: Home URL Element. Why: The app's only page is its root. How: This wraps the root's address and its crawl hints. -->

@@ -85,7 +85,7 @@ type ConRcdTyp = { // What: Conditional Record Type. Why: A conditional is the d
 	threshold    : number;                                                                                // What: Threshold. Why: The ease modes trigger once value crosses a line. How: This is that line, normally 100.
 	triggered    : boolean;                                                                               // What: Triggered. Why: Today's generation needs to know whether the gate is closed. How: This is true while the conditional suppresses its pickers.
 	value        : number;                                                                                // What: Value. Why: The ease and dynamic modes track their own drifting charge. How: This holds that charge.
-	weight       : number;                                                                                // What: Weight. Why: The weighted modes scale the trigger chance. How: This is that weight.
+	weight       : number;                                                                                // What: Weight. Why: An older save's weighted conditional stored its chance as a ratio weight. How: This is that legacy weight, which migStaFun converts to oddsPct when oddsPct is missing.
 
 
 };
