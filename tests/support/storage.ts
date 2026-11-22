@@ -37,7 +37,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
 
 // #region Constants
 
-const POL_GAP_NUM = 100;   // What: Poll Gap Number. Why: A debounced save usually lands within a few hundred milliseconds. How: This is the wait between reads, in milliseconds.
+const POL_GAP_NUM = 100;   // What: Poll Gap Number. Why: A debounced save lands after an idle moment, not at once, so a read right after an action can miss it. How: This is the wait between reads, in milliseconds.
 const POL_MAX_NUM = 10000; // What: Poll Maximum Number. Why: A save that never lands is a failure, not something to wait on forever. How: This is the longest waiStaFun keeps polling, in milliseconds.
 const SET_GAP_NUM = 300;   // What: Settle Gap Number. Why: The app writes the pick log just after the rest of the state, and a read in between is inconsistent. How: This is how long waiStaFun waits before its confirming read, in milliseconds.
 

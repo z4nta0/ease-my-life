@@ -789,7 +789,7 @@ test( 'simulated days follow the scheduling rules', async ( { page : curPagObj }
 
 
 
-		if ( devValNum > 4 * Math.sqrt( proRolObj.varSumNum ) + 1 ) issMesArr.push( `conditional ${ proRolObj.namStr } fired ${ proRolObj.firNum } of ${ proRolObj.rolNum }, expected about ${ proRolObj.proSumNum.toFixed( 1 ) }` ); // What: Odds Report. Why: A gap past four standard deviations means the odds are wrong. How: This reports it.
+		if ( devValNum > 4 * Math.sqrt( proRolObj.varSumNum ) + 1 ) issMesArr.push( `conditional ${ proRolObj.namStr } fired ${ proRolObj.firNum } of ${ proRolObj.rolNum }, expected about ${ proRolObj.proSumNum.toFixed( 1 ) }` ); // What: Odds Report. Why: A gap past four standard deviations, with one fire of slack, means the odds are wrong. How: This reports it.
 
 
 	}

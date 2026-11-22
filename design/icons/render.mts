@@ -88,7 +88,7 @@ async function renPngFun ( icoSizNum : number ) : Promise< Buffer > {
 
 		// #region Source Image Loading
 
-		const souImaEle = new Image(); // What: Source Image Element. Why: The mark has to be decoded before it's drawn. How: This loads it from its base64 data.
+		const souImaEle = new Image(); // What: Source Image Element. Why: The mark has to be decoded before it's drawn. How: This creates the element the mark's base64 data is loaded into.
 
 
 		souImaEle.src = `data:image/svg+xml;base64,${ souB64Str }`; // What: Source Address Assignment. Why: The image loads from the data handed in. How: This sets it as an SVG data URL.
