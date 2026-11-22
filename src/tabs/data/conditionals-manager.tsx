@@ -264,7 +264,7 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 						<div
-							key='confirm'
+							key='confirm' // What: Confirm Key. Why: Each footer state should replay the footer swap fade when it appears. How: A new key remounts the row when the footer changes state.
 
 							className={ cssModObj.delConDiv }
 						>{ /* What: Delete Confirm Div Element. Why: The confirm message and its own Cancel/Delete buttons need their own grouped row. How: This wraps the confirm message and the delActDiv row below. */ }
@@ -304,7 +304,7 @@ function ConEdiCom ( { actStoObj, conDraObj, curConObj, isaNewBoo, namErrStr, on
 
 
 						<div
-							key='foot'
+							key='foot' // What: Footer Key. Why: Each footer state should replay the footer swap fade when it appears. How: A new key remounts the row when the footer changes state.
 
 							className={ cssModObj.fooRowDiv }
 						>{ /* What: Footer Row Div Element. Why: Delete (left, existing conditionals only) and Cancel/Save (right) both belong in the same footer row. How: This conditionally renders the Delete ButBasCom, then the fooRigDiv div below. */ }

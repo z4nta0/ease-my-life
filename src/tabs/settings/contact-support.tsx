@@ -669,7 +669,7 @@ function ConSupCom () : React.JSX.Element {
 
 
 									<span
-										key='verr'
+										key='verr' // What: Validation Key. Why: The validation message keeps a name of its own beside the failure message. How: This keys the span 'verr'.
 
 										className={ cssModObj.supValSpa }
 									>Please fill out both form fields.</span> // What: Support Validation Span Element. Why: This is the actual validation copy shown on an empty-field send attempt. How: This renders fixed text explaining what is missing.
@@ -681,7 +681,7 @@ function ConSupCom () : React.JSX.Element {
 
 
 									<span
-										key='sfail'
+										key='sfail' // What: Failure Key. Why: The failure message keeps a name of its own beside the validation message. How: This keys the span 'sfail'.
 
 										className={ cssModObj.supFalSpa }
 									>{ /* What: Support Fallback Span Element. Why: This is the actual fallback copy shown on a failed send. How: This explains the likely cause and surfaces the raw support address. */ }

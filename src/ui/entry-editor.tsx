@@ -756,7 +756,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 
 				<div
-					key='confirm'
+					key='confirm' // What: Confirm Key. Why: Each footer state should replay the footer swap fade when it appears. How: A new key remounts the row when the footer changes state.
 
 					className={` ${ cssModObj.ediFooDiv }   ${ cssModObj.ediFooDivConfirm } `}
 
@@ -798,7 +798,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 
 				<div
-					key='foot'
+					key='foot' // What: Footer Key. Why: Each footer state should replay the footer swap fade when it appears. How: A new key remounts the row when the footer changes state.
 
 					className={ cssModObj.ediFooDiv }
 

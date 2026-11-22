@@ -89,7 +89,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 
 
 			<div
-				key='confirm'
+				key='confirm' // What: Confirm Key. Why: Each footer state should replay the footer swap fade when it appears. How: A new key remounts the footer when it changes state.
 
 				className={` ${ cssModObj.ediFooDiv }   ${ cssModObj.ediFooDivConfirm } `}
 
@@ -138,7 +138,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 
 
 		<div
-			key='foot'
+			key='foot' // What: Footer Key. Why: Each footer state should replay the footer swap fade when it appears. How: A new key remounts the footer when it changes state.
 
 			className={ cssModObj.ediFooDiv }
 
