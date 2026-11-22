@@ -57,8 +57,9 @@ import type { StoRepTyp } from '../../state/storage.ts';   // What: Storage Repo
  * StyRadCom, and the tab-bar placement control), the Daily generator schedule
  * and its notification row, the Holidays editor (holiday-editor.tsx), Data
  * control (storage status, install, export, import, and reset), Account, About
- * (including contact-support.tsx's own support form), and Legal. A left-hand
- * section rail tracks and drives scroll position across all of them.
+ * (including contact-support.tsx's own support form), and Legal. A section
+ * rail, on the left above 760px wide and a sticky bar above the sections at
+ * 760px and below, tracks and drives scroll position across all of them.
  *
  * Sections:
  *  - Constants
@@ -318,13 +319,12 @@ type TecProTyp = { accSynObj : AccSynTyp, actStoObj : ActStoTyp, onNavHomFun? : 
  * TabSetCom = Tab Settings Component
  *
  * @summary
- * Renders the whole Settings tab: a left-hand section rail (scroll-spy
- * plus jump-to, mirroring the Today tab's own group rail) beside a
- * right-hand pane holding every section in order (Appearance, Daily
- * generator, Holidays, Data control, Account, About, Legal). Owns the
- * Appearance preview stages, the Daily generator's notification
- * permission flow, the Data Control section's install/persist/export/
- * import/reset flows, and the Legal modal.
+ * Renders the whole Settings tab: a left-hand section rail (above the sections
+ * at 760px wide and below, where it becomes a sticky pill bar) beside a
+ * right-hand pane holding every section in order (Appearance, Daily generator,
+ * Holidays, Data control, Account, About, Legal). Owns the Appearance preview
+ * stages, the Daily generator's notification permission flow, the Data Control
+ * section's install/persist/export/import/reset flows, and the Legal modal.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1644,7 +1644,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-			<div className={ cssModObj.setGriDiv }>{ /* What: Settings Grid Div Element. Why: The section rail and the right-hand pane need to sit side by side. How: This wraps the rail aside and the setSecDiv div. */ }
+			<div className={ cssModObj.setGriDiv }>{ /* What: Settings Grid Div Element. Why: The section rail and the right-hand pane need to sit side by side, with the rail above the sections at 760px wide and below. How: This wraps the rail aside and the setSecDiv div. */ }
 
 
 				<aside
@@ -1951,7 +1951,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivStack } `}
 
 									data-element-name-hook='setRowDiv'
-								>{ /* What: Settings Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control, stacking them on a narrow app so the description gets the full width. Its data-element-name-hook is read by help mode. */ }
+								>{ /* What: Settings Row Div Element. Why: The label/description and the SegConCom control need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the SegConCom control, stacking them at 500px wide and below so the description gets the full width. Its data-element-name-hook is read by help mode. */ }
 
 
 									<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and its live-updating description need their own grouping, apart from the control. How: This wraps the name span and the description span. */ }
@@ -2315,7 +2315,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								className={` ${ cssModObj.stoRowDiv }   ${ cssModObj.stoRowDivStack } `}
 
 								data-element-name-hook='stoRowDiv'
-							>{ /* What: Storage Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block, stacking them on a narrow app so the facts get the full width. Its data-element-name-hook is read by help mode. */ }
+							>{ /* What: Storage Row Div Element. Why: The storage-status label/facts and the install/protect actions need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the store-actions block, stacking them at 500px wide and below so the facts get the full width. Its data-element-name-hook is read by help mode. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name, description, fact chips, and any persist-result message all need their own grouping. How: This wraps the name span, the description span, the facts span, and (conditionally) the persist-message span. */ }
@@ -2786,7 +2786,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 												aria-describedby='resDesSpa'
 
 												onClick={ () => void resRunFun( true ) } // What: Cloud Reset Click Handler. Why: The person wants the cloud copy gone too. How: This deletes it, signs out, and wipes the device.
-											>Reset and delete cloud copy</ButBasCom>
+											>Reset and delete cloud copy</ButBasCom> // What: Button Base Component. Why: This is the second reset, for a signed-in person who wants the cloud copy gone too. How: This runs resRunFun( true ) when clicked, and is disabled while resBusBoo is true. Its data-element-name-hook is read by the test suites.
 
 
 										) }
