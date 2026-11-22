@@ -60,7 +60,7 @@
 
 }
 
-@font-face { /* What: Shantell Sans Font Face. Why: Shantell Sans is the main brand face, setting the wordmark's lead word. How: This loads its trimmed variable file, basic Latin only, across its full 300 to 800 weight range, showing fallback text until it arrives. */
+@font-face { /* What: Shantell Sans Font Face. Why: Shantell Sans is the main brand face, setting the wordmark's lead word and the legal pages' brand link. How: This loads its trimmed variable file, printable basic Latin only, across its full 300 to 800 weight range, showing fallback text until it arrives. */
 
 
 	font-display : swap;
