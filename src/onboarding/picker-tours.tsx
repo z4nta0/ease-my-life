@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: This file's own PicTouCom component calls React.useState. How: This is used directly (React.useState) below, instead of importing individual named hooks.
 
 
-import { emlTouObj   } from '../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in buiNewFun's/buiAddFun's own runFun() and cloTouFun below, and read via .get() inside GuiTouCom's own onBacTouFun handler.
+import { emlTouObj   } from '../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: This publishes the running tour's prefill data for the real create-picker form and clears it again on every exit path. How: This is written to via .set() in buiNewFun's/buiAddFun's own runFun(), cloTouFun, and PicTouCom's own onBacTouFun below, and read via .get() inside that same onBacTouFun.
 import { GuiTouCom   } from './tour-runner.tsx';                // What: Guided Tour Component. Why: This is the generic spotlight-tour engine that actually drives this picker mini-tour once its own intro modal is accepted. How: This is rendered while touPhaStr is 'tour', passed this file's own per-picker step array.
 import { IcoSvgCom   } from '../ui/icon.tsx';                   // What: Icon SVG Component. Why: The intro modal needs a recognizable glyph identifying this as a picker tutorial. How: This is rendered inside the intro modal's icon prop below.
 import { IntModCom   } from './intro-modal.tsx';                // What: Intro Modal Component. Why: Each picker mini-tour opens on this generic intro modal before any spotlight step ever shows. How: This is rendered while touPhaStr is 'intro', passed this picker's own icon/title/paragraphs/pills.
@@ -663,7 +663,7 @@ const buiAddFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Add Fu
  *
 */
 
-const buiLatFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Latest Function. Why: This builds the step that highlights the item editor's own Latest/Longest row, the second .ediRowDiv right after Soonest/Shortest, same mode gating and per-picker override as buiSooFun above. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_LAT_ELE.
+const buiLatFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Latest Function. Why: This builds the step that highlights the item editor's own Latest/Longest row, the second .ediRowDiv right after Soonest/Shortest, same mode gating and per-picker override as buiSooFun below. How: This returns a step object whose bodEle reads picIdeStr's own picCopObj, falling back to DEF_LAT_ELE.
 
 
 	bacBoo : true,                                                                                       // What: Back Boolean. Why: The user should always be able to return to the previous, Soonest/Shortest step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -1064,7 +1064,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 				titHeaStr={ `${ picRcdObj.name } Picker` }
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) } // What: On Begin Tour Function. Why: Accepting the intro modal must start the spotlight tour. How: This sets touPhaStr to 'tour'.
-				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Tour Function. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying sample picker. How: This calls cloTouFun with 'cancelled'.
+				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Tour Function. Why: Skipping from the intro modal must mark the card cancelled without touching the underlying sample picker. How: This calls cloTouFun with 'cancelled'.
 			/> // What: Intro Modal Component. Why: This is this sample's own opening screen, shown before any spotlight step ever does. How: This is passed this sample's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 

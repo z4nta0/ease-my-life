@@ -22,7 +22,7 @@ import type { TouSteTyp } from './tour-runner.tsx'; // What: Tour Step Type. Why
  * The steps of each page mini-tour: buiTs1Fun builds the shared Step 1 that
  * points at a page's own nav tab, and buiTesFun builds the rest of a page's
  * tour from its own target catalog (DAT_TAR_OBJ, PIC_TAR_OBJ, SET_TAR_OBJ,
- * STA_TAR_OBJ, TOD_TAR_OBJ). canRenFun and forNamFun guard the Pickers tour's
+ * STA_TAR_OBJ, TOD_TAR_OBJ). canRenFun and forNamFun guard the Today tour's
  * own group-rename step, tracking the group's real name in pgtNamStr.
  *
  * Sections:
@@ -915,7 +915,7 @@ const buiTesFun = ( pagIdeStr : string, actStoObj : ActStoTyp ) : TouSteTyp[] =>
 
 			},
 
-			{ // What: Manual Generation Step. Why: This is the Pickers tour's own 7th step, the real Pick One button. How: This spreads PIC_TAR_OBJ.mpgObj with this flow's own navigation flags plus catBoo/advSelStr.
+			{ // What: Manual Generation Step. Why: This is the Pickers tour's own 7th step, the real Pick One button. How: This spreads PIC_TAR_OBJ.mpgObj with this flow's own navigation flags plus catBoo, cirBoo, and advSelStr.
 
 
 				...PIC_TAR_OBJ.mpgObj, // What: Manual Generation Target Spread. Why: This step reuses the Pickers catalog's own mpgObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.mpgObj before this step's own navigation flags.
@@ -930,7 +930,7 @@ const buiTesFun = ( pagIdeStr : string, actStoObj : ActStoTyp ) : TouSteTyp[] =>
 
 			},
 
-			{ // What: Add To Todo List Step. Why: This is the Pickers tour's own 8th step, the real Send to Today button. How: This spreads PIC_TAR_OBJ.atlObj with this flow's own navigation flags plus catBoo/advDelNum.
+			{ // What: Add To Todo List Step. Why: This is the Pickers tour's own 8th step, the real Send to Today button. How: This spreads PIC_TAR_OBJ.atlObj with this flow's own navigation flags plus catBoo, cirBoo, and advDelNum.
 
 
 				...PIC_TAR_OBJ.atlObj, // What: Add To Todo List Target Spread. Why: This step reuses the Pickers catalog's own atlObj entry as its base selector/copy. How: This spreads PIC_TAR_OBJ.atlObj before this step's own navigation flags.
@@ -1056,7 +1056,7 @@ const buiTesFun = ( pagIdeStr : string, actStoObj : ActStoTyp ) : TouSteTyp[] =>
 
 			},
 
-			{ // What: Picker Breakdown Step. Why: This is the Stats tour's own final step. How: This spreads STA_TAR_OBJ.pbvObj with this flow's own navigation flags plus catBoo, priStr 'Done' ending the tour.
+			{ // What: Picker Breakdown Step. Why: This is the Stats tour's own final step. How: This spreads STA_TAR_OBJ.pbvObj with this flow's own navigation flags plus catBoo and resBoo, priStr 'Done' ending the tour.
 
 
 				...STA_TAR_OBJ.pbvObj, // What: Picker Breakdown Target Spread. Why: This step reuses the Stats catalog's own pbvObj entry as its base selector/copy. How: This spreads STA_TAR_OBJ.pbvObj before this step's own navigation flags.

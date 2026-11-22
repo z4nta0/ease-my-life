@@ -314,7 +314,7 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 				titHeaStr={ ( pagCopObj && pagCopObj.titStr ) || navTarObj.titStr } // What: Title Heading Attribute. Why: A page without its own dedicated copy still needs a heading. How: This prefers pagCopObj's own titStr, falling back to navTarObj's.
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) } // What: On Begin Tour Function. Why: Accepting the intro modal must start the spotlight tour. How: This sets touPhaStr to 'tour'.
-				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Tour Function. Why: This mirrors the launcher card's own X button exactly, marking the card cancelled without touching the underlying page. How: This calls cloTouFun with 'cancelled'.
+				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Tour Function. Why: Skipping from the intro modal must mark the card cancelled without touching the underlying page. How: This calls cloTouFun with 'cancelled'.
 			/> // What: Intro Modal Component. Why: This is this page's own opening screen, shown before any spotlight step ever does. How: This is passed this page's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
