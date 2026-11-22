@@ -50,11 +50,10 @@ import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Recor
  * picker-controls.tsx = Picker Controls
  *
  * @summary
- * A Data tab picker card's own Controls body: how the picker picks (its mode),
- * when it runs (its weekdays, holiday skip, and daily-generator membership),
- * and its item controls (Fill/Refill). Every field edits a local draft,
- * committed on Save or when Controls closes and dropped on Cancel, and a
- * brand-new draft picker gets a no-Delete footer.
+ * A Data tab picker card's own Controls body, its groups of settings, such as
+ * how the picker picks (its mode). Every field edits a local draft, committed
+ * on Save or when Controls closes and dropped on Cancel, and a brand-new draft
+ * picker gets a no-Delete footer.
  *
  * Sections:
  *  - Components
@@ -782,7 +781,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	}, [ allGroArr, draPicObj.group ] ); // What: Memo Dependency Array. Why: The choice list only needs recomputing when the available groups or the picker's own current group changes. How: allGroArr covers a group being added/removed elsewhere; draPicObj.group covers this picker's own selection changing.
 
 
-	const cloGroFun = () => { // What: Close Group Function. Why: Both a commit and a cancel need the exact same teardown: unmount the input, clear its text, and play the "+ New Group" pill's own return animation. How: This closes newGroBoo, clears newGroStr, and flags pilRetBoo for 200ms.
+	const cloGroFun = () => { // What: Close Group Function. Why: Both a commit and a cancel need the exact same teardown: unmount the input, clear its text, and play the "+ New Group" pill's own return animation. How: This closes newGroBoo, clears newGroStr, and flags pilRetBoo for one p01 duration step.
 
 
 		setNewGroBoo( false ); // What: New Group Close Call. Why: This unmounts the inline input immediately. How: This sets newGroBoo to false.
@@ -1205,7 +1204,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 			</fieldset>
 
 
-			<div className={` ${ cssModObj.conGroDiv }   ${ cssModObj.conGroDivSched } `}>{ /* What: Controls Group Div Element. Why: Attach-a-conditional, daily-generator membership, and the weekday and holiday gates all describe "when it runs", which the Schedule modifier class styles. How: This wraps the subhead and the schedule rows below. */ }
+			<div className={` ${ cssModObj.conGroDiv }   ${ cssModObj.conGroDivSched } `}>{ /* What: Controls Group Div Element. Why: Every row in this group (the conditional attachment, daily-generator membership, cadence, weekdays, and holiday skip) describes "when it runs", which the Schedule modifier class styles. How: This wraps the subhead and the schedule rows below. */ }
 
 
 				<div className={ cssModObj.conSubDiv }>When it runs</div>{ /* What: Controls Subhead Div Element. Why: Every Controls group needs its own labeled subhead. How: This renders the literal text "When it runs". */ }

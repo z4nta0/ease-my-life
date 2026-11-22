@@ -5,17 +5,12 @@
  * picker-controls.module.css = Picker Controls Module
  *
  * @summary
- * Styles for PicConCom, the Controls body of each picker card on the Data
- * tab: the Picker Details group (name field and group pills, with the inline
- * new-group input), the How it picks mode radio, the When it runs group
- * (conditional rail, daily generator, cadence selects, days, and holidays),
- * the Item Controls group with its ease settings, and the Delete, Cancel,
- * and Save footer with its delete confirm. Each group runs edge to edge
- * inside the body's padding as full-bleed rows divided by hairlines. A
- * chosen group pill keys off its own aria-checked, a switch off its own
- * aria-checked or aria-pressed, the chosen mode off
- * data-option-select-active, and the attached conditional's pill off
- * data-pill-select-active.
+ * Styles for PicConCom, the Controls body of each picker card on the Data tab:
+ * its groups of controls, such as the How it picks mode radio, and the footer
+ * with its delete confirm. Each group runs edge to edge inside the body's
+ * padding as full-bleed rows divided by hairlines. A chosen control keys off
+ * an aria or data attribute, such as the chosen mode's
+ * data-option-select-active.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -651,7 +646,7 @@
 
 /* #region modOptLab */
 
-.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, and sets the pace ColDisCom's option details open at, and eases its focus ring in. */
+.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a full-width option whose details open under it. How: This lays the dot and text out in a padded row divided from the next, sets the pace ColDisCom's option details open at, and eases its hover and selected shade and its focus ring in. */
 
 
 	--col-inn-del : var( --dur-tra-m03 );              /* Duration Transition Base Minus 3 ~= 67.9ms */
@@ -772,7 +767,7 @@
 
 }
 
-.modDotSpa { /* What: Mode Dot Span. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that fills when selected. */
+.modDotSpa { /* What: Mode Dot Span. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that eases its border color to the accent when selected, and fills when selected. */
 
 
 	border        : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */
