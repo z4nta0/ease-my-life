@@ -18,14 +18,13 @@ import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Fu
  * decides to show one; delivering to a fully closed app would need Web
  * Push plus a real backend, which this app deliberately doesn't have.
  *
- * Deliberate constraints this module enforces: a notification fires
- * only after the Daily generator has already run, never as a prompt to
- * run it, so clicking one can never trigger a second generation. It
- * stays silent whenever the app is already visible and focused, since a
- * notification for a page the user is already looking at is pure noise.
- * It fires at most once per local day, tracked in localStorage so a
- * reload can't re-notify. Permission is requested only from a real user
- * gesture, and this module never asks for it on load.
+ * Deliberate constraints: the click handler this module attaches only focuses
+ * the existing window, never triggering a second generation. It stays silent
+ * whenever the app is already visible and focused, since a notification for a
+ * page the user is already looking at is pure noise. It fires at most once per
+ * local day, tracked in localStorage so a reload can't re-notify. Permission
+ * is asked for only by askOncFun and reqPerFun, and nothing here asks for it
+ * on load.
  *
  * Sections:
  *  - Types
@@ -264,7 +263,7 @@ async function reqPerFun () : Promise< PerStaTyp > {
 
 
 
-	stoSetFun( ASK_KEY_STR, '1' ); // What: Ask Flag Write. Why: A user pressing this button has already shown they care, the same signal askOncFun's own one-time flag exists to capture. How: This writes the flag unconditionally, since a re-ask from this button should never prompt automatically again either.
+	stoSetFun( ASK_KEY_STR, '1' ); // What: Ask Flag Write. Why: Re-asking is an explicit request, the same signal askOncFun's own one-time flag exists to capture. How: This writes the flag unconditionally, so askOncFun never prompts on its own afterwards.
 
 
 
