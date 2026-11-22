@@ -201,7 +201,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 							data-element-name-hook='intRetBut'
 
 							onClick={ onRetUsrFun }
-						>{ retLabStr }</button> // What: Intro Return Button Element. Why: Someone restoring a backup or signing in to sync doesn't need onboarding. How: This calls onRetUsrFun when clicked.
+						>{ retLabStr }</button> // What: Intro Return Button Element. Why: Someone restoring a backup or signing in to sync doesn't need onboarding. How: This calls onRetUsrFun when clicked. Its data-element-name-hook is read by the test suites.
 
 
 					) }

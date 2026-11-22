@@ -1582,7 +1582,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						ariLabStr='Filter pickers by group'
 
 						onAllPilFun={ () => setFilGroStr( 'all' ) }
-					/> // What: Filter Rail Component. Why: The Group label and its own pill rail narrow the list by group. How: This renders the shared rail with an "All" pill and one pill per entry in exiGroArr, disabled during the matching tour step.
+					/> // What: Filter Rail Component. Why: The Group label and its own pill rail narrow the list by group. How: This renders the shared rail with an "All" pill and one pill per entry in exiGroArr, disabled during the matching tour step. Its data-element-name-hook is read by the tours and help mode.
 
 
 				) }
@@ -1663,7 +1663,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						ariLabStr='Filter pickers by type'
 
 						onAllPilFun={ () => setFilTypStr( 'all' ) }
-					/> // What: Filter Rail Component. Why: The Type label and its own pill rail narrow the list by type. How: This renders the shared rail with an "All" pill, then every mode, Conditionals, and Reminders entry sorted together by name, disabled during the matching tour step.
+					/> // What: Filter Rail Component. Why: The Type label and its own pill rail narrow the list by type. How: This renders the shared rail with an "All" pill, then every mode, Conditionals, and Reminders entry sorted together by name, disabled during the matching tour step. Its data-element-name-hook is read by the tours and help mode.
 
 
 				) }
@@ -1706,7 +1706,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						ariLabStr='Filter pickers by conditional'
 
 						onAllPilFun={ () => setFilConStr( 'all' ) }
-					/> // What: Filter Rail Component. Why: The Conditionals label and its own pill rail narrow the list to pickers gated by one conditional. How: This renders the shared rail with an "All" pill and one pill per conditional, disabled during the matching tour step.
+					/> // What: Filter Rail Component. Why: The Conditionals label and its own pill rail narrow the list to pickers gated by one conditional. How: This renders the shared rail with an "All" pill and one pill per conditional, disabled during the matching tour step. Its data-element-name-hook is read by help mode.
 
 
 				) }

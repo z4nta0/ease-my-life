@@ -69,7 +69,7 @@ const PilTagCom = ( { children, 'data-element-name-hook' : hooNamStr, tonValStr 
 		className={` ${ cssModObj.pilTagSpa }   ${ tonValStr === 'default' ? cssModObj.pilTagSpaDefault : '' }   ${ tonValStr === 'mode' ? cssModObj.pilTagSpaMode : '' }   ${ tonValStr === 'muted' ? cssModObj.pilTagSpaMuted : '' } `}
 
 		data-element-name-hook={ hooNamStr }
-	>{ children }</span> // What: Pill Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tonValStr modifier class and renders whatever children the caller passed.
+	>{ children }</span> // What: Pill Tag Span Element. Why: This is PilTagCom's own single rendered element. How: This applies the tonValStr modifier class and renders whatever children the caller passed. Its data-element-name-hook is read by help mode.
 
 
 );

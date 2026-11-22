@@ -473,7 +473,7 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 	return (
 
 
-		<CarSurCom data-element-name-hook={ hooNamStr }>{ /* What: Card Surface Component. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. */ }
+		<CarSurCom data-element-name-hook={ hooNamStr }>{ /* What: Card Surface Component. Why: This is BreBarCom's own root container, shared chrome with every other stat card. How: This renders the kicker, then either the bar and legend or the empty state below it. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<div className={ cssModObj.staKicDiv }>{ kicTexStr }</div>{ /* What: Stats Kicker Div Element. Why: Every card on this page opens with a small labelled kicker. How: This renders the caller's own kicTexStr. */ }
@@ -778,7 +778,7 @@ function RanCarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 	return (
 
 
-		<CarSurCom data-element-name-hook={ hooNamStr }>{ /* What: Card Surface Component. Why: A ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. */ }
+		<CarSurCom data-element-name-hook={ hooNamStr }>{ /* What: Card Surface Component. Why: A ranking shares the same card chrome as every other stat card. How: This wraps the kicker and either the ranked list or an empty state. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<div className={ cssModObj.staKicDiv }>{ kicTexStr }</div>{ /* What: Stats Kicker Div Element. Why: This card needs its own small labelled kicker. How: This renders kicTexStr. */ }
@@ -2952,7 +2952,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 							} }
-						/> // What: Filter Rail Component. Why: The Group label and its own pill rail narrow the Show row by group. How: This renders the shared rail with an "All" pill and one pill per entry in exiGroArr.
+						/> // What: Filter Rail Component. Why: The Group label and its own pill rail narrow the Show row by group. How: This renders the shared rail with an "All" pill and one pill per entry in exiGroArr. Its data-element-name-hook is read by the tours and help mode.
 
 
 					) }
@@ -3039,7 +3039,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 							} }
-						/> // What: Filter Rail Component. Why: The Type label and its own pill rail narrow both the Type filter and, for Conditionals and Reminders, the scope itself. How: This renders the shared rail with an "All" pill, then every mode, Conditionals, and Reminders entry sorted together by name.
+						/> // What: Filter Rail Component. Why: The Type label and its own pill rail narrow both the Type filter and, for Conditionals and Reminders, the scope itself. How: This renders the shared rail with an "All" pill, then every mode, Conditionals, and Reminders entry sorted together by name. Its data-element-name-hook is read by the tours, help mode, and the test suites.
 
 
 					) }

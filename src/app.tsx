@@ -720,7 +720,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 				} }
-			>Skip to main content</a>{ /* What: Skip Link Anchor Element. Why: A keyboard user's first Tab should offer a way straight past the tab bar to the open tab. How: This sits above the screen until focused, then slides into view, and tests find it by its hook. */ }
+			>Skip to main content</a>{ /* What: Skip Link Anchor Element. Why: A keyboard user's first Tab should offer a way straight past the tab bar to the open tab. How: This sits above the screen until focused, then slides into view. Its data-element-name-hook is read by the test suites. */ }
 
 
 

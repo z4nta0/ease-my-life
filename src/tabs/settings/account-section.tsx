@@ -341,7 +341,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 								sizValStr='sm'
 
 								onClick={ accSynObj.sigGooFun }
-							>Sign in with Google</ButBasCom>{ /* What: Button Base Component. Why: Google is one way in. How: This opens Google's sign-in window. */ }
+							>Sign in with Google</ButBasCom>{ /* What: Button Base Component. Why: Google is one way in. How: This opens Google's sign-in window. Its data-element-name-hook is read by the test suites. */ }
 
 
 						</div>
@@ -356,7 +356,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 								data-element-name-hook='accLinFor'
 
 								onSubmit={ senLinFun }
-							>{ /* What: Account Link Form Element. Why: An emailed link is the other way in. How: This holds the address field and its button. */ }
+							>{ /* What: Account Link Form Element. Why: An emailed link is the other way in. How: This holds the address field and its button. Its data-element-name-hook is read by the test suites. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's name, description, and field stack together. How: This wraps them. */ }
@@ -395,7 +395,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 											aria-describedby='accEmaSpa'
 
 											onChange={ ( chaEveObj ) => setEmaAdrStr( chaEveObj.target.value ) }
-										/>{ /* What: Account Email Input Element. Why: The link needs an address. How: This holds it. */ }
+										/>{ /* What: Account Email Input Element. Why: The link needs an address. How: This holds it. Its data-element-name-hook is read by the test suites. */ }
 
 
 
@@ -521,7 +521,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 								sizValStr='sm'
 
 								onClick={ accSynObj.sigOutFun }
-							>Sign out</ButBasCom>{ /* What: Button Base Component. Why: A device can leave its account. How: This signs out. */ }
+							>Sign out</ButBasCom>{ /* What: Button Base Component. Why: A device can leave its account. How: This signs out. Its data-element-name-hook is read by the test suites. */ }
 
 
 						</div>
@@ -557,7 +557,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 									sizValStr='sm'
 
 									onClick={ buySynFun }
-								>{ buyActBoo ? 'Opening checkout…' : 'Unlock sync' }</ButBasCom>{ /* What: Button Base Component. Why: This starts the purchase. How: This opens Polar's checkout, disabled while it opens or while a purchase finishes, and relabeled while it opens. */ }
+								>{ buyActBoo ? 'Opening checkout…' : 'Unlock sync' }</ButBasCom>{ /* What: Button Base Component. Why: This starts the purchase. How: This opens Polar's checkout, disabled while it opens or while a purchase finishes, and relabeled while it opens. Its data-element-name-hook is read by the test suites. */ }
 
 
 							</div>
@@ -594,7 +594,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										sizValStr='sm'
 
 										onClick={ accSynObj.choAccFun }
-									>Keep the account's data</ButBasCom>{ /* What: Button Base Component. Why: The account's data is usually the one to keep. How: This runs the first sync keeping it. */ }
+									>Keep the account's data</ButBasCom>{ /* What: Button Base Component. Why: The account's data is usually the one to keep. How: This runs the first sync keeping it. Its data-element-name-hook is read by the test suites. */ }
 
 
 
@@ -634,7 +634,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										className={ cssModObj.accStaSpa }
 
 										data-element-name-hook='accStaSpa'
-									>{ synTexFun( accSynObj ) }</span>{ /* What: Account Status Span Element. Why: The status explains itself, fading in each new one. How: This renders the status sentence, keyed by the status so a change remounts it. */ }
+									>{ synTexFun( accSynObj ) }</span>{ /* What: Account Status Span Element. Why: The status explains itself, fading in each new one. How: This renders the status sentence, keyed by the status so a change remounts it. Its data-element-name-hook is read by the test suites. */ }
 
 
 								</div>
@@ -649,7 +649,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 									sizValStr='sm'
 
 									onClick={ accSynObj.synNowFun }
-								>Sync now</ButBasCom>{ /* What: Button Base Component. Why: Someone may not want to wait. How: This syncs at once, disabled while a sync runs. */ }
+								>Sync now</ButBasCom>{ /* What: Button Base Component. Why: Someone may not want to wait. How: This syncs at once, disabled while a sync runs. Its data-element-name-hook is read by the test suites. */ }
 
 
 							</div>
@@ -682,7 +682,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 				data-element-name-hook='accStaPar'
 
 				role='status'
-			>{ accSynObj.purPenBoo ? 'Finishing your purchase.' : accUsrObj ? `Signed in as ${ accUsrObj.emaStr || 'your account' }.` : linSenStr ? `Sign-in link sent to ${ linSenStr }.` : '' }</p>{ /* What: Account Status Paragraph Element. Why: Signing in and sending a link change the section without moving focus, so screen readers need to hear it. How: This visually hidden status region is in the page and empty from the first render, gaining each result's sentence, the purchase finishing included. */ }
+			>{ accSynObj.purPenBoo ? 'Finishing your purchase.' : accUsrObj ? `Signed in as ${ accUsrObj.emaStr || 'your account' }.` : linSenStr ? `Sign-in link sent to ${ linSenStr }.` : '' }</p>{ /* What: Account Status Paragraph Element. Why: Signing in and sending a link change the section without moving focus, so screen readers need to hear it. How: This visually hidden status region is in the page and empty from the first render, gaining each result's sentence, the purchase finishing included. Its data-element-name-hook is read by the test suites. */ }
 
 
 		</>

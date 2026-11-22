@@ -118,7 +118,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEl
 			className={ className }
 
 			data-element-name-hook={ hooNamStr }
-		>{ /* What: Toggle Row Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps togTexDiv and the switch button. */ }
+		>{ /* What: Toggle Row Div Element. Why: The label/help text block and its own switch sit side by side. How: This wraps togTexDiv and the switch button. Its data-element-name-hook is read by help mode. */ }
 
 
 			<div className={ cssModObj.togTexDiv }>{ /* What: Toggle Text Div Element. Why: The toggle's own label and live explanation belong together. How: This wraps the label and help paragraph below. */ }

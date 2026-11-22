@@ -677,7 +677,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 							} }
-						/> // What: Filter Rail Component. Why: The Group label and its own pill rail filter the Show row by group. How: This renders the shared rail with an "All" pill and one pill per entry in exiGroArr.
+						/> // What: Filter Rail Component. Why: The Group label and its own pill rail filter the Show row by group. How: This renders the shared rail with an "All" pill and one pill per entry in exiGroArr. Its data-element-name-hook is read by the tours and help mode.
 
 
 					) }
@@ -718,7 +718,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 							} }
-						/> // What: Filter Rail Component. Why: The Type label and its own pill rail filter the Show row by mode. How: This renders the shared rail with an "All" pill and one pill per entry in exiModArr.
+						/> // What: Filter Rail Component. Why: The Type label and its own pill rail filter the Show row by mode. How: This renders the shared rail with an "All" pill and one pill per entry in exiModArr. Its data-element-name-hook is read by the tours and help mode.
 
 
 					) }

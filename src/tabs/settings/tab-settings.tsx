@@ -276,7 +276,7 @@ function LegRowCom ( { className, 'data-element-name-hook' : hooNamStr, labTexSt
 			className={ className }
 
 			data-element-name-hook={ hooNamStr }
-		>{ /* What: Legal Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. */ }
+		>{ /* What: Legal Row Div Element. Why: The label/description and the View button need to sit in the tab's usual info-plus-action row layout. How: This wraps the info block and the View button. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's own name and description need their own grouping, apart from the button. How: This wraps the name span and the description span. */ }

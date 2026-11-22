@@ -59,7 +59,7 @@
 			data-element-name-hook='skiLinAnc'
 
 			href='#main'
-		>Skip to main content</a><!-- What: Skip Link Anchor Element. Why: A keyboard user's first Tab should offer a way straight to the document. How: legal-page.ts finds it by its hook and focuses the main on a plain click, keeping the hash out of the address. -->
+		>Skip to main content</a><!-- What: Skip Link Anchor Element. Why: A keyboard user's first Tab should offer a way straight to the document. How: A plain click focuses the main through legal-page.ts, keeping the hash out of the address. Its data-element-name-hook is read by the legal page script and the test suites. -->
 
 		<header class='legPagHed'><!-- What: Legal Page Header Element. Why: The page opens with the app's name, leading back to it. How: This holds the brand link. -->
 
