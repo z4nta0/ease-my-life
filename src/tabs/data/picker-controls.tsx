@@ -345,8 +345,8 @@ type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : Con
  *                            Controls body edits.
  * @param props.picIteArr   - Picker Item Array: This picker's own items.
  *
- * @returns This picker's own Controls body: Picker Details, How it
- * picks, When it runs, Item Controls, and the footer.
+ * @returns This picker's own Controls body: its groups of settings, the
+ * footer, and the unmount watcher.
  *
  * @example
  * ```tsx
@@ -908,7 +908,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	return (
 
 
-		<div className={ cssModObj.ediBodDiv }>{ /* What: Editor Body Div Element. Why: This is PicConCom's own root element, holding Picker Details, How it picks, When it runs, Item Controls, and the footer. How: This renders as a plain div. */ }
+		<div className={ cssModObj.ediBodDiv }>{ /* What: Editor Body Div Element. Why: This is PicConCom's own root element, holding its groups of settings, the footer, and the unmount watcher. How: This renders as a plain div. */ }
 
 
 			<div className={` ${ cssModObj.conGroDiv }   ${ cssModObj.conGroDivBasics } `}>{ /* What: Controls Group Div Element. Why: Name and Group are grouped as the picker's own basic identity fields, which the Basics modifier class styles. How: This wraps the subhead and the name/group rows below. */ }

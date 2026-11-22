@@ -26,7 +26,7 @@
 	border-bottom : var( --sor-row-bor, none ); /* Sort Row Border, set by its parent */ /* What: Sort Row Border. Why: Inside a section the first item right below the sort row needs a hairline above it, like the rows around it. How: A section sets --sor-row-bor to draw that line along the row's bottom edge, falling back to none. */
 	display       : flex;
 	gap           : var( --spa-hor-m02 );       /* Spacing Horizontal Base Minus 2 ~= 8.304px */
-	padding       : var( --sor-row-pad, 0 );    /* Sort Row Padding, set by its parent */ /* What: Sort Row Padding. Why: Inside a section the row lines up with the "+ Add" row and the item rows around it. How: A section sets --sor-row-pad to match their padding, falling back to none. */
+	padding       : var( --sor-row-pad, 0 );    /* Sort Row Padding, set by its parent */ /* What: Sort Row Padding. Why: Inside a section the row lines up with the "+ Add" row and the item rows around it. How: A section sets --sor-row-pad to match their padding, falling back to 0. */
 
 
 }

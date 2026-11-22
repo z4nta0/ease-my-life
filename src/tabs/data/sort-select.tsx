@@ -103,7 +103,7 @@ function SorSelCom ( { labTexStr, onChange, optLisArr, selIdeStr, value } : SscP
 						key={ optCurObj.keyStr }
 
 						value={ optCurObj.keyStr }
-					>{ optCurObj.labStr }</option> // What: Sort Option Element. Why: This is one selectable sort choice. How: This shows optCurObj's own labStr and reports its keyStr when chosen.
+					>{ optCurObj.labStr }</option> // What: Sort Option Element. Why: This is one selectable sort choice. How: This shows optCurObj's own labStr and carries its keyStr as the value the select reports when it is chosen.
 
 
 				) ) }

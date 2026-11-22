@@ -1008,7 +1008,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 							} }
-						>{ /* What: Row Add Button Element. Why: This is the only place a brand-new conditional can be started. How: This seeds a fresh local-only draft and opens its own row. Its data-element-name-hook is read by help mode and the test suites. */ }
+						>{ /* What: Row Add Button Element. Why: This starts a brand-new conditional from the Conditionals section. How: This seeds a fresh local-only draft and opens its own row. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 							<IcoSvgCom
