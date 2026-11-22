@@ -473,7 +473,7 @@
 
 
 }
-.scoTabBut:active { /* What: Pressed Scope Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.scoTabBut:active { /* What: Pressed Scope Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -643,7 +643,7 @@
 
 
 }
-.ranPilBut:active { /* What: Pressed Range Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.ranPilBut:active { /* What: Pressed Range Pill Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1294,7 +1294,7 @@
 
 
 }
-.hetCelBut:active { /* What: Pressed Heat Cell Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.hetCelBut:active { /* What: Pressed Heat Cell Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */

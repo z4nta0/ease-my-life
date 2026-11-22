@@ -1542,7 +1542,7 @@
 
 
 }
-.raiGroBut:active { /* What: Pressed Rail Group Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.raiGroBut:active { /* What: Pressed Rail Group Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1676,7 +1676,7 @@
 
 
 }
-.ediRaiBut:active { /* What: Pressed Edit Rail Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.ediRaiBut:active { /* What: Pressed Edit Rail Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -2082,7 +2082,7 @@
 
 }
 .onbGenSpa:active,
-.genLisSpa:active { /* What: Pressed Onboarding Generate Span And Generate List Span. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.genLisSpa:active { /* What: Pressed Onboarding Generate Span And Generate List Span. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */

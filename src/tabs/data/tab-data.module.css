@@ -461,7 +461,7 @@
 
 
 }
-.scoTabBut:active { /* What: Pressed Scope Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.scoTabBut:active { /* What: Pressed Scope Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1026,7 +1026,7 @@
 
 
 }
-.vacTogBut:active { /* What: Pressed Vacation Toggle Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.vacTogBut:active { /* What: Pressed Vacation Toggle Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1669,7 +1669,7 @@
 
 
 }
-.datCreBut:active { /* What: Pressed Data Create Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.datCreBut:active { /* What: Pressed Data Create Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */

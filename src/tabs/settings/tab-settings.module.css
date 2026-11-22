@@ -589,7 +589,7 @@
 
 
 }
-.raiSecBut:active { /* What: Pressed Rail Section Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.raiSecBut:active { /* What: Pressed Rail Section Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1081,7 +1081,7 @@
 
 
 }
-.togSwiBut:active { /* What: Pressed Toggle Switch Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.togSwiBut:active { /* What: Pressed Toggle Switch Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
@@ -1265,7 +1265,7 @@
 
 
 }
-.docOpeBut:active { /* What: Pressed Document Open Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
+.docOpeBut:active { /* What: Pressed Document Open Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
 	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
