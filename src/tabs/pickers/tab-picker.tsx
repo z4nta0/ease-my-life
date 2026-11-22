@@ -199,7 +199,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: With help mode off, every state change would re-run the clear helper, whose deletes change the state again, in a loop, and with it on, a sample the user deleted would come back. How: staAppObj is read from the render where help mode toggled.
 	}, [ actStoObj, helOpeBoo ] ); // What: Effect Dependency Array. Why: This only needs re-running when help mode itself is toggled. How: helOpeBoo is the trigger, and actStoObj never changes identity.
 
-	React.useEffect( () => () => clePicFun( actStoObj ), [ actStoObj ] ); // What: Unmount Cleanup Effect. Why: A tab switch away from Pickers with help mode still on needs its own cleanup, since the effect above's own cleanup only fires on a DEPENDENCY change, not on unmount. How: This is unconditional and harmless if nothing was ever seeded, since clePicFun's own delPicFun/delConFun calls are no-ops against ids that don't exist, and it lists actStoObj, which never changes identity, so it still runs only on unmount.
+	React.useEffect( () => () => clePicFun( actStoObj ), [ actStoObj ] ); // What: Unmount Cleanup Effect. Why: A tab switch away from Pickers with help mode still on needs its own cleanup, since the effect above only clears the samples when helOpeBoo turns false, not on unmount. How: This is unconditional and harmless if nothing was ever seeded, since clePicFun's own delPicFun/delConFun calls are no-ops against ids that don't exist, and it lists actStoObj, which never changes identity, so it still runs only on unmount.
 
 	// #endregion Help Mode
 
@@ -836,7 +836,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 				<div
-					key={ creOpeBoo ? '__new' : ( actPicStr || '__none' ) }
+					key={ creOpeBoo ? '__new' : ( actPicStr || '__none' ) } // What: Fade Key. Why: Each distinct view needs its own mounted instance so the fade replays. How: This keys the wrapper '__new' while the create form is open, otherwise by the active picker's id, or '__none' when nothing is selected.
 
 					className={ cssModObj.picFadDiv }
 				>{ /* What: Picker Fade Div Element. Why: Switching between create/view (or between two different pickers) should play a fade transition, and React needs a stable key to treat each as a distinct mounted instance. How: This wraps whichever of PicForCom/PicVieCom currently applies. */ }
@@ -846,10 +846,10 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 
 
 						<PicForCom
-							conObjArr={ staAppObj.conditionals || [] }
+							conObjArr={ staAppObj.conditionals || [] } // What: Conditionals Fallback. Why: The form always needs a list to read. How: This passes the saved conditionals, or an empty array when the state has none.
 							exiGroArr={ exiGroArr }
-							iniForObj={ touBusObj.prePayObj || empIniObj || null }
-							iniGroStr={ groFilStr === 'all' ? '' : groFilStr }
+							iniForObj={ touBusObj.prePayObj || empIniObj || null } // What: Initial Form Prefill. Why: The form opens with a tour's prefill first, else the empty-state card's, else none. How: This takes touBusObj.prePayObj, then empIniObj, then null.
+							iniGroStr={ groFilStr === 'all' ? '' : groFilStr } // What: Initial Group String. Why: A new picker starts in the group being filtered on. How: This passes the group filter, or an empty string while it is 'all'.
 
 							onCanForFun={ () => { // What: On Cancel Form Function. Why: Cancelling the create form must also drop any staged prefill. How: This clears the prefill, then runs canCreFun.
 

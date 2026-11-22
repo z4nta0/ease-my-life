@@ -405,7 +405,7 @@
 
 
 }
-@supports ( -moz-appearance : none ) { /* What: Firefox Picker Tab Div. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+@supports ( -moz-appearance : none ) { /* What: Firefox Picker Tab Div. Why: The tab strip needs a pixel of bottom room in Firefox. How: This applies only in Firefox. */
 
 
 	.picTabDiv { /* What: Padded Picker Tab Div. Why: The bottom border needs a pixel of room. How: This adds Spacing Vertical Base Minus 9 (about 1px) of bottom padding. */
