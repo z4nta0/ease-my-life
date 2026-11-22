@@ -569,7 +569,7 @@
 
 /* #region conEdiDiv */
 
-.conEdiDiv { /* What: Conditional Editor Div. Why: The editor body runs edge to edge under its row. How: This drops the padding other sections' editors use. */
+.conEdiDiv { /* What: Conditional Editor Div. Why: The editor body runs edge to edge under its row. How: This sets its padding to 0. */
 
 
 	padding : 0;
@@ -625,7 +625,7 @@
 
 /* #region delConDiv */
 
-.delConDiv { /* What: Delete Confirm Div. Why: The question and its actions share one line, swapping in for the footer. How: This spreads them across a centered row and slides it in each time it mounts. */
+.delConDiv { /* What: Delete Confirm Div. Why: The question and its actions share one row, swapping in for the footer. How: This spreads them across a centered row and slides it in each time it mounts. */
 
 
 	align-items     : center;

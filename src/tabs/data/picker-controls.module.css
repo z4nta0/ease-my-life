@@ -767,7 +767,7 @@
 
 }
 
-.modDotSpa { /* What: Mode Dot Span. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that eases its border color to the accent when selected, and fills when selected. */
+.modDotSpa { /* What: Mode Dot Span. Why: A drawn dot shows which option is chosen. How: This draws an outlined circle that eases its border color to the accent when selected, with its fill drawn by its ::after. */
 
 
 	border        : var( --bor-wid-bas ) solid var( --bor-mai-col );        /* Border Width Base ~= 1.160px, Border Main Color = oklch( 0.91 0.005 240 ) */

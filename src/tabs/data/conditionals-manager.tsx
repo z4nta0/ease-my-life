@@ -384,15 +384,13 @@ type CmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Cond
  * ConManCom = Conditionals Manager Component
  *
  * @summary
- * Lists every conditional as a collapsible card whose body is ConEdiCom.
- * Edits stay in a draft until Save (updConFun) or the row's chevron keeps
- * them. A brand-new conditional is held LOCALLY (not written to the store)
- * until Save, so a reload or tab-switch mid-create discards it, mirroring the
- * "nothing committed until Save" contract TabDatCom's own new-picker draft
- * flow uses (that one is backed by a real hidden picker instead, since
- * PicConCom's own fields already write straight to the store). Delete detaches
- * the conditional from any pickers that reference it (the store itself handles
- * that cleanup).
+ * Lists every conditional as a collapsible card whose body is ConEdiCom. Edits
+ * stay in a draft until Save (updConFun) or the row's chevron keeps them. A
+ * brand-new conditional is held LOCALLY (not written to the store) until Save,
+ * so a reload or tab-switch mid-create discards it, mirroring the "nothing
+ * committed until Save" contract of TabDatCom's own new-picker draft flow.
+ * Delete detaches the conditional from any pickers that reference it, which
+ * the store's delConFun handles.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
