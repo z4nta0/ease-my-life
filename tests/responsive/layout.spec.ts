@@ -436,7 +436,7 @@ const PAG_STA_ARR : PagStaTyp[] = [ // What: Page State Array. Why: Four tabs as
 
 	{ namStr : 'today-editor', tabStr : 'today', preFun : async ( curPagObj ) => { await curPagObj.locator( '[data-element-name-hook~="todCarArt"] [aria-label="Edit"]' ).first().click(); } }, // What: Today Editor State. Why: The inline item editor crowds a card. How: This opens the first card's editor.
 
-	{ namStr : 'data-expanded', tabStr : 'data', preFun : async ( curPagObj ) => { // What: Data Expanded State. Why: An open picker card shows its controls and items, the Data tab's densest view. How: This opens the first picker's card, controls, and items.
+	{ namStr : 'data-expanded', tabStr : 'data', preFun : async ( curPagObj ) => { // What: Data Expanded State. Why: An open picker card shows its controls and items, a crowded view of the Data tab. How: This opens the first picker's card, controls, and items.
 
 
 		const carSecLoc = curPagObj.locator( '[data-element-name-hook~="datCatSec"][data-picker-row-identifier]' ).first(); // What: Card Section Locator. Why: The first picker card is opened. How: This finds it.

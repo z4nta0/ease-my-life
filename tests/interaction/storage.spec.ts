@@ -276,7 +276,7 @@ test.beforeEach( async ( { page : curPagObj } ) => { // What: Setup Hook. Why: E
 
 
 
-			return opeReqObj;
+			return opeReqObj; // What: Open Request Return. Why: The app reads the request this call hands back, hung or delayed. How: This returns the first open's request once its fault was applied.
 
 
 		};
