@@ -152,7 +152,7 @@ const locTimFun = ( dayIsoStr : string, houValNum : number, minValNum : number =
  * @param dayIsoStr - Day ISO String: The Chicago date, as YYYY-MM-DD.
  * @param houValNum - Hour Value Number: The Chicago hour, 0 to 23.
  *
- * @returns A promise that settles once the clock is installed.
+ * @returns A promise that settles once the clock is installed, with no value.
  *
  * @example
  * ```ts
@@ -182,7 +182,7 @@ const insClcFun = async ( curPagObj : Page, dayIsoStr : string, houValNum : numb
  * @param dayIsoStr - Day ISO String: The Chicago date, as YYYY-MM-DD.
  * @param houValNum - Hour Value Number: The Chicago hour, 0 to 23.
  *
- * @returns A promise that settles once the clock has moved.
+ * @returns A promise that settles once the clock has moved, with no value.
  *
  * @example
  * ```ts

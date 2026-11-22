@@ -63,7 +63,8 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The seeding in
  * @param curPagObj - Current Page Object: The page to install the seeding on.
  * @param sedValNum - Seed Value Number: The 32-bit seed for the generator.
  *
- * @returns A promise that settles once the script is registered.
+ * @returns A promise that settles once the script is registered, with no
+ *          value.
  *
  * @example
  * ```ts

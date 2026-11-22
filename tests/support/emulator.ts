@@ -24,7 +24,7 @@
 // #region Constants
 
 const AUT_EMU_STR = 'http://127.0.0.1:9099'; // What: Authentication Emulator String. Why: The admin calls reach the auth emulator. How: This is its default address.
-const FIR_EMU_STR = 'http://127.0.0.1:8080'; // What: Firestore Emulator String. Why: Specs read and write the cloud copy straight through the Firestore emulator's REST API. How: This is its default address.
+const FIR_EMU_STR = 'http://127.0.0.1:8080'; // What: Firestore Emulator String. Why: The cloud copy in tests lives in the Firestore emulator. How: This is its default address.
 
 // #endregion Constants
 
@@ -32,7 +32,7 @@ const FIR_EMU_STR = 'http://127.0.0.1:8080'; // What: Firestore Emulator String.
 
 // #region Helpers
 
-type AdmRepTyp = { idToken : string, localId : string, users : { customAttributes? : string }[] }; // What: Admin Reply Type. Why: The callers read a new account's ID and token, and a looked-up account's claims. How: This types the fields of the emulator's JSON reply that they read.
+type AdmRepTyp = { idToken : string, localId : string, users : { customAttributes? : string }[] }; // What: Admin Reply Type. Why: The emulator's admin replies carry a new account's ID and token, and a looked-up account's claims. How: This types the fields of the emulator's JSON reply that they read.
 
 // #region admPosFun
 

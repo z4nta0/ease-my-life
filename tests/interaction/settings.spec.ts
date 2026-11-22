@@ -144,7 +144,7 @@ test( 'the daily generator switch and run time save', async ( { page : curPagObj
 
 
 
-	await curPagObj.locator( '[aria-label="Daily generator run time"]' ).blur(); // What: Time Commit Call. Why: Some time inputs commit on blur. How: This leaves the field.
+	await curPagObj.locator( '[aria-label="Daily generator run time"]' ).blur(); // What: Time Commit Call. Why: Leaving the field ends the edit the way a person would. How: This moves focus out of it.
 
 
 
