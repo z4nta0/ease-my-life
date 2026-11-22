@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './intro-modal.module.css'; // What: CSS Module Object. Why: The modal's backdrop, card, and button styles live in its own module. How: This maps each class name in intro-modal.module.css to its hashed module class.
-import React     from 'react';                    // What: React. Why: This is the UI library IntModCom is built on. How: This is used directly (React.useRef, React.useEffect) inside the component below.
+import React     from 'react';                    // What: React. Why: This is the UI library IntModCom is built on. How: This is used directly (React.useRef, for one) inside the component below.
 
 
 import { createPortal } from 'react-dom';            // What: Create Portal. Why: The modal must render into <body> so it lays over the whole app instead of being clipped by an ancestor's own overflow/stacking context. How: This is called with the modal's own JSX and document.body inside IntModCom's return.

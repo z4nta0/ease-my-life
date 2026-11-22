@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tab-picker.module.css'; // What: CSS Module Object. Why: The Pickers tab's header, filter rails, and picker strip are styled from their own module. How: This maps each class name in tab-picker.module.css to its hashed module class.
-import React     from 'react';                   // What: React. Why: TabPicCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useRef, React.useState) instead of importing individual named hooks.
+import React     from 'react';                   // What: React. Why: TabPicCom is built directly on React's own APIs. How: This is used directly (React.useCallback, for one) instead of importing individual named hooks.
 
 
 import { clePicFun    } from '../../help/sample-data.ts';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers/conditionals must be torn down the moment help mode turns off or this tab unmounts. How: This is called from TabPicCom's own help-mode effect and its unmount cleanup.

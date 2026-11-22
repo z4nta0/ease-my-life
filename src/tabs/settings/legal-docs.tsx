@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './legal-docs.module.css'; // What: CSS Module Object. Why: The legal modal's backdrop, panel, head, and body styles live in its own module. How: This maps each class name in legal-docs.module.css to its hashed module class.
-import React     from 'react';                   // What: React. Why: LegModCom is a React component. How: This is used directly (React.useRef, React.useState, React.useEffect) throughout, instead of importing individual named hooks.
+import React     from 'react';                   // What: React. Why: LegModCom is a React component. How: This is used directly (React.useRef, for one) throughout, instead of importing individual named hooks.
 
 
 import { createPortal } from 'react-dom';               // What: Create Portal. Why: The modal must render into <body> so help mode's overlay and any ancestor's stacking can't bury it. How: This is called by LegModCom's own return.

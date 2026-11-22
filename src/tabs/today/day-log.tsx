@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './day-log.module.css'; // What: CSS Module Object. Why: The Day Log's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.Fragment) throughout, instead of importing individual named hooks.
+import React     from 'react';                // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, for one) throughout, instead of importing individual named hooks.
 
 
 import { CAD_NAM_OBJ } from '../../core/cadence.ts';      // What: Cadence Namespace Object. Why: An ease-mode item's subline needs CAD_NAM_OBJ.uniWorFun to phrase its range in the picker's own cadence unit (days/weeks/months/years) instead of always "days". How: This is called once inside iteSubFun below.

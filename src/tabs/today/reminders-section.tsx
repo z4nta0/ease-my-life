@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './reminders-section.module.css'; // What: CSS Module Object. Why: The Reminders section's header, quick-add form, and cards are styled from their own module. How: This maps each class name in reminders-section.module.css to its hashed module class.
-import React     from 'react';                          // What: React. Why: The components use React's own APIs directly (hooks, Fragment, and types). How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                          // What: React. Why: The components use React's own APIs directly (hooks, Fragment, and types). How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: The quick-add form and each reminder card's own actions need consistently-styled buttons. How: This is rendered by RemSecCom for its buttons, such as the quick-add form's Add.

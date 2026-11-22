@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: This is the UI library the hook exported from this module is built on. How: This is used directly (React.useState, React.useEffect) inside useEmlTouFun below, instead of importing individual named hooks.
+import React from 'react'; // What: React. Why: This is the UI library the hook exported from this module is built on. How: This is used directly (React.useState, for one) inside useEmlTouFun below, instead of importing individual named hooks.
 
 
 import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: A sample picker prefill carries its items. How: This types PrePayTyp's items.

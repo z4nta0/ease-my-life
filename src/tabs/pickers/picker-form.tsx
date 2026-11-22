@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './picker-form.module.css'; // What: CSS Module Object. Why: PicForCom's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                    // What: React. Why: PicForCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                    // What: React. Why: PicForCom is built directly on React's own APIs. How: This is used directly (React.useCallback, for one) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from '../../ui/button.tsx';               // What: Button Base Component. Why: The form's step, add, save and cancel actions need consistently-styled controls. How: This is rendered for each of those actions.

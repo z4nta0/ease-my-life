@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tooltip.module.css'; // What: CSS Module Object. Why: The help tip's card, arrow, title, and body styles live in its own module. How: This maps each class name in tooltip.module.css to its hashed module class.
-import React     from 'react';                // What: React. Why: HelTipCom is built directly on React's own APIs. How: This is used directly (React.useLayoutEffect, React.useRef, React.useState) instead of importing individual named hooks.
+import React     from 'react';                // What: React. Why: HelTipCom is built directly on React's own APIs. How: This is used directly (React.useLayoutEffect, for one) instead of importing individual named hooks.
 
 
 import { rhyPixFun } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.

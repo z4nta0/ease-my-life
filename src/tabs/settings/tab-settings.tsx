@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tab-settings.module.css'; // What: CSS Module Object. Why: TabSetCom's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                     // What: React. Why: TabSetCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                     // What: React. Why: TabSetCom is built directly on React's own APIs. How: This is used directly (React.useCallback, for one) instead of importing individual named hooks.
 
 
 import { AccSecCom    } from './account-section.tsx';               // What: Account Section Component. Why: The Account section's sign-in and sync live in their own component. How: This renders them.

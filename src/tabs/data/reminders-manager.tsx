@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './reminders-manager.module.css'; // What: CSS Module Object. Why: The Reminders section's card, settings matrix, rows, and editor are styled from their own module. How: This maps each class name in reminders-manager.module.css to its hashed module class.
-import React     from 'react';                          // What: React. Why: The components in this file are built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                          // What: React. Why: The components in this file are built directly on React's own APIs. How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: The add form and each open reminder's own actions need consistently-styled buttons. How: This is rendered throughout RemManCom.

@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './info-tip.module.css'; // What: CSS Module Object. Why: The trigger and tip bubble styles live in their own module. How: This maps each class name in info-tip.module.css to its hashed module class.
-import React     from 'react';                 // What: React. Why: InfTipCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useLayoutEffect, React.useRef, React.useState) instead of importing individual named hooks.
+import React     from 'react';                 // What: React. Why: InfTipCom is built directly on React's own APIs. How: This is used directly (React.useCallback, for one) instead of importing individual named hooks.
 
 
 import { createPortal } from 'react-dom';          // What: Create Portal. Why: InfTipCom's floating tooltip must render into <body> so it is clamped to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with the tooltip's JSX and document.body inside InfTipCom's return.

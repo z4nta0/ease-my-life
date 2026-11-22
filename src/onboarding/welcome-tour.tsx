@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: WelTouCom calls React hooks through the React namespace. How: This is used directly (React.useState, React.useEffect, React.useCallback) throughout WelTouCom below.
+import React from 'react'; // What: React. Why: WelTouCom calls React hooks through the React namespace. How: This is used directly (React.useState, for one) throughout WelTouCom below.
 
 
 import { emlTouObj   } from '../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: This is the shared observable tour bus other tabs read to react to the Welcome Tour without a context provider. How: This is written to via .set() in finTouFun below.

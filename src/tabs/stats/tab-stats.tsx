@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tab-stats.module.css'; // What: CSS Module Object. Why: TabStaCom's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                  // What: React. Why: This is the UI library the whole file's component and its hooks are built on. How: This is used directly (React.useState, React.useMemo, React.useCallback, ...) throughout instead of importing individual named hooks.
+import React     from 'react';                  // What: React. Why: This is the UI library the whole file's component and its hooks are built on. How: This is used directly (React.useState, for one) throughout instead of importing individual named hooks.
 
 
 import { CAD_NAM_OBJ  } from '../../core/cadence.ts';         // What: Cadence Namespace Object. Why: A cadence-scoped picker's run gaps need relabeling into real period words instead of raw day counts. How: This is called via CAD_NAM_OBJ.uniWorFun to turn a day/period count into "week"/"month"/"year" wording.

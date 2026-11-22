@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: useEscCanFun registers and cleans up its stack entry from an effect. How: This is used directly (React.useRef, React.useEffect) instead of importing individual named hooks.
+import React from 'react'; // What: React. Why: useEscCanFun registers and cleans up its stack entry from an effect. How: This is used directly (React.useRef, for one) instead of importing individual named hooks.
 
 // #endregion Imports
 

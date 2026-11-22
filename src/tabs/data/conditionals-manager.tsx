@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './conditionals-manager.module.css'; // What: CSS Module Object. Why: The Conditionals section's card, rows, and editor are styled from their own module. How: This maps each class name in conditionals-manager.module.css to its hashed module class.
-import React     from 'react';                             // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState) instead of importing individual named hooks.
+import React     from 'react';                             // What: React. Why: Every component in this file is built directly on React's own APIs. How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 
 import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: ConEdiCom's own Save/Cancel/Delete footer needs consistently-styled buttons. How: This is rendered throughout ConEdiCom below.

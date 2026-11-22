@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './conditional-controls.module.css'; // What: CSS Module Object. Why: CodConCom's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                             // What: React. Why: This file's components use React's own APIs and types. How: This is used as React.useId and React.JSX.Element below.
+import React     from 'react';                             // What: React. Why: This file's components use React's own APIs and types. How: This is used directly (React.useId, for one).
 
 
 import { BooResCom   } from './boost-reset.tsx';       // What: Boost Reset Component. Why: The dynamic mode's own accrued miss-boost needs a display plus a manual reset control. How: This is rendered in the dynamic-mode Boost row below.

@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './boost-reset.module.css'; // What: CSS Module Object. Why: The boost value and reset button styles live in their own module. How: This maps each class name in boost-reset.module.css to its hashed module class.
-import React     from 'react';                    // What: React. Why: BooResCom is built directly on React's own APIs. How: This is used directly (React.useEffect, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                    // What: React. Why: BooResCom is built directly on React's own APIs. How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 
 import { durMilFun } from '../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.

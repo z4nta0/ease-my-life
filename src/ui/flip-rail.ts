@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: The hook below is built on React's own layout effect and ref APIs. How: This is used directly (React.useLayoutEffect, React.useRef).
+import React from 'react'; // What: React. Why: The hook below is built on React's own layout effect and ref APIs. How: This is used directly (React.useLayoutEffect, for one).
 
 
 import { durMilFun } from '../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Both pill animations must last exactly as long as their own duration step. How: This returns a step's length in milliseconds.

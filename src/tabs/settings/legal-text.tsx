@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: Both documents are React components. How: This is used directly for React.Fragment and the components' return type.
+import React from 'react'; // What: React. Why: Both documents are React components. How: This is used directly (React.Fragment, for one).
 
 // #endregion Imports
 

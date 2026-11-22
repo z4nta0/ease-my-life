@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './app.module.css'; // What: CSS Module Object. Why: The app shell, main area, and tab bar are styled from their own module. How: This maps each class name in app.module.css to its hashed module class.
-import React     from 'react';            // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, React.useRef, React.useLayoutEffect, ...) throughout, instead of importing individual named hooks.
+import React     from 'react';            // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, for one) throughout, instead of importing individual named hooks.
 
 
 import { APP_NAM_OBJ  } from './platform/appearance.ts';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through this file's theme functions. How: This supplies the palette effect's theme resolution, palette lookup, and palette application.

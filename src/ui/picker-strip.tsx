@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './picker-strip.module.css'; // What: CSS Module Object. Why: The reel, dissolve, and spotlight pick animations are styled from their own module. How: This maps each class name in picker-strip.module.css to its hashed module class.
-import React     from 'react';                     // What: React. Why: This is the UI library PicStrCom is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, ...) instead of importing individual named hooks.
+import React     from 'react';                     // What: React. Why: This is the UI library PicStrCom is built on. How: This is used directly (React.useState, for one) instead of importing individual named hooks.
 
 
 import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: Under reduced motion the strip skips its cycle and mounts straight into the settled end state. How: This is checked on each render unless forMotBoo forces the animation.

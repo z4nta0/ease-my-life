@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './bg-flourish.module.css'; // What: CSS Module Object. Why: The flourish column and glyph styles live in their own module. How: This maps each class name in bg-flourish.module.css to its hashed module class.
-import React     from 'react';                    // What: React. Why: This is the UI library this file's two components are built on. How: This is used directly (React.useState, React.useEffect, React.Fragment) throughout, instead of importing individual named hooks.
+import React     from 'react';                    // What: React. Why: This is the UI library this file's two components are built on. How: This is used directly (React.useState, for one) throughout, instead of importing individual named hooks.
 
 // #endregion Imports
 

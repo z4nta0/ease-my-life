@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: The watcher is a component built on React's own ref and effect hooks. How: This is used directly (React.useRef, React.useLayoutEffect, React.useEffect).
+import React from 'react'; // What: React. Why: The watcher is a component built on React's own ref and effect hooks. How: This is used directly (React.useRef, for one).
 
 // #endregion Imports
 

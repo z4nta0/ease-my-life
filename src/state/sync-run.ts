@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import React from 'react'; // What: React. Why: Sync runs as a hook beside the store. How: This is used directly (React.useState, React.useRef, React.useEffect).
+import React from 'react'; // What: React. Why: Sync runs as a hook beside the store. How: This is used directly (React.useState, for one).
 
 
 import { isoDayFun   } from '../utils/date.ts';          // What: ISO Day Function. Why: The merge needs today's local date. How: This formats it as 'YYYY-MM-DD'.

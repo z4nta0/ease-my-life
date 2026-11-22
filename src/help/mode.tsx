@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './mode.module.css'; // What: CSS Module Object. Why: The help-mode overlay and the navigation tip's per-tab blocks are styled from their own module. How: This maps each class name in mode.module.css to its hashed module class.
-import React     from 'react';             // What: React. Why: HelOveCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useState) instead of importing individual named hooks.
+import React     from 'react';             // What: React. Why: HelOveCom is built directly on React's own APIs. How: This is used directly (React.useCallback, for one) instead of importing individual named hooks.
 
 
 import { badRecFun    } from './geometry.ts';      // What: Badge Rect Function. Why: Each highlighted target's badge is positioned against its own rect. How: This is called once per highlighted target.
