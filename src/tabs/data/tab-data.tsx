@@ -4,11 +4,11 @@
 // #region Imports
 
 import cssModObj from './tab-data.module.css'; // What: CSS Module Object. Why: The Data tab's own styles live in its module. How: Each className reads its hashed class from here.
-import React     from 'react';                 // What: React. Why: TabDatCom is built directly on React's own APIs. How: This is used directly (React.useCallback, React.useEffect, React.useMemo, React.useRef, React.useState, React.Fragment) instead of importing individual named hooks.
+import React     from 'react';                 // What: React. Why: TabDatCom is built directly on React's own APIs. How: This is used directly (React.useState, for one) instead of importing individual named hooks.
 
 
 import { buiIteFun    } from '../../state/new-item.ts';             // What: Build Item Function. Why: A new item's local draft starts from the same defaults the store would give it. How: This is called when a row adds a new item.
-import { CAD_NAM_OBJ  } from '../../core/cadence.ts';               // What: Cadence Namespace Object. Why: Each picker card's own header needs the shared cadence summary helpers. How: This is called in TabDatCom's picker cards.
+import { CAD_NAM_OBJ  } from '../../core/cadence.ts';               // What: Cadence Namespace Object. Why: A draft picker's cadence defaults and an ease item's unit word come from the shared cadence helpers. How: This is called when a draft picker starts and when an ease item's summary is built.
 import { clePicFun    } from '../../help/sample-data.ts';           // What: Clear Pickers Function. Why: Help mode's disposable sample pickers must not survive past the help session or this tab unmounting. How: This is called whenever helOpeBoo turns off and on TabDatCom's own unmount cleanup.
 import { cleTasFun    } from '../../help/sample-data.ts';           // What: Clear Tasks Function. Why: Help mode's disposable sample reminders must not survive past the help session or this tab unmounting. How: This is called whenever helOpeBoo turns off and on TabDatCom's own unmount cleanup.
 import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: Picker cards, their Controls and Items disclosures, and item rows share the same collapse-height animation. How: This wraps each of those bodies, driven by the matching open boolean.
@@ -26,13 +26,13 @@ import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Inf
 import { isaTruFun    } from '../../utils/guard.ts';                // What: Is-A Truthy Function. Why: The scroll-fade rows drop any that aren't mounted. How: This filters them so the rest read as real elements.
 import { modDefFun    } from '../../state/new-item.ts';             // What: Mode Defaults Function. Why: A draft picker's type change resets its items the same way a saved picker's does. How: This is called by patNewFun.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Several add/edit controls in this tab must stay disabled while the Welcome Tour's own checklist is still in progress. How: This is checked via tutProFun throughout TabDatCom.
-import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: An ease-mode picker's item list needs the same fallback ease-band math the picking engine itself uses. How: This is called once per picker via PIC_NAM_OBJ.aveEasFun, through driDayFun for each ease item's days, and read for THR_VAL_NUM, a draft's full-charge ceiling, and DEF_EAS_OBJ, the default band an item with none falls back to.
+import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: An ease-mode picker's item list needs the same fallback ease-band math and defaults the picking engine itself uses. How: This is called for the ease band fallback and day conversions, and read for the engine's own default values.
 import { PicConCom    } from './picker-controls.tsx';               // What: Picker Controls Component. Why: Each picker card's Controls disclosure needs its own how-it-picks/when-it-runs/item-controls body. How: This is rendered inside TabDatCom's picker card whenever that card's Controls disclosure is open.
 import { ranIdeFun    } from '../../utils/random-id.ts';            // What: Random Identifier Function. Why: A new draft picker needs a stable id before it's created. How: This mints a 'pkr_' id.
-import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A user who prefers reduced motion shouldn't see any of this tab's own FLIP, scroll, or collapse animations. How: This is checked before every animation in TabDatCom.
+import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A user who prefers reduced motion should see this tab's script-driven scrolls and removals happen instantly. How: This is checked before the tab's script-driven animated steps.
 import { RemManCom    } from './reminders-manager.tsx';             // What: Reminder Manager Component. Why: The Reminders section of this tab is a full, separately-maintained editor. How: This is rendered once, in place of a picker card, whenever the Reminders scope is shown.
 import { scrBehFun    } from '../../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
-import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in TabDatCom for mode labels and the new-picker mode radio group.
+import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: Every picker mode's own label and hint text comes from this shared catalog. How: This is read (MOD_DEF_OBJ) in TabDatCom for mode labels and to check that a filter value names a real picker mode.
 import { sedPicFun    } from '../../help/sample-data.ts';           // What: Seed Pickers Function. Why: Help mode needs a real picker of every mode to show a representative "view and edit" section. How: This is called whenever helOpeBoo turns on.
 import { sedTasFun    } from '../../help/sample-data.ts';           // What: Seed Tasks Function. Why: Help mode needs real reminders of every recurrence kind to show a representative "view and edit" section. How: This is called whenever helOpeBoo turns on.
 import { sorEntFun    } from './list-sorting.ts';                   // What: Sort Entries Function. Why: Sections and picker items share the app's own sort-key vocabulary. How: This is called once per comparison inside each list's own sort.
@@ -490,7 +490,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const opeRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Open Row Reference. Why: A brand-new item's own "+ Add" click needs a handle on the resulting row so it can be scrolled into view. How: This is attached to whichever row is currently open.
 
 
-	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created item's own form should scroll into view once its ColDisCom has actually finished opening, pinned right below the sort control rather than the top of a possibly-tall list. How: This waits one p02 duration step, the ColDisCom open animation's own length, before a smooth scroll, or scrolls instantly under reduced motion.
+	React.useEffect( () => { // What: Scroll Into View Effect. Why: A freshly-created item's own form should scroll into view once its ColDisCom has actually finished opening. How: This waits one p02 duration step, the ColDisCom open animation's own length, before a smooth scroll, or scrolls instantly under reduced motion.
 
 
 		const notOpeBoo = !opeIteStr;                      // What: Not Open Boolean. Why: No item is open, so there is nothing to scroll to. How: This negates opeIteStr.
@@ -622,10 +622,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	 *
 	 * @summary
 	 * Closes the open row the way its own collapse chevron does: its draft is
-	 * kept, then the row closes. Used when another row opens in its place and
-	 * by the open row's UnmWatCom, so a row that disappears some other way
-	 * (its card or section collapsing, a filter hiding it, a tab switch) also
-	 * keeps its edits.
+	 * kept, then the row closes.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1002,7 +999,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const draCarRef = React.useRef< HTMLElement | null >( null ); // What: Draft Card Reference. Why: The freshly-created draft's own card needs to scroll all the way to the viewport's own top, since its form is tall enough that "nearest" would still leave most of it below the fold. How: This is attached to the draft card's own ref prop.
 
 
-	React.useEffect( () => { // What: Draft Scroll Effect. Why: The draft's own final layout height is already correct by the time this runs (its own Collapses are forced instant), so there's no animation to wait for first, unlike the item/conditional row scrolls above. How: This scrolls draCarRef into view at the viewport's own top.
+	React.useEffect( () => { // What: Draft Scroll Effect. Why: The draft's own final layout height is already correct by the time this runs (its own Collapses are forced instant), so there's no animation to wait for first, unlike the item row scroll above. How: This scrolls draCarRef into view at the viewport's own top.
 
 
 		if ( !newDraStr || !draCarRef.current ) return; // What: Not Applicable Guard. Why: Only an actual, mounted draft card needs this scroll. How: This bails out when either condition fails.
@@ -2032,6 +2029,31 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					};
 
 
+
+					// #region keeCloFun
+
+					/**
+					 * keeCloFun = Keep Close Function
+					 *
+					 * @summary
+					 * Commits the open row's draft, then closes the row only
+					 * when the given item is still the open one, so a close
+					 * arriving after another row opened leaves that row alone.
+					 *
+					 * @author z4nta0 <https://github.com/z4nta0>
+					 *
+					 * @param iteIdeStr - Item Identifier String: The id of the
+					 *                    item whose row is closing.
+					 *
+					 * @returns This function does not return anything.
+					 *
+					 * @example
+					 * ```ts
+					 * keeCloFun(iteIdeStr) // => void
+					 * ```
+					 *
+					*/
+
 					const keeCloFun = ( iteIdeStr : string ) => { // What: Keep Close Function. Why: The row's own collapse chevron and IteEdiCom's own Save both mean "keep this, I'm done", so both need the exact same cleanup, kept in one place so neither can drift out of sync with the other. How: This keeps the open draft, then closes the row only if this item is still the open one.
 
 
@@ -2042,6 +2064,8 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 					};
 
+					// #endregion keeCloFun
+
 					// #endregion Card Item Actions
 
 
@@ -2051,7 +2075,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 						<section
 							key={ picCurObj.id }
-							ref={ isaDraBoo ? draCarRef : undefined }
+							ref={ isaDraBoo ? draCarRef : undefined } // What: Draft Card Reference Guard. Why: Only the draft card needs a handle for its scroll. How: This attaches draCarRef to the draft card and no reference to any other card.
 
 							className={` ${ cssModObj.datCatSec }   ${ rmvPicStr === picCurObj.id ? cssModObj.datCatSecRemoving : '' }   ${ hetPicBoo ? cssModObj.datCatSecTour : '' } `}
 
@@ -2408,7 +2432,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 													<div
 														key={ iteCurObj.id }
-														ref={ iteOpeBoo ? opeRowRef : undefined }
+														ref={ iteOpeBoo ? opeRowRef : undefined } // What: Open Row Reference Guard. Why: Only the open row needs a handle so a new item can scroll into view. How: This attaches opeRowRef to this row only while it is the open one.
 
 														className={` ${ cssModObj.lisIteDiv }   ${ insIteStr === iteCurObj.id ? cssModObj.lisIteDivInsert : '' }   ${ hetRowBoo ? cssModObj.lisIteDivTour : '' } `}
 
@@ -2416,7 +2440,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 														data-row-edit-active={ iteOpeBoo || undefined } // What: Row Edit Active Attribute. Why: An open row's header stops reacting like a button and its chevron turns the accent color. How: This sets the presence-only attribute while iteOpeBoo is true.
 														data-row-vacation-active={ iteCurObj.vacation || undefined } // What: Row Vacation Active Attribute. Why: An item on vacation reads quieter than the rest. How: This sets the presence-only attribute while the item is on vacation.
 
-														onAnimationEnd={ () => { if ( insIteStr === iteCurObj.id ) setInsIteStr( null ); } }
+														onAnimationEnd={ () => { if ( insIteStr === iteCurObj.id ) setInsIteStr( null ); } } // What: Insert Animation End Guard. Why: Only the row flagged as just inserted should clear the flag. How: This resets insIteStr once this row's animation ends while it is the flagged row.
 													>{ /* What: List Item Div Element. Why: Every item needs its own collapsible row wrapper, capturing the entrance/insert animation and the tour highlight. How: This clears insIteStr once this row's own insert animation finishes. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
@@ -2467,7 +2491,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 																		aria-label='Item name'
 
 																		onChange={ ( chaEveObj ) => patDraFun( { name : chaEveObj.target.value } ) }
-																		onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
+																		onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: Enter Key Blur Guard. Why: Pressing Enter should finish editing the name. How: This blurs the input only when the key pressed is Enter.
 																	/>{ /* What: Row Name Input Element. Why: An item's own name is edited right in the row header. How: This writes every keystroke into the row's draft, trimmed when the draft is kept. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
