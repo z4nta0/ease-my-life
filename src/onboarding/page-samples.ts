@@ -77,10 +77,9 @@ const picCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Picker
  * clePicFun = Clear Picker Function
  *
  * @summary
- * Discards the copies sedPicFun makes, called whenever a tour that seeded them
- * ends (Skip or Done), so they never linger as clutter in the user's real
- * picker list. Harmless no-op for any copy that was never actually seeded
- * (e.g. Skip from the intro modal, before Step 1's own runFun ever fires).
+ * Discards the copies sedPicFun makes, so they never linger as clutter in the
+ * user's real picker list. Removing a copy that was never seeded is a harmless
+ * no-op.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -113,24 +112,13 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Fu
  * sedPicFun = Seed Picker Function
  *
  * @summary
- * Fired from a page tour's Step 1 runFun, between the nav click and Step 2
- * mounting, so the targets Step 2 points at already exist. Guarded by
- * existence so navigating back to Step 1 and forward again (re-firing this
- * runFun) can't create duplicate-id pickers.
- *
- * The Pickers/Data tours need real pickers on screen to point at (e.g. the
- * group filter row doesn't even render with fewer than 2 groups), but both
- * expose real edit/delete controls on whatever picker they highlight, so
- * reusing the Welcome Tour's own hidden sample pickers directly (the same ones
- * the Today mini-tour launcher cards and Replay Tour depend on) would let the
- * user's own interaction here (deleting one, editing an item, re-selecting a
- * scope, etc.) corrupt that shared reference data. Seeded as full COPIES
- * instead, under their own `pt_`-prefixed ids (never colliding with the real
- * `pkr_ob_*`/`it_ob_*` ones), and cleaned up again the moment whichever tour
- * used them ends (see clePicFun): real, interactive, but disposable. Shared
- * between the two tours rather than each maintaining its own copy set. Stats
- * does NOT use this, see state/sample-history.ts's unhHisFun for why it
- * borrows the real samples instead.
+ * Seeds a disposable copy of every onboarding sample picker under its own
+ * `pt_`-prefixed id, so a page tour can edit and delete real pickers without
+ * touching the real hidden samples (`pkr_ob_*` / `it_ob_*`). Each copy carries
+ * the sample's name, group, and mode, with its items stripped of their own
+ * ids. Guarded by existence so seeding again can't create duplicate-id
+ * pickers. clePicFun removes the copies again. Stats doesn't use these, see
+ * state/sample-history.ts's unhHisFun.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -156,7 +144,7 @@ const sedPicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 		const copIdeStr = picCopFun( samPicObj.id ); // What: Copy Identifier String. Why: This copy's own id must never collide with the real hidden picker's own id. How: This derives it from samPicObj's own id via picCopFun.
 
 
-		if ( staAppObj.pickers.some( ( exiPicObj ) => exiPicObj.id === copIdeStr ) ) return; // What: Existing Copy Guard. Why: Re-firing this runFun (Back then Forward again) must not create a duplicate-id picker. How: This returns early whenever a picker with this exact copy id already exists.
+		if ( staAppObj.pickers.some( ( exiPicObj ) => exiPicObj.id === copIdeStr ) ) return; // What: Existing Copy Guard. Why: Seeding again must not create a duplicate-id picker. How: This returns early whenever a picker with this exact copy id already exists.
 
 
 
@@ -231,16 +219,12 @@ const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Task Func
  * sedTasFun = Seed Task Function
  *
  * @summary
- * The Data tour's own Reminders step needs real reminders to point at, same
- * reasoning as sedPicFun above (real edit/delete controls are exposed there
- * too, so a disposable copy protects the real hidden samples), just for
- * ONB_TAS_ARR instead of pickers. Data-only, the Pickers tour never touches
- * reminders at all.
- *
- * Fired from the Data tour's own Step 1 runFun alongside sedPicFun, guarded by
- * existence so navigating back to Step 1 and forward again can't create
- * duplicate-id reminders. A weekly sample's copy is pinned to today's weekday,
- * the same way the Welcome Tour seeds the real one.
+ * Seeds a disposable copy of every onboarding sample reminder under its own
+ * `pt_`-prefixed id, same as sedPicFun does for pickers, so a tour can edit
+ * and delete real reminders without touching the real hidden samples. Guarded
+ * by existence so seeding again can't create duplicate-id reminders. A weekly
+ * sample's copy is pinned to today's weekday, the same way the Welcome Tour
+ * seeds the real one.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -266,7 +250,7 @@ const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 		const copIdeStr = tasCopFun( samTasObj.id ); // What: Copy Identifier String. Why: This copy's own id must never collide with the real hidden reminder's own id. How: This derives it from samTasObj's own id via tasCopFun.
 
 
-		if ( staAppObj.tasks.some( ( exiTasObj ) => exiTasObj.id === copIdeStr ) ) return; // What: Existing Copy Guard. Why: Re-firing this runFun must not create a duplicate-id reminder. How: This returns early whenever a task with this exact copy id already exists.
+		if ( staAppObj.tasks.some( ( exiTasObj ) => exiTasObj.id === copIdeStr ) ) return; // What: Existing Copy Guard. Why: Seeding again must not create a duplicate-id reminder. How: This returns early whenever a task with this exact copy id already exists.
 
 
 
@@ -298,7 +282,7 @@ const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 // #region Exports
 
-export { clePicFun, cleTasFun, neeCopFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: A page tour seeds and clears these copies as it opens and closes. How: This exports the seed, clear, and needs-copies functions by name; the id helpers stay private to this file.
+export { clePicFun, cleTasFun, neeCopFun, sedPicFun, sedTasFun }; // What: Named Exports. Why: These five functions seed and clear the disposable sample copies and say which tours need them. How: This exports the seed, clear, and needs-copies functions by name; the id helpers stay private to this file.
 
 // #endregion Exports
 
