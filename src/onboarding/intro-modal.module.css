@@ -126,7 +126,7 @@
 
 }
 
-.icoMarDiv svg { /* What: Icon Mark Div Icon. Why: The glyph should fill its mark box whatever size it was drawn at. How: This stretches the svg to the box. */
+.icoMarDiv svg { /* What: Icon Mark Div Icon. Why: The glyph should fill its mark box whatever size it was drawn at, and the caller passes the icon in, so it can't carry a class from this module and is named by its tag under the wrapper's class. How: This stretches the svg to the box. */
 
 
 	height : 100%;

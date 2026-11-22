@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { durMilFun   } from '../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
+import { durMilFun   } from '../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: forNamFun must wait one duration step past another component's own delayed commit. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { NAV_TAR_OBJ } from './targets.tsx';                    // What: Nav Target Object. Why: Every page tour's own Step 1 points at the real nav button this shared catalog describes. How: This is looked up by a page key inside buiTs1Fun.
 import { ONB_EXA_OBJ } from '../state/onboarding-seed-data.ts'; // What: Onboarding Example Object. Why: Its own id is the Stats tour's own preselected picker. How: This is read directly for PRE_PIC_STR.
 

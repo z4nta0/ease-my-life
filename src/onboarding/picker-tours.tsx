@@ -1153,7 +1153,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 			} }
 			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Tour Function. Why: This only fires from CRE_STE_OBJ's own cirBoo, after the real click that creates the picker has already reached the button's own handler. How: This calls cloTouFun with 'finished'.
-			onSkiTouFun={ () => cloTouFun( 'skipped' ) } // What: On Skip Tour Function. Why: Skip (or the not-found watchdog) reads as "the user didn't finish", distinct both from the intro modal's own 'cancelled' and from a genuine 'finished' below. How: This calls cloTouFun with 'skipped'.
+			onSkiTouFun={ () => cloTouFun( 'skipped' ) } // What: On Skip Tour Function. Why: Skip (or the not-found watchdog) reads as "the user didn't finish", distinct both from the intro modal's own 'cancelled' and from a genuine 'finished' above. How: This calls cloTouFun with 'skipped'.
 		/> // What: Guided Tour Component. Why: This is the actual running spotlight walkthrough for this sample, mounted once its own intro modal has been accepted or resumed into. How: This is passed this sample's own touIdeStr, steObjArr, and the resume/lifecycle plumbing above.
 
 

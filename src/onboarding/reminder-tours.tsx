@@ -256,12 +256,12 @@ const VAR_COP_OBJ : Record< string, { bodStr : string, icoStr : string, ideStr :
  *
  * This is deliberately NOT set any earlier (for example the intro modal's
  * onBegTouFun, where an earlier version of this tour published it), since
- * resuming skips the intro modal entirely (see RemTouCom's own resBoo handling
- * below), and a resumed session still reaches this step via a real click, so
- * publishing here instead of there is the one place that fires on every path.
- * Resumable stays at its default (no flag needed) since this button always
- * exists on Today regardless of any form being open, so it survives a reload
- * fine.
+ * resuming skips the intro modal entirely (see RemTouCom's own resTouObj
+ * handling below), and a resumed session still reaches this step via a real
+ * click, so publishing here instead of there is the one place that fires on
+ * every path. Resumable stays at its default (no flag needed) since this
+ * button always exists on Today regardless of any form being open, so it
+ * survives a reload fine.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

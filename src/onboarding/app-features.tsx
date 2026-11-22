@@ -496,7 +496,7 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 						// #region Open Picker Lookup
 
 						const opeHeaEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="datLisDiv"] [data-element-name-hook~="catHeaBut"][aria-expanded="true"]' ); // What: Open Header Element. Why: This must find whichever picker header the user just clicked open. How: This looks up the one .catHeaBut currently marked expanded.
-						const catSecEle = opeHeaEle && opeHeaEle.closest< HTMLElement >( '[data-element-name-hook~="datCatSec"]' );                                                     // What: Category Section Element. Why: The picker's own id and Controls/Items buttons live on its enclosing .cat section. How: This walks up from opeHeaEle to its closest .cat ancestor.
+						const catSecEle = opeHeaEle && opeHeaEle.closest< HTMLElement >( '[data-element-name-hook~="datCatSec"]' );                                                     // What: Category Section Element. Why: The picker's own id and Controls/Items buttons live on its enclosing datCatSec section. How: This walks up from opeHeaEle to its closest datCatSec ancestor.
 						const picIdeStr = catSecEle && catSecEle.dataset.pickerRowIdentifier; // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-row-identifier attribute.
 						const heaButArr = catSecEle ? [ ...catSecEle.querySelectorAll< HTMLElement >( '[data-element-name-hook~="catTogBut"]' ) ] : [];                                 // What: Header Button Array. Why: The Controls header (index 0) and Items header (index 1) both need checking. How: This collects every .catTogBut button inside catSecEle into a plain array.
 
@@ -570,7 +570,7 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 
 
 					const conHeaEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"] [data-element-name-hook~="catBodDiv"] > button[data-element-name-hook~="catTogBut"]:nth-of-type(1)' ); // What: Controls Header Element. Why: This is the real control this step must collapse on the way out. How: This looks it up fresh, since it only exists while a picker is expanded.
-					const catSecEle = conHeaEle && conHeaEle.closest< HTMLElement >( '[data-element-name-hook~="datCatSec"]' ); // What: Category Section Element. Why: The picker's own id lives on its enclosing .cat section. How: This walks up from conHeaEle to its closest .cat ancestor.
+					const catSecEle = conHeaEle && conHeaEle.closest< HTMLElement >( '[data-element-name-hook~="datCatSec"]' ); // What: Category Section Element. Why: The picker's own id lives on its enclosing datCatSec section. How: This walks up from conHeaEle to its closest datCatSec ancestor.
 					const picIdeStr = catSecEle && catSecEle.dataset.pickerRowIdentifier;                                       // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-row-identifier attribute.
 
 
@@ -1186,7 +1186,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 					else if ( tarSteNum === 4 ) { // What: Items Re-Collapse Check. Why: Back from Picker Items to Items Section must re-collapse Items, undoing that step's own real click that expanded it. How: This looks up the Items header via a direct action call, since a native click would silently no-op on its own disabled attribute at this exact instant.
 
 
-						const catSecEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"]:has([data-element-name-hook~="catHeaBut"][aria-expanded="true"])' ); // What: Category Section Element. Why: The picker's own id and Items header both live on its enclosing .cat section. How: This looks up the one currently-expanded picker's own section.
+						const catSecEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"]:has([data-element-name-hook~="catHeaBut"][aria-expanded="true"])' ); // What: Category Section Element. Why: The picker's own id and Items header both live on its enclosing datCatSec section. How: This looks up the one currently-expanded picker's own section.
 						const picIdeStr = catSecEle && catSecEle.dataset.pickerRowIdentifier; // What: Picker Identifier String. Why: actStoObj.togColFun needs this picker's own real id. How: This reads catSecEle's own data-picker-row-identifier attribute.
 						const iteHeaEle = catSecEle && catSecEle.querySelector< HTMLElement >( '[data-element-name-hook~="catBodDiv"] > button[data-element-name-hook~="catTogBut"]:nth-of-type(2)' );                               // What: Items Header Element. Why: This is the real control whose own aria-expanded state must be read. How: This looks it up fresh, since it only exists while a picker is expanded.
 
