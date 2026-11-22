@@ -5,15 +5,13 @@
  * tab-today.module.css = Today Tab Module
  *
  * @summary
- * Styles for the Today tab's own markup: the sticky header with its streak
- * chip, brand mark, title, and progress ring; the Edit Mode banner; the group
- * rail, a sticky sidebar that becomes a scrolling pill row at 760px wide and
- * below; the group sections the cards stack in; the celebration overlay; the
- * onboarding cards; and the footer with its regenerate confirm. An animation
- * trigger (a pulse, bump, or closing class) is a module class this file adds
- * itself, while a state keys off an aria or data attribute, such as a selected
- * rail button's data-rail-select-active. The footer's Edit Mode button hides
- * through --but-bas-dis, which ButBasCom reads.
+ * Styles for the Today tab's own markup, from its sticky header to its footer,
+ * such as the group rail that becomes a scrolling pill row at 760px wide and
+ * below. An animation trigger (a pulse, bump, or closing class) is a module
+ * class this file adds itself, while a state keys off an aria or data
+ * attribute, such as a selected rail button's data-rail-select-active. The
+ * footer's Edit Mode button hides through --but-bas-dis, which ButBasCom
+ * reads.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1179,7 +1177,7 @@
 
 
 }
-.ediBanDiv.ediBanDiv--closing { /* What: Edit Banner Div Closing. Why: Leaving Edit Mode folds the banner away so the list slides back up. How: This plays the fold once, ended by its animationend handler. */
+.ediBanDiv.ediBanDiv--closing { /* What: Edit Banner Div Closing. Why: Leaving Edit Mode folds the banner away so the list slides back up. How: This plays the fold once, and the banner stays mounted until a timer of the same duration clears the closing class. */
 
 
 	animation : ediBanDivCloseFadeOut var( --dur-ani-p02 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
@@ -1190,7 +1188,7 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Banner Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ediBanDiv.ediBanDiv--closing { /* What: Still Edit Banner Div Closing. Why: The banner should go at once, while still ending the animation its handler waits on. How: This shortens the fold to .01ms. */
+	.ediBanDiv.ediBanDiv--closing { /* What: Still Edit Banner Div Closing. Why: The banner should go at once under reduced motion. How: This shortens the fold to .01ms. */
 
 
 		animation-duration : .01ms;

@@ -1004,7 +1004,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 
 
 							} }
-						>{ /* What: Reroll Icon Button Element. Why: This is the actual working re-roll control, available whenever canRerBoo allows it. How: This calls onRerEntFun, spinning its own icon while isaRolBoo is true. */ }
+						>{ /* What: Action Icon Button Element. Why: This is the actual working re-roll control, available whenever canRerBoo allows it. How: This calls onRerEntFun, and its spinning modifier class turns its own icon while isaRolBoo is true. */ }
 
 
 							<IcoSvgCom
@@ -1074,7 +1074,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 
 
 						} }
-					>{ /* What: Edit Icon Button Element. Why: Edit always works, regardless of completion, unlike re-roll/skip. How: This calls onTogEdiFun, toggling isaEdiBoo. */ }
+					>{ /* What: Action Icon Button Element. Why: Edit always works, regardless of completion, unlike re-roll/skip. How: This calls onTogEdiFun, toggling isaEdiBoo. */ }
 
 
 						<IcoSvgCom
