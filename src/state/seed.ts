@@ -693,7 +693,7 @@ const SED_NAM_OBJ = { // What: Seed Namespace Object. Why: This is the single pu
 
 
 
-export { SED_NAM_OBJ }; // What: Named Export. Why: The one namespace object carries the clean state, the mode table, and the simulation helpers. How: This exports SED_NAM_OBJ by name at the very end of the file.
+export { SED_NAM_OBJ }; // What: Named Export. Why: The one namespace object carries the clean-state builder, the mode table, and the pick-history simulation. How: This exports SED_NAM_OBJ by name at the very end of the file.
 
 // #endregion Exports
 

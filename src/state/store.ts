@@ -1720,7 +1720,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: newHolObj must be appended to a fresh holidays object. How: This spreads curHolObj with custom replaced, newHolObj appended.
+			return { // What: Next State Return. Why: newHolObj must be appended to a fresh holidays object. How: This spreads curStaObj with holidays rebuilt from curHolObj, newHolObj appended to custom.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1752,7 +1752,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The one matching custom holiday must be removed from a fresh holidays object. How: This spreads curHolObj with custom filtered.
+			return { // What: Next State Return. Why: The one matching custom holiday must be removed from a fresh holidays object. How: This spreads curStaObj with holidays rebuilt from curHolObj, custom filtered.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1786,7 +1786,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: disabled must be replaced on a fresh holidays object. How: This spreads curHolObj with disabled replaced by nexDisArr.
+			return { // What: Next State Return. Why: disabled must be replaced on a fresh holidays object. How: This spreads curStaObj with holidays rebuilt from curHolObj, disabled replaced by nexDisArr.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -3615,9 +3615,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * a FRESH descriptor (not carried) gets a new eid, and a fresh 'auto'
 		 * log row unless it is a day-off card, which never writes to the pick
 		 * log. optArgObj.resBoo, when true, clears today.streakClaimed so the
-		 * new period starts unclaimed, and deliberately isn't derived from the
-		 * date; this is what stops a user from "farming" extra streak points
-		 * by repeatedly regenerating and completing within the same day.
+		 * new period starts unclaimed; otherwise the flag carries over, so
+		 * regenerating and completing again within the same day can't claim a
+		 * second streak point.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *

@@ -536,7 +536,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
-		staWatFun().catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Watch Start Call. Why: The account is followed from launch. How: This loads Firebase and watches, logging a load cut short by a reload or a lost connection rather than leaving it unhandled.
+		staWatFun().catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Watch Start Call. Why: The account is followed from launch. How: This loads Firebase and watches, logging a failed load rather than leaving it unhandled.
 
 
 

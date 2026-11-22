@@ -169,15 +169,14 @@ function depDonFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], conIdeStr :
  * cdlAplFun = Conditional-Log Apply Function
  *
  * @summary
- * Mirrors cotAplFun's own completion edges, but records ONE
- * row per conditional per cycle (keyed condId + ISO day) in
- * state.conditionalLog instead of mutating the conditional itself. A
- * day-off CARD completion always logs triggered:true; the FIRST
- * dependent completion of an untriggered cycle logs triggered:false
- * (the "evaluated but didn't fire" denominator). An inactive
- * conditional (active:false) logs nothing. Undo removes the cycle's own
- * row once the confirming completion is gone. Rows denormalize name and
- * mode so the log survives edits/deletes.
+ * Mirrors cotAplFun's own completion edges, but records ONE row per
+ * conditional per cycle (keyed condId + ISO day) in state.conditionalLog
+ * instead of mutating the conditional itself. A day-off CARD completion logs
+ * triggered:true when its cycle has no row yet; the FIRST dependent completion
+ * of an untriggered cycle logs triggered:false (the "evaluated but didn't
+ * fire" denominator). An inactive conditional (active:false) logs nothing.
+ * Undo removes the cycle's own row once the confirming completion is gone.
+ * Rows denormalize name and mode so the log survives edits/deletes.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -217,7 +216,7 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 	let trgValBoo = false; // What: Triggered Value Boolean. Why: Both branches below need somewhere to record whether this toggle counts as triggered. How: This starts false and is set alongside conIdeStr by whichever branch below actually matches, so it's always a real boolean once conIdeStr is.
 
 
-	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card's own completion always logs as triggered. How: This sets conIdeStr/trgValBoo directly from togEntObj.
+	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card's own completion counts as triggered. How: This sets conIdeStr/trgValBoo directly from togEntObj.
 
 
 		conIdeStr = togEntObj.conditionalId; // What: Conditional ID String Set. Why: A day-off card's own log entry names the exact conditional it belongs to. How: This sets conIdeStr to togEntObj's own conditionalId.
@@ -368,7 +367,7 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-	const conModObj = CON_NAM_OBJ; // What: Conditional Module Object. Why: Every branch below repeatedly calls into this module's own resolution helpers. How: This aliases the imported CON_NAM_OBJ namespace for brevity below.
+	const conModObj = CON_NAM_OBJ; // What: Conditional Module Object. Why: Both branches below call helpers from the conditionals module (carFulFun, modValFun, advValFun). How: This aliases the imported CON_NAM_OBJ namespace for brevity below.
 
 
 	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card entry's own completion drives its conditional's carFulFun instead of the dependent-picker charging logic below. How: This maps curConArr, resolving only the one matching conditional.
