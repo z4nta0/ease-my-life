@@ -657,7 +657,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 	const [ filGroStr, setFilGroStr ] = React.useState( 'all' ); // What: Filter Group String And Setter. Why: The Group filter row narrows which pickers appear below, mirroring the Pickers + Stats tabs; both default to "All". How: This is committed by the Group pill row and read throughout this component.
 	const [ filTypStr, setFilTypStr ] = React.useState( 'all' ); // What: Filter Type String And Setter. Why: The Type filter row narrows by picker mode, and also carries the Conditionals/Reminders sentinel scope values. How: This is committed by the Type pill row and read throughout this component.
-	const [ curScoStr, setCurScoStr ] = React.useState( 'all' ); // What: Current Scope String And Setter. Why: The Show row's own active box needs its own selection state, independent of (but reconciled with) the other 2 filters. How: This is committed by selScoFun below and read throughout this component.
+	const [ curScoStr, setCurScoStr ] = React.useState( 'all' ); // What: Current Scope String And Setter. Why: The Show row's own active box needs its own selection state, independent of (but reconciled with) the Group, Type, and Conditionals filters. How: This is committed by selScoFun below and read throughout this component.
 	const [ filConStr, setFilConStr ] = React.useState( 'all' ); // What: Filter Conditional String And Setter. Why: The Conditionals filter row narrows pickers to those gated by one chosen conditional. How: This is committed by the Conditionals pill row and read throughout this component.
 
 	const allPicArr = staAppObj.pickers; // What: All Picker Array. Why: Nearly every filter/list computation below needs the full picker list to start from. How: This reads staAppObj.pickers, which every state carries, so it stays the same array until a picker changes.
@@ -1391,7 +1391,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-			<header className={ cssModObj.pagHeaHed }>{ /* What: Page Header Header Element. Why: This tab's own kicker, brand link, and lead paragraphs all belong in one landmark. How: This wraps the kicker row and the lead/warning paragraphs below. */ }
+			<header className={ cssModObj.pagHeaHed }>{ /* What: Page Header Header Element. Why: This tab's own kicker, brand link, title, and sub paragraphs all belong in one landmark. How: This wraps the kicker row, the header lead div, and the two sub paragraphs below. */ }
 
 
 				<div className={ cssModObj.kicRowDiv }>{ /* What: Kicker Row Div Element. Why: The kicker label and the help toggle belong on the same line. How: This wraps the kicker div and HelButCom below. */ }
@@ -2006,7 +2006,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 					// #region Card Item Actions
 
-					const staAddFun = () => { // What: Start Add Function. Why: This is the "+ Add to X" button's own first-item action. How: This creates a fresh item and opens its own editor.
+					const staAddFun = () => { // What: Start Add Function. Why: This is the "Add to X" button's own click action. How: This creates a fresh item and opens its own editor.
 
 
 						if ( newIteRef.current ) return; // What: Rapid Click Guard. Why: A rapid double-click must not create 2 items at once. How: This bails out while a brand-new item is already in progress.
@@ -2180,10 +2180,10 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 								</button>
 
-								<span className={ cssModObj.catRigSpa }>{ /* What: Category Right Span Element. Why: The type/group tags and the active toggle need one grouped slot so a narrow viewport can stack them together in place, freeing width for the name. How: This wraps the tags span and the vacTogBut button below. */ }
+								<span className={ cssModObj.catRigSpa }>{ /* What: Category Right Span Element. Why: The type/group tags and the active toggle need one grouped slot so that, at 500px wide and below, they stack together in place, freeing width for the name. How: This wraps the tags span and the vacTogBut button below. */ }
 
 
-									<span className={ cssModObj.catTagSpa }>{ /* What: Category Tags Span Element. Why: The type and group pills need their own fixed-width columns so they line up across every card regardless of text length. How: This wraps 2 InfTipCom-wrapped labels below. */ }
+									<span className={ cssModObj.catTagSpa }>{ /* What: Category Tags Span Element. Why: The type and group pills each take a fixed width so they line up across every card regardless of text length, stacking in a column at 500px wide and below. How: This wraps 2 InfTipCom-wrapped labels below. */ }
 
 
 										<InfTipCom
@@ -2288,7 +2288,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 									<ColDisCom
 										isaInsBoo={ isaDraBoo }
 										open={ !conColBoo }
-									>{ /* What: Collapse Disclosure Component. Why: PicConCom itself is expensive/stateful enough that it only needs to exist while the Controls disclosure is actually open. How: This opens per !conColBoo. */ }
+									>{ /* What: Collapse Disclosure Component. Why: PicConCom only needs to exist while the Controls disclosure is actually open. How: This opens per !conColBoo. */ }
 
 
 										<PicConCom
@@ -2645,7 +2645,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 
-																<UnmWatCom onUnmWatFun={ () => { if ( opeIteStr === iteCurObj.id ) cloIteFun(); } } />{ /* What: Unmount Watcher Component. Why: A row that disappears without its own chevron or Save (its card or Items section collapsing, a filter hiding it, a tab switch) still keeps its edits. How: This keeps and closes the row when the watcher unmounts while this row is still the open one, so a row finishing its close animation after another opened leaves that one alone. */ }
+																<UnmWatCom onUnmWatFun={ () => { if ( opeIteStr === iteCurObj.id ) cloIteFun(); } } />{ /* What: Unmount Watcher Component. Why: A row that disappears without its own chevron or Save (its card collapsing, say) still keeps its edits. How: This keeps and closes the row when the watcher unmounts while this row is still the open one, so a row finishing its close animation after another opened leaves that one alone. */ }
 
 
 															</div>
