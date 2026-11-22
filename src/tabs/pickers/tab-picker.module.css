@@ -246,7 +246,7 @@
 
 /* #region pagSubPar */
 
-.pagSubPar { /* What: Page Sub Paragraph. Why: The intro explains the page under its title, linking to other tabs inline. How: This sets it muted, capped in line length. */
+.pagSubPar { /* What: Page Sub Paragraph. Why: The intro explains the page under its title, linking to the Data tab inline. How: This sets it muted, capped in line length. */
 
 
 	color     : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -256,7 +256,7 @@
 
 }
 
-.subLinBut { /* What: Sub Link Button. Why: The intro links to other tabs inline. How: This strips the button chrome down to underlined accent text, and eases its underline, press, and focus ring. */
+.subLinBut { /* What: Sub Link Button. Why: The intro links to the Data tab inline. How: This strips the button chrome down to underlined accent text, and eases its underline, press, and focus ring. */
 
 
 	background                : none;

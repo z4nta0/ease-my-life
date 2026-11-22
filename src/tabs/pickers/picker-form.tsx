@@ -2005,7 +2005,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 						This is the list of items that your
-						{ ' ' }{ newNamStr.trim() ? `“${ newNamStr.trim() }”` : 'this picker' } picker chooses from.
+						{ ' ' }{ newNamStr.trim() ? `“${ newNamStr.trim() }”` : 'this picker' }{ /* What: Picker Name Phrase. Why: The hint should name the picker being built, with a plain fallback while the name is empty. How: This renders the trimmed name in curly quotes, or "this picker" when it is blank. */ } picker chooses from.
 						Each time it runs it picks one of these items, following the
 						{ ' ' }&ldquo;{ SED_NAM_OBJ.MOD_DEF_OBJ[ selModStr ].labStr }&rdquo; rule that you chose. You will need
 						to add at least 2 items before you can finish creating this picker. You
@@ -2423,7 +2423,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={ cssModObj.fooNotDiv }
 
 							data-element-name-hook='fooNotDiv'
-						>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWeiBoo, otherwise counting toward the 2-item minimum. Its data-element-name-hook is read by help mode. */ }
+						>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWeiBoo, otherwise confirming the minimum is met. Its data-element-name-hook is read by help mode. */ }
 
 
 							{ !enoIteBoo // What: Not Enough Items Check. Why: The footer note either says how many more items are needed or confirms the minimum is met. How: This picks the add-more message first, then the weight or minimum message.
