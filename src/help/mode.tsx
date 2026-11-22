@@ -10,9 +10,9 @@ import React     from 'react';             // What: React. Why: HelOveCom is bui
 import { badRecFun    } from './geometry.ts';      // What: Badge Rect Function. Why: Each highlighted target's badge is positioned against its own rect. How: This is called once per highlighted target.
 import { claPadFun    } from './geometry.ts';      // What: Clamp Pad Function. Why: A highlight's padding must not spill past nearby app chrome. How: This is called once per highlighted target.
 import { cliChrFun    } from './geometry.ts';      // What: Clip Chrome Function. Why: A highlight must not paint over fixed app chrome above it. How: This is called once per highlighted target.
-import { cliHorFun    } from './geometry.ts';      // What: Clip Horizontal Function. Why: A highlight inside a horizontal scroller must stop at the scroller's own visible edges. How: This is called once per measured target.
+import { cliHorFun    } from './geometry.ts';      // What: Clip Horizontal Function. Why: A highlight inside a horizontal scroller must stop at the scroller's own visible edges. How: This is called once per matched element of a mulBoo item.
 import { createPortal } from 'react-dom';          // What: Create Portal. Why: The dim layer, highlight spots, badges and the open tip must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with HelOveCom's own JSX and document.body inside its return.
-import { detEdgFun    } from './geometry.ts';      // What: Detect Edge Function. Why: A clipped highlight needs to know which of its edges touch chrome. How: This is called once per clipped target.
+import { detEdgFun    } from './geometry.ts';      // What: Detect Edge Function. Why: The tab bar's own clipped edge depends on its placement, so its side is detected from its rect. How: This is called for each chrome item whose side is 'auto'.
 import { finTarFun    } from './geometry.ts';      // What: Find Targets Function. Why: Each help item names its target by selector, which may match several elements. How: This is called once per help item.
 import { HelTipCom    } from './tooltip.tsx';      // What: Help Tip Component. Why: A clicked badge reveals its own target's tip. How: This is rendered once for the open help item, given its target rect and item.
 import { IcoSvgCom    } from '../ui/icon.tsx';     // What: Icon SVG Component. Why: The navigation help item's own bodEle renders each tab's real nav icon next to its label. How: This is rendered once per tab entry inside NAV_HEL_OBJ's own bodEle JSX.
@@ -20,7 +20,7 @@ import { isaTruFun    } from '../utils/guard.ts';  // What: Is-A Truthy Function
 import { rhyPixFun    } from '../utils/rhythm.ts'; // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../utils/motion.ts'; // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
 import { shaRadFun    } from './geometry.ts';      // What: Shape Radius Function. Why: Each highlight cutout roughly matches its own target's border radius. How: This is called once per highlighted target.
-import { uniRecFun    } from './geometry.ts';      // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per multi-element help item.
+import { uniRecFun    } from './geometry.ts';      // What: Union Rect Function. Why: A help item covering several elements highlights them as one box. How: This is called once per matched item that is not a mulBoo item.
 
 
 import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why: The overlay renders its page's catalog items plus the shared nav and rail handle items. How: This types those items and HocProTyp's catalog.
