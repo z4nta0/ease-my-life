@@ -302,6 +302,7 @@ const visEntFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( (
  * @param traDayArr - Trace Day Array: Collects each day's trace.
  *
  * @returns A promise that resolves with the state the day ended with.
+ * @see {@link endStaObj}
  *
  * @example
  * ```ts

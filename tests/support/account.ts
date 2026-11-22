@@ -115,7 +115,7 @@ async function creAccFun ( emaAdrStr : string, paiValBoo : boolean = true ) : Pr
 
 
 
-	return sigNewObj.localId; // What: Identifier Return. Why: A purchase test sets the claim later. How: This returns the account's id.
+	return sigNewObj.localId; // What: Identifier Return. Why: The account's id names it in later admin calls. How: This returns the account's id.
 
 
 }

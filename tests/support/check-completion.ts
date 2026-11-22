@@ -323,8 +323,8 @@ const jsoStrFun = ( valAny : unknown ) : string => JSON.stringify( valAny ); // 
  *
  * @summary
  * Checks one reminder check-off: its lastDone is the simulated day, the
- * reminder log gained exactly one row for it, completed on that day with the
- * reminder's name and class, and no other reminder changed.
+ * reminder log gained exactly one row for it, completed on that day for that
+ * reminder, with its class, and no other reminder changed.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

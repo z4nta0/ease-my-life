@@ -5,7 +5,7 @@
 
 import { insClcFun } from './clock.ts';   // What: Install Clock Function. Why: Opening the backup starts the fake clock on a fixed day. How: This installs it.
 import { locDayFun } from './clock.ts';   // What: Local Day Function. Why: Generation is confirmed by the Chicago date of its timestamp. How: This reads generatedAt's date.
-import { reaFixFun } from './fixture.ts'; // What: Read Fixture Function. Why: The layout and interaction suites run on real data. How: This reads the backup.
+import { reaFixFun } from './fixture.ts'; // What: Read Fixture Function. Why: Opening the backup needs its real data. How: This reads the backup.
 import { setClcFun } from './clock.ts';   // What: Set Clock Function. Why: Opening a day moves the fake clock to it first. How: This jumps the clock to the day's hour.
 import { waiStaFun } from './storage.ts'; // What: Wait State Function. Why: The generated list lands on disk a moment after it shows. How: This polls until the day's list is saved.
 import { wriStaFun } from './storage.ts'; // What: Write State Function. Why: Opening the backup writes it into the page. How: This loads it.
@@ -111,10 +111,10 @@ const opeDayFun = async ( curPagObj : Page, dayIsoStr : string, houValNum : numb
  * opeFixFun = Open Fixture Function
  *
  * @summary
- * Opens the app on the real-data backup at a fixed Chicago day, so the
- * layout and interaction suites see real names and a real list without
- * depending on today's date. It installs the fake clock, writes the backup
- * into the page, and opens the day, which generates its list.
+ * Opens the app on the real-data backup at a fixed Chicago day, so a suite
+ * sees real names and a real list without depending on today's date. It
+ * installs the fake clock, writes the backup into the page, and opens the day,
+ * which generates its list.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -222,7 +222,7 @@ const selTabFun = async ( curPagObj : Page, tabIdeStr : string ) : Promise< void
  *
 */
 
-const subHolFun = async ( curPagObj : Page, holNamStr : string, holDatStr : string ) : Promise< void > => { // What: Submit Holiday Function. Why: Several suites add a custom holiday as their change. How: This fills the add form and clicks Add.
+const subHolFun = async ( curPagObj : Page, holNamStr : string, holDatStr : string ) : Promise< void > => { // What: Submit Holiday Function. Why: A test adds a custom holiday through the real form as its change. How: This fills the add form and clicks Add.
 
 
 	await curPagObj.locator( '[aria-label="Name of the day off to add"]' ).fill( holNamStr );                  // What: Name Fill Call. Why: A custom holiday needs a name. How: This types holNamStr.
