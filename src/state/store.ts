@@ -2086,8 +2086,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			const abaStkFun = ( picArgArr : PicRcdTyp[], iteArgArr : IteRcdTyp[], iteIdeArr : string[] ) => { // What: Abandon Streak Function. Why: Both branches below (single item, whole picker) share this same abandon-in-progress-streak logic. How: This walks iteIdeArr, and for any item that's some ease-down picker's own activeItemId, nulls that pointer and recharges the item to full.
 
 
-				let nexPicArr = picArgArr; // What: Next Picker Array. Why: The loop below folds its own patch onto this on each iteration that actually finds a match. How: This starts at picArgArr, the caller's own current pickers.
-				let nexIteArr = iteArgArr; // What: Next Item Array. Why: The loop below folds its own patch onto this on each iteration that actually finds a match. How: This starts at iteArgArr, the caller's own current items.
+				let nexPicArr = picArgArr; // What: Next Picker Array. Why: The loop below folds its own patch onto this on each iteration that actually finds a match. How: This starts at picArgArr, the pickers passed in.
+				let nexIteArr = iteArgArr; // What: Next Item Array. Why: The loop below folds its own patch onto this on each iteration that actually finds a match. How: This starts at iteArgArr, the items passed in.
 
 
 				for ( const cuiIdeStr of iteIdeArr ) { // What: Abandon Loop. Why: Every touched item id must be checked for whether it's currently some ease-down picker's own in-progress item. How: This iterates iteIdeArr, patching nexPicArr/nexIteArr only for a genuine match.
@@ -3702,7 +3702,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const nexTasArr = ( curStaObj.tasks || [] ).filter( ( curTasObj ) => !TAS_NAM_OBJ.isaFulFun( curTasObj ) ); // What: Next Task Array. Why: Every Generate also drops completed one-time reminders outright, rather than waiting for a future reload/day-change. How: This keeps every task TAS_NAM_OBJ.isaFulFun reports false for.
+			const nexTasArr = ( curStaObj.tasks || [] ).filter( ( curTasObj ) => !TAS_NAM_OBJ.isaFulFun( curTasObj ) ); // What: Next Task Array. Why: Completed one-time reminders are dropped whenever the entries list is rebuilt. How: This keeps every task TAS_NAM_OBJ.isaFulFun reports false for.
 
 
 
@@ -3953,7 +3953,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		// #endregion Today Entries
 
 
-	} ), [] ); // What: Actions Memo Dependency Array. Why: Every action closes over setAppStaObj and latStaRef, which never change identity across renders, so this object never needs to be recomputed. How: An empty array means actStoObj is built exactly once, for the lifetime of this component.
+	} ), [] ); // What: Actions Memo Dependency Array. Why: The actions close over setAppStaObj and latStaRef, which never change identity across renders, so this object never needs to be recomputed. How: An empty array means actStoObj is built exactly once, for the lifetime of this component.
 
 
 
