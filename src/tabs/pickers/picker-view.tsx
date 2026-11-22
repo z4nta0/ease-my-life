@@ -1448,7 +1448,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 									} }
-								>{ /* What: Pool Row Div Element. Why: Every pool item needs one row, whichever of its own name/meta/actions or delete-confirm content currently applies. How: This carries every one of this row's own transient animation classes, and commits the real delete/removal once its own leaving keyframe finishes. */ }
+								>{ /* What: Pool Row Div Element. Why: Every pool item needs one row, whichever of its own name/meta/actions or delete-confirm content currently applies. How: This carries the row's insert, confirm, and removing modifier classes, and commits the real delete/removal once its own removal keyframe finishes. */ }
 
 
 									{ conDelStr === curIteObj.id ? ( // What: Delete Confirm Check. Why: A row pending delete confirmation replaces its own normal content entirely. How: This renders the confirm row while conDelStr matches this item, otherwise the row's real content below.

@@ -310,7 +310,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		return () => clearTimeout( scrTimNum ); // What: Effect Cleanup Return. Why: A stale scroll must not fire after this effect re-runs or unmounts. How: This cancels the scheduled scrTimNum timeout.
 
 
-	}, [ incDaiBoo ] ); // What: Effect Dependency Array. Why: This only needs re-evaluating when the Daily toggle itself changes. How: incDaiBoo is the sole value this effect's own guard checks.
+	}, [ incDaiBoo ] ); // What: Effect Dependency Array. Why: This only needs re-evaluating when the Daily toggle itself changes. How: incDaiBoo is the only reactive value this effect reads; daiTogRef is a ref, which never triggers a re-run.
 
 	// #endregion Group Mode And Daily
 
@@ -478,7 +478,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		});
 
 
-	}, [ conSelStr ] ); // What: Effect Dependency Array. Why: Only a genuine change to which conditional is selected should trigger this scroll. How: conSelStr is the sole value this effect's own guard checks.
+	}, [ conSelStr ] ); // What: Effect Dependency Array. Why: Only a genuine change to which conditional is selected should trigger this scroll. How: conSelStr is the only reactive value this effect reads; raiNodRef is a ref, which never triggers a re-run.
 
 	// #endregion Conditional Attachment
 
@@ -587,7 +587,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	// #region Draft Item Editing
 
 	const [ actNewStr, setActNewStr ] = React.useState< string | null >( null );              // What: Active New String And Setter. Why: This holds the id of whichever draft item is currently being newly added (as opposed to an already-committed row being edited). How: This is set by addDraFun and cleared once its own closing animation finishes. // What: Reused Item Editor Design Note. Why: This is the same UI as the live Pickers-tab add flow; draft items carry a stable id so the shared EntEdiCom plus a synthetic actions object (backed by the draft array, not the store) can key off it. How: Adding opens the editor inline at the bottom; Save/Cancel play the same fade animations as the live flow.
-	const [ actCloStr, setActCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: Active Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down. How: This holds 'save', 'cancel', or false, consumed by the draft wrap's own onAnimationEnd handler below. // What: Closing Values Note. Why: The close reason decides whether the draft is kept. How: It is false while open, otherwise 'save' or 'cancel'.
+	const [ actCloStr, setActCloStr ] = React.useState< false | 'cancel' | 'save' >( false ); // What: Active Closing String And Setter. Why: The new-item draft's own editor needs to play a closing animation before it's actually torn down. How: This holds 'save', 'cancel', or false, read by the new-item editor's onCloEndFun below. // What: Closing Values Note. Why: The close reason decides whether the draft is kept. How: It is false while open, otherwise 'save' or 'cancel'.
 	const [ insDraStr, setInsDraStr ] = React.useState< string | null >( null );              // What: Insert Draft String And Setter. Why: A freshly-committed pool row needs its own insert animation, keyed to its own id. How: This is set once a new-item draft's own closing animation reports 'save'.
 
 	const { canConFun, conDelStr, conLeaStr, setConDelStr } = useDelConFun(); // What: Cancel Confirm Function. Why: Cancel backs out of a pending delete. How: This plays the confirm row's leaving animation, then clears it. // What: Confirm Delete String. Why: A pool row asks before deleting, in place of its normal content. How: This holds the id showing its delete-confirm row. // What: Confirm Leaving String. Why: The confirm row plays an out-animation after Cancel. How: This holds the id playing it. // What: Set Confirm Delete String. Why: The delete button starts a row's confirmation, and the confirmed delete ends it. How: This sets conDelStr.

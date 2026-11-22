@@ -6,9 +6,9 @@
  *
  * @summary
  * Styles for PicVieCom, the Pickers tab's view of one picker, from its header
- * to the slot below its pool list that holds the Add Item button, such as the
- * run stage with the action buttons below it. The add-item and edit-item cards
- * in that slot are styled by the item card's own module. The stage keeps one
+ * and run stage (with the action buttons below it) to the slot below its pool
+ * list that holds the Add Item button. The add-item and edit-item cards in
+ * that slot are styled by the item card's own module. The stage keeps one
  * fixed height across phases so the buttons under it never jump. Its states
  * key off presence-only data attributes or the aria attributes its elements
  * carry, such as data-row-vacation-active on an inactive pool row. The row and

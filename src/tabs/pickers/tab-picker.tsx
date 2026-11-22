@@ -24,7 +24,7 @@ import { scrBehFun    } from '../../utils/motion.ts';               // What: Scr
 import { SED_NAM_OBJ  } from '../../state/seed.ts';                 // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) for each mode's label in the Type filter pills, their sort order, and each tab's mode line.
 import { sedPicFun    } from '../../help/sample-data.ts';           // What: Seed Pickers Function. Why: Help mode needs real pickers of every mode, plus a conditional-gated one, to point its tooltips at. How: This is called the moment help mode turns on.
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
-import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the page tour's gating, the picker mini-tour's prefill, and the empty-state create prefill.
+import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once per component to subscribe to the shared tour bus.
 
 
 import type { ActStoTyp } from '../../state/store.ts';     // What: Action Store Type. Why: The tab changes state through the store's actions. How: This types TpcProTyp's actStoObj.
@@ -40,11 +40,11 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
  * tab-picker.tsx = Tab Picker
  *
  * @summary
- * The Pickers tab: browse, manually run, and create or edit pickers.
- * TabPicCom renders the Group and Type filter rails and the picker tabs, then
- * either the selected picker's PicVieCom (picker-view.tsx) or the create
- * form's PicForCom (picker-form.tsx), plus the disposable-sample machinery
- * help mode and the onboarding tours both rely on.
+ * The Pickers tab: browse, manually run, and create or edit pickers. TabPicCom
+ * renders the Group and Type filter rails and the picker tabs, then either the
+ * selected picker's PicVieCom (picker-view.tsx) or the create form's PicForCom
+ * (picker-form.tsx), plus the help mode that seeds and clears disposable
+ * sample pickers, and the tour gates and prefill.
  *
  * Sections:
  *  - Components
@@ -274,7 +274,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 	}, [ staAppObj.pickers ] ); // What: Memo Dependency Array. Why: The group list only needs recomputing when the pickers list itself changes. How: staAppObj.pickers is what the loop above actually reads.
 
 
-	const exiModArr = React.useMemo( () => { // What: Existing Mode Array. Why: Distinct modes actually in use, alphabetical by their own display label, are this page's own Type filter bar pills ("All" is pinned first, same as Group); unlike Stats/Data, this page has no management section for Conditionals/Reminders, so Type here is purely a picker-mode filter. How: This walks staAppObj.pickers collecting each visible picker's own mode once, then alphabetizes by SED_NAM_OBJ.MOD_DEF_OBJ's own label.
+	const exiModArr = React.useMemo( () => { // What: Existing Mode Array. Why: Distinct modes actually in use, alphabetical by their own display label, are this page's own Type filter bar pills ("All" is pinned first, same as Group), so Type here is purely a picker-mode filter. How: This walks staAppObj.pickers collecting each visible picker's own mode once, then alphabetizes by SED_NAM_OBJ.MOD_DEF_OBJ's own label.
 
 
 		const seeModSet = new Set< ModNamTyp >(); // What: Seen Mode Set. Why: The loop below needs a Set to collect each distinct mode into, deduplicating for free. How: This starts empty and gains entries from the loop, typed to hold mode names so each one can index MOD_DEF_OBJ.
