@@ -705,7 +705,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 	const perActBoo = !( optArgObj && optArgObj.perBoo === false ); // What: Persist Active Boolean. Why: The onboarding demo needs to opt entirely out of the idle-save/flush effects below. How: This is false only when optArgObj.perBoo is explicitly false.
 
 
-	const latStaRef = React.useRef( appStaObj ); // What: Latest State Reference And Guard. Why: The idle-save/flush effects below need the CURRENT state even when they fire outside a fresh render (e.g. from a pagehide handler). How: This starts pointing at appStaObj and is kept in sync on every render below.
+	const latStaRef = React.useRef( appStaObj ); // What: Latest State Reference. Why: The idle-save/flush effects below need the CURRENT state even when they fire outside a fresh render (e.g. from a pagehide handler). How: This starts pointing at appStaObj and is kept in sync on every render below.
 
 	latStaRef.current = appStaObj; // What: Latest State Reference Sync. Why: Every render must re-point latStaRef at whatever appStaObj currently is. How: This assigns appStaObj onto latStaRef.current directly in the render body.
 

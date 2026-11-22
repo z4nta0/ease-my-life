@@ -213,8 +213,8 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 	// #region Conditional Resolution
 
-	let conIdeStr = null;  // What: Conditional Identifier String And Guard. Why: Both branches below need somewhere to record which conditional (if any) this toggle concerns. How: This starts null and is set by whichever branch below actually matches.
-	let trgValBoo = false; // What: Triggered Value Boolean And Guard. Why: Both branches below need somewhere to record whether this toggle counts as triggered. How: This starts false and is set alongside conIdeStr by whichever branch below actually matches, so it's always a real boolean once conIdeStr is.
+	let conIdeStr = null;  // What: Conditional Identifier String. Why: Both branches below need somewhere to record which conditional (if any) this toggle concerns. How: This starts null and is set by whichever branch below actually matches.
+	let trgValBoo = false; // What: Triggered Value Boolean. Why: Both branches below need somewhere to record whether this toggle counts as triggered. How: This starts false and is set alongside conIdeStr by whichever branch below actually matches, so it's always a real boolean once conIdeStr is.
 
 
 	if ( togEntObj.kind === 'dayoff' && togEntObj.conditionalId ) { // What: Day-Off Card Branch. Why: A day-off card's own completion always logs as triggered. How: This sets conIdeStr/trgValBoo directly from togEntObj.
@@ -824,7 +824,7 @@ function enpRevFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 function rebPenFun ( todEntArr : TodEntTyp[], picRcdArr : PicRcdTyp[], iteIdeStr : string, newValNum : number ) : TodEntTyp[] {
 
 
-	let entChaBoo = false; // What: Entry Changed Boolean And Guard. Why: The caller only wants a new array reference when something actually changed. How: This starts false and flips true the first time an entry is reworked.
+	let entChaBoo = false; // What: Entry Changed Boolean. Why: The caller only wants a new array reference when something actually changed. How: This starts false and flips true the first time an entry is reworked.
 
 
 	const nexEntArr = todEntArr.map( ( curEntObj ) => { // What: Next Entries Array. Why: The edited item's own Ease Down entry has to decay from the item's new value. How: This maps todEntArr, returning each entry unchanged unless it's that entry.
@@ -940,7 +940,7 @@ function spuDroFun ( todEntArr : TodEntTyp[], iteIdeArr : string[] ) : TodEntTyp
 
 
 
-	let entChaBoo = false; // What: Entry Changed Boolean And Guard. Why: The caller only wants a new array reference when something actually changed. How: This starts false and flips true the first time a pending.updates row is actually dropped below.
+	let entChaBoo = false; // What: Entry Changed Boolean. Why: The caller only wants a new array reference when something actually changed. How: This starts false and flips true the first time a pending.updates row is actually dropped below.
 
 
 	const nexEntArr = todEntArr.map( ( curEntObj ) => { // What: Next Entries Array. Why: Every entry must be checked for a stale pending row belonging to one of the touched items. How: This maps todEntArr, returning each entry unchanged unless it needs its own pending.updates filtered.

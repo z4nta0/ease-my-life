@@ -601,7 +601,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 	// #region Row Hydration
 
-	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every hydrated row across all 3 logs needs its own unique id, and none of the source data carries one. How: This starts at 0 and is incremented once per row created below, shared across all 3 maps.
+	let seqCouNum = 0; // What: Sequence Count Number. Why: Every hydrated row across all 3 logs needs its own unique id, and none of the source data carries one. How: This starts at 0 and is incremented once per row created below, shared across all 3 maps.
 
 
 	const picLogArr = ( staRawObj.pickLog || [] ).map( ( picRowObj ) : PclRowTyp => { // What: Pick Log Array. Why: Every precomputed pick-log row must become a real, dated pickLog row matching state.pickLog's own shape. How: This maps staRawObj's own pickLog array (or an empty array if missing) through the per-row logic below.
@@ -609,7 +609,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 
 		const rowDatObj = dayAgoFun( picRowObj.dayNum ); // What: Row Date Object. Why: This row's own real calendar date is needed both for its own date field and, if done, to build its own completedAt timestamp below. How: This resolves picRowObj's own dayNum offset via dayAgoFun.
 
-		let donTimStr = null; // What: Done Timestamp String And Guard. Why: An entry that was never actually completed has no completion time at all. How: This starts null and is only overwritten below when picRowObj is done and carries a recorded hour.
+		let donTimStr = null; // What: Done Timestamp String. Why: An entry that was never actually completed has no completion time at all. How: This starts null and is only overwritten below when picRowObj is done and carries a recorded hour.
 
 
 		if ( picRowObj.done && picRowObj.houNum != null ) { // What: Done With Hour Check. Why: A completion timestamp only makes sense for a row that was actually completed and carries a recorded hour. How: This gates the timestamp construction below on both conditions holding at once.

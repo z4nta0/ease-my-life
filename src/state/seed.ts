@@ -286,7 +286,7 @@ function picWeiFun ( itePooArr : IteRcdTyp[] ) : IteRcdTyp {
 
 	const totWeiNum = itePooArr.reduce( ( sumWeiNum, curIteObj ) => sumWeiNum + ( curIteObj.weight || 1 ), 0 ); // What: Total Weight Number. Why: The random draw below needs the combined weight of the whole pool to scale against. How: This sums every item's own weight, defaulting a missing weight to 1.
 
-	let rmnWeiNum = Math.random() * totWeiNum; // What: Remaining Weight Number And Guard. Why: The loop below needs a running countdown to know which item the random draw landed on. How: This starts at a random point somewhere within the total weight.
+	let rmnWeiNum = Math.random() * totWeiNum; // What: Remaining Weight Number. Why: The loop below needs a running countdown to know which item the random draw landed on. How: This starts at a random point somewhere within the total weight.
 
 
 	for ( const curIteObj of itePooArr ) { // What: Weighted Draw Loop. Why: Every item in the pool must be walked in order, subtracting its own weight, until the running countdown crosses zero. How: This iterates itePooArr, returning the first item whose own weight subtraction brings rmnWeiNum to zero or below.
@@ -356,20 +356,20 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 	// #region Simulation Setup
 
-	const picRowArr : PclRowTyp[] = []; // What: Pick Row Array And Guard. Why: Every row built by logPicFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
+	const picRowArr : PclRowTyp[] = []; // What: Pick Row Array. Why: Every row built by logPicFun below needs somewhere to accumulate. How: This starts empty and is pushed into below.
 
 	const todMidObj = new Date(); // What: Today Midnight Object. Why: Every simulated day below is computed relative to this same anchor. How: This is read as "now" and then floored to midnight on the next line.
 
 	todMidObj.setHours( 0, 0, 0, 0 ); // What: Today Midnight Hours Reset. Why: Only the calendar day matters for the day-offset arithmetic below, not the current time of day. How: This zeroes out todMidObj's own hours/minutes/seconds/milliseconds in place.
 
 
-	const picPooObj : Record< string, IteRcdTyp[] > = {}; // What: Picker Pool Object And Guard. Why: The simulation below repeatedly needs "every item belonging to this picker," which would otherwise mean re-filtering allIteArr on every single day simulated. How: This starts empty and is filled once by the loop directly below, then read many times.
+	const picPooObj : Record< string, IteRcdTyp[] > = {}; // What: Picker Pool Object. Why: The simulation below repeatedly needs "every item belonging to this picker," which would otherwise mean re-filtering allIteArr on every single day simulated. How: This starts empty and is filled once by the loop directly below, then read many times.
 
 
 	for ( const curIteObj of allIteArr ) ( picPooObj[ curIteObj.pickerId ] = picPooObj[ curIteObj.pickerId ] || [] ).push( curIteObj ); // What: Picker Pool Fill Loop. Why: Every item must be filed under its own picker exactly once before the simulation below can look pools up cheaply. How: This iterates allIteArr, creating each picker's own bucket on first use and pushing curIteObj into it.
 
 
-	let seqCouNum = 0; // What: Sequence Count Number And Guard. Why: Every row needs its own unique id, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per row created below.
+	let seqCouNum = 0; // What: Sequence Count Number. Why: Every row needs its own unique id, and nothing else in this scope tracks that count. How: This starts at 0 and is incremented once per row created below.
 
 	const ranBetFun = ( lowBouNum : number, higBouNum : number ) => lowBouNum + Math.random() * ( higBouNum - lowBouNum ); // What: Random Between Function. Why: The Ease Down decay below needs a random value somewhere inside a given range, not just 0 to 1. How: This scales Math.random()'s own 0-1 output into the range from lowBouNum up to, but never reaching, higBouNum.
 
@@ -541,7 +541,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 				for ( let tosIndNum = 0; tosIndNum < tosCouNum; tosIndNum++ ) { // What: Toss Loop. Why: Every simulated reroll needs its own discarded, rejected row logged before the final pick. How: This runs tosCouNum times, each drawing and logging one discarded item.
 
 
-					let tosIteObj; // What: Tossed Item Object And Guard. Why: The do/while loop directly below needs somewhere to hold its own candidate before the loop condition can check it. How: This starts undefined and is assigned inside the loop body.
+					let tosIteObj; // What: Tossed Item Object. Why: The do/while loop directly below needs somewhere to hold its own candidate before the loop condition can check it. How: This starts undefined and is assigned inside the loop body.
 
 
 					do { tosIteObj = itePooArr[ Math.floor( Math.random() * itePooArr.length ) ]; } // What: Toss Draw Attempt. Why: Every retry needs a fresh random candidate to check against curIteObj. How: This draws one random item from itePooArr into tosIteObj.
@@ -583,7 +583,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 	// #region Ease Down Simulation
 
-	const easStaObj : EasStaTyp = {}; // What: Ease State Object And Guard. Why: Every Ease Down picker's own final in-progress state must be reported back to the caller, since the live app needs to resume it. How: This starts empty and is filled once per Ease Down picker by the loop directly below.
+	const easStaObj : EasStaTyp = {}; // What: Ease State Object. Why: Every Ease Down picker's own final in-progress state must be reported back to the caller, since the live app needs to resume it. How: This starts empty and is filled once per Ease Down picker by the loop directly below.
 
 
 	for ( const curPicObj of allPicArr ) { // What: Ease Down Simulation Loop. Why: An Ease Down picker's own item stays picked across many days and decays over time, which the per-picker loop above deliberately skips. How: This simulates every Ease Down picker's own full history independently.
@@ -595,8 +595,8 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 
 		const thrValNum = curPicObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM; // What: Threshold Value Number. Why: Every charge calculation below needs this picker's own starting/eligibility value. How: This reads curPicObj's own threshold, defaulting to PIC_NAM_OBJ.THR_VAL_NUM when missing.
 
-		let actIteObj = null; // What: Active Item Object And Guard. Why: The simulation below needs a running "currently active item" slot, starting with none picked yet. How: This starts null and is assigned/cleared throughout the loop below.
-		let chrValNum = 0;    // What: Charge Value Number And Guard. Why: The simulation below needs a running charge for whichever item is active. How: This starts at 0, immediately overwritten once an item first becomes active below.
+		let actIteObj = null; // What: Active Item Object. Why: The simulation below needs a running "currently active item" slot, starting with none picked yet. How: This starts null and is assigned/cleared throughout the loop below.
+		let chrValNum = 0;    // What: Charge Value Number. Why: The simulation below needs a running charge for whichever item is active. How: This starts at 0, immediately overwritten once an item first becomes active below.
 
 
 		for ( let dayIndNum = totDayNum - 1; dayIndNum >= 1; dayIndNum-- ) { // What: Ease Down Daily Loop. Why: This picker's own decay must be simulated one day at a time, in order, since each day's own charge depends on the day before it. How: This walks backward from totDayNum - 1 days ago to 1 day ago.
