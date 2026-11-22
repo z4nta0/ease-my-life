@@ -48,10 +48,9 @@ import type { VclRowTyp } from '../../core/data-model.ts'; // What: Vacation-Log
  * The Stats tab: the pick-log-derived history view, an activity heatmap,
  * per-picker breakdown, and reminder/conditional history, all filterable by
  * Group/Type/Show and a date range, paginated once a list runs long. It holds
- * the lookup tables behind the range pills and breakdown segments, small date,
- * heatmap, and tally helpers, the stacked breakdown bars, the heat legend, the
- * pager, the ranking card, and the tab component that ties every section
- * together.
+ * the lookup tables and helpers behind those views, the small components the
+ * tab builds from (a stacked breakdown bar, for one), and the tab component
+ * that ties every section together.
  *
  * Sections:
  *  - Constants
@@ -843,15 +842,14 @@ type TtcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  * TabStaCom = Tab Stats Component
  *
  * @summary
- * Renders the Stats tab. Everything shown here is derived on the fly from
- * the app's flat, append-only logs (staAppObj.pickLog, .conditionalLog,
- * .reminderLog, .reminderSkipLog, .vacationLog) rather than from any
- * dedicated stats storage of its own, so the Group/Type/Show/Range filter
- * row above the page applies uniformly to every card below it: the
- * heatmap, the headline totals, the completion rate, the streak, the
- * most/least picked rankings, and the auto/manual/re-roll source split.
- * Reminders and Conditionals each get their own dedicated scope that swaps
- * the whole dashboard over to their own shaped metrics instead of a
+ * Renders the Stats tab. Everything shown here is derived on the fly from the
+ * app's flat, append-only logs (staAppObj.pickLog, .conditionalLog,
+ * .reminderLog, .reminderSkipLog, .vacationLog) rather than from any dedicated
+ * stats storage of its own, so the Show and Range rows narrow every card below
+ * them (the heatmap, for one) from the same logs, while the Group and Type
+ * rows only choose which pickers, Conditionals, and Reminders tabs the Show
+ * row offers. Reminders and Conditionals each get their own dedicated scope
+ * that swaps the whole dashboard over to their own shaped metrics instead of a
  * picker's.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -914,7 +912,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Scope And Filter State
 
-	const [ scoValStr, setScoValStr ] = React.useState( 'all' ); // What: Scope Value String And Setter. Why: This is the single source of truth for which card set the whole page shows: everything, one picker, Conditionals, or Reminders. How: This is read throughout every memo below and written by the Show/Type filter rows. // scoValStr: 'all' | <pickerId> | 'reminders' | 'conditionals'.
+	const [ scoValStr, setScoValStr ] = React.useState( 'all' ); // What: Scope Value String And Setter. Why: This is the single source of truth for which card set the whole page shows: everything, one picker, Conditionals, or Reminders. How: This is read by many of the memos below and written by the Show/Type filter rows. // scoValStr: 'all' | <pickerId> | 'reminders' | 'conditionals'.
 	const [ ranValStr, setRanValStr ] = React.useState( 'all' ); // What: Range Value String And Setter. Why: Every card on the page needs the same active lookback window. How: This is resolved into ranDefObj/cutIsoStr below and written by the Range filter row.
 
 	const [ sorDirStr, setSorDirStr ] = React.useState( 'desc' );     // What: Sort Direction String And Setter. Why: The Pick breakdown list needs one shared High-to-Low/Low-to-High toggle regardless of which metric is active. How: This is applied inside the breLisArr sort below and flipped by the card's own sort button. // Shared sort direction for the single-picker "Pick breakdown" list, used by every metric pill it can show.
@@ -933,7 +931,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	const [ heaSelStr, setHeaSelStr ] = React.useState< string | null >( null ); // What: Heat Selected String And Setter. Why: Touch devices have no hover, so a tapped day needs its own persisted selection to show its detail list. How: This holds the tapped day's own date string, or null when nothing is selected. // Heatmap: the day cell the user tapped, whose own detail shows below the grid. Hover still uses the native title tooltip; a tap drives this instead, for touch.
 	const [ heaYeaNum, setHeaYeaNum ] = React.useState< number | null >( null ); // What: Heat Year Number And Setter. Why: An "All time" heatmap spanning several calendar years would otherwise grow unreasonably tall. How: This is clamped into actYeaNum below and changed by the year-pager arrows. // Heatmap year pager, only used when "All time" spans more than one calendar year (keeps the grid bounded to one year at a time). null means "the latest year".
-	const [ heaDirStr, setHeaDirStr ] = React.useState( '' );                    // What: Heat Direction String And Setter. Why: The heatmap's own slide-in animation needs to know which edge to enter from. How: This is set by the year-pager arrows and applied as a className modifier on the grid. // Direction of the last year-page change ('next' | 'prev'), so the grid can slide in from the matching side. Cleared to '' on any other change.
+	const [ heaDirStr, setHeaDirStr ] = React.useState( '' );                    // What: Heat Direction String And Setter. Why: The heatmap's own slide-in animation needs to know which edge to enter from. How: This is set by the year-pager arrows and applied as a className modifier on the grid. // Direction of the last year-page change ('next' | 'prev'), so the grid can slide in from the matching side. It stays '' until the first year page.
 
 	// #endregion Scope And Filter State
 
@@ -1019,7 +1017,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	const conDefArr = staAppObj.conditionals;                       // What: Conditional Definition Array. Why: The Conditionals scope needs the live definitions to join against their own trigger history. How: This reads staAppObj.conditionals, which migStaFun guarantees, so it stays the same array until a conditional changes.
 	const conLogArr = staAppObj.conditionalLog;                     // What: Conditional Log Array. Why: This flat, append-only log holds every historical trigger evaluation, including ones for now-deleted conditionals. How: This reads staAppObj.conditionalLog, which migStaFun guarantees, so it stays the same array until the log changes.
-	const hasConBoo = conDefArr.length > 0 || conLogArr.length > 0; // What: Has Conditional Boolean. Why: The Type filter row and the whole Conditionals scope should only appear at all once there's something to show. How: This is true when either a live definition or a logged history row exists.
+	const hasConBoo = conDefArr.length > 0 || conLogArr.length > 0; // What: Has Conditional Boolean. Why: The Conditionals pill and scope should only appear at all once there's something to show. How: This is true when either a live definition or a logged history row exists.
 	const isaConBoo = scoValStr === 'conditionals';                 // What: Is-A Conditional Boolean. Why: Several blocks below need a quick check for whether the Conditionals scope is the active one. How: This compares scoValStr against the 'conditionals' sentinel value.
 
 
@@ -1658,7 +1656,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Heatmap Grid
 
-	const datYeaArr = React.useMemo( () => { // What: Data Year Array Memo. Why: The year pager needs the full list of calendar years that actually have any logged activity. How: This derives the earliest year with data and every year up through the current one. // Flat chronological run of fixed-size day cells, wrapping to as many rows as the range needs (taller, never wider). For "All time" spanning more than one calendar year, a year pager clamps the grid to one year at a time.
+	const datYeaArr = React.useMemo( () => { // What: Data Year Array Memo. Why: The year pager needs the full list of calendar years that actually have any logged activity. How: This derives the earliest year with data and every year up through the current one. // Distinct calendar years from the earliest logged day through the current one, for the year pager that clamps an "All time" grid to one year at a time.
 
 
 		const dayKeyArr = [ ...dayAggMap.keys() ]; // What: Day Key Array. Why: The earliest year present needs to be found from the actual logged days, not assumed. How: This spreads dayAggMap's own keys into a plain array.
@@ -2032,7 +2030,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-			outGapMap.set( iteIdeStr, { calNum : gapCalNum, couNum : sorDatArr.length, eliNum : gapEliNum } ); // What: Item Gap Store. Why: The Frequency metric needs both averages plus the raw pick count per item. How: This sets the finished per-item result under its own iteIdeStr key.
+			outGapMap.set( iteIdeStr, { calNum : gapCalNum, couNum : sorDatArr.length, eliNum : gapEliNum } ); // What: Item Gap Store. Why: The Frequency metric needs both averages plus the item's distinct pick-day count. How: This sets the finished per-item result under its own iteIdeStr key.
 
 
 		}
@@ -3057,7 +3055,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 							data-element-name-hook='scoTabDiv'
 							data-rail-wheel-scroll
-						>{ /* What: Scope Tab Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its own enter animation) whenever the Group/Type filter pair changes. Its data-element-name-hook is read by the tours and help mode. */ }
+						>{ /* What: Scope Tab Div Element. Why: This is the actual scrollable row of scope tabs (All, Conditionals, Reminders, and every visible picker). How: This remounts (replaying its tabs' enter animation) whenever the Group/Type filter pair changes. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							{ staGroStr === 'all' && typFilStr === 'all' && ( // What: All Tab Visibility Check. Why: The "All" scope tab only makes sense while neither the Group nor Type filter has narrowed the view. How: This renders the All tab only while both filters are still 'all'.
