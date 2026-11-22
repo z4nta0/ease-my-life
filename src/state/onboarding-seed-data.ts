@@ -433,11 +433,11 @@ const ONB_PCT_OBJ : Record< string, string > = { // What: Onboarding Picker-Card
  *
  * - `kicStr` (String, optional): Kicker String is an explicit override only
  *   where the real schedule summary (TAS_NAM_OBJ.sumTasFun(task)) isn't what
- *   should be shown, e.g. the one-time reminder wants "One-Time"
- *   instead of TAS_NAM_OBJ.sumTasFun's own "One-time". Absent on the recurring
- *   reminder on purpose, since its daysOfWeek is set dynamically at
- *   seed time (see onboarding/welcome-tour.tsx) to whatever day the
- *   tour is taken on, so TAS_NAM_OBJ.sumTasFun already produces the right
+ *   should be shown, e.g. the one-time reminder pins the plain "One-Time",
+ *   where sumTasFun would add its start date once that date is in the future.
+ *   Absent on the recurring reminder on purpose, since its daysOfWeek is set
+ *   dynamically at seed time (see onboarding/welcome-tour.tsx) to whatever day
+ *   the tour is taken on, so TAS_NAM_OBJ.sumTasFun already produces the right
  *   "Every {Day}" text for it on its own.
  *
  * - `namStr` (String): Name String is the launcher card's own display

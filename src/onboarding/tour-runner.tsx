@@ -2146,7 +2146,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 		// #region Live Position And Watchdog Loop
 
-		const scrPosFun = () => { // What: Scroll Position Function. Why: This repositions as each scroll event fires so the highlight does not trail the content. How: This resolves the target fresh and, when found, repositions it via plaTarFun, listening in capture phase so it fires for whichever element scrolls.
+		const scrPosFun = () => { // What: Scroll Position Function. Why: This repositions as each scroll event fires so the highlight does not trail the content. How: This resolves the target fresh and, when found, repositions it via plaTarFun; the scroll listener added below registers it in capture phase so it fires for whichever element scrolls.
 
 
 			const curEleArr = finTarFun( curSteObj.selStr ); // What: Current Element Array. Why: The reposition below needs the target's own current elements. How: This resolves curSteObj.selStr fresh on every scroll event.

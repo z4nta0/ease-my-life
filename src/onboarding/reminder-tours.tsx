@@ -582,7 +582,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 
 
 				} }
-			/> // What: Intro Modal Component. Why: This is this varKeyStr's own opening screen, shown before the spotlight steps unless a reload resumes the tour. How: This is passed this varKeyStr's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
+			/> // What: Intro Modal Component. Why: This is this varKeyStr's own opening screen, shown before the spotlight steps unless a reload resumes the tour. How: This is passed the icon element built above, the shared first paragraph and this varKeyStr's own second one, the pill labels, this varKeyStr's own title, and the onBegTouFun and onSkiTouFun handlers.
 
 
 		);

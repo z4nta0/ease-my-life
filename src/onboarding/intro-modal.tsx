@@ -54,11 +54,9 @@ type ImcProTyp = { begLabStr? : string, icoTopEle : React.ReactNode, onBegTouFun
  * when the caller asks, a quieter third action for someone returning.
  * The icon, heading, paragraphs, and pills are passed in by the caller, and
  * the button labels fall back to defaults; only the structure and the two
- * buttons' own styling are meant to stay identical across every tour that
- * uses this component. See
- * onboarding/welcome-tour.tsx for the Welcome Tour's own copy and labels,
- * which differ slightly ("Take the quick tour" and "I'll explore myself")
- * from a mini-tour's plainer "Get started" and "Skip".
+ * buttons' own styling are meant to stay identical across every tour that uses
+ * this component. The button labels default to "Get started" and "Skip", and a
+ * caller such as onboarding/welcome-tour.tsx passes its own.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
