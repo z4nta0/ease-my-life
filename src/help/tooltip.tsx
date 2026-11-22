@@ -219,7 +219,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 		const tipCurEle = tipEleRef.current; // What: Tip Current Element. Why: The measurement below needs a stable local reference to the live tip DOM node. How: This is read once from tipEleRef.current.
 
 
-		if ( !tipCurEle ) return; // What: No Element Guard. Why: The ref may not be attached yet on a very first render. How: This bails out early when there is no tip element to measure.
+		if ( !tipCurEle ) return; // What: No Element Guard. Why: The ref's current value is typed as possibly null. How: This bails out early when there is no tip element to measure.
 
 
 
@@ -278,7 +278,7 @@ function HelTipCom ( { tarRecObj, tipIteObj } : HtcProTyp ) : React.JSX.Element 
 			<div style={ innStyObj }>{ /* What: Inner Scroll Div Element. Why: The scroll cap must live on an inner wrapper so it never clips the outer box's own arrow. How: This applies innStyObj only while this item is scrollable and a cap has been computed. */ }
 
 
-				<p className={ cssModObj.tipTitPar }>{ typeof tipIteObj.titStr === 'function' ? tipIteObj.titStr( tarRecObj ) : tipIteObj.titStr }</p>{ /* What: Tip Title Paragraph Element. Why: A function title (e.g. the Charge Controls items) reads something off the live DOM at open time instead of baking in a value that could be wrong for a different picker's own setting. How: This calls tipIteObj.titStr with tarRecObj when it is a function, otherwise renders it directly. */ }
+				<p className={ cssModObj.tipTitPar }>{ typeof tipIteObj.titStr === 'function' ? tipIteObj.titStr( tarRecObj ) : tipIteObj.titStr }</p>{ /* What: Tip Title Paragraph Element. Why: A function title (e.g. the Edit Mode item's) reads the live DOM at open time instead of baking in a value that could go stale. How: This calls tipIteObj.titStr with tarRecObj when it is a function, otherwise renders it directly. */ }
 
 				<div className={ cssModObj.tipBodDiv }>{ typeof tipIteObj.bodEle === 'function' ? tipIteObj.bodEle() : tipIteObj.bodEle }</div>{ /* What: Tip Body Div Element. Why: Same reasoning as the title above applies to a function body. How: This calls tipIteObj.bodEle when it is a function, otherwise renders it directly. */ }
 

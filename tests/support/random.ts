@@ -93,7 +93,7 @@ const insSedFun = async ( curPagObj : Page, sedValNum : number ) : Promise< void
 
 		}
 
-		catch { loaCouNum = 0; } // What: Load Count Fallback. Why: A blank page has no session storage. How: This keeps the count at zero there.
+		catch { loaCouNum = 0; } // What: Load Count Fallback. Why: Reading session storage can throw, and the count still has to be a number. How: This keeps the count at zero then.
 
 		// #endregion Load Counter
 
