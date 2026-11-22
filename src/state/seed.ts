@@ -500,7 +500,7 @@ function picLogFun ( allIteArr : IteRcdTyp[], allPicArr : PicRcdTyp[], isaVacFun
 	// #endregion isaOffFun
 
 
-	for ( let dayIndNum = totDayNum - 1; dayIndNum >= 1; dayIndNum-- ) { // What: Daily Simulation Loop. Why: Every past day (excluding today, added separately from today.entries) needs its own simulated picks. How: This walks backward from totDayNum - 1 days ago to 1 day ago.
+	for ( let dayIndNum = totDayNum - 1; dayIndNum >= 1; dayIndNum-- ) { // What: Daily Simulation Loop. Why: Every past day, today excluded, needs its own simulated picks. How: This walks backward from totDayNum - 1 days ago to 1 day ago.
 
 
 		const curDatObj = dayDatFun( dayIndNum ); // What: Current Date Object. Why: Every check and row below needs this simulated day's own real date. How: This builds it through dayDatFun, dayIndNum days back from todMidObj.

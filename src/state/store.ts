@@ -2816,7 +2816,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 				const curLatObj = latStaRef.current; // What: Current Latest Object. Why: The check below needs the freshest state, not a possibly-stale closed-over one. How: This reads latStaRef's own current value.
 
 
-				if ( PWA_NAM_OBJ && curLatObj && ( curLatObj.pickers || [] ).length === 0 ) PWA_NAM_OBJ.askFirFun(); // What: First-Picker Call Guard. Why: Only an account with zero existing pickers is about to create its own first one. How: This calls PWA_NAM_OBJ.askFirFun only when PWA_NAM_OBJ/curLatObj exist and curLatObj.pickers is empty.
+				if ( PWA_NAM_OBJ && curLatObj && ( curLatObj.pickers || [] ).length === 0 ) PWA_NAM_OBJ.askFirFun(); // What: First-Picker Call Guard. Why: Only a state with zero existing pickers is about to create its own first one. How: This calls PWA_NAM_OBJ.askFirFun only when PWA_NAM_OBJ/curLatObj exist and curLatObj.pickers is empty.
 
 
 			}
@@ -2829,7 +2829,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			const exiIdeStr = picArgObj.replaceId; // What: Existing Identifier String. Why: A replace must keep the existing picker's own id alive. How: This reads picArgObj.replaceId, undefined on an ordinary add.
 			const givIdeStr = picArgObj.id;        // What: Given Identifier String. Why: A caller-supplied id, such as an onboarding sample picker's, must be kept. How: This reads picArgObj.id, undefined when none was given.
-			const newIdeStr = ranIdeFun( 'pkr_' ); // What: New Identifier String. Why: A picker with no existing or given id needs a fresh random one. How: This mints a 'pkr_' id from 6 random base-36 characters.
+			const newIdeStr = ranIdeFun( 'pkr_' ); // What: New Identifier String. Why: A picker with no existing or given id needs a fresh random one. How: This mints a 'pkr_' id from up to 6 random base-36 characters.
 
 			const picIdeStr = exiIdeStr || givIdeStr || newIdeStr; // What: Picker Identifier String. Why: A replaced or explicitly given id must win over a fresh random one. How: This prefers exiIdeStr, then givIdeStr, else newIdeStr.
 

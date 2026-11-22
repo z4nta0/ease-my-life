@@ -1121,7 +1121,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
 
-			setAccErrStr( "The checkout couldn't be started. Check your connection, then try again." ); // What: Failure Message. Why: A connection problem is the usual cause. How: This says so.
+			setAccErrStr( "The checkout couldn't be started. Check your connection, then try again." ); // What: Failure Message. Why: The person can check their connection and try again. How: This says so.
 
 
 		}
@@ -1237,7 +1237,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
 
-			setAccErrStr( "Google sign-in didn't finish. Check that pop-ups are allowed, then try again." ); // What: Failure Message. Why: Pop-ups are the usual cause. How: This says so.
+			setAccErrStr( "Google sign-in didn't finish. Check that pop-ups are allowed, then try again." ); // What: Failure Message. Why: A blocked pop-up is a cause the person can fix, so the message names it. How: This says so.
 
 
 		}
@@ -1273,7 +1273,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
 
-			setAccErrStr( "The sign-in link couldn't be sent. Check the address, then try again." ); // What: Failure Message. Why: A mistyped address is the usual cause. How: This says so.
+			setAccErrStr( "The sign-in link couldn't be sent. Check the address, then try again." ); // What: Failure Message. Why: A mistyped address is a cause the person can fix, so the message names it. How: This says so.
 
 
 
@@ -1307,7 +1307,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 			console.warn( errCatObj ); // What: Failure Log. Why: The cause stays visible to anyone debugging. How: This logs it.
 
-			setAccErrStr( "Signing out didn't finish. Try again." ); // What: Failure Message. Why: Trying again usually works. How: This says so.
+			setAccErrStr( "Signing out didn't finish. Try again." ); // What: Failure Message. Why: The person can try again. How: This says so.
 
 
 		}
