@@ -386,7 +386,7 @@
 
 }
 
-.logEmpDiv { /* What: Log Empty Div. Why: A picker with no items, or no reminders yet, says so. How: This sets a small muted padded message. */
+.logEmpDiv { /* What: Log Empty Div. Why: A picker with no items, or no reminders yet, says so. How: This sets a muted padded message. */
 
 
 	color     : var( --tex-mut-col );                      /* Text Muted Color = oklch( 0.5 0.012 250 ) */

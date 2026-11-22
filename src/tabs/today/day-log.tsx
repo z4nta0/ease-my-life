@@ -869,16 +869,16 @@ type VccProTyp = { aftValNum : number, genValNum : number | null | undefined, ha
  * ValCelCom = Value Cells Component
  *
  * @summary
- * Renders the 3 shared value cells (at generation, delta, after) used
- * by both an item row and a conditional row, showing "N/A" in all 3
- * when the mode has no value at all or there is no generation
- * snapshot yet. offValNum (dynamic items only) is the item's own base
- * weight, added to BOTH the at-generation and after cells so they read
- * as effective pick weight (weight + boost) rather than the bare
- * boost, since that is the number that actually drove the roll. It is
- * added to both, not just after, so the columns stay arithmetically
- * honest: after minus at-generation still equals delta. Delta itself
- * is untouched, since a constant base weight cancels out of the
+ * Renders the 3 shared value cells (at generation, delta, after) used by both
+ * an item row and a conditional row, showing "N/A" in the at-generation and
+ * after cells and a flat dash placeholder in the delta cell when the mode has
+ * no value at all or there is no generation snapshot yet. offValNum (dynamic
+ * items only) is the item's own base weight, added to BOTH the at-generation
+ * and after cells so they read as effective pick weight (weight + boost)
+ * rather than the bare boost, since that is the number that actually drove the
+ * roll. It is added to both, not just after, so the columns stay
+ * arithmetically honest: after minus at-generation still equals delta. Delta
+ * itself is untouched, since a constant base weight cancels out of the
  * difference; it remains the change in boost alone.
  *
  * @author z4nta0 <https://github.com/z4nta0>
