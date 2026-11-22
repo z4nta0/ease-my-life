@@ -155,6 +155,31 @@
 
 
 
+	// #region __dismissBootSplash
+
+	/**
+	 * __dismissBootSplash = Dismiss Boot Splash Function
+	 *
+	 * @summary
+	 * Marks the app as mounted, then starts the splash's fade if the equation
+	 * has already finished assembling (or at once under reduced motion). The
+	 * fade and the splash's removal just after it come from hidSplFun. If the
+	 * equation is still assembling, the assembly timeout starts the fade
+	 * instead once it ends.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * window.__dismissBootSplash() // => void
+	 * ```
+	 *
+	*/
+
 	window.__dismissBootSplash = () => { // What: Dismiss Boot Splash Global. Why: main.tsx has to tell this script when the app has mounted, and this script loads outside the bundle. How: This registers a global main.tsx calls, which marks the app mounted and tries the fade.
 
 
@@ -164,6 +189,8 @@
 
 
 	};
+
+	// #endregion __dismissBootSplash
 
 
 
