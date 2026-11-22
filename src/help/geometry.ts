@@ -53,7 +53,7 @@ type HelRecTyp = BoxRecTyp & Partial< PadSidTyp > & { alwBelBoo? : boolean, badA
 
 // #region Constants
 
-const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appTabNav"]' : 2, '[data-element-name-hook~="ediBanDiv"]' : 2, '[data-element-name-hook~="groRaiAsi"]' : 1, '[data-element-name-hook~="setRaiAsi"]' : 1, '[data-element-name-hook~="todPagHed"]' : 1 }; // What: Chrome Priority Object. Why: A target that is part of one chrome item (e.g. the nav bar's own [data-tab-button-key] buttons, "part of" .appTabNav) must still be clippable against a DIFFERENT chrome item it visually sits behind, but never against one it sits IN FRONT OF. How: This maps a chrome selector to a plain priority number; a higher number visually wins, and cliChrFun below skips clipping a target against any chrome item whose priority its own home chrome matches or beats (its own home chrome included). the ediBanDiv banner outranks the groRaiAsi rail specifically because on narrow viewports both become independently position:sticky near the same top offset, and the banner visually covers the rail wherever they overlap.
+const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appTabNav"]' : 2, '[data-element-name-hook~="ediBanDiv"]' : 2, '[data-element-name-hook~="groRaiAsi"]' : 1, '[data-element-name-hook~="setRaiAsi"]' : 1, '[data-element-name-hook~="todPagHed"]' : 1 }; // What: Chrome Priority Object. Why: A target that is part of one chrome item (e.g. the nav bar's own [data-tab-button-key] buttons, "part of" .appTabNav) must still be clippable against a DIFFERENT chrome item it visually sits behind, but never against one it sits IN FRONT OF. How: This maps a chrome selector to a plain priority number; a higher number visually wins, and cliChrFun below skips clipping a target against any chrome item whose priority its own home chrome matches or beats (its own home chrome included). The ediBanDiv banner outranks the groRaiAsi rail specifically because on narrow viewports both become independently position:sticky near the same top offset, and the banner visually covers the rail wherever they overlap.
 
 // #endregion Constants
 
@@ -205,8 +205,8 @@ function cliHorFun ( tarRecObj : EdgRecTyp, tarDomEle : HTMLElement ) : EdgRecTy
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param selLisStr - Selector List String: A comma-separated CSS selector
- *                   list, tried left to right until one alternative actually
- *                   matches a visible element.
+ *                    list, tried left to right until one alternative
+ *                    actually matches a visible element.
  *
  * @returns The first alternative's matched, currently-visible elements.
  *
@@ -415,7 +415,7 @@ function cliChrFun ( tarRecObj : EdgRecTyp, chrIteArr : ChrIteTyp[], tarEleArr :
 
 		}
 
-		else if ( chrIteObj.chrSidStr === 'bottom' ) { // What: Bottom Chrome Clamp. Why: A bottom-anchored chrome item (the tab bar) should clip whatever sits below it, preferring to keep the portion already above the chrome. How: This clamps the working rect's own bottom edge up to the chrome's own top edge when that still leaves a real, positive-height rect.
+		else if ( chrIteObj.chrSidStr === 'bottom' ) { // What: Bottom Chrome Clamp. Why: A bottom-anchored chrome item (the tab bar) should clip whatever sits above it, preferring to keep the portion already above the chrome. How: This clamps the working rect's own bottom edge up to the chrome's own top edge when that still leaves a real, positive-height rect.
 
 
 			const canBotNum = Math.min( botEdgNum, chrIteObj.chrRecObj.top ); // What: Candidate Bottom Number. Why: This is the natural-direction clamp candidate for a bottom-anchored chrome item. How: This pulls bottom up to at most the chrome's own top edge.
@@ -911,7 +911,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 
 // #region Exports
 
-export { badRecFun, type BoxRecTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, type PadSidTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: The measurement math is shared through these, with the four types for its rects, pads, and shapes. How: This exports the public helpers and the four types by name; CHR_PRI_OBJ and the badge-box and default-radius helpers stay private to this file.
+export { badRecFun, type BoxRecTyp, claPadFun, cliChrFun, cliHorFun, detEdgFun, finTarFun, type HelRecTyp, type PadSidTyp, shaRadFun, type ShaRadTyp, uniRecFun }; // What: Named Exports. Why: The measurement math is shared through these, with the four types for its rects, pads, and shapes. How: This exports the public helpers and the four types by name; everything else stays private to this file.
 
 // #endregion Exports
 

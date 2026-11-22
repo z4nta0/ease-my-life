@@ -726,7 +726,7 @@ type FccProTyp = { floIteArr : FloIteTyp[], sidKeyStr : string }; // What: Flour
  *                          'left' or 'right'; flips which CSS inset property
  *                          each item's own insNum applies to.
  *
- * @returns This side's own flourish items, each as one absolutely- positioned
+ * @returns This side's own flourish items, each as one absolutely-positioned
  *          decorative span, or null when there is nothing to render.
  *
  * @example

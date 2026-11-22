@@ -50,7 +50,7 @@ interface Navigator { // What: Navigator Interface. Why: pwa.ts reads two naviga
 interface Window { // What: Window Interface. Why: TypeScript's built-in Window doesn't know the app's own window.__ globals or the App Check debug token, so every use of one is an error. How: This merges them into Window, each optional since each exists only once its own code has run.
 
 
-	__dismissBootSplash? : () => void;  // What: Dismiss Boot Splash. Why: main.tsx fades out index.html's boot splash once the app has mounted. How: This is the function public/boot-splash.js assigns.
+	__dismissBootSplash? : () => void;  // What: Dismiss Boot Splash. Why: index.html's boot splash has to be told when the app has mounted so it can fade out. How: This is the function public/boot-splash.js assigns, which main.tsx calls once the app has mounted.
 	__emlGenerate?       : () => void;  // What: Ease My Life Generate. Why: The Welcome Tour runs the real list generator on a first run. How: This is the function the Today tab assigns when it mounts.
 	__escBound?          : boolean;     // What: Escape Bound. Why: The document-level Escape listener must be attached only once, however many times its module loads. How: This is set true once ui/escape-cancel.ts attaches it.
 	__escStack?          : EscEntTyp[]; // What: Escape Stack. Why: Several editors can be open at once, and Escape should cancel only the most recent. How: This is the array ui/escape-cancel.ts pushes each open editor's entry onto.
