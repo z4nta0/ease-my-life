@@ -1010,7 +1010,7 @@
 
 
 }
-@container appRooDiv ( min-width : 720px ) { /* What: Wide App Content Main In Bottom Placement App Root Div. Why: The floating wide pill sits higher, so the content needs more room to clear it. How: This applies only when the app is at least 720px wide. */
+@container appRooDiv ( min-width : 720px ) { /* What: Wide App Content Main In Bottom Placement App Root Div. Why: The floating wide pill sits over the content's bottom edge, so the content needs room to clear it. How: This applies only when the app is at least 720px wide. */
 
 
 	.appRooDiv[data-placement='bottom'] .appConMai { /* What: Wide App Content Main In Bottom Placement App Root Div. Why: The floating wide pill sits over the content's bottom edge, so the content needs room to clear it. How: This keeps the bottom padding at the p07 step, which clears the pill. */
