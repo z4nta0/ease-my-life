@@ -5,17 +5,10 @@
  * tab-stats.module.css = Stats Tab Module
  *
  * @summary
- * Styles for TabStaCom, the Stats tab: its header and scope filters (the Show
- * tab strip and the Range pills, beside the Group and Type rows the shared
- * filter rail styles), then the body that fades in under them, holding the
- * single-picker identity block, the headline stat cards, the stacked breakdown
- * bars, the heatmap with its year pager and tapped-day detail, the rank and
- * breakdown lists with their metric pills and unit toggles, the reminder and
- * conditional logs, and the range pagNavDiv. Selected filters key off
- * data-tab-select-active and data-pill-select-active, a selected heat cell off
- * data-cell-select-active, a unit toggle off data-link-select-active, and list
- * rows off data-row-vacation-active, data-row-deleted-active, and
- * data-row-done-active, with dimmed values off data-value-dim-active.
+ * Styles for TabStaCom, the Stats tab: its header and scope filters, then the
+ * body that fades in under them, holding the stat panels, such as the
+ * breakdown bars. Selected, dimmed, and scrolled-to-an-end looks key off
+ * presence-only data-*-active attributes, such as data-tab-select-active.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -313,7 +306,7 @@
 
 /* #region pagBodDiv */
 
-.pagBodDiv { /* What: Page Body Div. Why: The filters and the body below them move as one unit, so a tour can reserve room above them without moving the header. How: This stacks them in a spaced column that can shrink. */
+.pagBodDiv { /* What: Page Body Div. Why: The filters and the body below them stack as one column under the header. How: This stacks them in a spaced column that can shrink. */
 
 
 	display        : flex;
@@ -954,7 +947,7 @@
 
 }
 
-.legValSpa { /* What: Legend Value Span. Why: The count sits at the row's right. How: This pushes it right in tabular mono. */
+.legValSpa { /* What: Legend Value Span. Why: The count and the share after it sit at the row's right. How: This pushes it right with an auto left margin, in tabular mono. */
 
 
 	color                : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */

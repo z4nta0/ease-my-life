@@ -1271,7 +1271,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	}, [ picLisArr ] ); // What: Memo Dependency Array. Why: The group list only ever needs recomputing when the live picker list itself changes. How: picLisArr is the sole source the loop above reads from.
 
 
-	const [ staGroStr, setStaGroStr ] = React.useState( 'all' ); // What: Stat Group String And Setter. Why: This is the single source of truth for the active Group filter pill. How: This is read by visPicArr below and written by the Group filter row's own buttons. // staGroStr only scopes which pickers appear in the Show row below; it never filters the stats themselves. 'all' also lets the All + Reminders options show. A hidden picker (see store.ts's own hidden flag) never appears here at all.
+	const [ staGroStr, setStaGroStr ] = React.useState( 'all' ); // What: Stat Group String And Setter. Why: This is the single source of truth for the active Group filter pill. How: This is read by visPicArr below and written by the Group filter row's own buttons. // staGroStr only scopes which pickers appear in the Show row below; it never filters the stats themselves. The All tab shows only while this and typFilStr are both 'all'. A hidden picker (see store.ts's own hidden flag) never appears here at all.
 
 
 	const exiModArr = React.useMemo( () => { // What: Existing Mode Array Memo. Why: The Type filter row needs the live, deduplicated set of picker modes actually in use, ordered by their own display label. How: This walks picLisArr once collecting non-hidden modes into a Set, then sorts by SED_NAM_OBJ.MOD_DEF_OBJ's own label text. // Distinct modes actually in use, alphabetical by their own display label: feeds the Type filter row's own picker-mode pills ("All" pinned first, same as Group). Independent of staGroStr, both narrow visPicArr together.
@@ -1348,7 +1348,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	), [ visPicArr ] ); // What: Memo Dependency Array. Why: This only ever needs resorting when the visible picker list itself changes. How: visPicArr is the sole source the sort above reads from.
 
 
-	const preFilRef = React.useRef( { staGroStr, typFilStr } ); // What: Previous Filter Reference. Why: The repair effect below needs to remember the last-seen filter pair across renders to detect an actual change. How: This starts at the current filter pair and is updated by the effect below on every run. // Keep scoValStr coherent with the Group + Type filters: within a specific group and/or type, All/Reminders aren't offered, so if the current scope isn't one of the filtered pickers, fall back to the first one, alphabetically, matching the Show row. Also jumps whenever either filter itself just changed, not only once the OLD scope happens to fall out of view (e.g. switching between two groups that both happen to contain the same picker used to leave the view stranded there instead of jumping to the new filter's own first card).
+	const preFilRef = React.useRef( { staGroStr, typFilStr } ); // What: Previous Filter Reference. Why: The repair effect below needs to remember the last-seen filter pair across renders to detect an actual change. How: This starts at the current filter pair and is updated by the effect below on every run. // Keep scoValStr coherent with the Group + Type filters: within a specific group or type, All isn't offered, and within a specific type, Conditionals/Reminders aren't offered either, so if the current scope isn't one of the filtered pickers, fall back to the first one, alphabetically, matching the Show row. Also jumps whenever either filter itself just changed, not only once the OLD scope happens to fall out of view (e.g. switching between two groups that both happen to contain the same picker used to leave the view stranded there instead of jumping to the new filter's own first card).
 
 
 
@@ -2546,7 +2546,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const freSpeObj = easDowBoo ? { keyStr : 'spent', labStr : 'Spent' } : { keyStr : 'freq', labStr : 'Frequency' }; // What: Frequency Spent Object. Why: An ease-down picker measures Spent in place of Frequency, and pulling this choice out of metPilArr keeps that array's plain rows aligned. How: This picks whichever pill object fits the scoped picker's own mode.
 
 
-	const metPilArr = [ // What: Metric Pill Array. Why: This defines the fixed set of pill buttons the Pick breakdown card's own metric row renders. How: This is mapped over in that row's JSX, each entry's own key compared against metKeyStr for active-state styling. // Metric pills for the Pick breakdown card (an ease-down picker swaps Frequency for Spent).
+	const metPilArr = [ // What: Metric Pill Array. Why: This defines the fixed set of pill buttons the Pick breakdown card's own metric row renders. How: This is mapped over in that row's JSX, each entry's own key compared against effMetStr for active-state styling. // Metric pills for the Pick breakdown card (an ease-down picker swaps Frequency for Spent).
 
 
 		{ keyStr : 'count',    labStr : 'Count'          }, // What: Count Pill Object. Why: Count is the default metric. How: This labels the plain pick-count pill.
