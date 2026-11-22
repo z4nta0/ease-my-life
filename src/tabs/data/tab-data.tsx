@@ -39,7 +39,7 @@ import { sorEntFun    } from './list-sorting.ts';                   // What: Sor
 import { SorSelCom    } from './sort-select.tsx';                   // What: Sort Select Component. Why: Every sortable list in this tab needs the same sort control. How: This is rendered for sections and each picker's own item list.
 import { togFadFun    } from '../../ui/edge-fade.ts';               // What: Toggle Fade Function. Why: Every scrolling rail in this file hides each edge fade once that edge is reached. How: This is called by each rail's own scroll and resize handlers.
 import { UnmWatCom    } from './unmount-watcher.ts';                // What: Unmount Watcher Component. Why: An open row that disappears some other way than its own chevron or Save still keeps its edits. How: This is rendered inside the open row's editor.
-import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease-My-Life Tour Function. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's touPhaStr/touIdeStr/touSteNum fields.
+import { useEmlTouFun } from '../../state/tour-bus.ts';             // What: Use Ease-My-Life Tour Function. Why: Several controls in this file must disable themselves or highlight during specific onboarding tour steps. How: This is called once to read the shared tour event bus's fields, such as touPhaStr.
 import { useIteDraFun } from '../../ui/record-draft.ts';            // What: Use Item Draft Function. Why: The open item row edits a local draft, committed when the row closes. How: This is called once with whichever item's row is open.
 
 

@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { CAD_NAM_OBJ } from '../core/cadence.ts';  // What: Cadence Namespace Object. Why: A picker's own saved cadence must be normalized to the current shape. How: This is called (enfWeeFun/norCadFun/isaCadFun) from migStaFun.
+import { CAD_NAM_OBJ } from '../core/cadence.ts';  // What: Cadence Namespace Object. Why: A picker's own saved cadence must be normalized to the current shape. How: This is called from migStaFun for its cadence helpers, such as norCadFun.
 import { HOL_NAM_OBJ } from '../core/holidays.ts'; // What: Holidays Namespace Object. Why: A save with no holiday list gets the canonical empty holidays shape. How: This is called (defStaFun) from migStaFun.
 import { newIdeFun   } from './ids.ts';            // What: New Identifier Function. Why: An entry saved without an eid needs a unique one. How: This is called once per entry that needs one.
 import { norGroFun   } from '../core/pickers.ts';  // What: Normalize Group Function. Why: Every saved picker's group label is Title Cased on load. How: This is called from migStaFun without an existing-group list.
