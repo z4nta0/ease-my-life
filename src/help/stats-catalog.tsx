@@ -462,7 +462,7 @@ const STA_HEL_ARR : HelIteTyp[] = [ // What: Stats Help Array. Why: This is the 
 
 		bodEle    : <>This shows the currently selected picker's type (Truly Random, Weighted, Dynamic Weighted, Ease Up, or Ease Down).</>,
 		ideStr    : 'pickerTypePill',
-		padYcoNum : 2, // padYcoNum: 2, see pickerName's own comment, same 6px gap, same fix.
+		padYcoNum : 2, // padYcoNum: 2, see pickerName's own comment, same 4px gap, same fix.
 		selStr    : '[data-element-name-hook~="picIdeDiv"] [data-element-name-hook~="modPilSpa"]',
 		titStr    : 'Picker Type'
 
