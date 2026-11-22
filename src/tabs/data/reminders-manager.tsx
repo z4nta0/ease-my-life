@@ -84,8 +84,8 @@ import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record 
  * Every entry shares one shape. Each row's own comment explains its
  * `keyStr`, while `labStr` repeats no comment of its own:
  *
- * - `keyStr` (String): Key String, the sort id SorSelCom compares
- *   against iteSorStr and reports via onChange.
+ * - `keyStr` (String): Key String, the sort ID the select matches
+ *   against its current value and reports via onChange.
  *
  * - `labStr` (String): Label String, the option's own visible menu
  *   text.
@@ -97,12 +97,12 @@ import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record 
 const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list sort control needs one entry per supported sort. How: This is passed as SorSelCom's optLisArr prop from RemManCom below.
 
 
-	{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Name Ascending Sort Entry. Why: This is the section's own default sort. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
-	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Name Descending Sort Entry. Why: This is the reverse of the default sort. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
-	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Type Ascending Sort Entry. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
-	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Type Descending Sort Entry. Why: This is the reverse of the type sort. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
-	{ keyStr : 'date-asc',  labStr : 'Soonest'    }, // What: Date Ascending Sort Entry. Why: Date sorts by each reminder's own next eligible occurrence. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
-	{ keyStr : 'date-desc', labStr : 'Latest'     }  // What: Date Descending Sort Entry. Why: This is the reverse of the date sort. How: SorSelCom compares its keyStr against iteSorStr and reports it via onChange.
+	{ keyStr : 'name-asc',  labStr : 'Name (A–Z)' }, // What: Name Ascending Sort Entry. Why: This is the section's own default sort. How: The select marks it chosen when it equals the current sort key and reports it via onChange.
+	{ keyStr : 'name-desc', labStr : 'Name (Z–A)' }, // What: Name Descending Sort Entry. Why: This is the reverse of the default sort. How: The select marks it chosen when it equals the current sort key and reports it via onChange.
+	{ keyStr : 'type-asc',  labStr : 'Type (A–Z)' }, // What: Type Ascending Sort Entry. Why: Type (One-time vs Recurring) is the only other text-like field reminders have. How: The select marks it chosen when it equals the current sort key and reports it via onChange.
+	{ keyStr : 'type-desc', labStr : 'Type (Z–A)' }, // What: Type Descending Sort Entry. Why: This is the reverse of the type sort. How: The select marks it chosen when it equals the current sort key and reports it via onChange.
+	{ keyStr : 'date-asc',  labStr : 'Soonest'    }, // What: Date Ascending Sort Entry. Why: Date sorts by each reminder's own next eligible occurrence. How: The select marks it chosen when it equals the current sort key and reports it via onChange.
+	{ keyStr : 'date-desc', labStr : 'Latest'     }  // What: Date Descending Sort Entry. Why: This is the reverse of the date sort. How: The select marks it chosen when it equals the current sort key and reports it via onChange.
 
 
 ];

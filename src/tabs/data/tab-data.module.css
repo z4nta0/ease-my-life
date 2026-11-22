@@ -1647,7 +1647,7 @@
 
 
 }
-.datCreBut:disabled { /* What: Disabled Data Create Button. Why: While a new picker is being drafted, another can't start and the button should look it. How: This dims it and stops it taking the pointer. */
+.datCreBut:disabled { /* What: Disabled Data Create Button. Why: While the Explore Data tour points at the Create Picker button, a click would open a draft the tour can't follow, so the button should look unavailable. How: This dims it and stops it taking the pointer. */
 
 
 	cursor         : default;
