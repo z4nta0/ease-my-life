@@ -637,7 +637,7 @@ function holDatFun ( holStaObj : HolStaTyp | null | undefined, cheDatObj : Date 
 
 // #region Exports
 
-const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object the consuming files import and call through. How: This maps each of this file's own internal function names onto an external property name matching it exactly.
+const HOL_NAM_OBJ = { // What: Holidays Namespace Object. Why: This is the module's whole public API, the single object the consuming files import and call through. How: This maps the five functions the rest of the app calls onto external property names matching them exactly.
 
 
 	cmpYeaFun : cmpYeaFun, // What: Compute Year Function. Why: This exposes the per-year computation of every defined holiday's record. How: This re-exports cmpYeaFun under its own matching name.

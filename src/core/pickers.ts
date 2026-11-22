@@ -363,18 +363,17 @@ const dayDriFun = ( dayCouNum : number ) : number => THR_VAL_NUM / Math.max( 1, 
  * driDayFun = Drift Day Function
  *
  * @summary
- * Converts an ease drift value into the whole number of days it takes to
- * cross the threshold, at least 1, treating a missing or zero drift as 1.
- * Ease cadence is per item, since a fridge clean and a counter wipe want
- * different rhythms, so each item carries its own drift band { easeMin,
- * easeMax }, asked as two human questions: the soonest days (least time
- * before it can come up) and the latest days (most time before it must).
- * The engine moves an item across the threshold by random(easeMin,
- * easeMax) each daily run, so maturing fastest (every roll easeMax) takes
- * threshold/easeMax days, the soonest, and slowest takes threshold/easeMin
- * days, the latest; the gap between the two answers is the randomness.
- * The drift values stay the source of truth on each item, and dayDriFun
- * is the inverse.
+ * Converts an ease drift value into the whole number of days it takes to cross
+ * the threshold, at least 1, treating a missing or zero drift as 1. Ease
+ * cadence is per item, since a fridge clean and a counter wipe want different
+ * rhythms, so each item carries its own drift band { easeMin, easeMax }, asked
+ * as two human questions: the soonest days (least time before it can come up)
+ * and the latest days (most time before it must). The engine rolls each item a
+ * target day count between threshold/easeMax days, the soonest, and
+ * threshold/easeMin days, the latest, and moves it by a fixed step across the
+ * threshold in that many cycles (see rolSteFun); the gap between the two
+ * answers is the randomness. The drift values stay the source of truth on each
+ * item, and dayDriFun is the inverse.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1334,7 +1333,7 @@ const PIC_NAM_OBJ = { // What: Pickers Namespace Object. Why: This is the one na
 
 
 
-export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ, type PicResTyp, type PicUpdTyp }; // What: Named Exports. Why: The three name normalizers are exported individually, and everything else is reached through the PIC_NAM_OBJ namespace. How: This exports all four bindings, plus the pick result and update types, by name in one statement at the very end of the file.
+export { norConFun, norGroFun, norPicFun, PIC_NAM_OBJ, type PicResTyp, type PicUpdTyp }; // What: Named Exports. Why: The three name normalizers and the two pick types are exported individually, and every other helper is reached through the PIC_NAM_OBJ namespace. How: This exports all four bindings, plus the pick result and update types, by name in one statement at the very end of the file.
 
 // #endregion Exports
 
