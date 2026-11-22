@@ -66,7 +66,7 @@ const CON_HIN_OBJ : Record< string, string[] > = { // What: Conditional Hint Obj
 
 
 
-const RAN_NOT_STR = 'Truly Random conditionals have no options and function like a coin flip. e.g. it is 50/50 whether it gets triggered or not.'; // What: Random Note String. Why: The random mode's own settings block has no adjustable control at all, just this fixed explanation. How: This is rendered directly in place of a control in the random-mode ColDisCom below.
+const RAN_NOT_STR = 'Truly Random conditionals have no options and function like a coin flip. e.g. it is 50/50 whether it gets triggered or not.'; // What: Random Note String. Why: The random mode's own settings block has no adjustable control at all, just this fixed explanation. How: This is rendered as the sub-line text of the random-mode Weight row in the ColDisCom below.
 
 // #endregion Constants
 
@@ -427,7 +427,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 			easeMax : newAmoNum,                       // What: Ease Maximum. Why: This is the new soonest bound, as a drift amount. How: This is newAmoNum.
-			easeMin : Math.min( easMinNum, newAmoNum ) // What: Ease Minimum. Why: The latest bound must never sit above the soonest one. How: This keeps easMinNum unless newAmoNum is smaller.
+			easeMin : Math.min( easMinNum, newAmoNum ) // What: Ease Minimum. Why: The latest bound's drift amount must never sit above the soonest bound's drift amount. How: This keeps easMinNum unless newAmoNum is smaller.
 
 
 		});
@@ -445,7 +445,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 		patSetFun({ // What: Ease Minimum Patch Call. Why: Lowering the latest bound past the soonest bound would invert the range, so easeMax is pulled up to match when needed. How: This commits the new easeMin alongside whichever of easMaxNum/newAmoNum is larger.
 
 
-			easeMax : Math.max( easMaxNum, newAmoNum ), // What: Ease Maximum. Why: The soonest bound must never sit below the latest one. How: This keeps easMaxNum unless newAmoNum is larger.
+			easeMax : Math.max( easMaxNum, newAmoNum ), // What: Ease Maximum. Why: The soonest bound's drift amount must never sit below the latest bound's drift amount. How: This keeps easMaxNum unless newAmoNum is larger.
 			easeMin : newAmoNum                         // What: Ease Minimum. Why: This is the new latest bound, as a drift amount. How: This is newAmoNum.
 
 

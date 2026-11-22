@@ -112,12 +112,12 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 					role='tab'
 
 					onClick={ onAllPilFun }
-				>{ /* What: All Pill Button Element. Why: The user needs a way to clear the filter back to unfiltered. How: This marks itself selected when allSelBoo and runs onAllPilFun. Its data-element-name-hook is read by the tours and help mode. */ }
+				>{ /* What: Filter Pill Button Element. Why: This is the pill that clears the filter back to unfiltered. How: This marks itself selected when allSelBoo and runs onAllPilFun. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 					All
 
-					<span className={ cssModObj.filCouSpa }>{ allCouNum }</span>{ /* What: All Count Span Element. Why: The "All" pill shows its own total. How: This renders allCouNum. */ }
+					<span className={ cssModObj.filCouSpa }>{ allCouNum }</span>{ /* What: Filter Count Span Element. Why: The "All" pill shows its own total. How: This renders allCouNum. */ }
 
 
 				</button>
@@ -139,12 +139,12 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 						role='tab'
 
 						onClick={ entCurObj.cliFun }
-					>{ /* What: Entry Pill Button Element. Why: Clicking a pill narrows the tab to that choice. How: This marks itself selected when entCurObj.selBoo and runs entCurObj.cliFun. Its data-element-name-hook is read by the tours and help mode. */ }
+					>{ /* What: Filter Pill Button Element. Why: This is one choice's pill, and clicking it narrows the tab to that choice. How: This marks itself selected when entCurObj.selBoo and runs entCurObj.cliFun. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						{ entCurObj.namStr }{ /* What: Pill Name Expression. Why: Every pill needs its own visible label. How: This renders entCurObj.namStr. */ }
 
-						<span className={ cssModObj.filCouSpa }>{ entCurObj.couNum }</span>{ /* What: Pill Count Span Element. Why: Each pill shows how many entries it holds. How: This renders entCurObj.couNum. */ }
+						<span className={ cssModObj.filCouSpa }>{ entCurObj.couNum }</span>{ /* What: Filter Count Span Element. Why: Each choice's pill shows how many entries it holds. How: This renders entCurObj.couNum. */ }
 
 
 					</button>

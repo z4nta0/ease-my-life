@@ -22,7 +22,7 @@ import { WeeChiCom   } from './weekday-chips.tsx';     // What: Weekday Chip Com
 
 import type { RepNamTyp } from '../core/data-model.ts'; // What: Repeat Name Type. Why: Each repeat option's key is one of the fixed repeat kinds. How: This types REP_OPT_ARR's keys, so the Repeat picker hands back a real kind.
 import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type. Why: The visibility note reads the reminder options and holidays from app state. How: This types both components' staAppObj.
-import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: The editor edits a draft reminder. How: This types both components' reminder and SchEdiCom's patches.
+import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Type. Why: The editor edits a draft reminder. How: This types the draft reminder and the patches that edit it.
 import type { TodVisTyp } from '../core/tasks.ts';      // What: Today Visibility Type. Why: The reason phrase reads todVisFun's result. How: This types reaPhrFun's visResObj.
 
 // #endregion Imports
@@ -687,14 +687,15 @@ type VncProTyp = { kinValStr : string, notIdeStr : string, staAppObj : StaAppTyp
  * after it silently fails to appear. It renders in two placements, since the
  * two causes belong next to different controls: a settings-based cause
  * ('weekends', 'holidays', or 'skipUntil') belongs next to the Repeat row,
- * since it comes from the reminder-type participation settings rather than
- * this schedule; a schedule-based cause belongs next to the specific schedule
- * subsection whose own values caused it. Each mounted instance shows its note
- * only when its own kinValStr matches the placement that currently applies, so
- * the note appears beside the Repeat row or beside the schedule subsections,
- * never both. It names the next day the reminder WILL appear whenever one is
- * known: for a schedule mismatch that is reassurance (the reminder is still
- * working), and for an exclusion it is the answer the user actually wants.
+ * since it comes from the reminder-type participation settings or the
+ * reminder's own skip date rather than this schedule; a schedule-based cause
+ * belongs next to the specific schedule subsection whose own values caused it.
+ * Each mounted instance shows its note only when its own kinValStr matches the
+ * placement that currently applies, so the note appears beside the Repeat row
+ * or beside the schedule subsections, never both. It names the next day the
+ * reminder WILL appear whenever one is known: for a schedule mismatch that is
+ * reassurance (the reminder is still working), and for an exclusion it is the
+ * answer the user actually wants.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

@@ -113,7 +113,7 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 
 		onResBooFun(); // What: On Reset Call. Why: The real committed booValNum must become 0 immediately, independent of however long the shown-number animation takes. How: This calls the caller's own reset handler right away.
 
-		cancelAnimationFrame( aniFraRef.current ); // What: Frame Cancel Guard. Why: A rapid repeat click must not let an earlier tick loop keep racing this new one. How: This cancels whatever frame id aniFraRef currently holds before starting a fresh loop.
+		cancelAnimationFrame( aniFraRef.current ); // What: Frame Cancel Call. Why: A rapid repeat click must not let an earlier tick loop keep racing this new one. How: This cancels whatever frame id aniFraRef currently holds before starting a fresh loop.
 
 
 
