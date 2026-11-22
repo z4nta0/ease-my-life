@@ -14,9 +14,9 @@ import { renCarFun     } from '../render-kit.mts'; // What: Render Card Function
  * render.mts = Tip Image Render
  *
  * @summary
- * Renders card.html, the Buy Me a Coffee product image for Polar's
- * checkout, to tip-image.png beside it: a 1,200px square drawn from the
- * app's own fonts, colors, and swoosh mark. Run it from the repo root with
+ * Renders card.html, the Buy Me a Coffee image for the Ko-fi page, to
+ * tip-image.png beside it: a 1,200px square drawn from the app's own fonts,
+ * colors, and swoosh mark. Run it from the repo root with
  * `npx tsx design/tip-image/render.mts` after changing the card.
  *
  * Sections:
@@ -31,7 +31,7 @@ import { renCarFun     } from '../render-kit.mts'; // What: Render Card Function
 
 // #region Constants
 
-const OUT_PAT_STR = fileURLToPath( new URL( './tip-image.png', import.meta.url ) ); // What: Output Path String. Why: The PNG is uploaded to Polar by hand. How: This resolves tip-image.png beside this script.
+const OUT_PAT_STR = fileURLToPath( new URL( './tip-image.png', import.meta.url ) ); // What: Output Path String. Why: The PNG is uploaded to the Ko-fi page by hand. How: This resolves tip-image.png beside this script.
 
 // #endregion Constants
 
