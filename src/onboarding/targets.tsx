@@ -72,10 +72,10 @@ import type { ReactNode } from 'react'; // What: React Node. Why: Each nav targe
  *
 */
 
-const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titStr : string } > = { // What: Nav Target Object. Why: This is the shared onboarding nav-target catalog, kept as one source of truth instead of duplicating each page's selector/title/body per consumer. How: This is read by the onboarding tours, which spread or look up one entry by its page id.
+const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titStr : string } > = { // What: Nav Target Object. Why: This is the shared onboarding nav-target catalog, kept as one source of truth instead of duplicating each page's selector/title/body per consumer. How: This is a lookup keyed by page id.
 
 
-	data : { // What: Data Nav Target Object. Why: This is the nav-target descriptor for the Data page's own tab button. How: This is spread into the Welcome Tour's Data step and read by the page-tour system's opening step for the 'data' page id.
+	data : { // What: Data Nav Target Object. Why: This is the nav-target descriptor for the Data page's own tab button. How: This is keyed 'data'.
 
 
 		selStr : '[data-tab-button-key="data"]',
@@ -86,7 +86,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 
 	},
 
-	picker : { // What: Picker Nav Target Object. Why: This is the nav-target descriptor for the Pickers page's own tab button. How: This is spread into the Welcome Tour's Pickers step and read by the page-tour system's opening step for the 'picker' page id.
+	picker : { // What: Picker Nav Target Object. Why: This is the nav-target descriptor for the Pickers page's own tab button. How: This is keyed 'picker'.
 
 
 		selStr : '[data-tab-button-key="picker"]',
@@ -97,7 +97,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 
 	},
 
-	settings : { // What: Settings Nav Target Object. Why: This is the nav-target descriptor for the Settings page's own tab button. How: This is spread into the Welcome Tour's Settings step and read by the page-tour system's opening step for the 'settings' page id.
+	settings : { // What: Settings Nav Target Object. Why: This is the nav-target descriptor for the Settings page's own tab button. How: This is keyed 'settings'.
 
 
 		selStr : '[data-tab-button-key="settings"]',
@@ -108,7 +108,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 
 	},
 
-	stats : { // What: Stats Nav Target Object. Why: This is the nav-target descriptor for the Stats page's own tab button. How: This is spread into the Welcome Tour's Stats step and read by the page-tour system's opening step for the 'stats' page id.
+	stats : { // What: Stats Nav Target Object. Why: This is the nav-target descriptor for the Stats page's own tab button. How: This is keyed 'stats'.
 
 
 		selStr : '[data-tab-button-key="stats"]',
@@ -119,7 +119,7 @@ const NAV_TAR_OBJ : Record< string, { bodEle : ReactNode, selStr : string, titSt
 
 	},
 
-	today : { // What: Today Nav Target Object. Why: This is the nav-target descriptor for the Today page's own tab button. How: This is spread into the Welcome Tour's Today step and read by the page-tour system's opening step for the 'today' page id.
+	today : { // What: Today Nav Target Object. Why: This is the nav-target descriptor for the Today page's own tab button. How: This is keyed 'today'.
 
 
 		selStr : '[data-tab-button-key="today"]',

@@ -54,7 +54,7 @@ const FIR_PAR_ELE = <>Reminders can be thought of as <b>what a normal task would
 
 
 
-const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share this exact step, highlighting the real name input right after Step 1's click opens the form. How: This is spread as-is into both variants' own steObjArr below; resBoo stays false since its own target only exists once the add-reminder form is already open, which a reload does not survive.
+const NAM_STE_OBJ = { // What: Name Step Object. Why: Both tour variants share this exact step, highlighting the real name input right after Step 1's click opens the form. How: This is included as-is in both variants' own steObjArr below; resBoo stays false since its own target only exists once the add-reminder form is already open, which a reload does not survive.
 
 
 	bacBoo : true,                                          // What: Back Boolean. Why: The user should always be able to return to the previous, "click the +" step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -185,7 +185,7 @@ const REP_COP_OBJ : Record< string, { leaStr : string, pluBoo? : boolean, taiStr
  *
 */
 
-const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own Step 3 needs a single combined highlight over every non-"Once" Repeat pill. How: This is spread as-is into the recurring varKeyStr's own steObjArr below.
+const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own Step 3 needs a single combined highlight over every non-"Once" Repeat pill. How: This is included as-is in the recurring varKeyStr's own steObjArr below.
 
 
 	bacBoo : true,    // What: Back Boolean. Why: The user should always be able to return to the previous, name-input step. How: GuiTouCom shows its own Back button whenever this is true.
@@ -349,8 +349,8 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param repValStr - Repeat Value String: The live draft's own repeat kind,
- *                    read off the bus as draRepStr, or nothing before
+ * @param repValStr - Repeat Value String: {@link draRepStr}
+ *                    the live draft's own repeat kind, or nothing before
  *                    the draft has published one.
  *
  * @returns A GuiTouCom step object for this tour's own steObjArr.
