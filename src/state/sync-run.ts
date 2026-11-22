@@ -639,6 +639,46 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 
+	// #region Sync Run Function
+
+	/**
+	 * sync-run.ts = Sync Run Function
+	 *
+	 * @summary
+	 * Runs one sync of a paid account, and does nothing for an unpaid or
+	 * signed-out one or during a reset. A request made while a sync runs is
+	 * recorded and run once that sync ends. Otherwise it marks itself running,
+	 * cancels any pending idle wait, and syncs this device's state against the
+	 * account's copy, comparing against this device's record of its last sync.
+	 *
+	 * choValStr settles a first sync onto an account that already holds data:
+	 * 'account' adopts the account's data, and 'device' keeps this device's,
+	 * replacing the account's copy. Omitted, such a first sync stops at the
+	 * 'choose' status for the person to decide.
+	 *
+	 * A finished sync writes the sync status, this device's record, and the
+	 * last sync time, and applies any merged state through the import action
+	 * unless the state moved meanwhile. When the cloud is busy it tries again
+	 * after RET_MIL_NUM, and when it fails it shows the error or offline
+	 * status; either way a change that was waiting starts its idle wait again.
+	 * A change made during the sync, or a request that arrived, runs another
+	 * sync on the next tick.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param choValStr - Choice Value String: Which copy a first sync keeps
+	 *                    when both hold data, 'account' or 'device', omitted
+	 *                    for an ordinary sync.
+	 *
+	 * @returns A promise that settles once the run is done, with no value.
+	 *
+	 * @example
+	 * ```ts
+	 * synRunRef.current('device') // => Promise<void>
+	 * ```
+	 *
+	*/
+
 	synRunRef.current = async ( choValStr ) => { // What: Sync Run Assignment. Why: Every caller runs the latest version of the sync. How: This defines one run, from the account check to applying the result.
 
 
@@ -798,6 +838,8 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 	};
+
+	// #endregion Sync Run Function
 
 
 
