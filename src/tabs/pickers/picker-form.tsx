@@ -492,7 +492,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const forWraRef = React.useRef< HTMLDivElement | null >( null ); // What: Form Wrap Reference. Why: advSteFun needs a handle on this form's own root so it can walk up to whichever ancestor actually scrolls. How: This is attached to the form's own root div, below.
 
 
-	const advSteFun = () => { // What: Advance Step Function. Why: Moving to Step 2 from the bottom-of-form button leaves the user scrolled down; the form's own scroll container should be pulled back to the top so the add-item field is in view without a manual scroll. How: This is skipped while a guided tour is active, since a picker mini-tour's own next step highlights something further down this same Items sub-step, and this scroll-to-top fought that positioning.
+	const advSteFun = () => { // What: Advance Step Function. Why: Moving to Step 2 from the bottom-of-form button leaves the user scrolled down; the form's own scroll container should be pulled back to the top so the add-item field is in view without a manual scroll. How: This always steps to Step 2, and skips the scroll-to-top while a guided tour is active, since a tour's next step may highlight something further down the Items step.
 
 
 		setForSteNum( 2 ); // What: Step Advance Call. Why: This is the actual step transition. How: This writes 2 into forSteNum.
@@ -503,7 +503,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		requestAnimationFrame( () => { // What: Scroll To Top Call. Why: The add-item field should be visible without a manual scroll. How: This walks up from forWraRef looking for the nearest genuinely-scrollable ancestor, falling back to the shared .main container.
+		requestAnimationFrame( () => { // What: Scroll To Top Call. Why: The add-item field should be visible without a manual scroll. How: This walks up from forWraRef looking for the nearest genuinely-scrollable ancestor, falling back to the shared app content container (the appConMai element).
 
 
 			let curWalEle : HTMLElement | null = forWraRef.current; // What: Current Walk Element. Why: The loop below needs a mutable pointer to walk up the DOM tree with. How: This starts at the form's own root and is reassigned to each ancestor in turn.
@@ -545,7 +545,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 			const scrConEle = document.querySelector( '[data-element-name-hook~="appConMai"]' ); // What: Scroll Container Element. Why: No scrollable ancestor was found in the walk above, so the shared app-wide scroller is the fallback target. How: This queries for the main element directly.
 
 
-			if ( scrConEle ) { // What: Fallback Scroll Guard. Why: Only a genuinely-found fallback container should be scrolled. How: This scrolls .main to the top if it exists.
+			if ( scrConEle ) { // What: Fallback Scroll Guard. Why: Only a genuinely-found fallback container should be scrolled. How: This scrolls the app content container to the top if it exists.
 
 
 				scrConEle.scrollTo({ // What: Fallback Scroll Call. Why: This is the actual reset of the main container. How: This scrolls scrConEle to its top.
@@ -632,7 +632,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	const { cmtDraFun, draIteObj, patDraFun } = useIteDraFun( draActObj, ediOpeObj ); // What: Commit Draft Function. Why: An already-added pool item's editor edits its own local draft, committed into the pool only on Save, the same as every other item editor. How: This calls useIteDraFun with the open pool item and the pool's own actions, and keeps its commit. // What: Draft Item Object. Why: The editor's controls show the draft. How: This keeps the draft item. // What: Patch Draft Function. Why: Each control edits the draft. How: This keeps the hook's patcher.
 
 
-	const draPicObj = { cadence : cadCurObj.cadence, mode : selModStr, threshold : PIC_NAM_OBJ.THR_VAL_NUM }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: This carries no id, since draft items carry no pickerId either, so the item card's aveEasFun fallback matches every draft item against this pseudo-picker's undefined id and averages them, and it carries no easeMin/easeMax, since the item card reads the bands off the items.
+	const draPicObj = { cadence : cadCurObj.cadence, mode : selModStr, threshold : PIC_NAM_OBJ.THR_VAL_NUM }; // What: Draft Picker Object. Why: EntEdiCom still expects a picker-shaped object to read mode/threshold/cadence off of, even though the real picker doesn't exist yet. How: This carries no id and no easeMin or easeMax, so the shared editor reads each item's own ease band.
 
 
 	// #region scrAddFun
@@ -1101,7 +1101,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-		const payForObj : PicForTyp = { // What: Payload Form Object. Why: Both onCrePicFun and onSavEdiFun expect this exact shared shape. How: This gathers every Step 1 field that both flows always send, typed as a picker argument so the optional fields attached below are allowed.
+		const payForObj : PicForTyp = { // What: Payload Form Object. Why: Both onCrePicFun and onSavEdiFun expect this exact shared shape. How: This gathers every Step 1 field that both flows always send, typed as the picker form payload so the optional fields attached below are allowed.
 
 
 			avoidDuplicates : avoDupBoo,                     // What: Avoid Duplicates. Why: The picker saves the duplicates toggle. How: This passes avoDupBoo.
@@ -2379,7 +2379,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 											const savIdeStr = newIteObj.id; // What: Saved Identifier String. Why: The new item's id is needed after the draft state below is cleared. How: This copies newIteObj.id.
 
 
-											if ( actCloStr === 'save' ) setInsDraStr( savIdeStr ); // What: Commit Save Branch. Why: A successful save should commit the newly-inserted item's own draft id so later UI can find it. How: This calls setInsDraStr with savIdeStr.
+											if ( actCloStr === 'save' ) setInsDraStr( savIdeStr ); // What: Commit Save Branch. Why: A saved new item's row plays its slide-in once, keyed to its own id. How: This calls setInsDraStr with savIdeStr.
 
 											else draActObj.delIteFun( savIdeStr ); // What: Discard Draft Branch. Why: Any other closing reason (cancel, etc.) should just discard the in-progress draft item entirely. How: This calls draActObj.delIteFun with savIdeStr.
 
