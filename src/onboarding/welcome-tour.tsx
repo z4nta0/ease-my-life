@@ -15,7 +15,7 @@ import { ONB_ASP_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboard
 import { ONB_SPI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: The tour needs to recognize its own sample pickers by id, to hide/unhide them without touching a user's real ones. How: This is read where the tour checks for, hides, and unhides its sample pickers below.
 import { ONB_STI_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Identifiers Array. Why: The tour needs to recognize its own sample reminders by id, so a Replay never seeds duplicates. How: This is checked before ever calling actStoObj.addTasFun below.
 import { ONB_TAS_ARR } from '../state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: This is the sample-reminder pool seeded alongside the sample pickers. How: This is spread into actStoObj.addTasFun by sedTasFun, and its ids are read by hidSamFun and bacSteFun below.
-import { scrBehFun   } from '../utils/motion.ts';               // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
+import { scrBehFun   } from '../utils/motion.ts';               // What: Scroll Behavior Function. Why: The Account section scroll here should jump instead of glide for a user who prefers reduced motion. How: This is called for that scroll's behavior in onRetUsrFun below.
 import { todTopFun   } from './tour-runner.tsx';                // What: Today Top Function. Why: Skipping the Welcome Tour should always land back on a pristine, top-scrolled Today, same as the guided tour's own Skip/Done paths. How: This is called from the intro modal's own onSkiTouFun handler below.
 
 
@@ -113,9 +113,8 @@ const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own ic
  * Seeds the Welcome Tour's own sample reminders (ONB_TAS_ARR) unless any of
  * them already exist, so a repeated Skip, a Replay, or stepping back and
  * forward again can never duplicate them. A weekly sample is pinned to
- * today's own weekday so it actually shows up today. Called from the Generate
- * step (hidden only on a replay, which has no review moment for them to
- * appear alongside) and from skiEndFun on either Skip (always hidden).
+ * today's own weekday so it actually shows up today. They start hidden when
+ * hidTasBoo is true.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -565,7 +564,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 	 *
 	*/
 
-	const bacSteFun = ( tarSteNum : number ) : void => { // What: Back Step Function. Why: GuiTouCom's own onBacTouFun calls this before actually navigating back to a given step, so any step-specific side effect a later step performed can be undone. How: This unhides the sample pickers, then branches on tarSteNum for the one step (the Generate step) whose own forward runFun() adds data that did not exist before it fired.
+	const bacSteFun = ( tarSteNum : number ) : void => { // What: Back Step Function. Why: A step back needs every earlier step's review of the sample data to look as it did the first time through, so a side effect a later step performed has to be undone. How: This unhides the sample pickers, then branches on tarSteNum for the one step (the Generate step) whose own forward runFun() adds data that did not exist before it fired.
 
 
 		if ( onbStaObj.dismissed ) return; // What: Dismissed Guard. Why: A replay's own samples are the user's real, already-hidden ones; unhiding them here would leak stale demo data into the real Today list. How: This bails out before touching anything whenever onbStaObj.dismissed is true.
