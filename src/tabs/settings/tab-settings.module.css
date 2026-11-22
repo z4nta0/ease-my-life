@@ -758,7 +758,7 @@
 .supProDiv:first-child,
 .repTouDiv:first-child,
 .priRowDiv:first-child,
-.terRowDiv:first-child { /* What: First Settings Rows. Why: The top row shouldn't add extra space under its section's heading. How: This trims its top padding. */
+.terRowDiv:first-child { /* What: Settings Rows First. Why: The top row shouldn't add extra space under its section's heading. How: This trims its top padding. */
 
 
 	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
@@ -776,7 +776,7 @@
 .supProDiv:last-child,
 .repTouDiv:last-child,
 .priRowDiv:last-child,
-.terRowDiv:last-child { /* What: Last Settings Rows. Why: The bottom row needs no divider. How: This drops its border and trims its bottom padding. */
+.terRowDiv:last-child { /* What: Settings Rows Last. Why: The bottom row needs no divider. How: This drops its border and trims its bottom padding. */
 
 
 	border-bottom  : 0;

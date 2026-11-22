@@ -54,7 +54,7 @@
 .setRowDiv:first-child,
 .accFinFor:first-child,
 .accLinFor:first-child,
-.accPasFor:first-child { /* What: First Settings Rows. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
+.accPasFor:first-child { /* What: Settings Rows First. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
 
 
 	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
@@ -64,7 +64,7 @@
 .setRowDiv:last-child,
 .accFinFor:last-child,
 .accLinFor:last-child,
-.accPasFor:last-child { /* What: Last Settings Rows. Why: The bottom row needs no divider. How: This drops its border and trims its bottom padding. */
+.accPasFor:last-child { /* What: Settings Rows Last. Why: The bottom row needs no divider. How: This drops its border and trims its bottom padding. */
 
 
 	border-bottom  : 0;

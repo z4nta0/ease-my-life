@@ -37,14 +37,14 @@
 
 
 }
-.supTrgDiv:first-child { /* What: First Support Trigger Div. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
+.supTrgDiv:first-child { /* What: Support Trigger Div First. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
 
 
 	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
 
 
 }
-.supTrgDiv:last-child { /* What: Last Support Trigger Div. Why: The bottom row needs no divider or extra space above its card's edge. How: This drops its border and trims its bottom padding. */
+.supTrgDiv:last-child { /* What: Support Trigger Div Last. Why: The bottom row needs no divider or extra space above its card's edge. How: This drops its border and trims its bottom padding. */
 
 
 	border-bottom  : 0;

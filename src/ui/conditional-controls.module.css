@@ -63,7 +63,7 @@
 
 
 }
-.conConDiv--inline > .forFieDiv:first-child { /* What: First Form Field Div In Conditional Controls Div Inline. Why: The editor's own top edge already closes the first row. How: This drops its hairline. */
+.conConDiv--inline > .forFieDiv:first-child { /* What: Form Field Div First In Conditional Controls Div Inline. Why: The editor's own top edge already closes the first row. How: This drops its hairline. */
 
 
 	border-top : 0;
@@ -333,7 +333,7 @@
 
 
 }
-.modOptLab:last-child { /* What: Last Mode Option Label. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
+.modOptLab:last-child { /* What: Mode Option Label Last. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
 
 
 	border-bottom : 0;

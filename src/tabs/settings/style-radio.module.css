@@ -84,7 +84,7 @@
 
 
 }
-.modOptLab:last-child { /* What: Last Mode Option Label. Why: The list's own bottom border already closes the last row. How: This drops the last row's divider. */
+.modOptLab:last-child { /* What: Mode Option Label Last. Why: The list's own bottom border already closes the last row. How: This drops the last row's divider. */
 
 
 	border-bottom : 0;

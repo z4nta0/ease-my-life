@@ -391,7 +391,7 @@
 
 
 }
-.matRowDiv:has( + .matFooDiv ) { /* What: Last Matrix Row Div. Why: The footer's divider already closes the table. How: This drops the hairline of the row right above the footer, the last one. */
+.matRowDiv:has( + .matFooDiv ) { /* What: Matrix Row Div Last. Why: The footer's divider already closes the table. How: This drops the hairline of the row right above the footer, the last one. */
 
 
 	border-bottom : 0;
@@ -676,7 +676,7 @@
 
 
 }
-.lisIteDiv:last-child { /* What: Last List Item Div. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
+.lisIteDiv:last-child { /* What: List Item Div Last. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
 
 
 	border-bottom : 0;

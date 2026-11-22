@@ -74,7 +74,7 @@
 
 
 }
-.preCarDiv:last-child { /* What: Last Preview Card Div. Why: The last card needs no gap below it. How: This drops its bottom margin. */
+.preCarDiv:last-child { /* What: Preview Card Div Last. Why: The last card needs no gap below it. How: This drops its bottom margin. */
 
 
 	margin-bottom : 0;

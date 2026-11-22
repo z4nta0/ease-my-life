@@ -920,7 +920,7 @@
 
 
 }
-.legIteIte:last-child { /* What: Last Legend Item Item. Why: The last row needs no divider. How: This drops its border. */
+.legIteIte:last-child { /* What: Legend Item Item Last. Why: The last row needs no divider. How: This drops its border. */
 
 
 	border-bottom : 0;
@@ -1407,7 +1407,7 @@
 
 
 }
-.detIteIte:last-child { /* What: Last Detail Item Item. Why: The last row needs no divider. How: This drops its border. */
+.detIteIte:last-child { /* What: Detail Item Item Last. Why: The last row needs no divider. How: This drops its border. */
 
 
 	border-bottom : 0;
@@ -1549,7 +1549,7 @@
 
 
 }
-.sumIteIte:first-child { /* What: First Summary Item Item. Why: The first row needs no divider. How: This drops its border. */
+.sumIteIte:first-child { /* What: Summary Item Item First. Why: The first row needs no divider. How: This drops its border. */
 
 
 	border-top : 0;
@@ -1933,7 +1933,7 @@
 
 
 }
-.ranIteIte:last-child { /* What: Last Rank Item Item. Why: The last row needs no divider. How: This drops its border. */
+.ranIteIte:last-child { /* What: Rank Item Item Last. Why: The last row needs no divider. How: This drops its border. */
 
 
 	border-bottom : 0;
@@ -2251,7 +2251,7 @@
 
 
 }
-.logIteIte:last-child { /* What: Last Log Item Item. Why: The last row needs no divider. How: This drops its border. */
+.logIteIte:last-child { /* What: Log Item Item Last. Why: The last row needs no divider. How: This drops its border. */
 
 
 	border-bottom : 0;

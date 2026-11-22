@@ -405,7 +405,7 @@
 
 }
 .logBloDiv:first-child,
-.logConDiv:first-child { /* What: First Log Block Div And Log Conditionals Div. Why: The panel header already divides the first block. How: This drops its hairline. */
+.logConDiv:first-child { /* What: Log Block Div And Log Conditionals Div First. Why: The panel header already divides the first block. How: This drops its hairline. */
 
 
 	border-top : 0;
@@ -917,7 +917,7 @@
 
 }
 .tabRowDiv:last-child,
-.conRowDiv:last-child { /* What: Last Table Row Div And Conditional Row Div. Why: The table's end needs no divider. How: This drops the hairline. */
+.conRowDiv:last-child { /* What: Table Row Div And Conditional Row Div Last. Why: The table's end needs no divider. How: This drops the hairline. */
 
 
 	border-bottom : 0;
@@ -1470,7 +1470,7 @@
 
 
 }
-.remRowDiv:last-child { /* What: Last Reminders Row Div. Why: The table's end needs no divider. How: This drops the hairline. */
+.remRowDiv:last-child { /* What: Reminders Row Div Last. Why: The table's end needs no divider. How: This drops the hairline. */
 
 
 	border-bottom : 0;

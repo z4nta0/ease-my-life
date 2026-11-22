@@ -1279,7 +1279,7 @@
 
 
 }
-.pooRowDiv:last-child { /* What: Last Pool Row Div. Why: The list's own border already closes it. How: This drops the last row's hairline. */
+.pooRowDiv:last-child { /* What: Pool Row Div Last. Why: The list's own border already closes it. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;

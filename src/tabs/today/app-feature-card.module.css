@@ -40,7 +40,7 @@
 
 
 }
-.todCarArt:last-child { /* What: Last Today Card Article. Why: The last card in a list needs no gap below it. How: This drops its bottom margin. */
+.todCarArt:last-child { /* What: Today Card Article Last. Why: The last card in a list needs no gap below it. How: This drops its bottom margin. */
 
 
 	margin-bottom : 0;

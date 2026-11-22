@@ -1258,7 +1258,7 @@
 
 
 }
-.lisIteDiv:last-child { /* What: Last List Item Div. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
+.lisIteDiv:last-child { /* What: List Item Div Last. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
 
 
 	border-bottom : 0;
@@ -1296,7 +1296,7 @@
 
 
 }
-:not( .lisIteDiv--tour ) + .lisIteDiv--tour { /* What: First List Item Div Tour. Why: Only the first target row draws the top edge, since each row's bottom border is the line shared with the next. How: This matches the target row right after a sibling that isn't one (the Add control, or the Sort control once there are 2 or more items), adds the top border, and rounds the top corners. */
+:not( .lisIteDiv--tour ) + .lisIteDiv--tour { /* What: List Item Div Tour First. Why: Only the first target row draws the top edge, since each row's bottom border is the line shared with the next. How: This matches the target row right after a sibling that isn't one (the Add control, or the Sort control once there are 2 or more items), adds the top border, and rounds the top corners. */
 
 
 	border-top              : var( --bor-wid-lar ) solid var( --acc-mai-col ); /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
@@ -1305,7 +1305,7 @@
 
 
 }
-.lisIteDiv--tour:last-of-type { /* What: Last List Item Div Tour. Why: The last target row closes the box. How: This rounds its bottom corners. */
+.lisIteDiv--tour:last-of-type { /* What: List Item Div Tour Last. Why: The last target row closes the box. How: This rounds its bottom corners. */
 
 
 	border-bottom-left-radius  : var( --rad-bor-med ); /* Radius Border Medium = 11px */

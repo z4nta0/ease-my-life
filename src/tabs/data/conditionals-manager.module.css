@@ -314,7 +314,7 @@
 
 
 }
-.lisIteDiv:last-child { /* What: Last List Item Div. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
+.lisIteDiv:last-child { /* What: List Item Div Last. Why: The card's own border already ends the list. How: This drops the last item's hairline. */
 
 
 	border-bottom : 0;

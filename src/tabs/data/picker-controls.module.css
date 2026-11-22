@@ -667,7 +667,7 @@
 
 
 }
-.modOptLab:last-child { /* What: Last Mode Option Label. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
+.modOptLab:last-child { /* What: Mode Option Label Last. Why: The radio's own edge closes the list. How: This drops the last option's hairline. */
 
 
 	border-bottom : 0;
@@ -905,7 +905,7 @@
 
 }
 .conGroDiv--sched .setLinDiv:last-child,
-.conGroDiv--items:not( :has( .easConDiv ) ) .setLinDiv:last-child { /* What: Last Setting Line Div In Controls Group Div Schedule And Items. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
+.conGroDiv--items:not( :has( .easConDiv ) ) .setLinDiv:last-child { /* What: Setting Line Div Last In Controls Group Div Schedule And Items. Why: The group's own bottom border already closes it, unless the ease settings follow in Item Controls. How: This drops the last row's hairline. */
 
 
 	border-bottom : 0;
@@ -1371,7 +1371,7 @@
 
 
 }
-.offNotDiv:last-child { /* What: Last Off Note Div. Why: The group's own bottom border already closes it. How: This drops the note's hairline. */
+.offNotDiv:last-child { /* What: Off Note Div Last. Why: The group's own bottom border already closes it. How: This drops the note's hairline. */
 
 
 	border-bottom : 0;
@@ -1412,7 +1412,7 @@
 
 
 }
-.ediRowDiv:last-child { /* What: Last Editor Row Div. Why: The group's own bottom border already closes it. How: This drops the row's hairline. */
+.ediRowDiv:last-child { /* What: Editor Row Div Last. Why: The group's own bottom border already closes it. How: This drops the row's hairline. */
 
 
 	border-bottom : 0;

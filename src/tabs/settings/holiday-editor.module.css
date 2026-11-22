@@ -49,7 +49,7 @@
 
 
 }
-.holRowIte:last-child { /* What: Last Holiday Row Item. Why: The card's own edge already closes the list. How: This drops the last row's divider. */
+.holRowIte:last-child { /* What: Holiday Row Item Last. Why: The card's own edge already closes the list. How: This drops the last row's divider. */
 
 
 	border-bottom : 0;

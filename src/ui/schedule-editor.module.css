@@ -74,7 +74,7 @@
 
 
 }
-.schEdiDiv--stacked .forFieDiv:first-child { /* What: First Form Field Div In Schedule Editor Div Stacked. Why: The top field sits right under the card's own padding. How: This drops its top padding. */
+.schEdiDiv--stacked .forFieDiv:first-child { /* What: Form Field Div First In Schedule Editor Div Stacked. Why: The top field sits right under the card's own padding. How: This drops its top padding. */
 
 
 	padding-top : 0;
@@ -116,7 +116,7 @@
 
 
 }
-.schEdiDiv--rows .forFieDiv:first-child { /* What: First Form Field Div In Schedule Editor Div Rows. Why: The top row needs a divider above it too, matching the line under the picker item editor's name field. How: This draws a top border. */
+.schEdiDiv--rows .forFieDiv:first-child { /* What: Form Field Div First In Schedule Editor Div Rows. Why: The top row needs a divider above it too, matching the line under the picker item editor's name field. How: This draws a top border. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
