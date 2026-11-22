@@ -53,7 +53,7 @@ type HelRecTyp = BoxRecTyp & Partial< PadSidTyp > & { alwBelBoo? : boolean, badA
 
 // #region Constants
 
-const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appTabNav"]' : 2, '[data-element-name-hook~="ediBanDiv"]' : 2, '[data-element-name-hook~="groRaiAsi"]' : 1, '[data-element-name-hook~="setRaiAsi"]' : 1, '[data-element-name-hook~="todPagHed"]' : 1 }; // What: Chrome Priority Object. Why: A target that is part of one chrome item (e.g. the nav bar's own [data-tab-button-key] buttons, "part of" .appTabNav) must still be clippable against a DIFFERENT chrome item it visually sits behind, but never against one it sits IN FRONT OF. How: This maps a chrome selector to a plain priority number; a higher number visually wins, and cliChrFun below skips clipping a target against any chrome item its own home chrome already outranks (or IS). the ediBanDiv banner outranks the groRaiAsi rail specifically because on narrow viewports both become independently position:sticky near the same top offset, and the banner visually covers the rail wherever they overlap.
+const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appTabNav"]' : 2, '[data-element-name-hook~="ediBanDiv"]' : 2, '[data-element-name-hook~="groRaiAsi"]' : 1, '[data-element-name-hook~="setRaiAsi"]' : 1, '[data-element-name-hook~="todPagHed"]' : 1 }; // What: Chrome Priority Object. Why: A target that is part of one chrome item (e.g. the nav bar's own [data-tab-button-key] buttons, "part of" .appTabNav) must still be clippable against a DIFFERENT chrome item it visually sits behind, but never against one it sits IN FRONT OF. How: This maps a chrome selector to a plain priority number; a higher number visually wins, and cliChrFun below skips clipping a target against any chrome item whose priority its own home chrome matches or beats (its own home chrome included). the ediBanDiv banner outranks the groRaiAsi rail specifically because on narrow viewports both become independently position:sticky near the same top offset, and the banner visually covers the rail wherever they overlap.
 
 // #endregion Constants
 
@@ -69,18 +69,18 @@ const CHR_PRI_OBJ : Record< string, number > = { '[data-element-name-hook~="appT
  * cliHorFun = Clip Horizontal Function
  *
  * @summary
- * Clips an element's rect horizontally against the element itself and
- * every ancestor that clips its own overflow-x, so the part of an element
- * scrolled past the edge of a scrollable row never counts toward a
+ * Clips an element's rect horizontally against the element itself and every
+ * ancestor below document.body that clips its own overflow-x, so the part of
+ * an element scrolled past the edge of a scrollable row never counts toward a
  * highlight. An item like Pickers' "Picker Selection" matches every tab in a
  * horizontally scrollable row (picTabDiv), and once there are enough pickers
  * to overflow it, the ones scrolled out of view still report a real,
  * full-width getBoundingClientRect(); unioning them in would stretch the
- * highlight into empty space past the row's own clipped edge. It returns
- * null if the element ends up fully clipped away. It is deliberately
- * horizontal-only, since a guided tour's own scroll to its target settles
- * the vertical case, and clipping vertically too would fight that scroll
- * while it runs.
+ * highlight into empty space past the row's own clipped edge. It returns null
+ * if the element ends up fully clipped away. It is deliberately
+ * horizontal-only, since a guided tour's own scroll to its target settles the
+ * vertical case, and clipping vertically too would fight that scroll while it
+ * runs.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -353,8 +353,8 @@ function uniRecFun ( tarEleArr : HTMLElement[] ) : BoxRecTyp {
  * raw span; it only falls back to the opposite side when the natural
  * direction's own candidate would be degenerate. A target that is
  * itself part of one chrome item is exempted from clipping against
- * that same item (or against any other chrome item it already
- * outranks; see {@link CHR_PRI_OBJ}), but stays clippable against a
+ * that same item (or against any other chrome item whose priority it
+ * matches or beats; see {@link CHR_PRI_OBJ}), but stays clippable against a
  * DIFFERENT, unrelated chrome item it happens to visually overlap.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -390,7 +390,7 @@ function cliChrFun ( tarRecObj : EdgRecTyp, chrIteArr : ChrIteTyp[], tarEleArr :
 	for ( const chrIteObj of chrIteArr ) { // What: Chrome Item Loop. Why: Every chrome item currently on the page is a candidate to clip this target against. How: This walks chrIteArr, clamping the working rect against whichever items actually apply.
 
 
-		if ( homPriNum >= ( CHR_PRI_OBJ[ chrIteObj.chrSelStr ] ?? 0 ) ) continue; // What: Outranked Skip. Why: A target must never be clipped against a chrome item its own home chrome already outranks (or is). How: This skips this specific chrome item once homPriNum is at least as high as its own priority.
+		if ( homPriNum >= ( CHR_PRI_OBJ[ chrIteObj.chrSelStr ] ?? 0 ) ) continue; // What: Outranked Skip. Why: A target must never be clipped against a chrome item whose priority its own home chrome matches or beats, its own home chrome included. How: This skips this specific chrome item once homPriNum is at least as high as its own priority.
 
 
 
