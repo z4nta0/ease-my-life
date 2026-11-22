@@ -623,7 +623,7 @@
 
 
 }
-@keyframes titWorSpaRiseFadeIn { /* What: Title Word Span Rise Fade In Keyframes. Why: Each word fades up into place. How: This runs opacity up while lifting it 8px. */
+@keyframes titWorSpaRiseFadeIn { /* What: Title Word Span Rise Fade In Keyframes. Why: Each word fades up into place. How: This runs opacity up while lifting it about 8px. */
 
 
 	0% {
@@ -1208,7 +1208,7 @@
 
 
 }
-@keyframes ediBanDivOpenFadeIn { /* What: Edit Banner Div Open Fade In Keyframes. Why: The banner drops into place. How: This fades it in from 6px up. */
+@keyframes ediBanDivOpenFadeIn { /* What: Edit Banner Div Open Fade In Keyframes. Why: The banner drops into place. How: This fades it in from about 6px up. */
 
 
 	from {
