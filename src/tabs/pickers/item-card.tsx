@@ -115,7 +115,7 @@ function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, on
 
 
 			} }
-		>{ /* What: List Item Div Element. Why: This is the whole item card slot, playing its own closing animation before its parent tears it down. How: This hands the end of that closing keyframe to onCloEndFun. Its data-element-name-hook is read by help mode and the test suites. */ }
+		>{ /* What: List Item Div Element. Why: This is the whole item card slot, playing its own closing animation before its parent tears it down. How: This hands the end of that closing keyframe to onCloEndFun. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 			<div
