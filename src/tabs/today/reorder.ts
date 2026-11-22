@@ -6,11 +6,10 @@
  *
  * @summary
  * Hand-rolled pointer drag-to-reorder for the Today "Edit Mode", with no
- * external DnD library, built to work with variable-height rows. One
- * entry point, staDraFun (exported as REO_NAM_OBJ.staDraFun), is called from
- * a grip handle's onPointerDown and manages the whole gesture with
- * document-level listeners, committing a new order via the caller's own
- * onDroOrdFun callback.
+ * external DnD library, built to work with variable-height rows. One entry
+ * point, staDraFun (exported as REO_NAM_OBJ.staDraFun), takes a grip handle's
+ * pointerdown event and manages the whole gesture with document-level
+ * listeners, committing a new order via the caller's own onDroOrdFun callback.
  *
  * Technique: every sibling's rect is snapshotted at gesture start. The grabbed
  * element is translated by the pointer delta, lifted via a presence-only data

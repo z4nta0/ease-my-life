@@ -207,7 +207,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 			setEdiOpeBoo( false ); // What: Editing Close. Why: The field itself is done animating out and can now unmount. How: This flips ediOpeBoo back to false.
 			setCloOutBoo( false ); // What: Closing Flag Clear. Why: The out-animation flag must not persist once the field is already gone. How: This flips cloOutBoo back to false.
 
-			if ( chaValBoo ) onRenGroFun!( newValStr! ); // What: Commit Branch. Why: A real, confirmed change needs to actually rename the group. How: This calls onRenGroFun with newValStr. // What: Non-Null Note. Why: The rename field opens only for a group given onRenGroFun, and a real change comes with its new name. How: The ! tells TypeScript both are set here.
+			if ( chaValBoo ) onRenGroFun!( newValStr! ); // What: Commit Branch. Why: A real, confirmed change needs to actually rename the group. How: This calls onRenGroFun with newValStr. // What: Non-Null Note. Why: GroHeaCom expects onRenGroFun whenever ediModBoo is true, which is when the rename field can open, and a real change comes with its new name. How: The ! tells TypeScript both are set here.
 
 			else setDraNamStr( groNamStr ); // What: Revert Branch. Why: A cancel, or a no-op commit, should leave the draft matching the real name again for next time. How: This resets draNamStr back to groNamStr.
 
@@ -306,7 +306,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 							tabIndex={ 0 }
 
 							onDragStart={ ( draEveObj ) => draEveObj.preventDefault() } // What: Native Drag Block. Why: Reordering runs on pointer events, so the browser's own drag gesture is not wanted. How: This calls preventDefault on dragstart.
-							onPointerDown={ ( poiEveObj ) => onGriDowFun!( poiEveObj ) } // What: Non-Null Note. Why: The grip is drawn only in Edit Mode, when onGriDowFun is passed. How: The ! tells TypeScript the handler is set.
+							onPointerDown={ ( poiEveObj ) => onGriDowFun!( poiEveObj ) } // What: Non-Null Note. Why: GroHeaCom expects onGriDowFun whenever ediModBoo is true, which is when the grip is drawn. How: The ! tells TypeScript the handler is set.
 						>{ /* What: Group Grip Span Element. Why: This is the actual pointer-drag handle for reordering this group. How: This forwards its own pointerdown to onGriDowFun and blocks the native HTML5 drag gesture entirely. Its data-element-name-hook is read by the tours and help mode. */ }
 
 

@@ -9,17 +9,14 @@
  * (grip, name, count, progress dashes, and Add button), the add result
  * message, the quick-add form with its inline editor, and each reminder card
  * with its checkbox, meta line, name, actions, inline editor, and skip
- * confirm. The header rules are copies of group-header.module.css's own, and
- * the card rules are copies of the global Today card rules, resolved where the
- * reminder overrides used to win. A done card keys off data-card-done-active,
- * an editing card off data-card-edit-active, a filled dash off
- * data-dash-done-active, an ok add message off data-message-ok-active, and the
- * disabled Add button off the aria-disabled its info tip sets. The card
- * entrance, exit, and removal, the fresh checkbox ripple and dash sweep, and
- * the quick-add close are this file's own module classes, while the ripple
- * celebration's cross-file exhale keys off data-card-exhale-active. A section
- * that isn't first in its column draws the divider the old sibling selector
- * drew, since the siblings in that column are group sections.
+ * confirm. A done card keys off data-card-done-active, an editing card off
+ * data-card-edit-active, a filled dash off data-dash-done-active, an ok add
+ * message off data-message-ok-active, and the disabled Add button off the
+ * aria-disabled its info tip sets. The card entrance, exit, and removal, the
+ * fresh checkbox ripple and dash sweep, and the quick-add close are this
+ * file's own module classes. Its exhale celebration keys off
+ * data-card-exhale-active. A section that isn't first in its column draws a
+ * divider above it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

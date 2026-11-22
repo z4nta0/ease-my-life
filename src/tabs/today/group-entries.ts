@@ -123,7 +123,7 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 	// #endregion bucArrFun
 
 
-	for ( const curEntObj of staAppObj.today.entries ) { // What: Today Entry Bucket Loop. Why: Each real entry (pick, day-off, charging) lands in its own picker's group unless its picker is missing or hidden. How: This walks staAppObj.today.entries, resolving each one's own picker and group before pushing it into groBucMap.
+	for ( const curEntObj of staAppObj.today.entries ) { // What: Today Entry Bucket Loop. Why: Each entry lands in its group, a day-off card by its own group and any other entry by its picker's, unless that picker is missing or hidden. How: This walks staAppObj.today.entries, resolving each one's own picker and group before pushing it into groBucMap.
 
 
 		if ( curEntObj.kind === 'dayoff' ) { // What: Day-Off Branch. Why: A day-off card has no real picker of its own, so it needs a synthetic picker-like row to slot into its group like any other entry. How: This builds that synthetic row and pushes it, then skips the normal picker lookup below entirely.

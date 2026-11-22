@@ -314,8 +314,9 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
  * launcher card (a hidden sample picker still offering its own
  * tutorial), a day-off card (a triggered conditional suppressing its
  * dependent pickers), or a charging card (an ease-up picker with
- * nothing charged to its own threshold today). Which of the four
- * renders is decided entirely by entRcdObj.kind, checked in that order.
+ * nothing charged to its own threshold today). Which one renders is
+ * decided by entRcdObj.kind, checked as tutorial, day-off, and charging,
+ * and any other row is a real pick.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -599,7 +600,7 @@ function EntCarCom ( { actStoObj, cheExiBoo, draNamStr, ediModBoo, entRcdObj, is
 
 
 		const daoFreBoo = Boolean( jusCheStr === entRcdObj.eid && entRcdObj.done );                                             // What: Day-Off Fresh Boolean. Why: This row's own brief "fresh" cue only plays right after IT specifically was just checked done. How: This compares jusCheStr against entRcdObj's own eid, and requires done to already be true.
-		const daoTitStr = entRcdObj.pickerName ? `${ entRcdObj.pickerName }, ${ entRcdObj.condName || 'Day off' }` : 'Day off'; // What: Day-Off Title String. Why: The truncatable title's tooltip and its screen-reader name need the full "{picker}, {conditional}" text even when the visible row itself wraps or truncates it, joined by a comma rather than the visible middle dot, which a screen reader can read aloud as a symbol. How: This combines entRcdObj's own pickerName/condName, falling back to a plain "Day off" when no picker name is recorded.
+		const daoTitStr = entRcdObj.pickerName ? `${ entRcdObj.pickerName }, ${ entRcdObj.condName || 'Day off' }` : 'Day off'; // What: Day-Off Title String. Why: The truncatable title's tooltip and its screen-reader name need the full "{picker}, {conditional}" text even when the visible row itself wraps or truncates it. How: This combines entRcdObj's own pickerName and condName with a comma rather than the visible middle dot, falling back to a plain "Day off" when no picker name is recorded.
 
 
 
