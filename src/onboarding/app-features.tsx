@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './app-features.module.css'; // What: CSS Module Object. Why: The highlight feature's own intro icon style lives in this file's module. How: This maps each class name in app-features.module.css to its hashed module class.
-import React     from 'react';                     // What: React. Why: This file's own FeaTouCom and FeaTipCom components need React in scope to compile their JSX and to call React.useState/React.useEffect. How: This is used directly (React.useState, React.useEffect) below, instead of importing individual named hooks.
+import React     from 'react';                     // What: React. Why: FeaTouCom calls React's hooks directly. How: This is used directly (React.useState, for one) instead of importing individual named hooks.
 
 
 import { buiTs1Fun } from './page-steps.tsx';  // What: Build Tour-Step-1 Function. Why: Every App Feature tour but feat_highlights reuses this exact shared Step 1, the real nav-button highlight, as its own opening step. How: This is called inside FeaTouCom below, passed this feature's own page, an optional run side effect, and a primary button label.

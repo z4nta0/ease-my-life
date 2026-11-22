@@ -192,7 +192,7 @@ function IntModCom ( { begLabStr = 'Get started', icoTopEle, onBegTouFun, onRetU
 						onClick={ onSkiTouFun }
 					>{ skiLabStr }</button>{ /* What: Intro Action Button Element. Why: A user must always be able to decline a tour instead of taking it, so this is styled as the quieter ghost button. How: This calls onSkiTouFun when clicked. */ }
 
-					{ onRetUsrFun && ( // What: Returning User Check. Why: Only the Welcome Tour offers a way past onboarding for someone who has used the app before. How: This shows the text button when the caller passes its handler.
+					{ onRetUsrFun && ( // What: Returning User Check. Why: Not every intro modal offers a way past onboarding for someone who has used the app before. How: This shows the text button when the caller passes its handler.
 
 
 						<button
