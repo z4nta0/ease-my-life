@@ -249,7 +249,7 @@ function TabBarCom ( { actIdeStr, className = '', onChange, onTogRaiFun, raiOpeB
 					}}
 
 					aria-hidden='true'
-				/> // What: Tab Indicator Span Element. Why: This is the small sliding pill that visually marks the active tab. How: This is absolutely positioned via inline style using indRecObj's measured offsets and size.
+				/> // What: Tab Indicator Span Element. Why: This is the small sliding pill that visually marks the active tab. How: This is positioned absolutely by its module, then moved and sized by inline style from indRecObj's measured offsets and size.
 
 
 			) }
@@ -783,7 +783,7 @@ function AppRooCom () : React.JSX.Element {
 				data-tab-today-active={ actIdeStr === 'today' || undefined } // What: Tab Today Active Attribute. Why: The Today tab runs edge to edge in the bottom (below 880px) and top placements, so the main area drops its base side padding while it shows. How: This sets the presence-only attribute while actIdeStr is 'today' and removes it otherwise.
 
 				tabIndex={ -1 } // What: Main Tab Index. Why: The skip link moves focus here, but the main area isn't a control. How: A tabIndex of -1 lets it take focus without joining the Tab order.
-			>{ /* What: App Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active, and the skip link's target. How: This renders the update note, then the Today tab directly or every other tab inside a shared maiInnDiv wrapper, based on actIdeStr. Its id is kept plain as the skip link's target, and its data-element-name-hook is read by the tours, help mode, Today's drag-to-reorder code, the Today, Pickers, and Settings tabs' scroll code, the background flourish's layout code, the support form, and the test suites. */ }
+			>{ /* What: App Content Main Element. Why: This is the single shared scroll container for whichever tab is currently active, and the skip link's target. How: This renders the update note, then the Today tab directly or every other tab inside a shared maiInnDiv wrapper, based on actIdeStr. Its id is kept plain as the skip link's target, and its data-element-name-hook is read by the tours, help mode, drag-to-reorder and scroll code, the background flourish's layout code, the support form, and the test suites. */ }
 
 
 				<UpdNotCom />{ /* What: Update Note Component. Why: A new version that couldn't reload while the app was hidden, since work was still under way, is offered here. How: This renders the note's status region first in the main area, above whichever tab is open. */ }
