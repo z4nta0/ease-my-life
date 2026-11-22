@@ -35,9 +35,9 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The driver ste
  * Each step's card either has an enabled Next, Done, or Dismiss button,
  * which the driver clicks, or wants the highlighted element itself clicked.
  * The tour's dim ignores the pointer and its click guard blocks clicks off
- * the target, so the driver clicks the spotlight's center, then each
- * clickable element showing inside it, until the step advances. A step that
- * never advances fails the test with its text.
+ * the target, so the driver waits for the spotlight to stop moving, then
+ * clicks its center, then each clickable element showing inside it, until the
+ * step advances. A step that never advances fails the test with its text.
  *
  * Sections:
  *  - Constants
@@ -180,11 +180,14 @@ type RecBoxTyp = { height : number, width : number, x : number, y : number }; //
  * Tries to move the current step on: an enabled Next, Done, or Dismiss button
  * first, then the spotlight's center, then the center of each clickable
  * element showing inside the spotlight, skipping any covered by something
- * else, such as the coach card. The button and the center get five seconds
- * each, since a click step can wait on an animation or a new target before
- * advancing, and each further element gets a second and a half. Off-target
- * clicks are blocked by the tour's own click guard, so a wrong guess does
- * nothing. Returns whether the step advanced.
+ * else, such as the coach card. The spotlight follows its target every frame,
+ * which can still be moving as a step begins (a form shrinking while an
+ * editor collapses), so the rects are measured once the spotlight has held
+ * still for three frames with no animation playing, or after two seconds. The
+ * button and the center get five seconds each, since a click step can wait on
+ * an animation or a new target before advancing, and each further element gets
+ * a second and a half. Off-target clicks are blocked by the tour's own click
+ * guard, so a wrong guess does nothing. Returns whether the step advanced.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -230,7 +233,7 @@ const advSteFun = async ( curPagObj : Page ) : Promise< boolean > => { // What: 
 
 	// #region Target Click Try
 
-	const tarRecArr = await curPagObj.evaluate( ( cliSelStr ) => { // What: Target Rect Array. Why: A click step advances on a click on its target, which lies under the spotlight. How: This measures the spotlight, then every clickable element showing inside it.
+	const tarRecArr = await curPagObj.evaluate( async ( cliSelStr ) => { // What: Target Rect Array. Why: A click step advances on a click on its target, which lies under the spotlight. How: This waits for the spotlight to settle, then measures it and every clickable element showing inside it.
 
 
 		const spoDomEle = Array.from( document.querySelectorAll( '[data-element-name-hook~="touOveDiv"] div' ) ).find( ( curDomEle ) => /touSpoDiv/.test( curDomEle.className ) ); // What: Spotlight DOM Element. Why: The spotlight sits over the target and carries no hook of its own. How: This finds it by its module class inside the tour overlay.
@@ -239,6 +242,37 @@ const advSteFun = async ( curPagObj : Page ) : Promise< boolean > => { // What: 
 		if ( !spoDomEle ) return []; // What: No Spotlight Return. Why: Some steps highlight nothing. How: This returns no targets.
 
 
+
+		// #region Spotlight Settling
+
+		let preRecStr = ''; // What: Previous Rect String. Why: A still spotlight reads the same rect frame after frame. How: This holds the last frame's rect as JSON, starting empty so the first read never matches.
+		let staCouNum = 0;  // What: Stable Count Number. Why: One matching pair of frames can fall between two steps of a slow animation. How: This counts the frames in a row whose rect matched the one before.
+
+		const begTimNum = performance.now(); // What: Begin Time Number. Why: A spotlight that never holds still mustn't stall the step. How: This records when the wait began, for its two second cap.
+
+
+		while ( staCouNum < 3 && performance.now() - begTimNum < 2000 ) { // What: Spotlight Settle Loop. Why: A step can begin while its target is still moving, such as a form shrinking as an editor collapses, and a click measured mid-move lands on the dim. How: This reads the spotlight's rect each frame until three frames in a row match with no animation playing, or two seconds pass.
+
+
+			await new Promise( ( resProFun ) => requestAnimationFrame( resProFun ) ); // What: Frame Wait Call. Why: The spotlight moves once per frame. How: This resolves on the next animation frame.
+
+
+			const curRecStr = JSON.stringify( spoDomEle.getBoundingClientRect() );                                                                                          // What: Current Rect String. Why: Two rects compare most simply as text. How: This reads the spotlight's rect as JSON.
+			const finAniBoo = document.getAnimations().some( ( curAniObj ) => curAniObj.playState === 'running' && curAniObj.effect?.getTiming().iterations !== Infinity ); // What: Finite Animation Boolean. Why: The spotlight can hold still for a few frames before a collapse moving its target gets going. How: This checks for any running animation or transition that will end, leaving out endless ones such as the spotlight's pulse.
+
+
+			staCouNum = curRecStr === preRecStr && !finAniBoo ? staCouNum + 1 : 0; // What: Stable Count Assignment. Why: Any movement, or an animation still playing, restarts the count. How: This adds one for a still frame and resets to zero otherwise.
+
+			preRecStr = curRecStr; // What: Previous Rect Assignment. Why: The next frame compares against this one. How: This stores the rect just read.
+
+
+		}
+
+		// #endregion Spotlight Settling
+
+
+
+		// #region Target Measuring
 
 		const spoRecObj = spoDomEle.getBoundingClientRect(); // What: Spotlight Rect Object. Why: The target lies under it. How: This measures it.
 
@@ -260,6 +294,8 @@ const advSteFun = async ( curPagObj : Page ) : Promise< boolean > => { // What: 
 
 
 		} );
+
+		// #endregion Target Measuring
 
 
 
