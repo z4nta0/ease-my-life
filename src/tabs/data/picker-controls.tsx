@@ -1950,7 +1950,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 					<div
-						key='confirm'
+						key='confirm' // What: Confirm Key. Why: Each footer state should replay the footer swap fade when it appears. How: A new key remounts the row when the footer changes state.
 
 						className={ cssModObj.delConDiv }
 					>{ /* What: Delete Confirm Div Element. Why: The confirm message and its own Cancel/Delete buttons need their own grouped row. How: This wraps the confirm message and the delActDiv row below. */ }
@@ -2000,7 +2000,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 					<div
-						key='foot-new'
+						key='foot-new' // What: New Footer Key. Why: Each footer state should replay the footer swap fade when it appears. How: A new key remounts the row when the footer changes state.
 
 						className={` ${ cssModObj.fooRowDiv }   ${ cssModObj.fooRowDivNew } `}
 					>{ /* What: Footer Row Div Element. Why: The new-draft footer's own Cancel/Save buttons need their own row, which the New modifier class styles. How: This wraps the fooRigDiv div below. */ }
@@ -2051,7 +2051,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 					<div
-						key='foot'
+						key='foot' // What: Footer Key. Why: Each footer state should replay the footer swap fade when it appears. How: A new key remounts the row when the footer changes state.
 
 						className={ cssModObj.fooRowDiv }
 					>{ /* What: Footer Row Div Element. Why: Delete (left) and Cancel/Save (right) both belong in the same footer row. How: This wraps the Delete ButBasCom and the fooRigDiv div below. */ }
