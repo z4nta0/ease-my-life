@@ -110,26 +110,27 @@ type RawStaTyp = { pickLog : RawPicTyp[], reminderLog : RawRemTyp[], reminderSki
  * by the picker engine (pickers.ts) exactly like any real, user-created
  * item:
  *
- * - `easeMax` (Number, optional): Ease Max is this item's own fastest
- *   drift rate, the upper bound of the random amount its own value
- *   grows by each tick it goes unpicked; present only on an ease-up/
- *   ease-down picker's own items (the Coffee Creamer picker below is
- *   dynamic mode and carries no ease band at all).
+ * - `easeMax` (Number, optional): Ease Max is this item's own fastest drift
+ *   rate, the upper bound of the random amount its own value changes by each
+ *   tick: it grows while an ease-up item goes unpicked, and it decays while
+ *   an ease-down item stays picked; present only on an ease-up/ease-down
+ *   picker's own items (the Coffee Creamer picker below is dynamic mode and
+ *   carries no ease band at all).
  *
- * - `easeMin` (Number, optional): Ease Min is this item's own slowest
- *   drift rate, the lower bound of that same random growth; present
- *   under the same condition as easeMax above.
+ * - `easeMin` (Number, optional): Ease Min is this item's own slowest drift
+ *   rate, the lower bound of that same random change; present under the same
+ *   condition as easeMax above.
  *
  * - `id` (String): Id is this item's own stable identifier.
  *
  * - `name` (String): Name is this item's own display name.
  *
- * - `value` (Number, optional): Value is this item's own current drift
- *   state, seeded already at 100 (the picker engine's own default
- *   threshold) on an ease-up/ease-down item so it is immediately
- *   eligible for the Welcome Tour's first generated list; omitted
- *   entirely on a dynamic-mode item, where it simply defaults to a
- *   fresh, unbiased 0 the moment addPicFun creates it.
+ * - `value` (Number, optional): Value is this item's own current drift state,
+ *   seeded already at 100 (the picker engine's own default threshold), so an
+ *   ease-up item is immediately eligible for the Welcome Tour's first
+ *   generated list and an ease-down item starts at full charge; omitted
+ *   entirely on a dynamic-mode item, where it simply defaults to a fresh,
+ *   unbiased 0 the moment addPicFun creates it.
  *
  * - `weight` (Number): Weight is this item's own fairness weight; on
  *   the dynamic-mode Coffee Creamer picker it genuinely drives the
@@ -633,7 +634,7 @@ function hydStaFun ( staRawObj : RawStaTyp ) : { pickLog : PclRowTyp[], reminder
 			completedAt : donTimStr,                                  // What: Completed At. Why: state.pickLog's own completedAt field expects an ISO string when the row was actually completed, else null. How: This is donTimStr, resolved above.
 			date        : isoDayFun( rowDatObj ),                     // What: Date. Why: Every pickLog row needs its own real calendar day. How: This converts rowDatObj to an ISO day string via isoDayFun.
 			done        : picRowObj.done,                             // What: Done. Why: The row must record whether this pick was ever actually completed. How: This is copied straight from picRowObj's own done.
-			eid         : null,                                       // What: Eid. Why: A live pickLog row carries the id of its Today entry, but a precomputed sample row has none. How: This is always null, since no real Today entry ever backed this hydrated row.
+			eid         : null,                                       // What: Entry Identifier. Why: A live pickLog row carries the id of its Today entry, but a precomputed sample row has none. How: This is always null, since no real Today entry ever backed this hydrated row.
 			group       : picRowObj.group,                            // What: Group. Why: This denormalized copy lets the row survive a later rename or deletion of the picker's own group. How: This is copied straight from picRowObj's own group.
 			id          : 'pls_ob_' + ( seqCouNum++ ).toString( 36 ), // What: ID. Why: Every pickLog row needs its own unique identifier. How: This mints one from the shared seqCouNum counter, prefixed and base-36 encoded.
 			itemId      : picRowObj.itemId,                           // What: Item ID. Why: Stats and other consumers filter/group pickLog rows by the item they belong to. How: This is copied straight from picRowObj's own itemId.

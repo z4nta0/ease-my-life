@@ -9,7 +9,7 @@ import patModObj from 'node:path'; // What: Path Module Object. Why: The output 
 import { fileURLToPath } from 'node:url';                             // What: File URL To Path. Why: ESM modules have no __dirname, so this script reconstructs its own folder. How: This converts import.meta.url for CUR_DIR_STR.
 import { isoDayFun     } from '../src/utils/date.ts';                 // What: ISO Day Function. Why: Today's day index needs the same local-calendar YYYY-MM-DD key the app stores. How: This formats today's date as that key in simDatFun.
 import { ONB_ASP_ARR   } from '../src/state/onboarding-seed-data.ts'; // What: Onboarding All-Sample-Pickers Array. Why: These are the Welcome Tour's sample picker definitions, the first one leading. How: The picker and item records are both built from it.
-import { ONB_TAS_ARR   } from '../src/state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: The sample reminder history needs the real "Take trash out" task definition. How: This is searched by id for TRA_TAS_OBJ.
+import { ONB_TAS_ARR   } from '../src/state/onboarding-seed-data.ts'; // What: Onboarding Task Array. Why: The sample reminder history needs the real "Take trash out for pickup" task definition. How: This is searched by id for TRA_TAS_OBJ.
 import { SED_NAM_OBJ   } from '../src/state/seed.ts';                 // What: Seed Namespace Object. Why: The sample history should come from the same pick simulator the app's own seeding uses. How: Its picLogFun runs once in simDatFun over a 365-day span.
 import { writeFileSync } from 'node:fs';                              // What: Write File Sync. Why: The generated file has to land on disk. How: This writes buiOutFun's text to OUT_PAT_STR in the module init.
 

@@ -668,7 +668,7 @@ function wriStaFun ( curStaObj : StaAppTyp ) : void {
  *
  * @summary
  * The entire app state layer. Holds one useState for the whole app
- * state object, seeded either from optArgObj.initial (the onboarding
+ * state object, seeded either from optArgObj.iniObj (the onboarding
  * demo's own non-persisted state) or from loaStaFun()'s own migrated
  * result. Persisting the state is delegated to storage.ts, and the state
  * carries a long pick log, so the write is scheduled during idle time and

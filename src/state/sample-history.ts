@@ -42,8 +42,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  *
  * @summary
  * Hides every real sample picker again once whatever borrowed them through
- * unhHisFun (the Stats page tour, or help mode on the Stats page) ends. It is
- * the same hide mechanism the Welcome Tour itself uses.
+ * unhHisFun (the Stats page tour, or help mode on the Stats page) ends.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -84,13 +83,11 @@ const hidHisFun = ( actStoObj : ActStoTyp ) : void => { // What: Hide History Fu
  * afterward.
  *
  * The sample pickers normally already carry about a year of precomputed
- * pickLog history, seeded once on fresh install (see
- * onboarding/welcome-tour.tsx's own mount effect), but that effect only seeds
- * while no sample picker exists yet, so an account that already had a picker
- * of its own gets the sample pickers with none of their history. This
- * backfills the same precomputed history, lazily imported, guarded by
- * existence (any pickLog row already belonging to a sample picker), so a
- * repeat run can't duplicate rows.
+ * pickLog history, seeded along with them (see onboarding/welcome-tour.tsx),
+ * but that history can be missing, such as when the Welcome Tour's import of
+ * it was cut short. This backfills the same precomputed history, lazily
+ * imported, guarded by existence (any pickLog row already belonging to a
+ * sample picker), so a repeat run can't duplicate rows.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
