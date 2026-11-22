@@ -1655,7 +1655,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 					data-element-name-hook='setRaiAsi'
 
 					aria-label='Settings sections'
-				>{ /* What: Settings Rail Aside Element. Why: This is the sticky/scrollable rail of section links tracked by scroll-spy and driven by jumSecFun. How: This wraps the rail's own kicker and its scrolling <ul> of section links. Its data-element-name-hook is read by help mode. */ }
+				>{ /* What: Settings Rail Aside Element. Why: This is the sticky/scrollable rail of section links tracked by scroll-spy and driven by jumSecFun. How: This wraps the rail's own kicker and the scrolling div that holds its list of section links. Its data-element-name-hook is read by help mode. */ }
 
 
 					<div className={ cssModObj.raiKicDiv }>Sections</div>{ /* What: Rail Kicker Div Element. Why: The rail needs its own small heading, matching the kicker style used elsewhere. How: This renders the fixed text "Sections". */ }
@@ -2668,7 +2668,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 								{ penImpObj ? ( // What: Pending Import Check. Why: A staged backup awaiting confirmation replaces the plain Import trigger with its own confirm pair. How: This renders the confirm pair while penImpObj holds a value, the plain trigger otherwise.
 
 
-									<div className={` ${ cssModObj.rowConDiv }   ${ impLeaBoo ? cssModObj.rowConDivLeaving : '' } `}>{ /* What: Row Confirm Div Element. Why: The Import/Cancel confirm pair needs its own grouping, replacing the single Import trigger while a backup is staged. How: This wraps the confirm's own Import and Cancel buttons. Its leaving modifier swaps it back out once the confirm is cancelled. */ }
+									<div className={` ${ cssModObj.rowConDiv }   ${ impLeaBoo ? cssModObj.rowConDivLeaving : '' } `}>{ /* What: Row Confirm Div Element. Why: The Import/Cancel confirm pair needs its own grouping, replacing the single Import trigger while a backup is staged. How: This wraps the confirm's own Import and Cancel buttons. Its leaving modifier plays the swap-out while the confirm closes, whether the import is cancelled or confirmed. */ }
 
 
 										<ButBasCom
