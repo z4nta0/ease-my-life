@@ -40,7 +40,7 @@ import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why
 
 // #region Constants
 
-const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the on-demand help catalog for the Data tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: This is imported by tab-data.tsx and passed to HelOveCom as its own helIteArr prop.
+const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the on-demand help catalog for the Data tab, one entry per distinct piece of functionality on that page rather than one per DOM element. How: HelOveCom reads this array through its helIteArr prop.
 
 
 	// #region Data Header
@@ -56,8 +56,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	},
 
-	// The Conditionals and Type filter rows below render the same filPilBut pills inside their own conFilDiv/typFilDiv hooks (see their own conditionalsFilter/typeFilter entries), so unscoped, this selector matched both of those rows' pills too, unioning the highlight all the way down through them.
-	{ // What: Group Filter Help Item. Why: This is the on-demand help tip for the Group Filter element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
+	{ // What: Group Filter Help Item. Why: This is the on-demand help tip for the Group Filter element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // The Conditionals and Type filter rows render the same filPilBut pills inside their own conFilDiv/typFilDiv hooks (see their conditionalsFilter/typeFilter entries), so unscoped, this selector matched both rows' pills too, unioning the highlight all the way down through them.
 
 
 		bodEle : <>This filters the pickers row below by group, which is extremely useful if you have created a lot of pickers.</>,
@@ -169,13 +168,12 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	},
 
-	// Reused verbatim from PIC_HEL_ARR's newCondCardText, same CodConCom markup either way, missed when the other newCondName through newCondActive entries were copied over for this pass. // padYcoNum:0, .conConDiv--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
-	{ // What: Conditional Card Text Help Item. Why: This is the on-demand help tip for the Conditional Card Text element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
+	{ // What: Conditional Card Text Help Item. Why: This is the on-demand help tip for the Conditional Card Text element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Reused verbatim from PIC_HEL_ARR's newCondCardText, same CodConCom markup either way, missed when the other newCondName through newCondActive entries were copied over for this pass.
 
 
 		bodEle    : <>This is the text that will show on the card that appears in your todo list whenever this conditional suppresses any attached pickers.</>,
 		ideStr    : 'dataCondCardText',
-		padYcoNum : 0,
+		padYcoNum : 0, // padYcoNum:0, .conConDiv--inline (the variant used here, unlike the Pickers-page card variant) has gap:0 between fields, so this bleeds into its neighbors above/below without it.
 		selStr    : '[data-element-name-hook~="forFieDiv"]:has(> [data-element-name-hook~="carTexDiv"])',
 		titStr    : 'Conditional Card Text'
 
@@ -486,8 +484,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	},
 
-	// Reused verbatim from TOD_HEL_ARR's editReminderRepeat/editReminderFoot same .inlEdiDiv markup, and this tab has no quickadd form for that selector's own :not(.remAddDiv *) exclusion to worry about.
-	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
+	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Reused verbatim from TOD_HEL_ARR's editReminderRepeat/editReminderFoot, same .inlEdiDiv markup, and this tab has no quickadd form for that selector's own :not(.remAddDiv *) exclusion to worry about.
 
 
 		ideStr    : 'dataReminderRepeat',
@@ -623,13 +620,12 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	},
 
-	// padYcoNum:0, .basRowDiv has no margin, just its own padding + a border-top, so consecutive rows (this one and Group below) touch with zero gap.
 	{ // What: Picker Name Help Item. Why: This is the on-demand help tip for the Picker Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
 		bodEle    : <>This is the name field for this picker, you can rename it here.</>,
 		ideStr    : 'dataPickerName',
-		padYcoNum : 0,
+		padYcoNum : 0, // padYcoNum:0, .basRowDiv has no margin, just its own padding + a border-top, so consecutive rows (this one and Group below) touch with zero gap.
 		selStr    : '[data-element-name-hook~="basRowDiv"]:has([data-element-name-hook~="basNamInp"])',
 		titStr    : 'Picker Name'
 
@@ -660,13 +656,12 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	},
 
-	// padYcoNum:0, .setLinDiv rows stack with zero gap (same pattern as .basRowDiv above), touching Daily Generator Toggle below.
 	{ // What: Picker Conditional Help Item. Why: This is the on-demand help tip for the Picker Conditional element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
 		bodEle    : <>This lets you optionally gate this picker behind a conditional. When you attach a conditional, the picker will only run on days determined by that conditional's own rules. For example, giving yourself an occasional day off from chores. You can attach any existing conditional below, but if you want to create a new one you will need to use the Conditionals section above.</>,
 		ideStr    : 'dataPickerConditionalToggle',
-		padYcoNum : 0,
+		padYcoNum : 0, // padYcoNum:0, .setLinDiv rows stack with zero gap (same pattern as .basRowDiv above), touching Daily Generator Toggle below.
 		selStr    : '[data-element-name-hook~="setLinDiv"]:has(button[aria-label="Attach a conditional"])',
 		titStr    : 'Picker Conditional'
 
@@ -902,8 +897,8 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	// #region Editing A Picker Item
 
-	// EntEdiCom, defined in tab-today.tsx but reused here, see .entEdiDiv's own doc comment there. Which of these actually renders depends on the OWNING PICKER's mode, so most items below only ever show up for some modes: Charge Range (Ease Up/Ease Down only), Weight (Weighted/Dynamic Weighted), Boost (Dynamic Weighted only). Active and the footer always render regardless of mode. // .rowNamInp is also used by the Conditionals section's own name field (same .lisIteDiv wrapper shape), :has(.entEdiDiv) picks out only a .lisIteDiv that's actually an ITEM editor, since .entEdiDiv is unique to EntEdiCom and never rendered for a conditional.
-	{ // What: Item Name Help Item. Why: This is the on-demand help tip for the Item Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
+	// EntEdiCom, the shared item editor from ui/entry-editor.tsx, is reused here. Which of these actually renders depends on the OWNING PICKER's mode, so most items below only ever show up for some modes: Charge Range (Ease Up/Ease Down only), Weight (Weighted/Dynamic Weighted), Boost (Dynamic Weighted only). Active and the footer always render regardless of mode.
+	{ // What: Item Name Help Item. Why: This is the on-demand help tip for the Item Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // .rowNamInp is also used by the Conditionals section's own name field (same .lisIteDiv wrapper shape), :has(.entEdiDiv) picks out only a .lisIteDiv that's actually an ITEM editor, since .entEdiDiv is unique to EntEdiCom and never rendered for a conditional.
 
 
 		bodEle : <>This is the name field for this item, you can rename it here.</>,

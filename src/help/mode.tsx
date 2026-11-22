@@ -54,15 +54,9 @@ import type { ShaRadTyp } from './geometry.ts';     // What: Shape Radius Type. 
  * the only difference is the tip's own content (no nav chrome) and how
  * it is triggered (click a badge, not "the current tour step").
  *
- * Ownership: the parent (each tab component) owns the on/off boolean as
- * plain local state and renders both HelButCom (button.tsx, a
- * controlled toggle) and HelOveCom from it, deliberately not a global bus like
- * emlTouObj. Since this app renders exactly one tab's component tree
- * at a time (no router, see CLAUDE.md), that local state resets to its
- * default (off) every time a tab unmounts and remounts, which is
- * exactly the "navigating away closes any open highlights, and the
- * page you land on does not auto-open its own" behavior this was
- * designed to have, for free, with no explicit reset needed.
+ * Ownership: the on/off boolean arrives as the actModBoo prop, and
+ * onCloAllFun asks the parent to turn it off, deliberately not a global bus
+ * like emlTouObj.
  *
  * Sections:
  *  - Constants
@@ -99,12 +93,12 @@ const NAV_TAB_ARR = [ // What: Nav Tab Array. Why: The shared nav tip describes 
  *
  * @summary
  * Always included ahead of whatever page-specific items are passed into
- * HelOveCom, since every page shares the same bottom/side nav, and it was
- * flagged as a real point of user confusion (icon-only on mobile, no label)
- * worth explaining everywhere rather than something each page's own catalog
- * has to remember to add. One shared badge/tip covers the whole bar rather
- * than one per button, the same reasoning behind clustering e.g. a card's
- * Re-roll/Skip/Edit under one badge.
+ * HelOveCom, since every page shares the same bottom, side, or top nav, and it
+ * was flagged as a real point of user confusion (icon-only on mobile, no
+ * label) worth explaining everywhere rather than something each page's own
+ * catalog has to remember to add. One shared badge/tip covers the whole bar
+ * rather than one per button, the same reasoning behind clustering e.g. a
+ * card's Re-roll/Skip/Edit under one badge.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -115,7 +109,7 @@ const NAV_HEL_OBJ : HelIteTyp = { // What: Nav Help Object. Why: Every page shar
 
 	absStr    : ':is([data-placement="side"], [data-placement="top"]) > [data-element-name-hook~="appTabNav"]', // What: Always-Below-Selector String. Why: On 'side' placement the target can span most of the viewport's height, and on 'top' the fits-below check can flip to above on a short viewport and cover the navbar entirely. How: HelOveCom sets alwBelBoo whenever this selector matches, so plaTipFun always places the tip below.
 	ideStr    : '__nav',                                                                                        // What: Identifier String. Why: This is the item's own unique key. How: HelOveCom compares it against its own open-id state to track which tip is open.
-	mtwBoo    : true,                                                                                           // What: Match-Target-Width Boolean. Why: This tip's own content grew to several paragraphs, and the usual fixed 280px width read too cramped. How: HelTipCom sizes the tip to the width mwsStr measures.
+	mtwBoo    : true,                                                                                           // What: Match-Target-Width Boolean. Why: This tip's own content grew to several paragraphs, and the usual fixed tip width read too cramped. How: HelTipCom sizes the tip to the width mwsStr measures.
 	mwsStr    : '[data-element-name-hook~="appTabNav"]',                                                        // What: Match-Width-Selector String. Why: The tip should be as wide as the navbar itself. How: HelOveCom measures this element's own width on 'bottom' placement.
 	padYcoNum : 7,                                                                                              // What: Pad Y-Coordinate Number. Why: The highlight should sit flush with the tab bar's own outer edge on 'bottom' placement. How: This overrides the flat vertical pad.
 	scrBoo    : true,                                                                                           // What: Scroll Boolean. Why: On 'side' placement the target can span most of the viewport's own height. How: HelTipCom caps the body to the room plaTipFun found and scrolls past it.
