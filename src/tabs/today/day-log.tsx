@@ -791,7 +791,7 @@ function TabHeaCom ( { heaLabStr = 'Item' } : ThcProTyp ) : React.JSX.Element {
 	return (
 
 
-		<div className={ cssModObj.tabHeaDiv }>{ /* What: Table Head Div Element. Why: This is TabHeaCom's own root element. How: This renders the 5 shared column headers below. */ }
+		<div className={ cssModObj.tabHeaDiv }>{ /* What: Table Header Div Element. Why: This is TabHeaCom's own root element. How: This renders the 5 shared column headers below. */ }
 
 
 			<span data-element-name-hook='logIteSpa'>{ heaLabStr }</span>{ /* What: Item Header Span Element. Why: The first column's own label varies by caller. How: This renders heaLabStr directly. Its data-element-name-hook is read by help mode. */ }
@@ -2009,7 +2009,7 @@ function RemLogCom ( { onCloLogFun, staAppObj } : RlcProTyp ) : React.JSX.Elemen
 						data-row-done-active={ rowStaStr === 'done' || undefined } // What: Row Done Active Attribute. Why: A done reminder's row reads green. How: This sets the presence-only attribute while rowStaStr is 'done'.
 						data-row-due-active={ rowStaStr === 'due' || undefined } // What: Row Due Active Attribute. Why: A reminder due today reads in the accent. How: This sets the presence-only attribute while rowStaStr is 'due'.
 						data-row-upcoming-active={ rowStaStr === 'notdue' || undefined } // What: Row Upcoming Active Attribute. Why: A reminder not due yet reads quieter. How: This sets the presence-only attribute while rowStaStr is 'notdue'.
-					>{ /* What: Reminder Row Div Element. Why: This is one task/reminder's own full row. How: This marks itself with data-row-done-active, data-row-due-active, or data-row-upcoming-active from rowStaStr. */ }
+					>{ /* What: Reminders Row Div Element. Why: This is one task/reminder's own full row. How: This marks itself with data-row-done-active, data-row-due-active, or data-row-upcoming-active from rowStaStr. */ }
 
 
 						<InfTipCom

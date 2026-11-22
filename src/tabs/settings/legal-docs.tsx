@@ -253,7 +253,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 			>{ /* What: Legal Panel Div Element. Why: This is the actual visible, scrollable, focusable dialog panel. How: This is focused on open via panEleRef and swaps to its own --closing modifier class while modCloBoo is true. */ }
 
 
-				<div className={ cssModObj.panHeaDiv }>{ /* What: Panel Head Div Element. Why: This groups the panel's own title and close button on one row. How: This renders the title span followed by the close button below. */ }
+				<div className={ cssModObj.panHeaDiv }>{ /* What: Panel Header Div Element. Why: This groups the panel's own title and close button on one row. How: This renders the title span followed by the close button below. */ }
 
 
 					<span className={ cssModObj.panTitSpa }>{ modTitStr }</span>{ /* What: Panel Title Span Element. Why: This shows which document (Privacy Policy or Terms of Service) is currently open. How: This renders modTitStr as the panel's own visible heading text. */ }

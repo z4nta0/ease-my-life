@@ -133,7 +133,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEl
 					key={ value ? 'on' : 'off' } // What: Help Text Key. Why: The help line fades between its on and off text. How: This keys the paragraph 'on' while value is true and 'off' otherwise, so a toggle remounts it.
 
 					className={` ${ cssModObj.forHelPar }   ${ cssModObj.forHelParFade } `}
-				>{ value ? enaHelEle : disHelEle }</p>{ /* What: Form Help Paragraph Fade Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by value so the text cross-fades on every flip, showing enaHelEle or disHelEle. */ }
+				>{ value ? enaHelEle : disHelEle }</p>{ /* What: Form Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by value so its Fade modifier fades the text in on every flip, showing enaHelEle or disHelEle. */ }
 
 
 			</div>
@@ -1410,7 +1410,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									type='button'
 
 									onClick={ () => setAddGroBoo( true ) }
-								>{ /* What: Group Chip Button New Element. Why: The user needs an explicit way to open the inline new-group sub-form. How: This flips addGroBoo true. */ }
+								>{ /* What: Group Chip Button Element. Why: The user needs an explicit way to open the inline new-group sub-form. How: This flips addGroBoo true, and its New modifier dashes it as a placeholder chip. */ }
 
 
 									<IcoSvgCom
@@ -1442,7 +1442,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									aria-label='New group name'
 
 									onChange={ ( chaEveObj ) => setNewGroStr( chaEveObj.target.value ) }
-								/>{ /* What: Form Text Input Short Element. Why: A brand-new group needs its own typed name. How: This is a controlled text input writing into newGroStr on every change. */ }
+								/>{ /* What: Form Text Input Element. Why: A brand-new group needs its own typed name. How: This is a controlled text input writing into newGroStr on every change, and its Short modifier caps its width. */ }
 
 
 							</ColDisCom>
@@ -1574,7 +1574,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 									role='switch'
 
 									onClick={ () => setConAttBoo( ( preValBoo ) => !preValBoo ) }
-								>{ /* What: Conditional Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by help mode and the test suites. */ }
+								>{ /* What: Toggle Switch Button Element. Why: This is the actual on/off control for the conditional attachment. How: This flips conAttBoo on click. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 									<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
@@ -1661,7 +1661,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 											} }
-										>{ /* What: Conditional Pill Button New Element. Why: The user needs an explicit way to open the inline new-conditional editor. How: This selects the 'new' pill and seeds conDraObj from the shared default, pre-filled with this picker's own name. */ }
+										>{ /* What: Conditional Pill Button Element. Why: The user needs an explicit way to open the inline new-conditional editor. How: This selects the 'new' pill and seeds conDraObj from the shared default, pre-filled with this picker's own name, and its New modifier dashes it as a placeholder. */ }
 
 
 											<IcoSvgCom
@@ -2344,7 +2344,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 										type='button'
 
 										onClick={ addDraFun }
-									>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls addDraFun on click. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
+									>{ /* What: Item Add Button Element. Why: This starts a brand-new item draft in the pool. How: This calls addDraFun on click. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 										<IcoSvgCom

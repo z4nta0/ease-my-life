@@ -1327,8 +1327,8 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						) }
 
 						{ tasRcdObj.dateMode === 'nthWeekday' // What: Clamp Hint Mode Check. Why: Each date mode has its own clamp edge case to warn about. How: This picks the nth-weekday hint while dateMode is 'nthWeekday', the plain-date hint otherwise.
-							? ( tasRcdObj.nthOrdinal || 1 ) === 5 && <p className={ cssModObj.fieHinPar }>In months without a 5th, this falls on the 4th instead.</p> // What: Nth-Weekday Clamp Hint. Why: A requested 5th occurrence doesn't exist in every month, so the user needs to know the real fallback rule. How: This renders only when nthOrdinal is exactly 5.
-							: ( tasRcdObj.dayOfMonth || 1 ) > 28 && <p className={ cssModObj.fieHinPar }>In shorter months this falls on the last day.</p>            // What: Plain Date Clamp Hint. Why: A day past 28 doesn't exist in every month, so the user needs to know the real fallback rule. How: This renders only when dayOfMonth is past 28.
+							? ( tasRcdObj.nthOrdinal || 1 ) === 5 && <p className={ cssModObj.fieHinPar }>In months without a 5th, this falls on the 4th instead.</p> // What: Field Hint Paragraph Element. Why: A requested 5th occurrence doesn't exist in every month, so the user needs to know the real fallback rule. How: This renders only when nthOrdinal is exactly 5.
+							: ( tasRcdObj.dayOfMonth || 1 ) > 28 && <p className={ cssModObj.fieHinPar }>In shorter months this falls on the last day.</p>            // What: Field Hint Paragraph Element. Why: A day past 28 doesn't exist in every month, so the user needs to know the real fallback rule. How: This renders only when dayOfMonth is past 28.
 						}
 
 
@@ -1485,7 +1485,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 						{ tasRcdObj.dateMode === 'nthWeekday' && ( tasRcdObj.nthOrdinal || 1 ) === 5 && ( // What: Nth-Weekday Clamp Hint Check. Why: A requested 5th occurrence doesn't exist in every year for a given month, so the user needs to know the real fallback rule. How: This renders the hint only when both conditions hold.
 
 
-							<p className={ cssModObj.fieHinPar }>In years where that month has no 5th, this falls on the 4th instead.</p> // What: Nth-Weekday Clamp Hint Element. Why: A requested 5th occurrence doesn't exist in every year for a given month, so the user needs to know the real fallback rule. How: This renders only when the Clamp Hint Check above holds.
+							<p className={ cssModObj.fieHinPar }>In years where that month has no 5th, this falls on the 4th instead.</p> // What: Field Hint Paragraph Element. Why: A requested 5th occurrence doesn't exist in every year for a given month, so the user needs to know the real fallback rule. How: This renders only when the Clamp Hint Check above holds.
 
 
 						) }

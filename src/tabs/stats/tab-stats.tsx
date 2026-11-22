@@ -550,7 +550,7 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 			) : ( // What: Empty State Branch. Why: A zero-total card needs to explain why the bar is missing instead of showing nothing at all. How: This renders the else branch, taken while totCouNum is zero.
 
 
-				<div className={ cssModObj.staEmpDiv }>{ empMesStr }</div> // What: Stats Empty Div Element. Why: This is the actual empty-state message. How: This renders the caller's own empMesStr.
+				<div className={ cssModObj.staEmpDiv }>{ empMesStr }</div> // What: Stat Empty Div Element. Why: This is the actual empty-state message. How: This renders the caller's own empMesStr.
 
 
 			) }
@@ -814,7 +814,7 @@ function RanCarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
 			) : ( // What: Empty State Branch. Why: With nothing to list, the card needs its own message instead. How: This renders the else branch.
 
 
-				<div className={ cssModObj.staEmpDiv }>{ empMesStr }</div> // What: Stats Empty Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing. How: This renders empMesStr.
+				<div className={ cssModObj.staEmpDiv }>{ empMesStr }</div> // What: Stat Empty Div Element. Why: An empty ranking needs to explain why the list is missing instead of showing nothing. How: This renders empMesStr.
 
 
 			) }
@@ -3835,7 +3835,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 											aria-label='Previous year'
 
 											onClick={ () => jumYeaFun( datYeaArr[ yeaIndNum - 1 ], 'prev' ) }
-										>&lsaquo;</button>{ /* What: Previous Year Arrow Button Element. Why: The user needs a way to page back one calendar year. How: This is disabled on the earliest year and otherwise pages to the previous entry in datYeaArr. */ }
+										>&lsaquo;</button>{ /* What: Year Arrow Button Element. Why: The user needs a way to page back one calendar year. How: This is disabled on the earliest year and otherwise pages to the previous entry in datYeaArr. */ }
 
 										<span className={ cssModObj.hetYeaSpa }>{ actYeaNum }</span>{ /* What: Heat Year Span Element. Why: The pager needs its own visible label naming the active year. How: This renders actYeaNum. */ }
 
@@ -3848,7 +3848,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 											aria-label='Next year'
 
 											onClick={ () => jumYeaFun( datYeaArr[ yeaIndNum + 1 ], 'next' ) }
-										>&rsaquo;</button>{ /* What: Next Year Arrow Button Element. Why: The user needs a way to page forward one calendar year. How: This is disabled on the latest year and otherwise pages to the next entry in datYeaArr. */ }
+										>&rsaquo;</button>{ /* What: Year Arrow Button Element. Why: The user needs a way to page forward one calendar year. How: This is disabled on the latest year and otherwise pages to the next entry in datYeaArr. */ }
 
 
 									</div>

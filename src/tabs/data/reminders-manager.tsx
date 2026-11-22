@@ -1066,7 +1066,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 				className={ cssModObj.catHeaHed }
 
 				data-element-name-hook='catHeaHed'
-			>{ /* What: Category Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. Its data-element-name-hook is read by help mode. */ }
+			>{ /* What: Category Header Header Element. Why: The whole header is one clickable disclosure toggling the main section. How: This wraps the single toggle button below. Its data-element-name-hook is read by help mode. */ }
 
 
 				<button

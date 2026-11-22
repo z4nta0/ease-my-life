@@ -382,7 +382,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 							aria-label={ `Rename group ${ groNamStr }` }
 
 							onClick={ staEdiFun }
-						>{ /* What: Group Rename Button Element. Why: This is the actual affordance that opens the inline name field above. How: This renders groNamStr plus a small edit glyph, calling staEdiFun on click. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
+						>{ /* What: Group Name Button Element. Why: This is the actual affordance that opens the inline name field above. How: This renders groNamStr plus a small edit glyph, calling staEdiFun on click. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 							{ groNamStr }

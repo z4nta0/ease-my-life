@@ -1810,7 +1810,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 								type='button'
 
 								onClick={ addIteFun }
-							>{ /* What: Add Item Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
+							>{ /* What: Item Add Button Element. Why: This starts a brand-new item draft in the pool. How: This calls the add handler on click, disabled during the matching tour step. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 								<IcoSvgCom

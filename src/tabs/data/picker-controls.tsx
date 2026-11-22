@@ -1173,12 +1173,12 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 													key={ parIndNum }
 
 													className={ cssModObj.modHinSpa }
-												>{ parCurStr }</span> // What: Hint Paragraph Span Element. Why: Each paragraph renders as its own hint line. How: This renders parCurStr, keyed by its index.
+												>{ parCurStr }</span> // What: Mode Hint Span Element. Why: Each paragraph renders as its own hint line. How: This renders parCurStr, keyed by its index.
 
 
 											) )
 
-											: <span className={ cssModObj.modHinSpa }>{ modValObj.hinArr }</span> // What: Single Hint Branch. Why: A one-paragraph hint needs just one span. How: This renders modValObj.hinArr directly.
+											: <span className={ cssModObj.modHinSpa }>{ modValObj.hinArr }</span> // What: Mode Hint Span Element. Why: A one-paragraph hint needs just one span. How: This renders modValObj.hinArr directly.
 
 
 										}

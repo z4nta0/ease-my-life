@@ -104,7 +104,7 @@ function InlEdiCom ( { draTasObj, onCloEdiFun, onDelTasFun, onPatTasFun, onSavTa
 			className={ cssModObj.inlEdiDiv }
 
 			data-element-name-hook='inlEdiDiv'
-		>{ /* What: Inline Edit Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode and the test suites. */ }
+		>{ /* What: Inline Editor Div Element. Why: This groups the schedule editor and its own footer as one visual unit. How: This renders SchEdiCom against draTasObj, then EdiFooCom below it. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<SchEdiCom
@@ -1363,7 +1363,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 							className={ cssModObj.inlEdiDiv }
 
 							data-element-name-hook='inlEdiDiv'
-						>{ /* What: Inline Edit Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. Its data-element-name-hook is read by help mode and the test suites. */ }
+						>{ /* What: Inline Editor Div Element. Why: The schedule editor and its own footer need to sit together, same layout as InlEdiCom's own root. How: This renders SchEdiCom against draTasObj, then its own Cancel/Add footer. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 							<SchEdiCom
@@ -1381,7 +1381,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								className={ cssModObj.ediFooDiv }
 
 								data-element-name-hook='ediFooDiv'
-							>{ /* What: Edit Footer Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode. */ }
+							>{ /* What: Editor Footer Div Element. Why: Cancel and Add read as a pair, matching EdiFooCom's own plain-footer shape. How: This wraps both ButBasCom elements below. Its data-element-name-hook is read by help mode. */ }
 
 
 								<ButBasCom
