@@ -273,6 +273,14 @@
 
 	}
 
+	.proDasIta.proDasIta--fresh[data-dash-done-active] { /* What: Filled Progress Dash Italic Fresh. Why: Without its sweep, the dash just done should show its fill at once. How: This gives it the done rule's accent fill, outranking the fresh rule's grey. */
+
+
+		background : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+
+
+	}
+
 	.proDasIta.proDasIta--fresh::after { /* What: Hidden Progress Dash Italic Fresh Sweep. Why: Without its sweep the overlay adds nothing. How: This turns the sweep off and hides the overlay. */
 
 
