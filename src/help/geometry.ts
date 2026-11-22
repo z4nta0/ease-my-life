@@ -402,7 +402,7 @@ function cliChrFun ( tarRecObj : EdgRecTyp, chrIteArr : ChrIteTyp[], tarEleArr :
 
 
 
-		if ( chrIteObj.chrSidStr === 'top' ) { // What: Top Chrome Clamp. Why: A top-anchored chrome item (the header, the group rail) should clip whatever sits below it, preferring to keep the portion already below the chrome. How: This clamps the working rect's own top edge down to the chrome's own bottom edge when that still leaves a real, positive-height rect.
+		if ( chrIteObj.chrSidStr === 'top' ) { // What: Top Chrome Clamp. Why: A top-anchored chrome item (the header) should clip whatever sits below it, preferring to keep the portion already below the chrome. How: This clamps the working rect's own top edge down to the chrome's own bottom edge when that still leaves a real, positive-height rect.
 
 
 			const canTopNum = Math.max( topEdgNum, chrIteObj.chrRecObj.bottom ); // What: Candidate Top Number. Why: This is the natural-direction clamp candidate for a top-anchored chrome item. How: This pushes top down to at least the chrome's own bottom edge.
