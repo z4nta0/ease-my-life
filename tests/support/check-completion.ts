@@ -588,7 +588,7 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entIdeStr : st
 
 
 
-	if ( preEntObj.itemId && entPenObj && jsoStrFun( ( aftEntObj.revert || { items : [] } ).items.slice().sort( ( oneRowObj, twoRowObj ) => oneRowObj.id < twoRowObj.id ? -1 : 1 ) ) !== jsoStrFun( preStaObj.items.filter( ( curIteObj ) => touIdeSet.has( curIteObj.id ) ).map( ( curIteObj ) => ( { chargeStep : curIteObj.chargeStep, id : curIteObj.id, lastPicked : curIteObj.lastPicked, picks : curIteObj.picks, value : curIteObj.value, weight : curIteObj.weight } ) ).sort( ( oneRowObj, twoRowObj ) => oneRowObj.id < twoRowObj.id ? -1 : 1 ) ) ) issAddFun( 'revert snapshot doesn\'t match the items before the click' ); // What: Revert Snapshot Check. Why: Unchecking restores from this snapshot, so it must hold the items as they were. How: This compares it with the touched items before the click.
+	if ( preEntObj.itemId && entPenObj && jsoStrFun( ( aftEntObj.revert || { items : [] } ).items.slice().sort( ( oneRowObj, twoRowObj ) => oneRowObj.id < twoRowObj.id ? -1 : 1 ) ) !== jsoStrFun( preStaObj.items.filter( ( curIteObj ) => touIdeSet.has( curIteObj.id ) ).map( ( curIteObj ) => ( { chargeStep : curIteObj.chargeStep, id : curIteObj.id, lastPicked : curIteObj.lastPicked, picks : curIteObj.picks, value : curIteObj.value, weight : curIteObj.weight } ) ).sort( ( oneRowObj, twoRowObj ) => oneRowObj.id < twoRowObj.id ? -1 : 1 ) ) ) issAddFun( "revert snapshot doesn't match the items before the click" ); // What: Revert Snapshot Check. Why: Unchecking restores from this snapshot, so it must hold the items as they were. How: This compares it with the touched items before the click.
 
 
 
@@ -656,11 +656,11 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entIdeStr : st
 
 	// #region Undo Checks
 
-	if ( jsoStrFun( undStaObj.items ) !== jsoStrFun( preStaObj.items ) ) issAddFun( 'items weren\'t restored' );                                                // What: Item Restore Check. Why: Every item returns to its earlier state. How: This compares them whole.
-	if ( jsoStrFun( undStaObj.pickers ) !== jsoStrFun( preStaObj.pickers ) ) issAddFun( 'pickers weren\'t restored' );                                          // What: Picker Restore Check. Why: The patch and period mark are undone. How: This compares them whole.
-	if ( undStaObj.conditionals.map( unsConFun ).join() !== preStaObj.conditionals.map( unsConFun ).join() ) issAddFun( 'conditionals weren\'t restored' );      // What: Conditional Restore Check. Why: Charges and card effects are undone. How: This compares them without undo snapshots.
-	if ( jsoStrFun( undStaObj.conditionalLog ) !== jsoStrFun( preStaObj.conditionalLog ) ) issAddFun( 'conditional log wasn\'t restored' );                     // What: Conditional Log Restore Check. Why: The day's row is removed again. How: This compares the logs.
-	if ( undStaObj.pickLog.map( rowNorFun ).join() !== preStaObj.pickLog.map( rowNorFun ).join() ) issAddFun( 'pick log wasn\'t restored' );                    // What: Pick Log Restore Check. Why: The live row is undone again. How: This compares the logs, treating depletedEnd false as unset.
+	if ( jsoStrFun( undStaObj.items ) !== jsoStrFun( preStaObj.items ) ) issAddFun( "items weren't restored" );                                                 // What: Item Restore Check. Why: Every item returns to its earlier state. How: This compares them whole.
+	if ( jsoStrFun( undStaObj.pickers ) !== jsoStrFun( preStaObj.pickers ) ) issAddFun( "pickers weren't restored" );                                           // What: Picker Restore Check. Why: The patch and period mark are undone. How: This compares them whole.
+	if ( undStaObj.conditionals.map( unsConFun ).join() !== preStaObj.conditionals.map( unsConFun ).join() ) issAddFun( "conditionals weren't restored" );       // What: Conditional Restore Check. Why: Charges and card effects are undone. How: This compares them without undo snapshots.
+	if ( jsoStrFun( undStaObj.conditionalLog ) !== jsoStrFun( preStaObj.conditionalLog ) ) issAddFun( "conditional log wasn't restored" );                      // What: Conditional Log Restore Check. Why: The day's row is removed again. How: This compares the logs.
+	if ( undStaObj.pickLog.map( rowNorFun ).join() !== preStaObj.pickLog.map( rowNorFun ).join() ) issAddFun( "pick log wasn't restored" );                     // What: Pick Log Restore Check. Why: The live row is undone again. How: This compares the logs, treating depletedEnd false as unset.
 
 
 
@@ -668,7 +668,7 @@ const cheUndFun = ( preStaObj : StaAppTyp, undStaObj : StaAppTyp, entIdeStr : st
 
 
 
-	if ( !undEntObj || undEntObj.done || undEntObj.revert ) issAddFun( 'entry isn\'t undone cleanly' ); // What: Entry Undone Check. Why: An unchecked entry is undone with no snapshot. How: This reports anything else.
+	if ( !undEntObj || undEntObj.done || undEntObj.revert ) issAddFun( "entry isn't undone cleanly" ); // What: Entry Undone Check. Why: An unchecked entry is undone with no snapshot. How: This reports anything else.
 
 	// #endregion Undo Checks
 

@@ -224,7 +224,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 									{ holCurObj.obsBoo && ( // What: Observed Note Check. Why: A holiday shifted off a weekend needs to also explain which real weekday it falls on. How: This renders the observed-note span only while holCurObj.obsBoo is true.
 
 
-										<span className={ cssModObj.holObsSpa }>observed &middot; { holCurObj.namStr === 'New Year\'s Day' ? 'falls' : 'lands' } on a { reaDayFun( holCurObj.actObj! ) }</span> // What: Holiday Observed Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from reaDayFun. // What: Non-Null Note. Why: Only a rule-based holiday is ever observed on a shifted day, and every rule-based holiday carries its actual date. How: The ! tells TypeScript actObj is set inside the observed check.
+										<span className={ cssModObj.holObsSpa }>observed &middot; { holCurObj.namStr === "New Year's Day" ? 'falls' : 'lands' } on a { reaDayFun( holCurObj.actObj! ) }</span> // What: Holiday Observed Span Element. Why: This is the actual observed-weekday note text. How: This renders "falls"/"lands" (New Year's Day reads more naturally as "falls") followed by the real weekday from reaDayFun. // What: Non-Null Note. Why: Only a rule-based holiday is ever observed on a shifted day, and every rule-based holiday carries its actual date. How: The ! tells TypeScript actObj is set inside the observed check.
 
 
 									) }

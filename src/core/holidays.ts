@@ -110,9 +110,9 @@ const THU_DAY_NUM = 4; // What: Thursday Day Number. Why: Same reasoning as MON_
 const HOL_DEF_ARR : HolDefTyp[] = [ // What: Holiday Definition Array. Why: This is the single source of truth every US holiday computation in this file reads from. How: This is read by cmpYeaFun below, resolving each entry's own rule via datDefFun into a concrete date for whatever year is requested.
 
 
-	{ keyStr : 'newyear',      namStr : 'New Year\'s Day',            fixArr : [ 1, 1 ]               }, // What: New Year Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to January 1st every year.
+	{ keyStr : 'newyear',      namStr : "New Year's Day",             fixArr : [ 1, 1 ]               }, // What: New Year Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to January 1st every year.
 	{ keyStr : 'mlk',          namStr : 'Martin Luther King Jr. Day', nthArr : [ 1, MON_DAY_NUM, 3 ]  }, // What: MLK Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 3rd Monday of January every year.
-	{ keyStr : 'presidents',   namStr : 'Presidents\' Day',           nthArr : [ 2, MON_DAY_NUM, 3 ]  }, // What: Presidents Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 3rd Monday of February every year.
+	{ keyStr : 'presidents',   namStr : "Presidents' Day",            nthArr : [ 2, MON_DAY_NUM, 3 ]  }, // What: Presidents Day Definition Object. Why: This is an Nth-weekday federal holiday. How: This resolves to the 3rd Monday of February every year.
 	{ keyStr : 'memorial',     namStr : 'Memorial Day',               lasArr : [ 5, MON_DAY_NUM ]     }, // What: Memorial Day Definition Object. Why: This is a last-weekday federal holiday. How: This resolves to the last Monday of May every year.
 	{ keyStr : 'juneteenth',   namStr : 'Juneteenth',                 fixArr : [ 6, 19 ]              }, // What: Juneteenth Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to June 19th every year.
 	{ keyStr : 'independence', namStr : 'Independence Day',           fixArr : [ 7, 4 ]               }, // What: Independence Day Definition Object. Why: This is a fixed-date federal holiday. How: This resolves to July 4th every year.

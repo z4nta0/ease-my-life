@@ -70,7 +70,7 @@ const splSelFun = ( selLisStr : string ) : string[] => { // What: Split Selector
 
 		}
 
-		else if ( chaCurStr === '"' || chaCurStr === '\'' ) quoCurStr = chaCurStr; // What: Quote Open Branch. Why: A quote starts a quoted value whose commas are plain text. How: This records which quote opened it.
+		else if ( chaCurStr === '"' || chaCurStr === "'" ) quoCurStr = chaCurStr; // What: Quote Open Branch. Why: A quote starts a quoted value whose commas are plain text. How: This records which quote opened it.
 
 		else if ( chaCurStr === '(' || chaCurStr === '[' ) depValNum++; // What: Depth Open Branch. Why: An opening bracket starts a nested part. How: This raises depValNum.
 
