@@ -314,13 +314,13 @@ function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRmnFun( appSt
  * Whether we're anywhere between the Welcome Tour's very first step and the
  * closing Generate card's flow actually completing.
  *
- * True for the tour's ENTIRE run (checked via activeTour, since maiTouBoo
- * below doesn't flip until the tour's next-to-last step hides the samples),
- * then true again straight through the mini-tour checklist phase until
- * checklistDone. False afterward, including for a Replay (checklistDone never
- * resets, see tab-today.tsx) and false for any existing user who upgraded into
- * a build with onboarding and so never had sample data seeded at all:
- * maiTouBoo requires actual hidden samples to exist, which protects that case.
+ * True for the Welcome Tour's entire run (checked via activeTour), since
+ * maiTouBoo below only turns true once a sample is hidden, then true again
+ * straight through the mini-tour checklist phase until checklistDone. False
+ * afterward, including for a Replay (checklistDone never resets, see
+ * tab-today.tsx) and false for any existing user who upgraded into a build
+ * with onboarding and so never had sample data seeded at all: maiTouBoo
+ * requires actual hidden samples to exist, which protects that case.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -347,7 +347,7 @@ function tutProFun ( appStaObj : StaAppTyp ) : boolean {
 
 
 
-	if ( onbStaObj.activeTour && onbStaObj.activeTour.id === 'welcome' ) return true; // What: Welcome Tour Active Guard. Why: The Welcome Tour's own steps run before any sample picker/task is ever hidden, so maiTouBoo below wouldn't catch this phase on its own. How: This reports true immediately whenever the persisted activeTour is specifically the 'welcome' tour.
+	if ( onbStaObj.activeTour && onbStaObj.activeTour.id === 'welcome' ) return true; // What: Welcome Tour Active Guard. Why: The Welcome Tour's early steps run while no sample is hidden yet, so maiTouBoo below wouldn't catch this phase on its own. How: This reports true immediately whenever the persisted activeTour is specifically the 'welcome' tour.
 
 
 

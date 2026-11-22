@@ -122,7 +122,7 @@ const unhHisFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 			actStoObj.sedHisFun( hydStaFun( ONB_STA_OBJ ) ); // What: Seed History Call. Why: The static template needs converting into real pickLog rows before it means anything to the Stats tab. How: This calls actStoObj.sedHisFun with hydStaFun's own converted result.
 
 
-		} ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Import Failure Catch. Why: A reload, such as the one a reset ends with, can cut the load short and reject the import. How: This logs it instead, and the next launch seeds the history.
+		} ).catch( ( errCatObj ) => console.warn( errCatObj ) ); // What: Import Failure Catch. Why: The dynamic import can reject, and a failed backfill must not surface as an unhandled rejection. How: This logs the error with console.warn, and the next unhHisFun run with no sample history tries the import again.
 
 
 	}

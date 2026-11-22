@@ -3,7 +3,7 @@
 
 // #region Imports
 
-import { isoDayFun } from '../utils/date.ts'; // What: ISO Day Function. Why: Period keys and generated log rows are local-calendar YYYY-MM-DD strings. How: This formats a Date as that key.
+import { isoDayFun } from '../utils/date.ts'; // What: ISO Day Function. Why: A hydrated log row's date is a local-calendar YYYY-MM-DD string. How: This formats a Date as that key.
 
 
 import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A precomputed pick row is a saved pick-log row minus its dated fields. How: This is the base of RawPicTyp and part of hydStaFun's return.

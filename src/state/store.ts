@@ -6,7 +6,7 @@
 import React from 'react'; // What: React. Why: This is the UI library the whole store hook is built on. How: This is used directly (React.useState, for one) instead of importing individual named hooks.
 
 
-import { buiIteFun   } from './new-item.ts';             // What: Build Item Function. Why: addIteFun builds its new item with the same defaults the Data tab's new-item draft uses. How: This is called once per added item.
+import { buiIteFun   } from './new-item.ts';             // What: Build Item Function. Why: addIteFun builds each new item with the defaults for its picker's mode. How: This is called once per added item.
 import { CAD_NAM_OBJ } from '../core/cadence.ts';        // What: Cadence Namespace Object. Why: Every picker's own daily/weekly/monthly/yearly surfacing schedule is computed by this module. How: This is called (enfWeeFun/norCadFun) from the picker-authoring actions below.
 import { cdlAplFun   } from './pending-mutations.ts';    // What: Conditional-Log Apply Function. Why: A day-off card's completion is recorded in the conditional log. How: This is called by the actions that check off or skip a Today entry.
 import { CON_NAM_OBJ } from '../core/conditionals.ts';   // What: Conditionals Namespace Object. Why: Day-off gate resolution logic and the default odds live here, not in this file. How: This is called (resDayFun) from resConFun below, and read for DEF_ODD_NUM in the conditional builders.
@@ -19,10 +19,10 @@ import { isoDayFun   } from '../utils/date.ts';          // What: ISO Day Functi
 import { logRowFun   } from './pick-log.ts';             // What: Log Row Function. Why: Every pick that lands on Today appends one pick-log row. How: This is called with the state and the pick's own fields.
 import { migStaFun   } from './migrate.ts';              // What: Migrate State Function. Why: Every loaded or imported state must be brought up to the current shape. How: This is called on load and on import.
 import { MIR_KEY_STR } from './storage.ts';              // What: Mirror Key String. Why: The fallback paths keep the warm mirror's own key when the storage engine can't be used. How: This is the localStorage key the fallback reads and writes under.
-import { modDefFun   } from './new-item.ts';             // What: Mode Defaults Function. Why: savEdiFun resets a picker's items to its new type's defaults the same way the Data tab's draft picker does. How: This is called with the new mode and threshold.
+import { modDefFun   } from './new-item.ts';             // What: Mode Defaults Function. Why: savEdiFun resets a picker's items to the defaults for its new type. How: This is called with the new mode and threshold.
 import { newIdeFun   } from './ids.ts';                  // What: New Identifier Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
-import { norConFun   } from '../core/pickers.ts';        // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called from addPicFun and savEdiFun below.
-import { norGroFun   } from '../core/pickers.ts';        // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called from renGroFun/renTouFun and the picker-authoring actions below.
+import { norConFun   } from '../core/pickers.ts';        // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called by madConFun on the inline conditional's name.
+import { norGroFun   } from '../core/pickers.ts';        // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called by renGroFun and renTouFun below.
 import { norPicFun   } from '../core/pickers.ts';        // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called from addPicFun, savEdiFun, and renPicFun below.
 import { ONB_CHE_OBJ } from './onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Resolving a checklist item can flip the closing Generate card's own readiness. How: This is called (reaGenFun) from setCarFun below.
 import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicFun below.
@@ -32,7 +32,7 @@ import { ranIdeFun   } from '../utils/random-id.ts';     // What: Random Identif
 import { rebPenFun   } from './pending-mutations.ts';    // What: Rebase Pending Function. Why: A direct value edit to an Ease Down item must not leave its own entry decaying from the old value. How: This is called by updIteFun after spuDroFun.
 import { SED_NAM_OBJ } from './seed.ts';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loaStaFun and by the reset action below.
 import { spuDroFun   } from './pending-mutations.ts';    // What: Stale-Pending-Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by updIteFun.
-import { STG_NAM_OBJ } from './storage.ts';              // What: Storage Namespace Object. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called from loaStaFun, wriStaFun, fluStaFun, and the reset/impDatFun actions below.
+import { STG_NAM_OBJ } from './storage.ts';              // What: Storage Namespace Object. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called by the load, write, and flush wrappers below and by the import and wipe actions.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';          // What: Tasks Namespace Object. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout stkSynFun and the task actions below.
 import { uniNamFun   } from '../utils/format.ts';        // What: Unique Name Function. Why: Two entries in the same scope can't share a name the user can't tell apart. How: This is called whenever an item, reminder, or picker is added or renamed.
 
@@ -125,7 +125,7 @@ type ActStoTyp = { // What: Action Store Type. Why: Every tab changes state only
 	renTouFun : ( rawNamStr : string ) => void;                                                           // What: Rename Tours Function. Why: The Page Tours group can be renamed. How: This takes the name as typed.
 	reoGroFun : ( ordGroArr : string[] ) => void;                                                         // What: Reorder Groups Function. Why: Edit Mode saves a new group order. How: This takes the group names in order.
 	reoPicFun : ( groNamStr : string, picIdeArr : string[] ) => void;                                     // What: Reorder Pickers Function. Why: Edit Mode saves a new picker order within a group. How: This takes the group name and its picker ids in order.
-	resConFun : () => ConRcdTyp[] | null;                                                                 // What: Resolve Conditionals Function. Why: Generating first settles which day-off gates are active. How: This takes nothing and returns the resolved conditionals, or null when React defers the update.
+	resConFun : () => ConRcdTyp[] | null;                                                                 // What: Resolve Conditionals Function. Why: Generating first settles which day-off gates are active. How: This takes nothing and returns the resolved conditionals, or null when the state updater has not run yet.
 	savEdiFun : ( picIdeStr : string, picArgObj : PicForTyp ) => void;                                    // What: Save Edit Function. Why: The Pickers tab's Edit saves a picker's details in place. How: This takes the picker's id and the form's fields.
 	sedHisFun : ( hisLogObj : Pick< StaAppTyp, 'pickLog' | 'reminderLog' | 'reminderSkipLog' > ) => void; // What: Seed History Function. Why: The tours seed a year of sample history into Stats. How: This takes the three hydrated logs.
 	setAniFun : ( picAniStr : string ) => void;                                                           // What: Set Animation Function. Why: The user picks the pick-reveal animation. How: This takes its name.
@@ -405,17 +405,15 @@ function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : Con
  * stkSynFun = Streak Sync Function
  *
  * @summary
- * Decides whether "today" counts toward the streak: it counts if ANY
- * picker entry is done OR any streak-participating manual reminder was
- * completed today, but only once EVERYTHING currently on Today is
- * actually done (a day with nothing to do can't claim a streak).
- * Reconciles that verdict against whether the day was already claimed,
- * so toggling the last done item back off un-claims it, and a day is
- * never double-counted. Entries belonging to a hidden picker (see the
- * hidden flag backfilled by migStaFun) don't count toward, or
- * block, the streak, same as if that picker didn't exist. Reminders
- * are checked against the last generation's own anchor date (not live
- * "now").
+ * Decides whether "today" counts toward the streak: it counts once Today holds
+ * at least one eligible item (a visible picker entry or a streak-participating
+ * manual reminder) and EVERY such entry and reminder is done (a day with
+ * nothing to do can't claim a streak). Reconciles that verdict against whether
+ * the day was already claimed, so toggling the last done item back off
+ * un-claims it, and a day is never double-counted. Entries belonging to a
+ * hidden picker (see the hidden flag backfilled by migStaFun) don't count
+ * toward, or block, the streak, same as if that picker didn't exist. Reminders
+ * are checked against the last generation's own anchor date (not live "now").
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1096,7 +1094,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		setCusFun : ( theModStr, cusColObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Custom Function. Why: Appearance's own custom color pickers need to save a palette and make it live immediately. How: This writes the 3 colors to theModStr's own custom slot, activates it, and auto-derives the other mode's counterpart unless that one was edited directly.
+		setCusFun : ( theModStr, cusColObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Custom Function. Why: A custom palette needs to be saved and made live at once. How: This writes the 3 colors to theModStr's own custom slot, activates it, and auto-derives the other mode's counterpart unless that one was edited directly.
 
 
 			const { keyNamStr, twiKeyStr } = cusKeyFun( theModStr ); // What: Key Name String. Why: Every field below is written under whichever slot this exact mode owns. How: This takes theModStr's own slot from cusKeyFun. // What: Twin Key String. Why: The auto-derive step below writes onto the OPPOSITE slot from keyNamStr. How: This takes the opposite slot from cusKeyFun.
@@ -1148,7 +1146,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		setPlaFun : ( tabPlaStr ) => setAppStaObj( ( curStaObj ) => ( { // What: Set Placement Function. Why: This picks the tab bar's own placement ('bottom' | 'side' | 'top') from Appearance's own Layout control. How: This writes tabPlacement (from tabPlaStr) onto appearance.
+		setPlaFun : ( tabPlaStr ) => setAppStaObj( ( curStaObj ) => ( { // What: Set Placement Function. Why: This picks the tab bar's own placement ('bottom' | 'side' | 'top'). How: This writes tabPlacement (from tabPlaStr) onto appearance.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the appearance override below.
@@ -1323,17 +1321,14 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * Phase A of Generate. It rolls the probability and dynamic modes,
 		 * carries the persisted active flag for the ease modes, and clears
 		 * each conditional's per-day charge guard. Unlike most actions it also
-		 * returns the resolved array directly, so the generator can gate
-		 * pickers off the fresh values in the same pass instead of waiting for
-		 * React state.
+		 * returns the resolved array directly, not just through state.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param void - This function takes no parameters.
 		 *
 		 * @returns The conditionals resolved for this Generate pass, or null
-		 *          when React defers the update and the caller falls back to
-		 *          state.
+		 *          when the state updater has not run yet.
 		 * @see {@link resConArr}
 		 *
 		 * @example
@@ -1343,7 +1338,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		resConFun : () => { // What: Resolve Conditionals Function. Why: Phase A of Generate: rolls probability/dynamic modes and carries persisted active for ease modes, clearing the per-day charge guard, so the generator can gate pickers off fresh values in the same pass. How: This calls CON_NAM_OBJ.resDayFun, applies its own per-conditional patch, and returns the resolved array directly (not just via setAppStaObj).
+		resConFun : () => { // What: Resolve Conditionals Function. Why: Phase A of Generate: rolls probability/dynamic modes and carries persisted active for ease modes, clearing the per-day charge guard. How: This calls CON_NAM_OBJ.resDayFun, applies its own per-conditional patch, and returns the resolved array directly (not just via setAppStaObj).
 
 
 			let resConArr : ConRcdTyp[] | null = null; // What: Resolved Conditionals Array. Why: The resolved array must be handed back directly, not only through the next render's state. How: This starts null and is captured inside the setAppStaObj updater below.
@@ -1685,10 +1680,10 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * addHolFun = Add Holiday Function
 		 *
 		 * @summary
-		 * The global "days off" the skip-holidays gate reads. togHolFun
-		 * turns a computed holiday on/off (off means listed in disabled);
-		 * addHolFun/delHolFun manage the user's own extra,
-		 * hand-entered holidays alongside the computed ones.
+		 * Adds one of the user's own hand-entered holidays, with a fresh ID,
+		 * to holidays.custom, beside the computed ones. togHolFun switches a
+		 * computed holiday on or off through disabled, and delHolFun removes a
+		 * hand-entered one.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1785,7 +1780,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			const curHolObj = HOL_NAM_OBJ.resStaFun( curStaObj.holidays ); // What: Current Holidays Object. Why: The toggle below needs a real holidays shape even for state that predates this field. How: This reads curStaObj's own holidays, falling back to HOL_NAM_OBJ's own default state.
 
-			const nexDisArr = curHolObj.disabled.includes( holKeyStr ) // What: Next Disabled Array. Why: Toggling off removes holKeyStr from disabled; toggling on (re-enabling) adds it. How: This filters holKeyStr out when already present, else appends it.
+			const nexDisArr = curHolObj.disabled.includes( holKeyStr ) // What: Next Disabled Array. Why: A holiday already listed in disabled is switched back on by removing it, and one not listed is switched off by adding it. How: This filters holKeyStr out when already present, else appends it.
 				? curHolObj.disabled.filter( ( curKeyStr ) => curKeyStr !== holKeyStr ) // What: Re-Enable Branch. Why: A disabled holiday being turned back on leaves the list. How: This filters holKeyStr out.
 				: [ ...curHolObj.disabled, holKeyStr ];                                 // What: Disable Branch. Why: An enabled holiday being turned off joins the list. How: This appends holKeyStr.
 

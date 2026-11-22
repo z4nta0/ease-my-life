@@ -5,7 +5,7 @@
 
 import { HOL_NAM_OBJ } from '../core/holidays.ts'; // What: Holidays Namespace Object. Why: The clean state needs the canonical empty holidays shape. How: This is called (defStaFun) by buiCleFun below.
 import { isoDayFun   } from '../utils/date.ts';    // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
-import { PIC_NAM_OBJ } from '../core/pickers.ts';  // What: Pickers Namespace Object. Why: The Ease Down history simulation charges toward the shared full-charge ceiling when a picker has no threshold of its own. How: This reads PIC_NAM_OBJ.THR_VAL_NUM.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';  // What: Pickers Namespace Object. Why: The Ease Down history simulation starts each item at the shared full-charge ceiling when its picker has no threshold of its own. How: This reads PIC_NAM_OBJ.THR_VAL_NUM.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';    // What: Tasks Namespace Object. Why: The clean state needs the reminders engine's own default options shape. How: This is called (defOptFun) by buiCleFun below.
 
 
