@@ -1160,7 +1160,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									<ColDisCom
 										isaInsBoo={ isaNewBoo }
 										open={ modSelBoo }
-									>{ /* What: Collapse Disclosure Component. Why: The hint expands/collapses on selection change, so the old row's hint folds away while the new one grows. How: This opens only for the currently-selected mode, instant (no animation) for a brand-new draft. */ }
+									>{ /* What: Collapse Disclosure Component. Why: The hint expands/collapses on selection change, so the old row's hint folds away while the new one grows. How: This opens only for the currently-selected mode, and a brand-new draft's hint is already open when it first mounts (isaInsBoo). */ }
 
 
 										{ Array.isArray( modValObj.hinArr ) // What: Hint Content Check. Why: A mode's own hint can be either one paragraph or several. How: This maps every paragraph to its own span when hint is an array, otherwise renders the single hint directly.
