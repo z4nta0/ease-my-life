@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tab-today.module.css'; // What: CSS Module Object. Why: The Today tab's own styles live in its module. How: Each className and animation trigger reads its hashed class from here.
-import React     from 'react';                  // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useMemo, React.useCallback, React.forwardRef, React.useImperativeHandle, React.Fragment) throughout, instead of importing individual named hooks.
+import React     from 'react';                  // What: React. Why: This is the UI library every component in this file is built on. How: This is used directly (React.useState, for one) instead of importing individual named hooks.
 
 
 import { APP_FEA_ARR  } from '../../onboarding/app-features.tsx';   // What: App Feature Array. Why: This is the fixed catalog of App Features tutorial cards rendered once the checklist concludes. How: This is mapped over to render one AppFeaCom per entry and to compute the section's own done/total counts.
@@ -36,7 +36,7 @@ import { LoaCarCom    } from './regeneration-loader.tsx';           // What: Loa
 import { merOrdFun    } from './group-entries.ts';                  // What: Merge Order Function. Why: An Edit Mode drag reorders only the groups or pickers present today. How: This merges that new order back into the full saved order before it is written.
 import { norGroFun    } from '../../core/pickers.ts';               // What: Normalize Group Function. Why: A typed group rename/Page Tours rename needs the same normalization real picker groups already get. How: This is called inside reqRenFun and pagColFun.
 import { NOT_NAM_OBJ  } from '../../platform/notify.ts';            // What: Notification Namespace Object. Why: An auto-generated list should still fire a best-effort system notification. How: This is called via NOT_NAM_OBJ.genNotFun() right after an auto run, its result deliberately ignored.
-import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called throughout for entLooFun/cheStaFun/reaPicFun/reaGenFun/othRmnFun/tutProFun.
+import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: The whole mini-tour checklist phase (launcher cards, readiness, done/total counts) is driven by this shared namespace. How: This is called for the checklist's state, such as its status.
 import { ONB_EPT_ARR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Explore-Page-Tours Array. Why: The Page Tours section needs its own fixed manifest of tour cards, separate from sample pickers/tasks. How: This is mapped over to render one PagTouCom per entry and to compute that section's own counts.
 import { ONB_GII_STR  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Generate-Item-ID String. Why: The closing "Generate a real list" card needs the checklist's own fixed key for that single card. How: This is passed to ONB_CHE_OBJ.entLooFun/setCarFun wherever that specific card is read or resolved.
 import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own counts.
@@ -292,7 +292,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		pusIdeFun( '__reminders' ); // What: Reminders Trailing Guard. Why: On the very first render (an empty savOrdArr), the front-guard above never ran, so this second call is what actually seeds Reminders at all; pusIdeFun's own dedupe makes this a no-op on every later render. How: This pushes '__reminders' again, harmlessly, if it somehow still isn't collected.
+		pusIdeFun( '__reminders' ); // What: Reminders Trailing Guard. Why: The front guard or the saved pass has already collected '__reminders' by this point, so this call is a safety net that guarantees Reminders is in the order. How: This pushes '__reminders' again, which pusIdeFun's own dedupe turns into a no-op when it was already collected.
 
 		if ( !seeNamSet.has( '__pageTours' ) ) ideOrdArr.splice( ideOrdArr.indexOf( '__reminders' ) + 1, 0, '__pageTours' ); // What: Page Tours Default Splice. Why: Page Tours defaults to right after Reminders the first time it shows up (e.g. a saved order predating Page Tours entirely), so it needs no backfill in migStaFun(); once the user drags it in Edit Mode, its own saved position takes over like any other group. How: This splices '__pageTours' in right after '__reminders' only when it wasn't already collected above.
 
@@ -1132,7 +1132,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	const raiEleRef = React.useRef< HTMLElement | null >( null ); // What: Rail Element Reference. Why: This effect needs a direct DOM handle on the group rail to measure it when it stacks horizontally. How: This is attached to the <aside> rail's own ref prop further down.
 
 
-	React.useEffect( () => { // What: Sticky Offset Effect. Why: See the doc comment just above. How: This measures both elements on mount, on their own resize, and on window resize, publishing 3 CSS custom properties onto the tab root.
+	React.useEffect( () => { // What: Sticky Offset Effect. Why: See the doc comment just above. How: This measures both elements on mount, on their own resize, and on window resize, publishing 2 CSS custom properties onto the tab root.
 
 
 		const heaCurEle = heaEleRef.current; // What: Header Current Element. Why: This is the actual DOM node every measurement below reads from. How: This reads heaEleRef.current once.
@@ -1142,14 +1142,14 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 
-		const tabCurEle = heaCurEle.closest< HTMLElement >( '[data-element-name-hook~="todTabDiv"]' ); // What: Tab Current Element. Why: The 3 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from heaCurEle to its nearest todTabDiv hook ancestor.
+		const tabCurEle = heaCurEle.closest< HTMLElement >( '[data-element-name-hook~="todTabDiv"]' ); // What: Tab Current Element. Why: The 2 CSS custom properties this effect publishes must land on the tab's own root, not the header itself. How: This walks up from heaCurEle to its nearest todTabDiv hook ancestor.
 
 
 		if ( !tabCurEle ) return; // What: No Tab Root Guard. Why: Without the tab root there is nowhere to publish the measured values. How: This bails out of the effect early when tabCurEle is missing.
 
 
 
-		const aplVarFun = () => { // What: Apply Variables Function. Why: Every trigger below (mount, either ResizeObserver, window resize) needs this exact same measure-and-publish step. How: This measures heaCurEle/raiEleRef, then writes 3 CSS custom properties onto tabCurEle.
+		const aplVarFun = () => { // What: Apply Variables Function. Why: Every trigger below (mount, either ResizeObserver, window resize) needs this exact same measure-and-publish step. How: This measures heaCurEle/raiEleRef, then writes 2 CSS custom properties onto tabCurEle.
 
 
 			// #region Height Measurement
@@ -1391,18 +1391,16 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * tab-today.tsx = Reroll Card-Flip Animation
 	 *
 	 * @summary
-	 * Re-roll plays a card-flip animation. The card body does a full
-	 * 360deg rotation on its X axis (single direction) so it reads as a
-	 * tumble; the state update lands exactly at 180deg, the apex of the
-	 * flip, so the new item name comes in upside-down for a moment, then
-	 * rolls right-side up. Reduced motion keeps a SHORT deliberate beat
-	 * rather than swapping instantly: with no flip to watch, an immediate
-	 * swap can read as "nothing happened", especially when the two item
-	 * names are similar in length. 200ms is still clearly a response and
-	 * stays under the ~300ms mark where a delay starts to feel like lag.
-	 * The full p06 duration step is the flip's own duration (the swap lands
-	 * at its halfway apex), so inheriting it here would just be the ghost of
-	 * an animation that no longer plays.
+	 * Re-roll plays a card-flip animation. The card body does a full 360deg
+	 * rotation on its X axis (single direction) so it reads as a tumble; the
+	 * state update lands exactly at 180deg, the apex of the flip, so the new
+	 * item name comes in upside-down for a moment, then rolls right-side up.
+	 * Reduced motion keeps a SHORT deliberate beat rather than swapping
+	 * instantly: with no flip to watch, an immediate swap can read as "nothing
+	 * happened", especially when the two item names are similar in length.
+	 * 200ms is still clearly a response. The full p06 duration step is the
+	 * flip's own duration (the swap lands at its halfway apex), so inheriting
+	 * it here would just be the ghost of an animation that no longer plays.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -1593,9 +1591,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		const updEdgFun = () => togFadFun( raiCurEle ); // What: Update Edges Function. Why: Both the scroll listener and the resize observer need this exact same recompute-and-toggle step. How: This calls togFadFun on raiCurEle.
 
 
-		updEdgFun(); // What: Initial Update Call. Why: The edge classes must be correct immediately on mount, without waiting for a scroll/resize event. How: This invokes updEdgFun once, synchronously.
+		updEdgFun(); // What: Initial Update Call. Why: The edge attributes must be correct immediately on mount, without waiting for a scroll/resize event. How: This invokes updEdgFun once, synchronously.
 
-		raiCurEle.addEventListener( 'scroll', updEdgFun, { passive : true } ); // What: Scroll Listener Subscribe. Why: The rail's own horizontal scroll position is the primary trigger for re-evaluating the edge classes. How: This registers updEdgFun as a passive scroll listener.
+		raiCurEle.addEventListener( 'scroll', updEdgFun, { passive : true } ); // What: Scroll Listener Subscribe. Why: The rail's own horizontal scroll position is the primary trigger for re-evaluating the edge attributes. How: This registers updEdgFun as a passive scroll listener.
 
 		const resObsObj = new ResizeObserver( updEdgFun ); // What: Resize Observer Object. Why: The rail's own scrollable width can change without a scroll event firing at all (e.g. groups being added/removed). How: This re-runs updEdgFun on every observed resize.
 
@@ -2281,7 +2279,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *                    boundary-check run.
 	 *
 	 * @returns A promise that settles once the cascade has finished and
-	 * today's list is committed.
+	 * today's list is committed, with no value.
 	 *
 	 * @example
 	 * ```ts
