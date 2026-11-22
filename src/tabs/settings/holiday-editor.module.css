@@ -56,7 +56,7 @@
 
 
 }
-.holRowIte--enter { /* What: Holiday Row Item Enter. Why: A newly added custom day should slide in rather than appear. How: This plays a short fade-and-drop as the row mounts, which existing rows skip since they're keyed by id. */
+.holRowIte--enter { /* What: Holiday Row Item Enter. Why: A newly added custom day should slide in rather than appear. How: This plays a short fade-and-drop as a custom row mounts, and a row that stays mounted doesn't replay it, since the rows are keyed by id. */
 
 
 	animation : holRowIteEnterFadeIn var( --dur-ani-p03 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */

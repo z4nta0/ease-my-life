@@ -276,7 +276,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 							<span className={ cssModObj.holNamSpa }>{ cusCurObj.name }</span>{ /* What: Holiday Name Span Element. Why: A row needs its own visible holiday name. How: This renders cusCurObj's own name field. */ }
 
-							<span className={` ${ cssModObj.holDatSpa }   ${ cssModObj.holDatSpaCustom } `}>{ /* What: Holiday Date Span Element. Why: A custom holiday's recurrence label needs its own grouping. How: This wraps the recurrence label and the "every year" note below. */ }
+							<span className={` ${ cssModObj.holDatSpa }   ${ cssModObj.holDatSpaCustom } `}>{ /* What: Holiday Date Span Element. Why: A custom holiday's recurrence label needs its own grouping. How: This wraps the recurrence label and the "every year" note below, and its holDatSpaCustom class lays the two out in a wrapping baseline row. */ }
 
 
 								<span>{ reuDatFun( cusCurObj.month, cusCurObj.day ) }</span>{ /* What: Recur Label Span Element. Why: A custom row needs a year-agnostic "Month Day" label. How: This renders cusCurObj's own month/day, formatted via reuDatFun. */ }
@@ -340,11 +340,11 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 						if ( keyEveObj.key === 'Enter' ) addCusFun(); // What: Enter Submit Branch. Why: Enter should submit the typed name the same way clicking Add would. How: This calls addCusFun.
 
-						else if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); // What: Escape Blur Branch. Why: Escape should back out of the field without submitting, like the other inputs in this tab. How: This blurs the input via keyEveObj.currentTarget.
+						else if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); // What: Escape Blur Branch. Why: Escape should back out of the field without submitting. How: This blurs the input via keyEveObj.currentTarget.
 
 
 					} }
-				/>{ /* What: Holiday Name Input Element. Why: The user needs a text field to type a new holiday's own name into. How: This is bound to draNamStr, submits on Enter, and blurs on Escape like the other inputs in this tab. */ }
+				/>{ /* What: Holiday Name Input Element. Why: The user needs a text field to type a new holiday's own name into. How: This is bound to draNamStr, submits on Enter, and blurs on Escape. */ }
 
 				<input
 					className={ cssModObj.holDatInp }
@@ -356,7 +356,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 					onChange={ ( chaEveObj ) => setDraDatStr( chaEveObj.target.value ) }
 					onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Escape' ) keyEveObj.currentTarget.blur(); } } // What: Date Key Down Handler. Why: The date field needs a way to back out from the keyboard. How: This blurs the input on Escape.
-				/>{ /* What: Holiday Date Input Element. Why: The user needs a native date picker to choose the new holiday's own recurring month/day. How: This is bound to draDatStr and blurs on Escape like the other inputs in this tab. */ }
+				/>{ /* What: Holiday Date Input Element. Why: The user needs a native date picker to choose the new holiday's own recurring month/day. How: This is bound to draDatStr and blurs on Escape. */ }
 
 
 

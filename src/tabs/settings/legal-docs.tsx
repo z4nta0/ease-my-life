@@ -139,7 +139,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 
 
-	React.useEffect( () => { // What: Open State Effect. Why: Every time legDocStr changes to a real value, the modal needs its own Esc listener, its own scroll lock, and its own initial focus, all torn back down on close. How: This subscribes a keydown listener, freezes the app's own main scroller, focuses the panel, and returns a cleanup that reverses all three.
+	React.useEffect( () => { // What: Open State Effect. Why: Every time legDocStr changes to a real value, the modal needs its own Esc listener, its own scroll lock, and its own initial focus, all torn back down on close. How: This subscribes a keydown listener, freezes the app's own main scroller, focuses the panel, and returns a cleanup that removes the listener, cancels the pending focus, and restores the scroller.
 
 
 		if ( !legDocStr ) return; // What: No Document Guard. Why: There is nothing to set up while no document is being shown. How: This bails out of the effect entirely when legDocStr is null.

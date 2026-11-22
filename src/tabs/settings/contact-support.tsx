@@ -196,7 +196,7 @@ function ConSupCom () : React.JSX.Element {
 
 	// #region Form State
 
-	const [ forOpeBoo, setForOpeBoo ] = React.useState( false ); // What: Form Open Boolean And Setter. Why: The support form is not persisted; it always starts closed on load. How: This gates the ColDisCom below and is flipped by opeForFun/canForFun.
+	const [ forOpeBoo, setForOpeBoo ] = React.useState( false ); // What: Form Open Boolean And Setter. Why: The support form is not persisted; it always starts closed on load. How: This gates the ColDisCom below and is set by the form's open, cancel, and successful-send actions.
 	const [ draSubStr, setDraSubStr ] = React.useState( '' );    // What: Draft Subject String And Setter. Why: The subject field needs somewhere to hold its own typed value before sending. How: This is bound to the subject input below and read by senForFun.
 	const [ draMesStr, setDraMesStr ] = React.useState( '' );    // What: Draft Message String And Setter. Why: The message field needs somewhere to hold its own typed value before sending. How: This is bound to the message textarea below and read by senForFun.
 	const [ senTimNum, setSenTimNum ] = React.useState( 0 );     // What: Sent Time Number And Setter. Why: A successful send needs both a truthy flag and a fresh React key to replay the "sent" note if the user sends a second message later. How: This is set to Date.now() on a successful send and used as both the visibility check and the key below.
