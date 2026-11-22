@@ -397,8 +397,9 @@ type CmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Cond
  * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
  * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
- * @returns The Conditionals section: its own header, the "Add a conditional"
- *          control, and every conditional's own collapsible row.
+ * @returns The Conditionals section: its own header and, while it is
+ *          expanded, its controls (the add control, for one) and every
+ *          conditional's own collapsible row.
  *
  * @example
  * ```tsx

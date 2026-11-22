@@ -718,7 +718,7 @@
 
 /* #region catHeaBut */
 
-.catHeaBut { /* What: Category Header Button. Why: The chevron and the name block read as one control, and the toggle is a real button that should look like the header text it holds. How: This strips the button chrome, lets it fill the header's width, and lines its contents up in a centered row, and eases its hover, press, and focus ring. */
+.catHeaBut { /* What: Category Header Button. Why: The chevron and the name block read as one control, and the toggle is a real button that should look like the header text it holds. How: This strips the button chrome, lets it take the header's remaining width, and lines its contents up in a centered row, and eases its hover, press, and focus ring. */
 
 
 	-webkit-appearance : none;
