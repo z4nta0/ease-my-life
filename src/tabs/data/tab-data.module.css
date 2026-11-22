@@ -398,10 +398,10 @@
 
 
 }
-@supports ( -moz-appearance : none ) { /* What: Firefox Scope Tab Div. Why: Firefox clips the tabs' bottom border inside the scroller. How: This applies only in Firefox. */
+@supports ( -moz-appearance : none ) { /* What: Firefox Scope Tab Div. Why: Firefox gets a pixel of room under the tabs. How: This applies only in Firefox. */
 
 
-	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The bottom border needs a pixel of room. How: This adds Spacing Vertical Base Minus 9 (about 1px) of bottom padding. */
+	.scoTabDiv { /* What: Padded Scope Tab Div. Why: The tabs get a pixel of room below their bottom border. How: This adds Spacing Vertical Base Minus 9 (about 1px) of bottom padding. */
 
 
 		padding-bottom : var( --spa-ver-m09 ); /* Spacing Vertical Base Minus 9 ~= 1.160px */
@@ -478,7 +478,7 @@
 
 }
 
-.scoNamSpa { /* What: Scope Name Span. Why: The scope's name leads its tab. How: This sets it in medium weight, easing its color with its tab's. */
+.scoNamSpa { /* What: Scope Name Span. Why: The scope's name leads its tab. How: This sets it in medium weight, easing its color on the same duration as the tab's border and background. */
 
 
 	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
@@ -583,7 +583,7 @@
 
 }
 
-.empSubPar { /* What: Empty Sub Paragraph. Why: The hint says how to widen the filters. How: This sets it small and muted. */
+.empSubPar { /* What: Empty Sub Paragraph. Why: The hint says how to widen the filters. How: This sets it muted at the body's size. */
 
 
 	color       : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -831,7 +831,7 @@
 
 }
 
-.catNamHea { /* What: Category Name Heading. Why: The picker's name is its heading and should never wrap. How: This sets it at heading size on one line, ending in an ellipsis when it runs out of room. */
+.catNamHea { /* What: Category Name Heading. Why: The picker's name is its heading and should never wrap. How: This sets it in medium weight on one line, ending in an ellipsis when it runs out of room. */
 
 
 	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
@@ -1336,7 +1336,7 @@
 
 
 }
-@keyframes lisIteDivTourBorderFade { /* What: List Item Div Tour Border Fade Keyframes. Why: A target row's borders should fade in and out the way the plain tour outline does. How: This dims the border color to 20% at the midpoint and back. */
+@keyframes lisIteDivTourBorderFade { /* What: List Item Div Tour Border Fade Keyframes. Why: A target row's borders should fade in and out the way the plain tour outline does. How: This dims the border color to about 18.5% opacity at the midpoint and back. */
 
 
 	0%, 100% {
