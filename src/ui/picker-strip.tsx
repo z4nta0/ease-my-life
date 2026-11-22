@@ -367,7 +367,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 				<span
-					key={ rowPosNum + '_' + curCanObj.id }
+					key={ rowPosNum + '_' + curCanObj.id } // What: Dissolve Name Key. Why: Each candidate the strip lands on should fade in. How: A new row position or candidate remounts the span, replaying its fade.
 
 					className={ cssModObj.disNamSpa }
 				>{ /* What: Dissolve Name Span Element. Why: This is the actual name that cross-fades between candidates. How: This renders curCanObj's own name, or an empty string if it has none. */ }

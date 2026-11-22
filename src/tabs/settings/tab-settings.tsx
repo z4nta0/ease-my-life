@@ -2546,7 +2546,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 										<span
-											key={ expMesObj.timNum }
+											key={ expMesObj.timNum } // What: Export Message Key. Why: Each new export's message should pop in again. How: A new timestamp remounts the span, replaying its pop.
 
 											className={ cssModObj.setMesSpa }
 
@@ -2733,7 +2733,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 										<span
-											key={ resMesStr }
+											key={ resMesStr } // What: Reset Message Key. Why: A new reset message should pop in. How: A new message remounts the span, replaying its pop.
 
 											className={ cssModObj.setMesSpa }
 

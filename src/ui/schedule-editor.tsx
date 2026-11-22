@@ -1532,7 +1532,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 					<span className={ cssModObj.fieLabSpa }>Repeat</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Repeat". */ }
 
 					<span
-						key={ tasRcdObj.repeat }
+						key={ tasRcdObj.repeat } // What: Repeat Key. Why: The sub-explanation should fade when the repeat kind changes. How: A new repeat kind remounts the span, replaying its fade.
 
 						className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
 					>{ ( REP_OPT_ARR.find( ( optConObj ) => optConObj.keyStr === tasRcdObj.repeat ) || {} ).subEle }</span>{ /* What: Field Subtitle Span Element. Why: This is the live sub-explanation matching the currently-selected repeat kind. How: This looks up REP_OPT_ARR by tasRcdObj's own repeat and renders that entry's own subEle. Its fieSubSpaFading class plays the fade. */ }

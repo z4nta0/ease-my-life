@@ -167,7 +167,7 @@ function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, on
 
 
 				<EntEdiCom
-					key={ ediKeyStr }
+					key={ ediKeyStr } // What: Editor Key. Why: Switching straight from one item to another should start a fresh editor. How: A new key remounts EntEdiCom, dropping the last item's editor state.
 
 					iteDatObj={ iteDatObj }
 					picDatObj={ picDatObj }
