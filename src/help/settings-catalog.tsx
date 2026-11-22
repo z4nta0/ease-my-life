@@ -238,7 +238,7 @@ const SET_HEL_ARR : HelIteTyp[] = [ // What: Settings Help Array. Why: This is t
 
 	},
 
-	{ // What: Install Instructions Help Item. Why: This is the on-demand help tip for the Install Instructions element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Exactly one of these four mutually-exclusive rows ever renders at a time (already installed / can't install here / iOS Add to Home Screen / Mac Add to Dock, see tab-settings.tsx), all sharing this one class, so this covers whichever is actually showing.
+	{ // What: Install Instructions Help Item. Why: This is the on-demand help tip for the Install Instructions element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Up to four install note rows (already installed / can't install here / iOS Add to Home Screen / Mac Add to Dock, see tab-settings.tsx) share this one class, so this covers whichever is showing.
 
 
 		bodEle    : <>This shows device and browser specific information about how to install the app. Installing the app has many benefits, but you can always keep using the app as a website if you prefer.</>,

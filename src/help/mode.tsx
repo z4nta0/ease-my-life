@@ -253,10 +253,10 @@ const resBoxFun = ( curRecObj : HelRecTyp ) : PadSidTyp & ShaRadTyp => { // What
 		radXcoNum, // What: Radius X-Coordinate Number. Why: The cutout and spot round their horizontal corners by this. How: This is the shape's own value or the default.
 		radYcoNum, // What: Radius Y-Coordinate Number. Why: The cutout and spot round their vertical corners by this. How: This is the shape's own value or the default.
 
-		padBotNum : curRecObj.padBotNum ?? rhyPixFun( 'm02' ), // What: Pad Bottom Number. Why: A column group member's own side pads are forced to 0 elsewhere, but its top and bottom pads still apply normally here. How: This reads curRecObj's own padBotNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+		padBotNum : curRecObj.padBotNum ?? rhyPixFun( 'm02' ), // What: Pad Bottom Number. Why: The cutout and spot extend below the target by this pad. How: This reads curRecObj's own padBotNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 		padLefNum : curRecObj.padLefNum ?? rhyPixFun( 'm02' ), // What: Pad Left Number. Why: A clipped side keeps only the pad that survived. How: This reads curRecObj's own padLefNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 		padRigNum : curRecObj.padRigNum ?? rhyPixFun( 'm02' ), // What: Pad Right Number. Why: A clipped side keeps only the pad that survived. How: This reads curRecObj's own padRigNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
-		padTopNum : curRecObj.padTopNum ?? rhyPixFun( 'm02' )  // What: Pad Top Number. Why: A column group member's own side pads are forced to 0 elsewhere, but its top and bottom pads still apply normally here. How: This reads curRecObj's own padTopNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
+		padTopNum : curRecObj.padTopNum ?? rhyPixFun( 'm02' )  // What: Pad Top Number. Why: The cutout and spot extend above the target by this pad. How: This reads curRecObj's own padTopNum, falling back to the flat default. // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 
 	};

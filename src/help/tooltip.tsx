@@ -170,19 +170,17 @@ type HtcProTyp = { tarRecObj : HelRecTyp, tipIteObj : HelIteTyp }; // What: Help
  * HelTipCom = Help Tip Component
  *
  * @summary
- * One tip, positioned once its own size is known, mirroring InfTipCom's
- * own measure-after-mount approach; simpler than the guided tour's
- * permanent hidden measurer since at most one of these ever exists at
- * a time. tipIteObj.mtwBoo (e.g. the nav tip, once it grew to 5
- * paragraphs) sizes the tip to tarRecObj.tipWidNum instead of the usual
- * fixed width, applied as an inline style so it already wins by the
- * time offsetWidth first measures it. tipIteObj.scrBoo caps the tip
- * to whatever vertical room plaTipFun found and scrolls internally
- * past that instead of overflowing the viewport; it is applied to an
- * inner wrapper rather than the outer .helTipDiv box itself, since
- * overflow:auto on the outer box would clip its own arrow, which is
- * deliberately positioned outside the box's own normal content area to
- * poke out and point at the target.
+ * One tip, positioned once its own size is known, mirroring InfTipCom's own
+ * measure-after-mount approach; simpler than the guided tour's permanent
+ * hidden measurer. tipIteObj.mtwBoo (e.g. the nav tip, once it grew to 5
+ * paragraphs) sizes the tip to tarRecObj.tipWidNum instead of the usual fixed
+ * width, applied as an inline style so it already wins by the time offsetWidth
+ * first measures it. tipIteObj.scrBoo caps the tip to whatever vertical room
+ * plaTipFun found and scrolls internally past that instead of overflowing the
+ * viewport; it is applied to an inner wrapper rather than the outer .helTipDiv
+ * box itself, since overflow:auto on the outer box would clip its own arrow,
+ * which is deliberately positioned outside the box's own normal content area
+ * to poke out and point at the target.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
