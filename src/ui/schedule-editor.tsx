@@ -796,7 +796,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 
 		// #region Advisory Text
 
-		const nexLabStr = nexDatFun( visResObj.nexObj, tasRcdObj.repeat === 'annual' );  // What: Next Label String. Why: Both remaining branches below name the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own nexObj date, always including the year for an annual reminder.
+		const nexLabStr = nexDatFun( visResObj.nexObj, tasRcdObj.repeat === 'annual' );  // What: Next Label String. Why: Every body branch below names the next day the reminder WILL appear, whenever one is known. How: This calls nexDatFun against visResObj's own nexObj date, always including the year for an annual reminder.
 		const kinWorStr = TAS_NAM_OBJ.isaReuFun( tasRcdObj ) ? 'recurring' : 'one-time'; // What: Kind Word String. Why: The settings-cause branch below needs to name whether it's talking about a recurring or one-time item. How: This picks the word based on TAS_NAM_OBJ.isaReuFun.
 
 		let bodTexEle; // What: Body Text Element. Why: The actual advisory sentence depends on which of the 3 branches below applies, assigned in exactly one of them. How: This is declared here and read by the shared return at the end of this branch.
@@ -988,7 +988,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 	// #region Schedule Field Elements
 
-	const ancHinEle = ( // What: Anchor Hint Element. Why: Interval/weekly/monthly/annual all share this same "counted from" hint once N > 1. How: This renders either a live date link or an inline date input, based on ancEdiBoo.
+	const ancHinEle = ( // What: Anchor Hint Element. Why: Every interval-based subsection shares this same "counted from" hint. How: This renders either a live date link or an inline date input, based on ancEdiBoo.
 
 
 		<p className={ cssModObj.fieHinPar }>{ /* What: Field Hint Paragraph Element. Why: This is the shared hint every interval-based schedule below reuses unmodified. How: This renders the counted-from sentence, swapping in a live link or an inline input based on ancEdiBoo. */ }
@@ -1522,7 +1522,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 			className={` ${ cssModObj.schEdiDiv }   ${ layVarStr === 'stacked' ? cssModObj.schEdiDivStacked : '' }   ${ layVarStr === 'rows' ? cssModObj.schEdiDivRows : '' } `}
 
 			data-element-name-hook='schEdiDiv'
-		>{ /* What: Schedule Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then either oncFieEle or extFieEle based on tasRcdObj's own repeat. Its data-element-name-hook is read by help mode. */ }
+		>{ /* What: Schedule Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then the once fields and the extra fields, each shown only for its own repeat kinds, and its schEdiDivStacked or schEdiDivRows class sets the layout from layVarStr. Its data-element-name-hook is read by help mode. */ }
 
 
 			<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: The Repeat control is its own schedule subsection, always shown regardless of which kind is selected. How: This renders the segmented control plus its own live summary and visibility note. */ }
@@ -1608,7 +1608,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 
-			{ aniExtBoo ? ( // What: Animated Extra Fields Branch. Why: A caller that opted into animation needs the extra-fields subsection to grow/shrink, and to re-key on kind switch so its own internal ColDisCom states reset cleanly. How: This wraps extFieEle in ColDisCom, open whenever repeat isn't 'once', keyed by curRepStr.
+			{ aniExtBoo ? ( // What: Animated Extra Fields Branch. Why: A caller that opted into animation needs the extra-fields subsection to grow/shrink, and to re-key on kind switch so its own internal ColDisCom states reset cleanly. How: This wraps extFieEle in ColDisCom, open whenever repeat isn't 'once', keyed by the remembered last kind while repeat is 'once' and by the real repeat otherwise.
 
 
 				<ColDisCom open={ tasRcdObj.repeat !== 'once' }>{ /* What: Collapse Disclosure Component. Why: A caller that opted into animation needs the extra-fields subsection to grow/shrink instead of snapping. How: This wraps extFieEle, open whenever repeat isn't 'once'. */ }
@@ -1626,7 +1626,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				</ColDisCom>
 
 
-			) : ( // What: Plain Extra Fields Branch. Why: A caller that didn't opt into animation just needs extFieEle shown or hidden outright, which it already does internally via its own curRepStr checks. How: This renders extFieEle directly, with no ColDisCom wrapper.
+			) : ( // What: Plain Extra Fields Branch. Why: A caller that didn't opt into animation just needs extFieEle rendered outright. How: This renders extFieEle directly, with no ColDisCom wrapper, so its own kind checks keep showing the last non-once kind's fields while repeat is 'once'.
 
 
 				extFieEle

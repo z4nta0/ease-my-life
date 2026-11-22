@@ -95,7 +95,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 	const staPosNum = lenCanNum ? ( ( ( ( indPicNum - totSteNum ) % lenCanNum ) + lenCanNum ) % lenCanNum ) + lenCanNum * 2 : 0; // What: Start Position Number. Why: This is the absolute row position the reel starts from and the schedule loop counts up from. How: This is passed as the initial value of rowPosNum below and reused by the schedule loop's own local copy. // What: Start Position Calculation. Why: rowPosNum below is an ABSOLUTE, monotonically-increasing row position, not a modulo index, so advancing it by a constant +1 each step keeps the reel sliding in one direction the whole time (the old approach took the index modulo the list length, snapping backwards a full height every time it wrapped). How: This pre-picks a start offset so that after exactly totSteNum constant steps the reel lands on indPicNum (mod lenCanNum), with a couple of full loops of runway above it.
-	const aniOffBoo = !forMotBoo && !!( redMotFun() );                                                                           // What: Animation Off Boolean. Why: This is whether the cycle is skipped entirely. How: This combines the forMotBoo opt-out with the shared redMotFun() check. // What: Animation Off Boolean. Why: Reduced motion skips the cycle entirely, since the pick is already decided by the caller before this component even mounts, making the reel/spotlight/dissolve purely theatre; freezing the visuals via CSS alone would still leave the totSteNum-step timer running (about 2.9s) before onCycDonFun fires, gating the caller's own Send button behind a static screen with no feedback. How: forMotBoo (set by the Settings preview's own explicit Play press) opts out of this skip even under a system reduced-motion preference.
+	const aniOffBoo = !forMotBoo && !!( redMotFun() );                                                                           // What: Animation Off Boolean. Why: This is whether the cycle is skipped entirely. How: This combines the forMotBoo opt-out with the shared redMotFun() check. // What: Animation Off Boolean. Why: Reduced motion skips the cycle entirely, since the pick is already decided by the caller before this component even mounts, making the reel/spotlight/dissolve purely theatre; freezing the visuals via CSS alone would still leave the totSteNum-step timer running (about 2.9s) before onCycDonFun fires, holding the settled result back behind a static screen with no feedback. How: forMotBoo (set by the Settings preview's own explicit Play press) opts out of this skip even under a system reduced-motion preference.
 	const wraSpoRef = React.useRef( null );                                                                                      // What: Wrap Spotlight Reference. Why: The spotlight style's own wrapping div needs a stable DOM handle. How: This is attached via the spotlight branch's own ref prop, below.
 
 	const [ rowPosNum, setRowPosNum ] = React.useState( staPosNum );                         // What: Row Position Number And Setter. Why: This is the strip's own current absolute row position, driving every style's rendered frame. How: This starts at staPosNum and is advanced by the schedule loop in the effect below.
@@ -108,7 +108,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 	// #region Short Viewport Tracking
 
-	const [ shoVieBoo, setShoVieBoo ] = React.useState( // What: Short Viewport Boolean And Setter. Why: This mirrors picker-strip.module.css's own `@media (max-height: 750px)` rule (picker-view.module.css's picStaDiv drops its min-height at the same height), but that alone can't help the 'reel' style: its own height is an inline style (rowHeiStr times visRowNum, computed in JS), not CSS, so nothing in the stylesheet can shrink it. Without also reducing the row count here, the reel's own real content would stay exactly as tall as before, growing picStaDiv right back past its reduced min-height as soon as a pick starts running. How: This starts from the media query's current match state and is kept live by the effect right below.
+	const [ shoVieBoo, setShoVieBoo ] = React.useState( // What: Short Viewport Boolean And Setter. Why: This mirrors picker-strip.module.css's own @media (max-height: 750px) rule, but that alone can't help the 'reel' style: its height is an inline style (rowHeiStr times visRowNum, computed in JS), which no stylesheet rule can shrink, so the row count drops here instead. How: This starts from the media query's current match state and is kept live by the effect right below.
 
 		() => typeof matchMedia === 'function' && matchMedia( '(max-height: 750px)' ).matches // What: Initial Short Viewport Check. Why: The starting value must reflect the current viewport height immediately, without waiting for the effect below to run. How: This safely checks matchMedia support before querying the max-height media query's current match state.
 
@@ -196,7 +196,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 					setCycPhaStr( 'settled' ); // What: Settle Phase Call. Why: Every style's render branch needs to know the cycle has landed. How: This writes 'settled' into cycPhaStr.
 
 
-					if ( onCycDonFun ) onCycDonFun(); // What: Done Callback Guard. Why: The caller needs to know the cycle has finished so it can move its own phase from 'running' to 'done'. How: This calls onCycDonFun only when the caller actually passed one.
+					if ( onCycDonFun ) onCycDonFun(); // What: Done Callback Guard. Why: The caller needs to know the cycle has finished. How: This calls onCycDonFun only when the caller actually passed one.
 
 
 
@@ -263,7 +263,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 		return (
 
 
-			<div className={` ${ cssModObj.picDisDiv }   ${ cssModObj.picDisDivSettled } `}>{ /* What: Picker Dissolve Div Element. Why: This is the single calm end-state shown under reduced motion, regardless of the requested style. How: This renders the picked candidate's own name, already landed. */ }
+			<div className={` ${ cssModObj.picDisDiv }   ${ cssModObj.picDisDivSettled } `}>{ /* What: Picker Dissolve Div Element. Why: This is the single calm end-state shown under reduced motion, regardless of the requested style. How: This renders the picked candidate's own name, already landed, under the settled class. */ }
 
 
 				<span className={ cssModObj.disNamSpa }>{ picIteObj ? picIteObj.name : '' }</span>{ /* What: Dissolve Name Span Element. Why: The picked candidate's name is the only thing this end-state needs to show. How: This renders picIteObj.name, or an empty string while nothing is picked yet. */ }
@@ -298,7 +298,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 				style={{ height : `calc( ${ rowHeiStr } * ${ visRowNum } )` }}
 
 				data-motion-force-active={ forMotBoo || undefined } // What: Motion Force Active Attribute. Why: An explicit preview request should play the animation even under reduced motion, and the module's reduced-motion rules skip anything under this attribute. How: This sets the presence-only attribute while forMotBoo is true and removes it otherwise.
-			>{ /* What: Picker Reel Div Element. Why: This is the reel style's own root, sized to exactly fit its visible row window. How: This wraps the scrolling track plus its top/bottom fade masks and center landing line. */ }
+			>{ /* What: Picker Reel Div Element. Why: This is the reel style's own root, sized to exactly fit its visible row window. How: This wraps the scrolling track plus its fade mask and center landing line, and its picReeDivSettled class marks the settled phase. */ }
 
 
 				<div
@@ -363,17 +363,17 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 				className={` ${ cssModObj.picDisDiv }   ${ cycPhaStr === 'settled' ? cssModObj.picDisDivSettled : '' } `}
 
 				data-motion-force-active={ forMotBoo || undefined } // What: Motion Force Active Attribute. Why: An explicit preview request should play the animation even under reduced motion, and the module's reduced-motion rules skip anything under this attribute. How: This sets the presence-only attribute while forMotBoo is true and removes it otherwise.
-			>{ /* What: Picker Dissolve Div Element. Why: This is the dissolve style's own root, wrapping the fading name and its optional settled glow. How: This holds a span keyed by rowPosNum and curCanObj's own id below so React remounts it, replaying the fade, on every change. */ }
+			>{ /* What: Picker Dissolve Div Element. Why: This is the dissolve style's own root, wrapping the fading name and its optional settled glow. How: This holds a span keyed by rowPosNum and curCanObj's own id below so React remounts it, replaying the fade, on every change, and its picDisDivSettled class marks the settled phase. */ }
 
 
 				<span
 					key={ rowPosNum + '_' + curCanObj.id }
 
 					className={ cssModObj.disNamSpa }
-				>{ /* What: Dissolve Name Span Element. Why: This is the actual name that cross-fades between candidates. How: This renders curCanObj's own name, or an empty string on the rare frame where none resolves. */ }
+				>{ /* What: Dissolve Name Span Element. Why: This is the actual name that cross-fades between candidates. How: This renders curCanObj's own name, or an empty string if it has none. */ }
 
 
-					{ curCanObj ? curCanObj.name : '' }{ /* What: Current Name Expression. Why: The dissolve frame shows the candidate for the current row position. How: This renders curCanObj's name, or nothing while it's missing. */ }
+					{ curCanObj ? curCanObj.name : '' }{ /* What: Current Name Expression. Why: The dissolve frame shows the candidate for the current row position. How: This renders curCanObj's name, or an empty string if it has none. */ }
 
 
 				</span>
@@ -393,7 +393,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 
 
 
-	const visCanArr = canIteArr.slice( 0, 10 ); // What: Visible Candidate Array. Why: A very large pool would otherwise render an unreasonably tall list. How: This caps the spotlight's own visible list at the first 10 candidates. // What: Spotlight Style Fallthrough. Why: The only remaining requested style is the spotlight list, so nothing further needs to gate this branch. How: This caps the visible candidate list at 10 entries and highlights whichever one the current row position lands on.
+	const visCanArr = canIteArr.slice( 0, 10 ); // What: Visible Candidate Array. Why: A very large pool would otherwise render an unreasonably tall list. How: This caps the spotlight's own visible list at the first 10 candidates. // What: Spotlight Style Fallthrough. Why: The only remaining requested style is the spotlight list, so nothing further needs to gate this branch. How: This caps the visible candidate list at 10 entries.
 
 
 
@@ -406,7 +406,7 @@ function PicStrCom ( { canIteArr, forMotBoo, onCycDonFun, picIteObj, styKeyStr }
 			className={` ${ cssModObj.picSpoDiv }   ${ cycPhaStr === 'settled' ? cssModObj.picSpoDivSettled : '' } `}
 
 			data-motion-force-active={ forMotBoo || undefined } // What: Motion Force Active Attribute. Why: An explicit preview request should play the animation even under reduced motion, and the module's reduced-motion rules skip anything under this attribute. How: This sets the presence-only attribute while forMotBoo is true and removes it otherwise.
-		>{ /* What: Picker Spotlight Div Element. Why: This is the spotlight style's own root, listing every visible candidate with the active one highlighted. How: This wraps one row per entry in visCanArr below. */ }
+		>{ /* What: Picker Spotlight Div Element. Why: This is the spotlight style's own root, listing every visible candidate with the active one highlighted. How: This wraps one row per entry in visCanArr below, and its picSpoDivSettled class marks the settled phase. */ }
 
 
 			{ visCanArr.map( ( curCanObj, rowIndNum ) => { // What: Spotlight Row List Render. Why: One row must exist per visible candidate, with the currently-landed one marked. How: This maps visCanArr to one row per curCanObj, computing isaActBoo per row from rowIndNum against the current position.
