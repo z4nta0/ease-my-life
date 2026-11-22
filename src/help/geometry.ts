@@ -4,7 +4,7 @@
 // #region Imports
 
 import { rhyPixFun } from '../utils/rhythm.ts';   // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
-import { splSelFun } from '../utils/selector.ts'; // What: Split Selector Function. Why: A selector list's alternatives are tried in turn, and a comma nested inside :is() or :has() must not split one alternative in two. How: This is called with the step's or item's own selector list.
+import { splSelFun } from '../utils/selector.ts'; // What: Split Selector Function. Why: A selector list's alternatives are tried in turn, and a comma nested inside :is() or :has() must not split one alternative in two. How: This is called by finTarFun to split the selector list it resolves.
 
 // #endregion Imports
 

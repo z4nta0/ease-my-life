@@ -172,8 +172,8 @@ type HtcProTyp = { tarRecObj : HelRecTyp, tipIteObj : HelIteTyp }; // What: Help
  * @summary
  * One tip, positioned once its own size is known, mirroring InfTipCom's own
  * measure-after-mount approach; simpler than the guided tour's permanent
- * hidden measurer. tipIteObj.mtwBoo (e.g. the nav tip, once it grew to 5
- * paragraphs) sizes the tip to tarRecObj.tipWidNum instead of the usual fixed
+ * hidden measurer. tipIteObj.mtwBoo (set by a tip with long copy, such as the
+ * nav tip) sizes the tip to tarRecObj.tipWidNum instead of the usual fixed
  * width, applied as an inline style so it already wins by the time offsetWidth
  * first measures it. tipIteObj.scrBoo caps the tip to whatever vertical room
  * plaTipFun found and scrolls internally past that instead of overflowing the
