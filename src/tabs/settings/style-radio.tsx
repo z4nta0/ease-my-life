@@ -14,10 +14,9 @@ import cssModObj from './style-radio.module.css'; // What: CSS Module Object. Wh
  *
  * @summary
  * A named-style radio list shared by Appearance's Picker animation and
- * Completion celebration pickers: StyRadCom reuses the Data tab's own
- * full-bleed radio rows (a dot, a name, and a hint that expands only on the
- * selected row), so these style pickers look and behave like the rest of the
- * app.
+ * Completion celebration pickers: StyRadCom mirrors the Data tab's full-bleed
+ * radio rows (a dot, a name, and a hint that expands only on the selected
+ * row), so these style pickers look and behave like the rest of the app.
  *
  * Sections:
  *  - Components
@@ -88,7 +87,7 @@ function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, v
 
 			<legend className={ cssModObj.styRadLeg }>{ groLabStr }</legend>{ /* What: Style Radio Legend Element. Why: The group still needs a real accessible name, even with no visible legend text. How: This renders groLabStr, hidden visually but still exposed to assistive tech. */ }
 
-			<div className={ cssModObj.modRadDiv }>{ /* What: Mode Radio Div Element. Why: The actual rows need their own shared layout wrapper, reused from the Data tab's own picker-mode selector. How: This maps radOptArr into one label/row per option. */ }
+			<div className={ cssModObj.modRadDiv }>{ /* What: Mode Radio Div Element. Why: The rows need their own shared layout wrapper, styled like the Data tab's picker-mode selector. How: This maps radOptArr into one label/row per option. */ }
 
 
 				{ radOptArr.map( ( optCurObj ) => { // What: Radio Option Map. Why: One full-bleed row is needed per entry in radOptArr. How: This maps radOptArr, deriving each row's own selected state before rendering it.

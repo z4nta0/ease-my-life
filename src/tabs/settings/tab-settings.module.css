@@ -478,7 +478,7 @@
 
 /* #region raiLisUno */
 
-.raiLisUno { /* What: Rail List Unordered. Why: The section buttons stack in a tight column. How: This stacks them with a hairline-sized gap. */
+.raiLisUno { /* What: Rail List Unordered. Why: The section buttons stack in a tight column. How: This stacks them with a tight gap. */
 
 
 	display        : flex;

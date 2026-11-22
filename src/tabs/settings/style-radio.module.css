@@ -315,7 +315,7 @@
 
 /* #region colInnDiv */
 
-.colInnDiv { /* What: Collapse Inner Div. Why: The one-line hint should arrive on a strong, slow fade beside the height glide. How: This clips the content and holds it faded out and raised slightly, easing both back after a short delay. */
+.colInnDiv { /* What: Collapse Inner Div. Why: The hint should arrive on a strong, slow fade beside the height glide. How: This clips the content and holds it faded out and raised slightly, easing both back after a short delay. */
 
 
 	min-height : 0;
