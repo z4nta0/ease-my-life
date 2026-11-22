@@ -99,13 +99,14 @@ const BIG_CHA_NUM = 0.12; // What: Big Chance Number. Why: A minority of glyphs 
  *
  * @summary
  * Originally calibrated against a 1920px-wide viewport on a tab using the
- * wider of the app's two content max-widths (Today's own .todBodDiv, 960px,
- * the tighter case, leaving less gutter than the other tabs' 720px at the same
- * viewport width): (1920 - 40 padding - 960) / 2 = 460px of gutter, for 6 full
- * columns + 1 half column. Sized down twice since (71->60->50, 60->48->40) for
- * more density each time; how many columns/rows actually fit at any width/tab
- * still just falls out of the real measured gutter width and content height
- * divided by these, no separate lookup table needed.
+ * wider of the app's two content max-widths (Today's own .todBodDiv, then
+ * 960px, the tighter case, leaving less gutter than the other tabs' then 720px
+ * at the same viewport width): (1920 - 40 padding - 960) / 2 = 460px of
+ * gutter, for 6 full columns + 1 half column. Sized down twice since
+ * (71->60->50, 60->48->40) for more density each time; how many columns/rows
+ * actually fit at any width/tab still just falls out of the real measured
+ * gutter width and content height divided by these, no separate lookup table
+ * needed.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

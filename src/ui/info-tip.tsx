@@ -182,7 +182,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 		return () => window.removeEventListener( 'resize', cheTrnFun ); // What: Window Resize Listener Cleanup Return. Why: The fallback listener must not outlive this effect run. How: This removes the same cheTrnFun reference that was added above.
 
 
-	}, [ trnOnlBoo, labTexStr ] ); // What: Effect Dependency Array. Why: trnOnlBoo decides whether to measure at all, and labTexStr changing means the underlying text (and therefore its own overflow) may have changed too. How: Both are read directly inside the guards/effect above.
+	}, [ trnOnlBoo, labTexStr ] ); // What: Effect Dependency Array. Why: trnOnlBoo decides whether to measure at all, and labTexStr changing means the underlying text (and therefore its own overflow) may have changed too. How: trnOnlBoo is read by the guard above, and labTexStr is listed only so the measurement reruns when the text changes.
 
 
 

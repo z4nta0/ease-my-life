@@ -28,15 +28,15 @@ import type { ModNamTyp } from '../core/data-model.ts'; // What: Mode Name Type.
  * conditional-controls.tsx = Conditional Controls
  *
  * @summary
- * CodConCom is the reusable "type + settings" editor for a
- * single conditional, bound to a plain draft object via onChange. It is
- * shared by the Pickers create-flow and the Data tab's conditional editor.
- * It mirrors the per-item picker controls: a mode radio (sharing its own
- * options/copy with the picker editor's mode radio), then whichever
- * per-mode settings block matches the selected mode (an Odds stepper
- * for weighted/dynamic, a Boost readout for dynamic, Soonest/Latest
- * steppers plus a Fill/Refill button for the ease modes), plus a name
- * field, the day-off replacement card text, and an Active toggle.
+ * CodConCom is the reusable "type + settings" editor for a single conditional,
+ * bound to a plain draft object via onChange. It is shared by the Pickers
+ * create-flow and the Data tab's conditional editor. It mirrors the per-item
+ * picker controls: a mode radio (sharing its options with the picker editor's
+ * mode radio, though its hint copy is its own), then whichever per-mode
+ * settings block matches the selected mode (an Odds stepper for
+ * weighted/dynamic, a Boost readout for dynamic, Soonest/Latest steppers plus
+ * a Fill/Refill button for the ease modes), plus a name field, the day-off
+ * replacement card text, and an Active toggle.
  *
  * Sections:
  *  - Constants
@@ -664,7 +664,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 											<ColDisCom open={ modSelBoo }>{ /* What: Collapse Disclosure Component. Why: The longer explanation of a mode should only take up space while that mode is actually selected. How: This animates the hint text below open only while modSelBoo is true. */ }
 
 
-												{ Array.isArray( CON_HIN_OBJ[ modKeyStr ] ) ? ( // What: Hint Array Check. Why: The conditional-specific hints above are each a 2-paragraph array, while a mode with no override here falls back to a single plain hint string from SED_NAM_OBJ.MOD_DEF_OBJ. How: This picks between rendering one span per paragraph or a single fallback span.
+												{ Array.isArray( CON_HIN_OBJ[ modKeyStr ] ) ? ( // What: Hint Array Check. Why: The conditional-specific hints above are each a 2-paragraph array, while a mode with no override here falls back to the shared SED_NAM_OBJ.MOD_DEF_OBJ hint array, rendered in one span. How: This picks between rendering one span per paragraph or a single fallback span.
 
 
 													CON_HIN_OBJ[ modKeyStr ].map( ( parTexStr, parIndNum ) => ( // What: Hint Paragraph Map. Why: A conditional-specific hint is 2 paragraphs, each needing its own span. How: This maps each paragraph string to one keyed span.
@@ -683,7 +683,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 												) : ( // What: Fallback Hint Branch. Why: A mode with no conditional-specific override still needs its own hint text. How: This renders a single span from CON_HIN_OBJ or, failing that, SED_NAM_OBJ.MOD_DEF_OBJ.
 
 
-													<span className={ cssModObj.modHinSpa }>{ CON_HIN_OBJ[ modKeyStr ] || modConObj.hinArr }</span> // What: Mode Hint Span Element. Why: This is the selected mode's own single-paragraph hint. How: This renders the override string when present, else modConObj's own hint.
+													<span className={ cssModObj.modHinSpa }>{ CON_HIN_OBJ[ modKeyStr ] || modConObj.hinArr }</span> // What: Mode Hint Span Element. Why: This is the selected mode's own fallback hint, shown when CON_HIN_OBJ holds no array for the mode. How: This renders modConObj's own hint, which the || fallback reaches since CON_HIN_OBJ holds no value for the mode here.
 
 
 												) }
