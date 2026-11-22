@@ -618,7 +618,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 				parEleArr={ [ // What: Paragraph Element Array. Why: The intro modal's own body needs its full set of paragraphs passed as one prop. How: This holds the 3 paragraph entries below, mixing a JSX fragment (for bolded phrases) and plain strings.
 
 
-					<>Decide less and add some variety to your life! <b>Ease My Life is a todo app that automatically generates a daily list of tasks</b> from lists of items that you create and according to the rules that you set.</>, // What: Intro Paragraph Element. Why: The modal's own body needs an opening paragraph explaining what the app does. How: This is rendered as the modal's own first paragraph, written as JSX so specific phrases can be bolded.
+					<>Decide less and add some variety to your life! <b>Ease My Life is a todo app that automatically generates a daily list of tasks</b> from lists of items that you create and according to the rules that you set.</>, // What: Intro Paragraph Fragment. Why: The modal's own body needs an opening paragraph explaining what the app does. How: This is rendered as the modal's own first paragraph, written as JSX so specific phrases can be bolded.
 
 					'Ease My Life requires no account to use, works completely offline, stores all data on your device and is ad free!', // What: Privacy Paragraph String. Why: The modal's own body needs a paragraph addressing privacy/account concerns up front. How: This is rendered as the modal's own second paragraph.
 
