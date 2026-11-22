@@ -786,7 +786,7 @@
 
 
 }
-.runTimDiv--sub { /* What: Run Time Div Sub. Why: The run time sits under its toggle as a dependent row that dims while unused. How: This drops the top border, adds top room, and fades its opacity. */
+.runTimDiv--sub { /* What: Run Time Div Sub. Why: The run time sits under its toggle as a dependent row that dims while unused. How: This sets no top border and the base top padding, and eases its opacity change. */
 
 
 	border-top  : 0;
