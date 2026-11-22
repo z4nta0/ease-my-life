@@ -122,7 +122,7 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 		const ticFraFun = ( fraTimNum : number ) => { // What: Tick Frame Function. Why: This is the actual per-frame step that eases the shown number down to 0 over durValNum. How: This computes an eased progress ratio from elapsed time, sets disValNum accordingly, and reschedules itself until progress reaches 1.
 
 
-			const proRatNum = Math.min( 1, ( fraTimNum - staTimNum ) / durValNum ); // What: Progress Ratio Number. Why: The eased booValNum below needs a clamped [0,1] linear progress to work from. How: This divides elapsed time by durValNum, capped at 1.
+			const proRatNum = Math.min( 1, ( fraTimNum - staTimNum ) / durValNum ); // What: Progress Ratio Number. Why: The eased ratio below needs a clamped [0,1] linear progress to work from. How: This divides elapsed time by durValNum, capped at 1.
 			const easRatNum = 1 - Math.pow( 1 - proRatNum, 3 );                     // What: Eased Ratio Number. Why: A cubic ease-out reads more natural than a linear countdown. How: This applies a standard cubic ease-out curve to proRatNum.
 
 

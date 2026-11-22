@@ -638,7 +638,7 @@ function useFloIteFun ( tabIdeStr : string, meaEleRef : React.RefObject< HTMLEle
 	const [ floIteObj, setFloIteObj ] = React.useState< FloSidTyp | null >( () => floCacMap.get( tabIdeStr ) || null ); // What: Flourish Item Object And Setter. Why: A tab already generated earlier in this session should render immediately, without waiting on the effect below. How: This seeds itself from floCacMap if this tab's own entry already exists, null otherwise.
 
 
-	React.useEffect( () => { // What: Generate Effect. Why: A tab not already cached needs its own gutters measured and generated exactly once. How: This checks the cache first, then measures meaEleRef's own parent appConMai element and generates both sides if nothing was cached.
+	React.useEffect( () => { // What: Generate Effect. Why: A tab not already cached needs its own gutters measured and generated exactly once. How: This checks the cache first, then measures meaEleRef's element against its nearest appConMai ancestor and generates both sides if nothing was cached.
 
 
 		if ( floCacMap.has( tabIdeStr ) ) { setFloIteObj( floCacMap.get( tabIdeStr )! ); return; } // What: Cache Hit Guard. Why: A tab generated earlier in this session must not be regenerated. How: This applies the cached entry directly and bails out of the rest of the effect. // What: Non-Null Note. Why: The has check just found this tab in the cache. How: The ! tells TypeScript the get returns its entry.

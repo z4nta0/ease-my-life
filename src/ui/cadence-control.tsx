@@ -405,14 +405,14 @@ function MonSelCom ( { onChange, value } : MscProTyp ) : JSX.Element {
 		>{ /* What: Anchor Pick Select Element. Why: This is the actual control for choosing the yearly anchor month. How: This hands the chosen month's own 1-indexed number to onChange. */ }
 
 
-			{ MON_FUL_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_FUL_ARR to one option per entry, keyed by its own 1-indexed monIndNum.
+			{ MON_FUL_ARR.map( ( monNamStr, monIndNum ) => ( // What: Month Option List Render. Why: One option is needed per real month. How: This maps MON_FUL_ARR to one option per entry, keyed by its own zero-indexed monIndNum.
 
 
 				<option
 					key={ monIndNum }
 
 					value={ monIndNum + 1 }
-				>{ monNamStr }</option> // What: Month Option Element. Why: One option is needed per real month. How: This renders monNamStr, valued by its own 1-indexed monIndNum.
+				>{ monNamStr }</option> // What: Month Option Element. Why: One option is needed per real month. How: This renders monNamStr, valued by its own monIndNum plus 1, the 1-indexed month number.
 
 
 			) ) }
