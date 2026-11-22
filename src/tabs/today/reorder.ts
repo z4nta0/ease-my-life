@@ -59,14 +59,8 @@ type DraConTyp = { conLisEle : HTMLElement, griIcoEle? : HTMLElement | null, han
  * to the dragged element itself) and listens for move/up on that same
  * captured element, since a captured element is guaranteed by spec to
  * receive every subsequent pointer event directly, regardless of what
- * sits under the cursor; relying on document bubbling alone silently
- * failed in Firefox for the item rows, whose clickable ancestor
- * intercepted the events. Capture-phase document listeners are also
- * bound unconditionally, since they survive Firefox silently dropping
- * the pointer capture, and Firefox's own native drag-and-drop on the
- * grip's SVG/icon (which otherwise kills every further pointermove
- * event) is suppressed for the gesture's duration by cancelling every
- * dragstart.
+ * sits under the cursor. Capture-phase document listeners are bound as
+ * well, and every dragstart is cancelled for the gesture's length.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -238,7 +232,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	document.body.setAttribute( 'data-page-reorder-active', '' ); // What: Page Reorder Attribute Set. Why: The app's own CSS keys off an active drag gesture globally, not just on the dragged element. How: This sets the presence-only attribute on the document body for the gesture's duration.
 
 
-	const kilDraFun = ( draEveObj : DragEvent ) => draEveObj.preventDefault(); // What: Kill Drag Function. Why: Firefox starts a native drag-and-drop on the grip's SVG/icon that silently kills every further pointermove event, and preventDefault on pointerdown alone doesn't stop it. How: This cancels every dragstart event for the gesture's duration.
+	const kilDraFun = ( draEveObj : DragEvent ) => draEveObj.preventDefault(); // What: Kill Drag Function. Why: A native drag-and-drop must not start from the grip while the pointer gesture runs. How: This cancels every dragstart event for the gesture's duration.
 
 
 	document.addEventListener( 'dragstart', kilDraFun, true ); // What: Dragstart Suppression Subscribe. Why: kilDraFun must actually run for it to have any effect. How: This registers it on the capture phase, document-wide, for the gesture's duration.
@@ -680,7 +674,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	capTarEle.addEventListener( 'pointermove', onMovPoiFun );        // What: Grip Pointermove Subscribe. Why: This is the primary listener path, since it fires reliably everywhere once the pointer is captured. How: This registers onMovPoiFun on capTarEle's own pointermove.
 	capTarEle.addEventListener( 'pointerup', onRelPoiFun );          // What: Grip Pointerup Subscribe. Why: The gesture must end cleanly once the pointer is released. How: This registers onRelPoiFun on capTarEle's own pointerup.
 	capTarEle.addEventListener( 'pointercancel', onRelPoiFun );      // What: Grip Pointercancel Subscribe. Why: A cancelled gesture (e.g. an interrupting system gesture) must be treated the same as a normal release. How: This registers onRelPoiFun on capTarEle's own pointercancel.
-	document.addEventListener( 'pointermove', onMovPoiFun, true );   // What: Document Pointermove Subscribe. Why: This is the capture-phase fallback path, which survives Firefox silently dropping the pointer capture above. How: This registers onMovPoiFun on the document itself, capture phase.
+	document.addEventListener( 'pointermove', onMovPoiFun, true );   // What: Document Pointermove Subscribe. Why: This is the capture-phase fallback path, which still receives moves if the pointer capture above is lost. How: This registers onMovPoiFun on the document itself, capture phase.
 	document.addEventListener( 'pointerup', onRelPoiFun, true );     // What: Document Pointerup Subscribe. Why: Same reasoning as the document pointermove subscribe above, for the up path instead. How: This registers onRelPoiFun on the document itself, capture phase.
 	document.addEventListener( 'pointercancel', onRelPoiFun, true ); // What: Document Pointercancel Subscribe. Why: A cancelled gesture must be caught by the fallback path too, same as a normal release. How: This registers onRelPoiFun on the document itself, capture phase.
 
