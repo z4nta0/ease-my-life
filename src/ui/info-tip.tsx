@@ -385,7 +385,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 			tabIndex={ 0 }
 
 			onBlur={ () => setTipOpeBoo( false ) }
-			onClick={ ( cliEveObj ) => { // What: On Click Handler. Why: A mouse click should never toggle the tooltip since hover already owns it, but a touch/pen tap should. How: This stops the click from also reaching an outside-close listener, then toggles tipOpeBoo only when the last known pointer type wasn't mouse.
+			onClick={ ( cliEveObj ) => { // What: On Click Handler. Why: A mouse click should never toggle the tooltip since hover already owns it, but a touch/pen tap should. How: This stops the click from bubbling to any ancestor's own click handler, then toggles tipOpeBoo only when the last known pointer type wasn't mouse.
 
 
 				cliEveObj.stopPropagation(); // What: Propagation Stop Call. Why: This click must not also be seen as an "outside click" by some ancestor's own dismiss handler. How: This stops the click event from bubbling further.
@@ -412,7 +412,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 			onPointerDown={ ( poiDowObj ) => { lasPoiRef.current = poiDowObj.pointerType || 'mouse'; } }                           // What: Pointer Type Record. Why: The click handler must know whether a touch or a mouse triggered it. How: This only stores the pointer type in lasPoiRef for that handler to read.
 			onPointerEnter={ ( poiEntObj ) => { if ( ( poiEntObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( true ); } }  // What: Mouse Hover Open. Why: A mouse hovers, and a touch or pen opens the tip on tap instead. How: This opens the tip only for a mouse pointer.
 			onPointerLeave={ ( poiLeaObj ) => { if ( ( poiLeaObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( false ); } } // What: Mouse Hover Close. Why: A tip opened by hovering must close when the mouse leaves, while a tapped tip stays open. How: This closes the tip only for a mouse pointer.
-		>{ /* What: Info Trigger Span Element. Why: This is the actual focusable, interactive trigger, wrapping the caller's own children and (while open) the portaled tooltip. How: This handles hover for mouse, tap for touch/pen, and Enter/Space/Escape/blur for keyboard, as the component's summary describes. Its data-element-name-hook is read by the tours and help mode. */ }
+		>{ /* What: Info Trigger Span Element. Why: This is the actual focusable, interactive trigger, wrapping the caller's own children and (while open) the portaled tooltip. How: This handles hover for mouse, tap for touch/pen, and Enter/Space/blur for keyboard, while Escape closes through the document listener, as the component's summary describes. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 			{ children }{ /* What: Trigger Content. Why: InfTipCom wraps whatever the caller wants the tip attached to (a word, an icon, a chip). How: This renders the caller's own children inside the interactive trigger. */ }
