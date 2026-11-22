@@ -4,7 +4,7 @@
 // #region Imports
 
 import cssModObj from './tour-runner.module.css'; // What: CSS Module Object. Why: The tour overlay, spotlight, and coach card styles live in their own module. How: This maps each class name in tour-runner.module.css to its hashed module class.
-import React     from 'react';                    // What: React. Why: This is the UI library GuiTouCom and its supporting helpers are built on. How: This is used directly (React.useState, React.useRef, React.useEffect, React.useLayoutEffect, React.useCallback) throughout, instead of importing individual named hooks.
+import React     from 'react';                    // What: React. Why: This is the UI library GuiTouCom and its supporting helpers are built on. How: This is used directly (React.useState, for one) throughout, instead of importing individual named hooks.
 
 
 import { createPortal } from 'react-dom';            // What: Create Portal. Why: The dim layer, spotlight and coach card must render into <body> so they clamp to the viewport instead of being clipped by an ancestor's own overflow. How: This is called with GuiTouCom's own JSX and document.body inside the porBodFun helper below.
@@ -18,7 +18,7 @@ import { useEmlTouFun } from '../state/tour-bus.ts'; // What: Use Ease-My-Life T
 
 
 import type { ActStoTyp } from '../state/store.ts';   // What: Action Store Type. Why: The tour records its progress through the store's actions. How: This types GtcProTyp's actStoObj.
-import type { BoxRecTyp } from '../help/geometry.ts'; // What: Box Rect Type. Why: The tour measures, clips, and places rects by their edges and size. How: This types the rect each helper takes.
+import type { BoxRecTyp } from '../help/geometry.ts'; // What: Box Rect Type. Why: The tour measures, clips, and places rects by their edges and size. How: This types the rect the clamp helpers take.
 import type { ReactNode } from 'react';               // What: React Node. Why: A step's body is renderable content. How: This types TouSteTyp's bodEle.
 
 // #endregion Imports
@@ -104,9 +104,9 @@ const COA_HEI_NUM = 220; // What: Coach Height Number. Why: This is a conservati
  * Where the coach card's own arrow sits along its edge, in pixels from the
  * coach's own left edge. The arrow points at the highlighted target's own
  * horizontal midpoint, clamped so it never slides into the coach's own rounded
- * corners (at least 18px in from the left, and 26px short of the right).
- * Shared by the render function's own first-paint placement and plaTarFun's
- * per-frame write, so the two use the same arrow math.
+ * corners (at least 18px in from the left, and 26px short of the right). A
+ * pure function of its arguments, so the render function and plaTarFun can
+ * share it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -138,11 +138,9 @@ const arrHorFun = ( curRecObj : { left : number, width : number }, coaLefNum : n
  *
  * @summary
  * The coach card's width, sized the same way as help mode's tip: the small
- * text width at the card's base body font size, plus its side padding and
- * side border, each counted twice. On a viewport too narrow for that, it
- * shrinks to the viewport less a small-step margin on each side. Shared by
- * the render function's first paint and plaTarFun's per-frame placement, so
- * the two always agree.
+ * text width at the card's base body font size, plus its side padding and side
+ * border, each counted twice. On a viewport too narrow for that, it shrinks to
+ * the viewport less a small-step margin on each side.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -244,14 +242,13 @@ const safBotFun = () : number => { // What: Safe Bottom Function. Why: A bottom-
  * fixed/sticky Today-tab chrome: the sticky header, plus, on mobile, where the
  * groups rail flips from a side column to a horizontal pill bar stacked below
  * the header, that rail too, plus the Edit Mode banner (present whenever
- * editMode is on, at any width; see tab-today.tsx's ediBanDiv, which
- * sits sticky just below the header and, despite being in normal flow, does
- * not actually push .todLayDiv's content down to clear it). A target
- * scrolled up underneath any of these would be genuinely HIDDEN (they are
- * sticky, so they keep painting on top of whatever scrolls beneath them), not
- * just visually crowded; this floor exists to stop that, and applies to the
- * spotlight clamp and briTarFun's own scroll-up nudge (the ACTUAL highlighted
- * element's own visibility).
+ * editMode is on, at any width; see tab-today.tsx's ediBanDiv, which sits
+ * sticky just below the header and, despite being in normal flow, does not
+ * actually push .todLayDiv's content down to clear it). A target scrolled up
+ * underneath any of these would be genuinely HIDDEN (they are sticky, so they
+ * keep painting on top of whatever scrolls beneath them), not just visually
+ * crowded; this floor exists to stop that, and applies when placing a target
+ * or spotlight.
  *
  * The COACH card is a different story: it renders inside .touOveDiv, a z-index
  * 21 overlay well above any of this chrome (header, rail, and the Edit Mode
@@ -334,13 +331,8 @@ const safTopFun = ( { forCoaBoo } : { forCoaBoo? : boolean } = {} ) : number => 
  *
  * @summary
  * Where the coach should sit relative to the (already clamped) highlight rect,
- * shared by the render function's own React-driven placement and plaTarFun's
- * imperative per-frame write, so the two use the same placement math. Having
- * both matters: plaTarFun is what keeps the coach in lockstep with the
- * highlight DURING a smooth scroll (see its own comment), but React's render
- * still needs the same math for the coach's very first paint each step (before
- * plaTarFun has run at all) and as the eventual-consistency fallback once
- * React catches up.
+ * a pure function of its arguments so the render function and plaTarFun can
+ * share it.
  *
  * Below the target is preferred whenever the coach's own height plus a
  * base-step gap fits there; otherwise the coach sits a base step above it,
@@ -611,12 +603,13 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  *   math, and getScrFun, which only ever looks for a vertically-overflowing
  *   ancestor, has no horizontal equivalent, so a target sitting off the
  *   scrollable end of such a row would otherwise never actually come into
- *   view). This is a one-time native scrollIntoView({ inline : 'end' }) once
- *   the target is first found. It is not currently used by any step (the
- *   picker mini-tour's own "+Add" step used to need this, see buiNewFun's own
- *   comment in onboarding/picker-tours.tsx for why moving that tab to the
- *   FRONT of its strip retired it), but the flag itself stays generic for the
- *   next horizontally-scrolling row a step needs to reach into.
+ *   view). This is a native scrollIntoView({ inline : 'end' }) run at the
+ *   start of each briTarFun call, once the target is found. It is not
+ *   currently used by any step (the picker mini-tour's own "+Add" step used to
+ *   need this, see buiNewFun's own comment in onboarding/picker-tours.tsx for
+ *   why moving that tab to the FRONT of its strip retired it), but the flag
+ *   itself stays generic for the next horizontally-scrolling row a step needs
+ *   to reach into.
  *
  * - `runFun` (Function): An optional side effect fired when the primary button
  *   is clicked, before advancing/finishing (e.g. running the real generator).
@@ -715,7 +708,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 	const { draActBoo }               = useEmlTouFun();                                                                                    // What: Drag Active Boolean. Why: The coach card can sit right over whatever is being dragged, so a reorder gesture's flag on the bus hides it. How: This reads the shared bus's own draActBoo field; only the coach hides while it is true, the spotlight/dim stay so the highlighted target is still visible to drop onto.
 	const [ curSteNum, setCurSteNum ] = React.useState( resSteNum || 0 );                                                                  // What: Current Step Number And Setter. Why: This is the tour's own live position in `steObjArr`. How: This starts at resSteNum (or 0), then only setCurSteNum ever advances/rewinds it.
 	const [ curRecObj, setCurRecObj ] = React.useState< { height : number, left : number, top : number, width : number } | null >( null ); // What: Current Rect Object And Setter. Why: The render function needs the current step's own clamped highlight rect to position the spotlight and coach. How: This starts null (nothing to show yet) and is written by the position-tracking effect below.
-	const [ resTopNum, setResTopNum ] = React.useState( 0 );                                                                               // What: Reserve Top Number And Setter. Why: Extra top-space (px) reserved above the Today list when the current step's highlight is too tall for the coach to fit above or below it. How: This is published on the bus (see the effect below) so the Today tab can push its list content down by this amount instead of the coach card overlaying part of what is highlighted; it is driven by rect/viewport math rather than any specific step.
+	const [ resTopNum, setResTopNum ] = React.useState( 0 );                                                                               // What: Reserve Top Number And Setter. Why: Extra top-space (px) reserved above the Today list when the current step's highlight is too tall for the coach to fit above or below it. How: This is published on the bus (see the effect below) so the active tab can push its content down by this amount instead of the coach card overlaying part of what is highlighted; it is driven by rect/viewport math rather than any specific step.
 	const [ coaHeiNum, setCoaHeiNum ] = React.useState( COA_HEI_NUM );                                                                     // What: Coach Height Number And Setter. Why: COA_HEI_NUM is only a rough estimate; a step with longer body text renders taller than it, and using the stale estimate for the "place above" branch made a long step's coach overlap the top of its own target instead of sitting flush above it. How: This starts at the rough estimate and is corrected once the real coach has been measured by the layout effect below.
 
 	const spoEleRef = React.useRef< HTMLDivElement | null >( null ); // What: Spotlight Element Reference. Why: The spotlight is positioned imperatively every frame (no React lag) rather than through React state alone. How: This is attached to the rendered touSpoDiv div below.
@@ -759,10 +752,10 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	React.useEffect( () => { emlTouObj.set( { touSteNum : curSteNum } ); }, [ curSteNum ] ); // What: Step Publish Effect. Why: Other modules read bus.touSteNum to gate behavior on a specific step index (e.g. onboarding/app-features.tsx). How: This republishes the touSteNum field whenever curSteNum changes. // What: Effect Dependency Array. Why: This must re-run whenever curSteNum itself changes. How: curSteNum is the exact value being published.
+	React.useEffect( () => { emlTouObj.set( { touSteNum : curSteNum } ); }, [ curSteNum ] ); // What: Step Publish Effect. Why: Other modules read bus.touSteNum to gate behavior on a specific step index (e.g. the Data tab's disabled-control gates). How: This republishes the touSteNum field whenever curSteNum changes. // What: Effect Dependency Array. Why: This must re-run whenever curSteNum itself changes. How: curSteNum is the exact value being published.
 
 
-	React.useEffect( () => { emlTouObj.set( { touIdeStr : touIdeStr } ); }, [ touIdeStr ] ); // What: Tour Identifier Publish Effect. Why: This lets a consumer that acts only during one tour's specific step tell tours apart, e.g. the Pickers page tour's Step 4. How: This is never cleared on unmount, like `touSteNum` itself, since touPhaStr, which is cleared, tells a reader whether any tour is up. // What: Effect Dependency Array. Why: This must re-run whenever the touIdeStr prop itself changes. How: touIdeStr is the exact value being published.
+	React.useEffect( () => { emlTouObj.set( { touIdeStr : touIdeStr } ); }, [ touIdeStr ] ); // What: Tour Identifier Publish Effect. Why: This lets a consumer that acts only during one tour's specific step tell tours apart, e.g. the Pickers page tour's Add button gate. How: This is never cleared on unmount, like `touSteNum` itself, since touPhaStr, which is cleared, tells a reader whether any tour is up. // What: Effect Dependency Array. Why: This must re-run whenever the touIdeStr prop itself changes. How: touIdeStr is the exact value being published.
 
 
 	React.useEffect( () => { emlTouObj.set( { resTopNum : resTopNum } ); }, [ resTopNum ] ); // What: Reserve Top Publish Effect. Why: This is published on the bus so the active tab (which owns the actual scrollable content) can apply it, since this component only overlays the page and does not own that layout. How: resTopNum itself is set by the position-tracking effect below, decided ONCE per step rather than continuously, see the comment on decResFun there for why. // What: Effect Dependency Array. Why: This must re-run whenever resTopNum itself changes. How: resTopNum is the exact value being published.
@@ -968,7 +961,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return false; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card (Skip/Back/Next, or just its own body text) is always legitimate. How: This returns false whenever the event's own target has a .coaCarDiv ancestor. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
+		if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return false; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card (Skip/Back/Next, or just its own body text) is always legitimate. How: This returns false whenever the event's own target has an ancestor carrying the coaCarDiv hook. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
@@ -994,7 +987,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 		// #region Guard Handlers
 
-		const dowGuaFun = ( dowEveObj : MouseEvent ) => { // What: Down Guard Function. Why: A focused real input (e.g. a step's own rename field) blurs the instant *mousedown* fires on whatever it lands on, the browser's own default focus-transfer running before the 'click' event below ever gets a chance to block anything, and that is not tied to whether the click goes on to do anything at all, it fires just from clicking a focusable element. How: preventDefault on mousedown itself is what suppresses the browser's own default focus transfer (a well-worn trick for toolbar buttons that should not steal focus from a text field), stopped here for exactly the same off-target elements the click guard blocks, so an in-progress edit stays focused and open until the user genuinely interacts with this step's own target; that blur can otherwise cascade into real app state changes (e.g. GroHeaCom committing a rename on blur) the click-guard alone was never in a position to stop, and the step's own target can vanish from the DOM as a result, which reads as the tour randomly dying a moment after a click that "did nothing" visible.
+		const dowGuaFun = ( dowEveObj : MouseEvent ) => { // What: Down Guard Function. Why: A focused input blurs when mousedown lands elsewhere, and that blur can run app handlers (e.g. GroHeaCom committing a rename) that remove the step's target. How: This calls preventDefault on mousedown, which keeps the browser from moving focus, and stopPropagation, for the same off-target elements the click guard blocks, so an in-progress edit stays open until the user interacts with the step's own target.
 
 
 			if ( !isaOffFun( dowEveObj ) ) return; // What: On-Target Guard. Why: A click landing on the legitimate target/coach must never be interfered with. How: This bails out whenever isaOffFun reports false.
@@ -1022,7 +1015,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card is always legitimate and needs no further handling here. How: This returns whenever the event's own target has a .coaCarDiv ancestor. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
+			if ( ( cliEveObj.target as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Exemption Guard. Why: A click anywhere inside the coach card is always legitimate and needs no further handling here. How: This returns whenever the event's own target has an ancestor carrying the coaCarDiv hook. // What: Type Assertion Note. Why: A click always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 			// #endregion Early Exemptions
 
@@ -1096,7 +1089,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			// #region Target Checks
 
-			if ( focEveObj.relatedTarget && ( focEveObj.relatedTarget as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has a .coaCarDiv ancestor. // What: Type Assertion Note. Why: A focus move always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
+			if ( focEveObj.relatedTarget && ( focEveObj.relatedTarget as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has an ancestor carrying the coaCarDiv hook. // What: Type Assertion Note. Why: A focus move always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
@@ -1247,6 +1240,31 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
+	// #region bacSteFun
+
+	/**
+	 * bacSteFun = Back Step Function
+	 *
+	 * @summary
+	 * The Back button's handler. It moves the tour one step back, never below
+	 * the first step, and before the step index changes it calls the caller's
+	 * own onBacTouFun (when given) with the destination step, with the
+	 * click-guard suppressed so that callback's own synthetic clicks go
+	 * through.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * bacSteFun() // => void
+	 * ```
+	 *
+	*/
+
 	const bacSteFun = () => { // What: Back Step Function. Why: Back reverses navigation so the previous target exists again. How: Any tour-specific side effects (undoing something a later step did) are the caller's job via onBacTouFun, called with the destination step before it actually changes, with the click-guard suppressed for its duration, see supGuaRef's own comment for why.
 
 
@@ -1270,6 +1288,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 	};
+
+	// #endregion bacSteFun
 
 
 
@@ -1629,7 +1649,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( curSteObj.rhsBoo ) curEleArr[ 0 ].scrollIntoView( { block : 'nearest', inline : 'end' } ); // What: Horizontal Reveal. Why: See rhsBoo's own doc comment in GuiTouCom's own JSDoc above, a one-time native reveal for a target sitting off the end of a horizontally-scrolling row, independent of (and before) all the vertical handling below, which has no idea this axis exists at all. How: This calls scrollIntoView on the first matched element with inline:'end'.
+			if ( curSteObj.rhsBoo ) curEleArr[ 0 ].scrollIntoView( { block : 'nearest', inline : 'end' } ); // What: Horizontal Reveal. Why: See rhsBoo's own doc comment in GuiTouCom's own JSDoc above, a native reveal for a target sitting off the end of a horizontally-scrolling row, independent of (and before) all the vertical handling below, which has no idea this axis exists at all. How: This calls scrollIntoView on the first matched element with inline:'end', each time briTarFun runs.
 
 
 
@@ -1744,7 +1764,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 					resDecBoo = true;                           // What: Reserve Decided Commit. Why: This decision must only ever happen once per step. How: This flips resDecBoo to true so neither this branch nor decResFun's own later check re-decides it.
 					resAmoNum = coaHeiNum + rhyPixFun( 'p04' ); // What: Reserve Amount Commit. Why: The reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step. // Vertical Rhythm Base Plus 4 ~= 44.876px
 
-					setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: TabTodCom reads this off the bus to actually pad its own list. How: This publishes resAmoNum into React state, which the Reserve Top Publish Effect above forwards onto the bus.
+					setResTopNum( resAmoNum ); // What: Reserve Top Commit. Why: The active tab reads this off the bus to pad its own content. How: This publishes resAmoNum into React state, which the Reserve Top Publish Effect above forwards onto the bus.
 
 
 					requestAnimationFrame( () => briTarFun() ); // What: Reserve Retry. Why: The padding has not rendered yet (React has not re-committed), so the retry must wait a real frame to measure the actual, already-reserved layout instead of guessing at it. How: This re-calls briTarFun on the next animation frame.
@@ -1763,9 +1783,9 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-			if ( tarRecObj.top < minTopNum ) scrAmoFun( curScrEle, -( minTopNum - tarRecObj.top ) ); // What: Scroll Up To Minimum Top. Why: A target above the safe floor must be scrolled down until it clears it. How: This calls scrAmoFun with the negative gap between minTopNum and the target's own top.
+			if ( tarRecObj.top < minTopNum ) scrAmoFun( curScrEle, -( minTopNum - tarRecObj.top ) ); // What: Scroll Up To Minimum Top. Why: A target above the safe floor must be brought down to it by scrolling the scroller up. How: This calls scrAmoFun with the negative gap between minTopNum and the target's own top.
 
-			else if ( tarRecObj.bottom > scrRecObj.bottom - padBotNum ) scrAmoFun( curScrEle, tarRecObj.bottom - ( scrRecObj.bottom - padBotNum ) ); // What: Scroll Down To Pad Bottom. Why: A target overflowing the bottom pad boundary must be scrolled up until it clears it. How: This calls scrAmoFun with the gap between the target's own bottom and the pad boundary.
+			else if ( tarRecObj.bottom > scrRecObj.bottom - padBotNum ) scrAmoFun( curScrEle, tarRecObj.bottom - ( scrRecObj.bottom - padBotNum ) ); // What: Scroll Down To Pad Bottom. Why: A target overflowing the bottom pad boundary must be brought up to it by scrolling the scroller down. How: This calls scrAmoFun with the gap between the target's own bottom and the pad boundary.
 
 
 		};
@@ -2073,7 +2093,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 			// #region Reserve Commit
 
 			resAmoNum = coaHeiNum + rhyPixFun( 'p04' ); // What: Reserve Amount Commit. Why: Neither side fits, so the reserved space must be generous enough to fit the coach's own full height plus a comfortable gap. How: This sets resAmoNum to the coach's own height plus a fixed p04 step. // Vertical Rhythm Base Plus 4 ~= 44.876px
-			setResTopNum( resAmoNum );                  // What: Reserve Top Commit. Why: This publishes the reserve so the Today tab can pad its list by it. How: This publishes resAmoNum into React state.
+			setResTopNum( resAmoNum );                  // What: Reserve Top Commit. Why: This publishes the reserve so the active tab can pad its content by it. How: This publishes resAmoNum into React state.
 
 
 
@@ -2492,7 +2512,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 	// #region Coach Layout Values
 
-	const spoPadNum = spoPadFun( curSteObj );                                             // What: Spotlight Pad Number. Why: See plaTarFun's own spoPadNum comment above, this is the render-time twin of that same value. How: This is 0 for a cirBoo step, otherwise the normal m02 step.
+	const spoPadNum = spoPadFun( curSteObj );                                             // What: Spotlight Pad Number. Why: See the position-tracking effect's own spoPadNum comment above, this is the render-time twin of that same value. How: This is 0 for a cirBoo step, otherwise the normal m02 step.
 	const coaLayObj = coaLayFun( curRecObj, coaHeiNum, coaWidNum, vieWidNum, vieHeiNum ); // What: Coach Layout Object. Why: This is the same shared math plaTarFun uses imperatively every frame, kept here too as the coach's own first-paint value each step and the eventual React-driven fallback once it catches up. How: This calls coaLayFun with the current curRecObj, coaHeiNum, and the current viewport/coach sizes; catBoo needs no special branch here at all any more, letting it fall through to the exact same below/above logic every other step already uses is what lets the coach flip to sit BELOW the target (arrow up) once there is room, instead of only ever attaching above it, since catBoo's own remaining job is upstream of this (skipping decResFun's own padding and giving briTarFun a precise initial scroll target).
 	const arrHorNum = arrHorFun( curRecObj, coaLayObj.left, coaWidNum );                  // What: Arrow Horizontal Number. Why: The real, visible coach's own render-time arrow position needs the same math plaTarFun uses imperatively. How: This calls arrHorFun with the current curRecObj and coaLayObj's own left.
 
