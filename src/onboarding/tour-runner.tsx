@@ -456,7 +456,7 @@ const todTopFun = ( actIdeStr : string, selTabFun : ( tabIdeStr : string ) => vo
 
 
 
-		window.scrollTo( 0, 0 ); // What: Window Scroll Reset. Why: On layouts where the page itself (not .main) scrolls, that needs resetting too. How: This scrolls the window to the very top-left.
+		window.scrollTo( 0, 0 ); // What: Window Scroll Reset. Why: On layouts where the page itself (not the appConMai scroller) scrolls, that needs resetting too. How: This scrolls the window to the very top-left.
 
 
 	} );
@@ -1498,8 +1498,8 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * Finds the element that actually scrolls a target vertically: the
 		 * nearest ancestor whose overflow-y allows scrolling and whose content
 		 * genuinely overflows it. On narrow layouts that is the page itself
-		 * rather than .main, so a hardcoded .main would leave the target below
-		 * the fold.
+		 * rather than the appConMai scroller, so a hardcoded appConMai would
+		 * leave the target below the fold.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
