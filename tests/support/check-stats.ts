@@ -29,8 +29,8 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * picks were chosen by source, and the five most picked items. Reminder
  * figures count completions of classes with stats on, for reminders that
  * aren't hidden: total, active days, and the busiest day's count. Conditional
- * figures count the conditional log: triggered days, cycles (every row), and
- * the fire rate.
+ * figures count the conditional log: triggers (rows that fired), cycles (every
+ * row), and the fire rate.
  *
  * Sections:
  *  - Helpers

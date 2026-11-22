@@ -22,13 +22,11 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * app.ts = App
  *
  * @summary
- * Moves around the running app the way a person would: opening a chosen
- * Chicago day, which moves the fake clock, loads the page fresh so the Today
- * tab mounts and runs its own new-day check, and waits for that day's list to
- * be saved; opening the real-data backup on a fixed day; switching tabs
- * through the real navigation buttons; and adding a custom holiday through the
- * Settings form. It also holds the placeholder tip page address the test
- * server builds the app with.
+ * Moves around the running app the way a person would, such as opening a
+ * chosen Chicago day, which moves the fake clock, loads the page fresh so the
+ * Today tab runs its own new-day check, and waits for that day's list to be
+ * saved. It also holds the placeholder tip page address the test server builds
+ * the app with.
  *
  * Sections:
  *  - Constants
