@@ -314,7 +314,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 
 
 
-				{ !accSynObj.accLoaBoo && !accUsrObj && ( // What: Signed Out Check. Why: Nobody is signed in. How: This shows the Google row and, unless a link is waiting for its address, the email form.
+				{ !accSynObj.accLoaBoo && !accUsrObj && ( // What: Signed Out Check. Why: Nobody is signed in. How: This shows the Google row, the email form unless a link is waiting for its address, and the paste form once a link was sent.
 
 
 					<>{ /* What: Signed Out Fragment. Why: The sign-in rows for a signed-out visitor belong together. How: This groups them. */ }
@@ -595,7 +595,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										sizValStr='sm'
 
 										onClick={ accSynObj.choAccFun }
-									>Keep the account's data</ButBasCom>{ /* What: Button Base Component. Why: The account's data is usually the one to keep. How: This runs the first sync keeping it. Its data-element-name-hook is read by the test suites. */ }
+									>Keep the account's data</ButBasCom>{ /* What: Button Base Component. Why: This is one of the two first-sync choices, and the one set as the primary button. How: This runs the first sync keeping the account's data. Its data-element-name-hook is read by the test suites. */ }
 
 
 
