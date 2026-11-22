@@ -459,7 +459,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-	if ( curStaObj && curStaObj.onboarding && ( !curStaObj.onboarding.checklist || typeof curStaObj.onboarding.checklist !== 'object' ) ) { // What: Onboarding Checklist-Map Backfill. Why: The mini-tour checklist (see onboarding-checklist.ts) maps an item id to its own resolution; an object map needs no per-item backfill of its own, just a manifest entry there. How: This backfills curStaObj.onboarding.checklist to {} when it's missing or not a plain object.
+	if ( curStaObj && curStaObj.onboarding && ( !curStaObj.onboarding.checklist || typeof curStaObj.onboarding.checklist !== 'object' ) ) { // What: Onboarding Checklist-Map Backfill. Why: The mini-tour checklist (see onboarding-checklist.ts) maps an item id to its own resolution; an object map needs no per-item backfill of its own, just a manifest entry there. How: This backfills curStaObj.onboarding.checklist to {} when it's missing or not an object.
 
 
 		curStaObj.onboarding.checklist = {}; // What: Checklist Map Set. Why: The checklist manifest itself must exist as a real object before any item resolution can be written into it. How: This sets curStaObj.onboarding.checklist to a fresh empty object.
@@ -558,7 +558,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-	if ( curStaObj && curStaObj.onboarding && ( !curStaObj.onboarding.appFeatures || typeof curStaObj.onboarding.appFeatures !== 'object' ) ) { // What: App-Features Map Backfill. Why: App Features tutorials keep a per-item resolved/not flag in their own map. How: This backfills appFeatures to {} when it's missing or not a plain object.
+	if ( curStaObj && curStaObj.onboarding && ( !curStaObj.onboarding.appFeatures || typeof curStaObj.onboarding.appFeatures !== 'object' ) ) { // What: App-Features Map Backfill. Why: App Features tutorials keep a per-item resolved/not flag in their own map. How: This backfills appFeatures to {} when it's missing or not an object.
 
 
 		curStaObj.onboarding.appFeatures = {}; // What: App-Features Map Set. Why: The per-item resolved/not map itself must exist as a real object before any item can be written into it. How: This sets curStaObj.onboarding.appFeatures to a fresh empty object.
@@ -687,7 +687,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 	// #region Pick And Conditional Log Backfills
 
-	if ( curStaObj && !Array.isArray( curStaObj.pickLog ) ) curStaObj.pickLog = []; // What: Pick-Log Backfill. Why: The per-pick history log was added later; old state has none, while a fresh seed ships a full year of rows via seed.ts instead. How: This backfills pickLog to [] when it isn't already an array.
+	if ( curStaObj && !Array.isArray( curStaObj.pickLog ) ) curStaObj.pickLog = []; // What: Pick-Log Backfill. Why: The per-pick history log was added later, so old state has none. How: This backfills pickLog to [] when it isn't already an array.
 
 
 
@@ -786,11 +786,11 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 	// #region UI Backfills
 
-	if ( curStaObj && ( !curStaObj.ui || typeof curStaObj.ui !== 'object' ) ) curStaObj.ui = {}; // What: UI Object Backfill. Why: Persisted UI prefs need a real object to build on. How: This backfills curStaObj.ui to {} when it's missing or not a plain object.
+	if ( curStaObj && ( !curStaObj.ui || typeof curStaObj.ui !== 'object' ) ) curStaObj.ui = {}; // What: UI Object Backfill. Why: Persisted UI prefs need a real object to build on. How: This backfills curStaObj.ui to {} when it's missing or not an object.
 
 
 
-	if ( curStaObj && ( !curStaObj.ui.controlsCollapsed || typeof curStaObj.ui.controlsCollapsed !== 'object' ) ) curStaObj.ui.controlsCollapsed = {}; // What: Controls-Collapsed Object Backfill. Why: controlsCollapsed maps a section id to whether it's collapsed (true) or expanded (false), an absent id taking its section's own default, and was added later. How: This backfills curStaObj.ui.controlsCollapsed to {} when it's missing or not a plain object.
+	if ( curStaObj && ( !curStaObj.ui.controlsCollapsed || typeof curStaObj.ui.controlsCollapsed !== 'object' ) ) curStaObj.ui.controlsCollapsed = {}; // What: Controls-Collapsed Object Backfill. Why: controlsCollapsed maps a section id to whether it's collapsed (true) or expanded (false), an absent id taking its section's own default, and was added later. How: This backfills curStaObj.ui.controlsCollapsed to {} when it's missing or not an object.
 
 	// #endregion UI Backfills
 
@@ -929,7 +929,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-		if ( !curStaObj.pickerOrder || typeof curStaObj.pickerOrder !== 'object' ) curStaObj.pickerOrder = {}; // What: Picker-Order Object Backfill. Why: A pickerOrder that isn't already a plain object needs a fresh one before the loop below can write into it. How: This resets curStaObj.pickerOrder to {} when it fails either check.
+		if ( !curStaObj.pickerOrder || typeof curStaObj.pickerOrder !== 'object' ) curStaObj.pickerOrder = {}; // What: Picker-Order Object Backfill. Why: A pickerOrder that isn't already an object needs a fresh one before the loop below can write into it. How: This resets curStaObj.pickerOrder to {} when it fails either check.
 
 
 
