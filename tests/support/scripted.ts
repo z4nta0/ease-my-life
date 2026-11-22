@@ -237,20 +237,20 @@ type StoInfTyp = { // What: Stop Information Type. Why: The keyboard walk judges
  * its last stop; keyProFun catches it there instead, when focus stays on the
  * same stop. A date or time field, whose parts Chromium tabs through one press
  * at a time, counts as staying only after more presses than it has parts.) The
- * focus indicator is judged the first time the walk reaches a stop, by
- * blurring the stop for a moment and comparing the styles a focus indicator
- * usually changes (outline, shadow, border, background, color, and underline),
- * then focusing it again so the walk continues from it. Coverage is judged by
- * asking which element sits at the stop's center: anything other than the stop
- * or one of its own descendants means the stop is hidden behind it. A native
- * control hidden at no size, such as a custom-drawn radio, is judged by its
- * label instead, since that's what shows its focus. Order is judged by asking
- * the document directly whether the stop comes before the previous one, and
- * the first and previous stops are remembered on the window, so the walk stays
- * right even when the page adds or removes elements as focus moves. Every stop
- * reached is added to a list on the window too, for {@link tabStoFun} to read
- * once the walk ends. Passed to Playwright's evaluate, so it can't read
- * anything from this file.
+ * focus indicator is judged when the walk arrives at a stop other than the one
+ * the previous press reached, by blurring the stop for a moment and comparing
+ * the styles a focus indicator usually changes (outline, shadow, border,
+ * background, color, and underline), then focusing it again so the walk
+ * continues from it. Coverage is judged by asking which element sits at the
+ * stop's center: anything other than the stop or one of its own descendants
+ * means the stop is hidden behind it. A native control hidden at no size, such
+ * as a custom-drawn radio, is judged by its label instead, since that's what
+ * shows its focus. Order is judged by asking the document directly whether the
+ * stop comes before the previous one, and the first and previous stops are
+ * remembered on the window, so the walk stays right even when the page adds or
+ * removes elements as focus moves. Every stop reached is added to a list on
+ * the window too, for {@link tabStoFun} to read once the walk ends. Passed to
+ * Playwright's evaluate, so it can't read anything from this file.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -337,7 +337,7 @@ function stoInfFun () : StoInfTyp | null {
 	};
 
 
-	const bluSigStr = newStoBoo ? bluSigFun() : ''; // What: Blurred Signature String. Why: Focus is judged once per stop, when the walk first reaches it, which leaves a date or time field free to move through its parts. How: This reads the unfocused look for a new stop, and is empty, never matching the focused look, for a stop met again.
+	const bluSigStr = newStoBoo ? bluSigFun() : ''; // What: Blurred Signature String. Why: Focus is judged once per arrival at a stop, which leaves a date or time field free to move through its parts. How: This reads the unfocused look for a new stop, and is empty, never matching the focused look, for a stop met again.
 
 	// #endregion Focus And Blurred Signatures
 

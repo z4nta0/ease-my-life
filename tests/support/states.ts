@@ -288,7 +288,8 @@ const REA_STA_ARR : StaRcdTyp[] = [ // What: Reachable State Array. Why: A pop-u
  * phone width (375px) and a desktop width (1,280px), help mode turned on over
  * Today, the Privacy Policy panel open over Settings, and the welcome modal a
  * fresh install opens with. Every row shares the {@link StaRcdTyp} shape, so
- * its fields carry no comments of their own:
+ * its fields carry no comments of their own, apart from each action function's
+ * own note:
  *
  * - `actFun` (Function): Action Function, run after the tab shows to open
  *   something on it. Only the help mode and privacy rows have one.
