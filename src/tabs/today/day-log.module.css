@@ -469,7 +469,7 @@
 
 /* #region bloChvSpa */
 
-.bloChvSpa { /* What: Block Chevron Span. Why: The chevron shows whether the block is open. How: This sets a muted icon in the first column that turns when closed. */
+.bloChvSpa { /* What: Block Chevron Span. Why: The chevron shows whether the block is open. How: This sets a muted icon in the first column that turns when closed, easing its turn. */
 
 
 	color      : var( --tex-mut-col );                                /* Text Muted Color = oklch( 0.5 0.012 250 ) */

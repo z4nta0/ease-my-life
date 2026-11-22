@@ -1130,7 +1130,7 @@
 /* #endregion togSwiBut */
 
 
-.runTimInp { /* What: Run Time Input. Why: The run time is typed into a fixed-width field at the row's end. How: This draws a rounded field at a fixed rhythm-step width with tabular digits that borders in the accent on focus. */
+.runTimInp { /* What: Run Time Input. Why: The run time is typed into a fixed-width field at the row's end. How: This draws a rounded field at a fixed rhythm-step width with tabular digits that borders in the accent on focus, easing that border color. */
 
 
 	background           : var( --bac-pag-col );                                   /* Background Page Color = oklch( 0.985 0.003 240 ) */
