@@ -14,7 +14,7 @@ import { CodConCom    } from '../../ui/conditional-controls.tsx'; // What: Condi
 import { ColDisCom    } from '../../ui/collapse.tsx';             // What: Collapse Disclosure Component. Why: Several optional sections need an animated expand/collapse instead of an abrupt show/hide. How: This wraps each optional section, such as the add-group input, gated on its own open condition.
 import { conDraFun    } from '../../ui/conditional-controls.tsx'; // What: Conditional Draft Function. Why: Starting a new inline conditional needs a sensible starting draft shape. How: This builds the initial draft at mount and again whenever the user opens the Add New Conditional pill, seeded from the picker's own name.
 import { durMilFun    } from '../../utils/rhythm.ts';             // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
-import { emlTouObj    } from '../../state/tour-bus.ts';           // What: Ease-My-Life Tour Object. Why: A couple of tour-driven behaviors need to read the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill.
+import { emlTouObj    } from '../../state/tour-bus.ts';           // What: Ease-My-Life Tour Object. Why: A new draft item's tour prefill needs the shared tour bus's current value synchronously, not through React state. How: This is read via emlTouObj.get() when staging a new draft item's tour prefill.
 import { IcoSvgCom    } from '../../ui/icon.tsx';                 // What: Icon SVG Component. Why: Buttons and status rows throughout this file need a small recognizable glyph. How: This is rendered wherever an icon is needed, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.tsx';             // What: Info Tip Component. Why: A pool row's Delete must explain why it is unavailable once the pool is at its 2-item floor. How: This wraps that row's trash glyph with the requirement as its tip.
 import { IteCarCom    } from './item-card.tsx';                   // What: Item Card Component. Why: Adding or editing a pool item opens the shared item card, holding the same weight/ease editor the Today tab uses. How: This is rendered below the pool list, wired to the local draft-item actions.
@@ -951,7 +951,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		if ( ediIteStr ) { // What: Other Editor Open Branch. Why: Another item's editor is already open and must be closed, dropping its unsaved draft, before this one can open. How: This stages tarIdeStr and starts that editor's own closing animation.
 
 
-			penEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the current one finishes closing. How: This stores tarIdeStr for the closing editor's own onAnimationEnd handler to pick up.
+			penEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the current one finishes closing. How: This stores tarIdeStr for the closing editor's onCloEndFun to open through opePenFun.
 
 			setEdiCloBoo( true ); // What: Start Closing Call. Why: This is what actually plays the current editor's own out-animation. How: This flips ediCloBoo.
 
@@ -967,7 +967,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		if ( actNewStr ) { // What: New Draft Open Branch. Why: A brand-new item's own form is in progress and must be closed (without saving) instead of silently no-oping. How: This stages tarIdeStr and starts the new-item form's own closing animation.
 
 
-			penEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the new-item form finishes closing. How: This stores tarIdeStr for the new-item wrap's own onAnimationEnd handler to pick up.
+			penEdiRef.current = tarIdeStr; // What: Stage Reopen Call. Why: The requested edit must still open once the new-item form finishes closing. How: This stores tarIdeStr for the new-item form's onCloEndFun to open through opePenFun.
 
 			setActCloStr( 'cancel' ); // What: Cancel New Call. Why: Switching away from an in-progress new item discards it rather than silently saving it. How: This starts the new-item wrap's own closing animation in its 'cancel' shape.
 
@@ -2426,7 +2426,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						>{ /* What: Footer Note Div Element. Why: The exact guidance sentence depends on how many committed items exist and whether weight is relevant. How: This branches on enoIteBoo first, then shoWeiBoo, otherwise confirming the minimum is met. Its data-element-name-hook is read by help mode. */ }
 
 
-							{ !enoIteBoo // What: Not Enough Items Check. Why: The footer note either says how many more items are needed or confirms the minimum is met. How: This picks the add-more message first, then the weight or minimum message.
+							{ !enoIteBoo // What: Not Enough Items Check. Why: The footer note either says the minimum of 2 items isn't met yet or says it is met. How: This picks the add-more message first, then the weight or minimum message.
 
 
 								? `Add at least 2 items to create this picker${ cmtCouNum === 1 ? ' (1 so far)' : '' }.` // What: Add More Message. Why: A picker needs at least 2 items to be a real choice. How: This notes the one item added so far, when there is one.
