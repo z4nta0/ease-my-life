@@ -148,7 +148,7 @@ function ordUidFun ( ordCurObj : PolOrdTyp ) : string | null {
  * @param reqHeaObj - Request Headers Object: The request's headers.
  * @param webSecStr - Webhook Secret String: The endpoint's signing secret.
  * @param nowSecNum - Now Seconds Number: The current time in seconds,
- *                    defaulting to the clock, which tests can replace.
+ *                    defaulting to the clock.
  *
  * @returns Null for a genuine, fresh webhook, or else which check failed:
  *          'missing headers', 'stale timestamp', or 'signature mismatch'.
