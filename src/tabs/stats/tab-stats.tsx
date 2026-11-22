@@ -4532,7 +4532,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 								aria-label='Breakdown metric'
 								role='tablist'
-							>{ /* What: Breakdown Metrics Div Element. Why: The user needs a way to pivot the breakdown list across every metric this picker's own mode supports. How: This renders one pill per entry in metPilArr. */ }
+							>{ /* What: Breakdown Metrics Div Element. Why: The user needs a way to pivot the breakdown list across the metrics in metPilArr. How: This renders one pill per entry in metPilArr, where an ease-down picker's second pill reads Spent in place of Frequency. */ }
 
 
 								{ metPilArr.map( ( metCurObj ) => ( // What: Metric Pill Render. Why: Every available metric needs its own selectable pill. How: This maps metPilArr to one button per metric.
