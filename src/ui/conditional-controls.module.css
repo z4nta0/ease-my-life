@@ -7,7 +7,7 @@
  * @summary
  * Styles for CodConCom, the conditional editor: the name and card-text fields,
  * the type radio with each mode's hint, and the setting rows under the
- * selected mode (odds, boost, charge, fill, and the Active switch). By default
+ * selected mode (an odds stepper, for one) and the Active switch. By default
  * it shows spaced fields with the radio in a bordered card; layVarStr='inline'
  * adds the conConDiv--inline modifier and lays every field out as a full-bleed
  * row with hairline dividers. The selected mode keys off

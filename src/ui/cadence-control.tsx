@@ -683,7 +683,7 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 					{ norCadObj.cadence === 'monthly' && ( // What: Monthly Visibility Check. Why: Only the monthly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'monthly'.
 
 
-						<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the monthly anchor subsection's controls as one field. How: This renders the field label/summary, the Date/Weekday SegConCom, whichever detail row matches it, and a clamp hint. */ }
+						<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the monthly anchor subsection's controls as one field. How: This renders the field label/summary, the Date/Weekday DatModCom, whichever detail row matches it, and a clamp hint. */ }
 
 
 							<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }
@@ -778,7 +778,7 @@ function CadConCom ( { onChange, value } : CccProTyp ) : JSX.Element {
 					{ norCadObj.cadence === 'yearly' && ( // What: Yearly Visibility Check. Why: Only the yearly cadence's own anchor subsection belongs here. How: This renders it only while norCadObj.cadence is 'yearly'.
 
 
-						<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the yearly anchor subsection's controls as one field. How: This renders the field label/summary, the Date/Weekday SegConCom, whichever detail row matches it, and a clamp hint. */ }
+						<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the yearly anchor subsection's controls as one field. How: This renders the field label/summary, the Date/Weekday DatModCom, whichever detail row matches it, and a clamp hint. */ }
 
 
 							<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the label span and the fading summary span below. */ }

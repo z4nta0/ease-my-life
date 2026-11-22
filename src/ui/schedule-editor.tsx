@@ -15,7 +15,7 @@ import { MON_ABB_ARR } from '../utils/date.ts';        // What: Month Abbreviati
 import { MON_FUL_ARR } from '../utils/date.ts';        // What: Month Full Array. Why: The annual schedule's live summary names its month in full. How: This is indexed by tasRcdObj.month minus 1.
 import { nexDatFun   } from '../utils/date.ts';        // What: Next Date Function. Why: A reminder's next occurrence reads as a full prose date. How: This is called with the date and whether the year must always show.
 import { ordSufFun   } from '../utils/date.ts';        // What: Ordinal Suffix Function. Why: Monthly and yearly schedules read days as ordinals like 1st or 22nd. How: This is called with the day number.
-import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control Component. Why: The schedule editor's own repeat choices use the shared segmented control. How: This is rendered wherever the editor offers mutually exclusive options.
+import { SegConCom   } from './segmented-control.tsx'; // What: Segment Control Component. Why: The schedule editor's own repeat choices use the shared segmented control. How: This is rendered once, as the Repeat kind picker.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';        // What: Tasks Namespace Object. Why: The editor's own summaries, visibility notes, and schedule defaults defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout SchEdiCom and VisNotCom.
 import { WeeChiCom   } from './weekday-chips.tsx';     // What: Weekday Chip Component. Why: A weekly schedule needs a multi-select control for its own chosen days. How: This is rendered inside SchEdiCom's own weekly schedule subsection.
 
@@ -75,10 +75,9 @@ import type { TodVisTyp } from '../core/tasks.ts';      // What: Today Visibilit
  *   visible button text for this option, rendered by SegConCom as the
  *   button's own text content.
  *
- * - `subEle` (Element): Sub Element is the live sub-explanation shown
- *   under the Repeat control while this entry's own keyStr is
- *   selected; SchEdiCom looks this up by task.repeat and renders it
- *   directly.
+ * - `subEle` (Element): Sub Element is the live sub-explanation shown under
+ *   the Repeat label, above the control, while this entry's own keyStr is
+ *   selected; SchEdiCom looks this up by task.repeat and renders it directly.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -684,21 +683,19 @@ type VncProTyp = { kinValStr : string, notIdeStr : string, staAppObj : StaAppTyp
  * VisNotCom = Visibility Note Component
  *
  * @summary
- * A live "will this show today?" advisory, computed from the DRAFT as
- * the user edits, so the answer is visible before the reminder is
- * created rather than after it silently fails to appear. It renders in
- * two placements, since the two causes belong next to different
- * controls: a settings-based cause ('weekends', 'holidays', or
- * 'skipUntil') belongs next to the Repeat row, since it comes from the
- * reminder-type participation settings rather than this schedule; a
- * schedule-based cause belongs next to the specific schedule
- * subsection whose own values caused it. Each mounted instance only
- * ever shows its note when its own kinValStr matches which placement
- * currently applies, so at most one of the several instances rendered
- * per task ever has content. It names the next day the reminder WILL
- * appear whenever one is known: for a schedule mismatch that is
- * reassurance (the reminder is still working), and for an exclusion it
- * is the answer the user actually wants.
+ * A live "will this show today?" advisory, computed from the DRAFT as the user
+ * edits, so the answer is visible before the reminder is created rather than
+ * after it silently fails to appear. It renders in two placements, since the
+ * two causes belong next to different controls: a settings-based cause
+ * ('weekends', 'holidays', or 'skipUntil') belongs next to the Repeat row,
+ * since it comes from the reminder-type participation settings rather than
+ * this schedule; a schedule-based cause belongs next to the specific schedule
+ * subsection whose own values caused it. Each mounted instance shows its note
+ * only when its own kinValStr matches the placement that currently applies, so
+ * the note appears beside the Repeat row or beside the schedule subsections,
+ * never both. It names the next day the reminder WILL appear whenever one is
+ * known: for a schedule mismatch that is reassurance (the reminder is still
+ * working), and for an exclusion it is the answer the user actually wants.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -801,7 +798,7 @@ function VisNotCom ( { kinValStr, notIdeStr, staAppObj, tasRcdObj } : VncProTyp 
 
 		let bodTexEle; // What: Body Text Element. Why: The actual advisory sentence depends on which of the 3 branches below applies, assigned in exactly one of them. How: This is declared here and read by the shared return at the end of this branch.
 
-		const reaPhrStr = reaPhrFun( visResObj ); // What: Reason Phrase String. Why: This decides which of the 3 body branches below applies. How: This calls reaPhrFun against visResObj once, reused by the if/else chain immediately below.
+		const reaPhrStr = reaPhrFun( visResObj ); // What: Reason Phrase String. Why: This decides whether the settings cause branch below applies. How: This calls reaPhrFun against visResObj once, reused by the if/else chain immediately below.
 
 
 		if ( reaPhrStr ) { // What: Settings Cause Branch. Why: A weekend or holiday exclusion is named with its joined reason phrase in one sentence. How: This names both the item kind and the joined reason phrase.
@@ -884,7 +881,8 @@ type SecProTyp = { aniExtBoo? : boolean, layVarStr : string, onPatTasFun : ( pat
  * Edits a draft of a reminder's own schedule. Repeat kind is a segmented
  * control; the detail control below it swaps to match the kind. Every field
  * change goes straight through props.onPatTasFun, so this component holds no
- * schedule state of its own beyond the two inline-date-edit toggles.
+ * schedule state of its own beyond the two inline-date-edit toggles and a
+ * memory of the last non-once repeat kind.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
