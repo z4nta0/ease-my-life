@@ -325,7 +325,7 @@ function ConSupCom () : React.JSX.Element {
 		try { // What: Clipboard Write Try. Why: A clipboard failure should not break the form. How: This wraps the write so the catch below can swallow a synchronous throw.
 
 
-			if ( navigator.clipboard && navigator.clipboard.writeText ) navigator.clipboard.writeText( SUP_EMA_STR ).then( copDonFun, () => {} ); // What: Clipboard Write Attempt. Why: The Clipboard API is not universally available, and a rejected promise here should not surface as an error. How: This writes SUP_EMA_STR to the clipboard when the API exists, silently ignoring a rejection.
+			if ( navigator.clipboard && navigator.clipboard.writeText ) navigator.clipboard.writeText( SUP_EMA_STR ).then( copDonFun, () => {} ); // What: Clipboard Write Attempt. Why: The clipboard API can be missing, and a rejected promise here should not surface as an error. How: This writes SUP_EMA_STR to the clipboard when the API exists, silently ignoring a rejection.
 
 
 		}

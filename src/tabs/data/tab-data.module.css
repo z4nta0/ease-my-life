@@ -681,7 +681,7 @@
 
 }
 .datCatSec--tour,
-.catTogBut--tour { /* What: Data Category Section Tour And Category Toggle Button Tour. Why: The Edit Item tour points at the specific card, toggle, or row it wants clicked inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
+.catTogBut--tour { /* What: Data Category Section Tour And Category Toggle Button Tour. Why: The Edit Item tour points at the specific card or toggle it wants clicked inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
 
 
 	animation      : global( targetTourPulse ) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Standard Easing = ease */ /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */

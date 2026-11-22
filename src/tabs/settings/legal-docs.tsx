@@ -159,7 +159,7 @@ function LegModCom ( { legDocStr, onCloModFun } : LmcProTyp ) : React.ReactPorta
 
 
 
-			keyEveObj.preventDefault(); // What: Handled Mark Call. Why: Help mode and the inline editors skip an Escape something else already handled, so closing the modal leaves them alone. How: This prevents the key's default action.
+			keyEveObj.preventDefault(); // What: Handled Mark Call. Why: This marks the Escape as handled, so help mode doesn't also act on it. How: This prevents the key's default action, which help mode's own Escape listener checks.
 
 			modDisFun(); // What: Dismiss Call. Why: This is the actual close. How: This calls modDisFun.
 

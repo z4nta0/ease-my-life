@@ -558,7 +558,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 		( scrConEle || window ).addEventListener( 'scroll', onScrEveFun, { passive : true } ); // What: Scroll Container Listener. Why: Most of the time there is a real appConMai scroller to listen to directly. How: This subscribes onScrEveFun to the container's own scroll event, or the window's if no container was found.
 
-		window.addEventListener( 'scroll', onScrEveFun, { passive : true } ); // What: Window Scroll Listener. Why: A secondary window-level listener catches any scroll path the container-level one might miss. How: This subscribes onScrEveFun to the window's own scroll event as well.
+		window.addEventListener( 'scroll', onScrEveFun, { passive : true } ); // What: Window Scroll Listener. Why: The spy also needs to run when the window itself scrolls instead of the container. How: This subscribes onScrEveFun to the window's own scroll event as well.
 
 
 
@@ -753,7 +753,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	React.useEffect( () => { // What: Reduced Motion Listener Effect. Why: redMotBoo needs to update live if the OS setting changes while the app is open, not just reflect its value at mount. How: This subscribes a change listener to the prefers-reduced-motion media query and cleans it up on unmount.
 
 
-		if ( !window.matchMedia ) return; // What: No MatchMedia Guard. Why: Some environments may not support matchMedia at all. How: This bails out of the effect entirely when matchMedia isn't available, leaving redMotBoo at its initial value.
+		if ( !window.matchMedia ) return; // What: No MatchMedia Guard. Why: Calling window.matchMedia where it is missing would throw. How: This bails out of the effect entirely when window.matchMedia is missing, leaving redMotBoo at its initial value.
 
 
 
@@ -1824,7 +1824,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						>{ /* What: Celebration Style Div Element. Why: The completion-celebration style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
-							<div className={ cssModObj.subHeaDiv }>Completion celebration</div>{ /* What: Subsection Header Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Completion celebration". */ }
+							<div className={ cssModObj.subHeaDiv }>Completion celebration</div>{ /* What: Subsection Header Div Element. Why: This subsection names itself with the shared subsection heading style. How: This renders the fixed text "Completion celebration". */ }
 
 							<p className={ cssModObj.secSubPar }>Pick which animation will play when all tasks are marked as completed inside of the Today page.</p>{ /* What: Section Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the celebration picker. */ }
 
@@ -1877,7 +1877,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						>{ /* What: Pick Animation Div Element. Why: The picker-animation style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
-							<div className={ cssModObj.subHeaDiv }>Picker animation</div>{ /* What: Subsection Header Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Picker animation". */ }
+							<div className={ cssModObj.subHeaDiv }>Picker animation</div>{ /* What: Subsection Header Div Element. Why: This subsection names itself with the shared subsection heading style. How: This renders the fixed text "Picker animation". */ }
 
 							<p className={ cssModObj.secSubPar }>Pick which animation will play when the &ldquo;Pick One&rdquo; button is clicked inside of the Pickers page.</p>{ /* What: Section Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the picker-animation picker. */ }
 
@@ -1938,7 +1938,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						>{ /* What: Settings Layout Div Element. Why: The tab-bar-placement control needs its own labeled subsection. How: This wraps its own heading, intro copy, and the placement row's own CarSurCom. Its data-element-name-hook is read by help mode. */ }
 
 
-							<div className={ cssModObj.subHeaDiv }>Layout</div>{ /* What: Subsection Header Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Layout". */ }
+							<div className={ cssModObj.subHeaDiv }>Layout</div>{ /* What: Subsection Header Div Element. Why: This subsection names itself with the shared subsection heading style. How: This renders the fixed text "Layout". */ }
 
 							<p className={ cssModObj.secSubPar }>Pick where the app&rsquo;s main navigation links should be located.</p>{ /* What: Section Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the placement control. */ }
 
@@ -2877,7 +2877,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 						</div>
 
-						<AccSecCom accSynObj={ accSynObj } />{ /* What: Account Section Component. Why: Signing in and sync have their own component, since they hold their own state and forms. How: This renders the section's intro, rows, and announcement regions from the account and its sync. */ }
+						<AccSecCom accSynObj={ accSynObj } />{ /* What: Account Section Component. Why: Signing in and sync have their own component, since they hold their own state and forms. How: This renders the Account section's content, driven by accSynObj. */ }
 
 
 					</section>

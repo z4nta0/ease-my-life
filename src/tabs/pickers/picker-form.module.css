@@ -12,12 +12,11 @@
  * the Items step (the item pool, its delete confirm, and the slot below it
  * holding the Add Item button), each ending in its own footer. The add-item
  * and edit-item cards in that slot are styled by the item card's own module.
- * The current and finished steps key off data-step-current-active and
- * data-step-done-active, a chosen group chip off data-chip-select-active, the
- * chosen mode off data-option-select-active, the chosen conditional off
- * data-pill-select-active, a switch off its own aria-checked, and a blocked
- * Delete tip off its own aria-disabled. The pool row and confirm animations
- * are this file's own module classes.
+ * The step, chip, mode, and conditional choices key off presence-only
+ * data-*-active attributes, the rails' fades off the scroll fade attributes, a
+ * switch off its own aria-checked, and a blocked Delete tip off its own
+ * aria-disabled. The pool row and confirm animations are this file's own
+ * module classes.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
