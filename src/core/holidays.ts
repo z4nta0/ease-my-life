@@ -66,7 +66,7 @@ type HolRcdTyp = { // What: Holiday Record Type. Why: Callers need one resolved 
 
 
 	actObj? : Date;    // What: Actual Object. Why: A caller wording around an observed shift needs the true date. How: This is the unshifted date, absent on custom days.
-	cusBoo? : boolean; // What: Custom Boolean. Why: Callers tell the user's own days apart from computed ones. How: This is true on a custom day and false on a computed one.
+	cusBoo? : boolean; // What: Custom Boolean. Why: Callers tell the user's own days apart from computed ones. How: This is true on a custom day and false on a computed one that actYeaFun or holInfFun returns, and absent from a bare cmpYeaFun record.
 	datObj  : Date;    // What: Date Object. Why: Most callers care about the day actually taken off. How: This is the observed date.
 	isoStr  : string;  // What: ISO String. Why: Callers match a holiday to a calendar day as text. How: This is the observed day as 'YYYY-MM-DD'.
 	keyStr  : string;  // What: Key String. Why: A holiday is disabled by its key. How: This is its identifier, prefixed 'custom:' on custom days.
