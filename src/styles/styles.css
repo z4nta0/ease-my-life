@@ -7,8 +7,9 @@
  * @summary
  * The app's one global stylesheet, holding only what can't belong to a single
  * component: the design tokens the modules read, the base element styles and
- * resets, the states set on <html> or <body> (the theme cross-fade, a drag in
- * progress, a running tour) plus the screen reader live region built outside
+ * resets, the states set on <html> or <body> (a running tour, say), the
+ * presence-only role attributes elements in many files share (the visually
+ * hidden new tab note, for one), the screen reader live region built outside
  * React, and the keyframes several modules share, which a module plays through
  * global(). Themes other than the default overwrite their color roles with
  * inline properties on <html>, so :root holds the light theme's values.

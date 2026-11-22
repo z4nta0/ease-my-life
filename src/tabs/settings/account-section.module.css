@@ -161,7 +161,7 @@
 
 }
 
-.gooLinAnc { /* What: Google Link Anchor. Why: The reCAPTCHA notice links Google's own privacy policy and terms, and a text link should answer hover, press, and focus. How: This sets each link in the accent color with an underline and a hidden ring, and eases its hover color, press dim, and focus ring. */
+.gooLinAnc { /* What: Google Link Anchor. Why: The reCAPTCHA notice links Google's own privacy policy and terms, and a text link should answer hover, press, and focus. How: This sets each link in the accent color with a hidden ring, and eases its hover color, press dim, and focus ring. */
 
 
 	border-radius  : var( --rad-bor-xsm );         /* Radius Border Extra Small ~= 3.571px */

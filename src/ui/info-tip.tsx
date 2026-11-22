@@ -253,7 +253,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 		setTipPosObj( { lefNum : tipLefNum, plaStr : tipPlaStr, topNum : tipTopNum } ); // What: Tip Position Update Call. Why: This publishes the freshly-computed position so the portaled tooltip re-renders in the right place. How: This builds the { lefNum, plaStr, topNum } shape the render below reads directly.
 
 
-	}, [] ); // What: Effect Dependency Array. Why: plaTipFun only closes over stable refs and its own setter, none of which ever change identity. How: An empty array means this callback is created once and never recreated.
+	}, [] ); // What: Callback Dependency Array. Why: plaTipFun only closes over stable refs and its own setter, none of which ever change identity. How: An empty array means this callback is created once and never recreated.
 
 
 	React.useLayoutEffect( () => { // What: Open Positioning Effect. Why: An opening tooltip must be positioned immediately, then kept in place while the page scrolls or the viewport resizes. How: This calls plaTipFun once on open, then re-calls it on every scroll (capture phase, so it catches an inner scrollable ancestor too) and resize, cleaning both listeners up on close.

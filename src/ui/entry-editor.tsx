@@ -30,11 +30,10 @@ import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record T
  *
  * @summary
  * The shared inline editor for one picker item, shared across tabs so each of
- * them edits an item through the same component. It mirrors the Pickers
- * tab's per-item controls (a weight stepper, the ease day range, an
- * Active/Inactive toggle and a confirm-gated delete) and edits the caller's
- * own draft copy of the item (see record-draft.ts), so nothing reaches the
- * real item until the caller commits it.
+ * them edits an item through the same component. It offers an item's per-item
+ * controls (a weight stepper, for one) and edits the caller's own draft copy
+ * of the item (see record-draft.ts), so nothing reaches the real item until
+ * the caller commits it.
  *
  * Sections:
  *  - Components
@@ -271,11 +270,11 @@ type EecProTyp = { isaNewBoo? : boolean, iteCouNum? : number, iteDatObj : IteRcd
  * @summary
  * The shared inline editor for a picker item, shared across tabs so each of
  * them edits an item identically: a weight stepper for weighted/dynamic
- * pickers, a cadence range for ease-up/ease-down, a Boost row for dynamic,
- * an Active/Inactive toggle, and a confirm-gated Delete. It shows the
- * caller's own draft copy of the item and reports each change through
- * onPatIteFun, so nothing reaches the real item until Save hands the draft
- * to the caller to commit.
+ * pickers, a cadence range and a Fill or Refill row for ease-up/ease-down, a
+ * Boost row for dynamic, an Active/Inactive toggle, and a confirm-gated
+ * Delete. It shows the caller's own draft copy of the item and reports each
+ * change through onPatIteFun, so nothing reaches the real item until Save
+ * hands the draft to the caller to commit.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
