@@ -69,6 +69,29 @@ const { notSubFun, subAddFun } = subMakFun(); // What: Notify Subscribers Functi
 
 // #region Storage Access
 
+// #region stoGetFun
+
+/**
+ * stoGetFun = Storage Get Function
+ *
+ * @summary
+ * Reads one localStorage value without throwing. A browser that blocks or
+ * breaks localStorage gives null, the same as a key that was never written, so
+ * callers treat both as not set.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param stoKeyStr - Storage Key String: The localStorage key to read.
+ *
+ * @returns The stored text, or null when the key is unset or the read failed.
+ *
+ * @example
+ * ```ts
+ * stoGetFun(stoKeyStr) // => '2026-11-21'
+ * ```
+ *
+*/
+
 const stoGetFun = ( stoKeyStr : string ) => { // What: Storage Get Function. Why: localStorage can throw in some contexts (private browsing, a full quota), and a failed read should never crash the caller. How: This wraps getItem in a try/catch, returning null on any failure instead of throwing.
 
 
@@ -78,6 +101,8 @@ const stoGetFun = ( stoKeyStr : string ) => { // What: Storage Get Function. Why
 
 
 };
+
+// #endregion stoGetFun
 
 
 
@@ -162,8 +187,8 @@ const perCheFun = () : PerStaTyp => ( notSupFun() ? Notification.permission : 'u
  * @param void - This function takes no parameters.
  *
  * @returns A promise that resolves with the current permission:
- * {@link perCheFun}'s result when the guard above short-circuits, or the
- * prompt's result otherwise.
+ *          {@link perCheFun}'s result when the guard above short-circuits,
+ *          or the prompt's result otherwise.
  * @see {@link perResStr}
  *
  * @example
@@ -221,8 +246,8 @@ async function askOncFun () : Promise< PerStaTyp > {
  *
  * @param void - This function takes no parameters.
  *
- * @returns A promise that resolves with the current permission, or the
- * literal string 'unsupported' when the browser has no Notification API.
+ * @returns A promise that resolves with the current permission, or the literal
+ *          string 'unsupported' when the browser has no Notification API.
  * @see {@link perResStr}
  *
  * @example
@@ -291,7 +316,8 @@ async function reqPerFun () : Promise< PerStaTyp > {
  * @param void - This function takes no parameters.
  *
  * @returns A promise that resolves with true once a notification was shown
- * through either path, or false when a guard stops it or both attempts fail.
+ *          through either path, or false when a guard stops it or both
+ *          attempts fail.
  *
  * @example
  * ```ts
@@ -457,7 +483,7 @@ const NOT_NAM_OBJ = { // What: Notification Namespace Object. Why: This bundles 
 
 
 
-export { NOT_NAM_OBJ }; // What: Named Export. Why: The one namespace object carries every notification operation. How: This exports NOT_NAM_OBJ by name at the very end of the file.
+export { NOT_NAM_OBJ }; // What: Named Export. Why: The one namespace object carries this module's public notification operations. How: This exports NOT_NAM_OBJ by name.
 
 // #endregion Exports
 

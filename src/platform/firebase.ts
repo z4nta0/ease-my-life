@@ -101,7 +101,7 @@ if ( !EMU_HOS_STR ) { // What: App Check Start Check. Why: Firebase should serve
 	initializeAppCheck( firAppObj, { // What: App Check Start Call. Why: Every request to Auth and Firestore should carry proof the app is genuine. How: This starts App Check with the reCAPTCHA Enterprise provider and keeps its token fresh.
 
 
-		isTokenAutoRefreshEnabled : true,                                          // What: Is Token Auto Refresh Enabled. Why: The SDK doesn't refresh tokens unless told to. How: This renews the token before it expires, for as long as the app is open.
+		isTokenAutoRefreshEnabled : true,                                          // What: Is Token Auto Refresh Enabled. Why: The token should stay fresh for as long as the app is open. How: This renews the token before it expires, for as long as the app is open.
 		provider                  : new ReCaptchaEnterpriseProvider( REC_SIT_STR ) // What: Provider. Why: On the web, reCAPTCHA Enterprise checks the app is genuine. How: This creates the provider with the project's site key.
 
 
@@ -411,7 +411,7 @@ function watUsrFun ( usrCalFun : ( accUsrObj : AccUsrTyp | null ) => void ) : ()
 
 // #region Exports
 
-export { type AccUsrTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, tokGetFun, watUsrFun }; // What: Named Exports. Why: Signing in and out, following the account, and reading the database go through these. How: This exports them by name.
+export { type AccUsrTyp, finLinFun, firStoObj, isaLinFun, refTokFun, senLinFun, sigGooFun, sigOutFun, tokGetFun, watUsrFun }; // What: Named Exports. Why: The account calls and the database instance are set up in this one file. How: This exports them and the account type by name.
 
 // #endregion Exports
 

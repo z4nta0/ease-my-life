@@ -75,8 +75,8 @@ const verKeyFun = ( docIdeStr : string, docHasStr : string ) => `${ docIdeStr }~
  *
  * @summary
  * Writes or deletes document versions in as few requests as Firestore
- * allows, starting a new batch whenever the current one reaches
- * BAT_WRI_NUM writes or BAT_BYT_NUM bytes of text.
+ * allows, starting a new batch once the current one holds BAT_WRI_NUM
+ * writes or the next version would take it past BAT_BYT_NUM bytes of text.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
