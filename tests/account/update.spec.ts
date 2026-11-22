@@ -106,7 +106,7 @@ async function devSetFun ( curPagObj : Page ) : Promise< { errMesArr : string[],
 
 	// #region Device Boot And Sync
 
-	await insClcFun( curPagObj, DAY_ONE_STR, 12 ); // What: Clock Install Call. Why: The device starts on day one, after the backup's 6 AM run time, so it builds that day's list. How: This fakes its clock before anything loads.
+	await insClcFun( curPagObj, DAY_ONE_STR, 12 ); // What: Clock Install Call. Why: The device starts at noon on day one, so it builds that day's list. How: This fakes its clock before anything loads.
 
 	await fakWorFun( curPagObj, true ); // What: Worker Fake Call. Why: The update flow needs a controlled page. How: This fakes one before anything loads.
 

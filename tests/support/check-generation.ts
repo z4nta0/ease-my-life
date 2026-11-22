@@ -621,12 +621,12 @@ const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : 
  * cheGenFun = Check Generation Function
  *
  * @summary
- * Checks a whole generated day: that every conditional's daily
- * charge flag was cleared and every Ease conditional kept its trigger, that
- * each picker produced exactly what the gates and its mode call for, that
- * day-off cards stand in for exactly the triggered conditionals, that
- * nothing unexpected was added, and that the pick log holds one auto row per
- * fresh pick. Returns every problem found, each prefixed with the day.
+ * Checks a whole generated day: that every conditional's daily charge flag was
+ * cleared and every Ease or inactive conditional kept its trigger, that each
+ * picker produced exactly what the gates and its mode call for, that day-off
+ * cards stand in for exactly the triggered conditionals, that nothing
+ * unexpected was added, and that the pick log holds one auto row per fresh
+ * pick. Returns every problem found, each prefixed with the day.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

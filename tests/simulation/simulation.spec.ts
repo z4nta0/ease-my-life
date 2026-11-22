@@ -54,16 +54,16 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * exercised. The first day is a warm-up: its list is built from the backup's
  * state before the app migrates it, so generation checks start on day two.
  *
- * At the end the Stats tab is compared with figures recomputed from the
- * logs, and each probability conditional's trigger rate is checked against
- * its odds, allowing four standard deviations. A trace of every day's list
- * and conditionals is written to tests/output/simulation; setting
+ * At the end the Stats tab is compared with figures recomputed from the logs,
+ * and each probability conditional's trigger rate is checked against its odds,
+ * allowing four standard deviations. A trace of every day's list,
+ * conditionals, and reminders is written to tests/output/simulation; setting
  * EML_SIM_BASELINE to an earlier trace compares this run against it, so a
- * branch can be checked for behavior changes against main with the same
- * seed. EML_SIM_SEED and EML_SIM_SEGMENTS override the seed and the days.
- * The default days are October 5 to November 8, 2026, and December 27,
- * 2026 to January 13, 2027, which covers weekly, monthly, and year-end
- * schedules and a daylight saving change.
+ * branch can be checked for behavior changes against main with the same seed.
+ * EML_SIM_SEED and EML_SIM_SEGMENTS override the seed and the days. The
+ * default days are October 5 to November 8, 2026, and December 27, 2026 to
+ * January 13, 2027, which covers weekly, monthly, and year-end schedules and a
+ * daylight saving change.
  *
  * Sections:
  *  - Types

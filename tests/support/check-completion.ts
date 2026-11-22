@@ -32,11 +32,11 @@ import type { TodEntTyp } from '../../src/core/data-model.ts'; // What: Today En
  *
  * Completing a day-off card resolves its conditional by mode: Ease Up and
  * Dynamic reset to 0 and untrigger, Ease Down drains by its step and stays
- * triggered while value remains, and probability modes are untouched. The
- * first of a conditional's dependent entries done each day charges it: Ease
- * Up by its step, triggering at the threshold; Dynamic by 10; and Ease Down,
- * when empty, refills and triggers again. One conditional log row records
- * each conditional's day, triggered when its card was done.
+ * triggered while value remains, and Random and Weighted are untouched. The
+ * first of a conditional's dependent entries done each day charges it: Ease Up
+ * by its step, triggering at the threshold; Dynamic by 10; and Ease Down, when
+ * empty, refills and triggers again. One conditional log row records each
+ * conditional's day, triggered when its card was done.
  *
  * Unchecking must restore everything to the state before the check, which
  * cheUndFun checks exactly, and checking a reminder sets its lastDone and
