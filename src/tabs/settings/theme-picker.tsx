@@ -115,8 +115,8 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } :
 		<div
 			className={` ${ cssModObj.theRowDiv }   ${ cssModObj.theRowDivCustom } `}
 
-			data-option-select-active={ actTheBoo || undefined } // What: Option Select Active Attribute. Why: The selected custom row gets a solid frame and inherited label color from its module, and this row has no aria state of its own to key that off. How: This sets the presence-only attribute while actTheBoo is true and removes it otherwise.
-			data-theme-dark-active={ darModBoo || undefined } // What: Theme Dark Active Attribute. Why: A dark theme's row switches its label, check, and name field to light-on-dark colors from its module. How: This sets the presence-only attribute while darModBoo is true and removes it otherwise.
+			data-option-select-active={ actTheBoo || undefined } // What: Option Select Active Attribute. Why: The selected custom row gets a solid frame from its module, and this row has no aria state of its own to key that off. How: This sets the presence-only attribute while actTheBoo is true and removes it otherwise.
+			data-theme-dark-active={ darModBoo || undefined } // What: Theme Dark Active Attribute. Why: A dark theme's row switches its label and name field to light-on-dark colors from its module. How: This sets the presence-only attribute while darModBoo is true and removes it otherwise.
 		>{ /* What: Theme Row Div Element. Why: This is the whole custom-theme row, styled to match the preset rows above it and carrying the theRowDivCustom variant. How: This renders 3 live color inputs, a name input, and (while active) a checkmark. */ }
 
 
@@ -249,7 +249,7 @@ function TheRowCom ( { actTheBoo, darModBoo, onActTheFun, thePalObj } : TrcProTy
 		<div
 			className={ cssModObj.theRowDiv }
 
-			data-theme-dark-active={ darModBoo || undefined } // What: Theme Dark Active Attribute. Why: A dark theme's row switches its label, check, and name field to light-on-dark colors from its module. How: This sets the presence-only attribute while darModBoo is true and removes it otherwise.
+			data-theme-dark-active={ darModBoo || undefined } // What: Theme Dark Active Attribute. Why: A dark theme's row switches its label to a light-on-dark color from its module. How: This sets the presence-only attribute while darModBoo is true and removes it otherwise.
 
 			aria-checked={ actTheBoo }
 			role='radio'

@@ -19,14 +19,13 @@ import { PicStrCom } from '../../ui/picker-strip.tsx'; // What: Picker Strip Com
  * previews.tsx = Previews
  *
  * @summary
- * Renders the Settings tab's Appearance preview stages: two components
- * that let the user PLAY the selected effect directly inside Settings
- * rather than only read about it. CelPreCom is a dedicated
- * box, sized like the Today cards area, that fires the real ripple/
- * confetti/sparkle celebration over a small set of mock done-cards.
- * PicAniCom reuses the real PicStrCom component (the exact
- * reel/spotlight/dissolve cycle the Pickers tab itself renders) over a
- * small set of mock candidates.
+ * Renders the Settings tab's Appearance preview stages: two components that
+ * let the user PLAY the selected effect directly inside Settings rather than
+ * only read about it. CelPreCom is a dedicated padded well, standing in for
+ * the Today cards area, that fires the real ripple/confetti/sparkle
+ * celebration over a small set of mock done-cards. PicAniCom reuses the real
+ * PicStrCom component (the exact reel/spotlight/dissolve cycle the Pickers tab
+ * itself renders) over a small set of mock candidates.
  *
  * Pressing Play is an explicit request to SEE the animation, so both
  * stages play even under a system-level prefers-reduced-motion setting:
@@ -300,14 +299,14 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: The preview replays only when Play is pressed, never just because a different style was selected. How: styKeyStr is read from the render where repTokNum changed.
-	}, [ repTokNum ] ); // What: Effect Dependency Array. Why: This must only replay when repTokNum itself bumps, a real Play press, never merely because styKeyStr changed on its own, since switching the style dropdown without pressing Play should not retrigger anything. How: repTokNum is the only value this effect's own change-detection is built around.
+	}, [ repTokNum ] ); // What: Effect Dependency Array. Why: This must only replay when repTokNum itself bumps, a real Play press, never merely because styKeyStr changed on its own, since choosing a different style in the list without pressing Play should not retrigger anything. How: repTokNum is the only value this effect's own change-detection is built around.
 
 
 
 	return (
 
 
-		<div className={ cssModObj.celPreDiv }>{ /* What: Celebration Preview Div Element. Why: This is CelPreCom's own root element, sized to match the Today cards area so the preview reads as a faithful copy. How: This wraps the mock done-cards row and the particle overlay that plays on top of it. */ }
+		<div className={ cssModObj.celPreDiv }>{ /* What: Celebration Preview Div Element. Why: This is CelPreCom's own root element, set in a padded well standing in for the Today cards area. How: This wraps the mock done-cards row and the particle overlay that plays on top of it. */ }
 
 
 			<div
@@ -489,7 +488,7 @@ function PicAniCom ( { repTokNum, styKeyStr } : PacProTyp ) : React.JSX.Element 
 	return (
 
 
-		<div className={ cssModObj.aniStaDiv }>{ /* What: Animation Stage Div Element. Why: This is PicAniCom's own root element, matching the Pickers tab's real stage sizing so the preview reads as a faithful copy. How: This renders either the live PicStrCom cycle or a static fallback, based on whether Play has been pressed. */ }
+		<div className={ cssModObj.aniStaDiv }>{ /* What: Animation Stage Div Element. Why: This is PicAniCom's own root element, which centers its content in a stage with a fixed minimum height. How: This renders either the live PicStrCom cycle or a static fallback, based on whether Play has been pressed. */ }
 
 
 			{ repTokNum > 0 ? ( // What: Play Pressed Check. Why: The real cycle animation should only mount once the user has actually pressed Play at least once. How: This renders PicStrCom while repTokNum is greater than 0, a static preview of the landing candidate's own name otherwise.
