@@ -88,7 +88,7 @@ const TOD_TAB_STR = '[data-element-name-hook~="todTabDiv"]';                    
  *
 */
 
-const begModFun = async ( curPagObj : Page ) : Promise< void > => { // What: Begin Modal Function. Why: Every tour starts from its intro modal. How: This waits for the modal and clicks its primary button.
+const begModFun = async ( curPagObj : Page ) : Promise< void > => { // What: Begin Modal Function. Why: The Welcome tour and each launcher's tour start from their intro modals. How: This waits for the modal and clicks its primary button.
 
 
 	await curPagObj.locator( INT_MOD_STR ).waitFor( { timeout : 15000 } ); // What: Modal Wait. Why: The modal opens a moment after the launcher. How: This waits for it.

@@ -426,7 +426,7 @@ const meaLayFun = async ( curPagObj : Page ) : Promise< string[] > => curPagObj.
 const nooPreFun = async () => {}; // What: No-Op Prepare Function. Why: Most states need no setup beyond the tab. How: This does nothing.
 
 
-type PagStaTyp = { namStr : string, preFun : ( curPagObj : Page ) => Promise< void >, tabStr : string }; // What: Page State Type. Why: Each measured state is a tab plus optional setup. How: This holds its name, tab, and setup.
+type PagStaTyp = { namStr : string, preFun : ( curPagObj : Page ) => Promise< void >, tabStr : string }; // What: Page State Type. Why: Each measured state is a tab plus a setup step, a no-op for most. How: This holds its name, tab, and setup.
 
 const PAG_STA_ARR : PagStaTyp[] = [ // What: Page State Array. Why: Four tabs as they open, and the expanded states most likely to crowd, are measured. How: Each row is one state.
 
