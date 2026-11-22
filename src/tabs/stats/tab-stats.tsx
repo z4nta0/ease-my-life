@@ -3388,7 +3388,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 											{ conSorStr === 'desc' ? 'High → Low' : 'Low → High' }{ /* What: Sort Label Expression. Why: The button names the current direction. How: This reads High to Low or Low to High from conSorStr. */ }
 
 											<IcoSvgCom
-												icoNamStr={ conSorStr === 'desc' ? 'ardEle' : 'aruEle' }
+												icoNamStr={ conSorStr === 'desc' ? 'ardEle' : 'aruEle' } // What: Arrow Icon Name. Why: The arrow points the current sort direction. How: This picks the down arrow while conSorStr is 'desc' and the up arrow otherwise.
 												sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 											/>{ /* What: Icon SVG Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on conSorStr. */ }
 
@@ -4195,7 +4195,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 										}
 
 										<IcoSvgCom
-											icoNamStr={ remSorStr === 'desc' ? 'ardEle' : 'aruEle' }
+											icoNamStr={ remSorStr === 'desc' ? 'ardEle' : 'aruEle' } // What: Arrow Icon Name. Why: The arrow points the current sort direction. How: This picks the down arrow while remSorStr is 'desc' and the up arrow otherwise.
 											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 										/>{ /* What: Icon SVG Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on remSorStr. */ }
 
@@ -4512,7 +4512,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 									{ sorDirStr === 'desc' ? 'High → Low' : 'Low → High' }{ /* What: Sort Label Expression. Why: The button names the current direction. How: This reads High to Low or Low to High from sorDirStr. */ }
 
 									<IcoSvgCom
-										icoNamStr={ sorDirStr === 'desc' ? 'ardEle' : 'aruEle' }
+										icoNamStr={ sorDirStr === 'desc' ? 'ardEle' : 'aruEle' } // What: Arrow Icon Name. Why: The arrow points the current sort direction. How: This picks the down arrow while sorDirStr is 'desc' and the up arrow otherwise.
 										sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 									/>{ /* What: Icon SVG Component. Why: The sort button needs a small directional glyph matching its own current direction. How: This renders the arrow_down/arrow_up icon based on sorDirStr. */ }
 

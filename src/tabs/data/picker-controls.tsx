@@ -1363,7 +1363,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 						<span className={ cssModObj.setNamSpa }>In the daily generator</span>{ /* What: Setting Name Span Element. Why: The row needs its own literal name. How: This renders the literal text "In the daily generator". */ }
 
 						<span
-							key={ draPicObj.includeInDaily ? 'on' : 'off' }
+							key={ draPicObj.includeInDaily ? 'on' : 'off' } // What: Explanation Key. Why: The explanation fades between its two versions. How: This keys the span 'on' while includeInDaily is true and 'off' otherwise, so a change remounts it.
 
 							className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 						>{ /* What: Setting Sub Span Element. Why: The row needs a live one-line explanation, cross-faded via its own key change. How: This renders whichever of the 2 explanations below matches draPicObj.includeInDaily. */ }
@@ -1430,7 +1430,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								</span>
 
 								<span
-									key={ ( draPicObj.cadence || 'daily' ) + ( draPicObj.anchorDow ?? '' ) + ( draPicObj.anchorDom ?? '' ) + ( draPicObj.anchorMonth ?? '' ) + ( draPicObj.anchorDay ?? '' ) + ( draPicObj.dateMode ?? '' ) + ( draPicObj.nthOrdinal ?? '' ) + ( draPicObj.nthWeekday ?? '' ) }
+									key={ ( draPicObj.cadence || 'daily' ) + ( draPicObj.anchorDow ?? '' ) + ( draPicObj.anchorDom ?? '' ) + ( draPicObj.anchorMonth ?? '' ) + ( draPicObj.anchorDay ?? '' ) + ( draPicObj.dateMode ?? '' ) + ( draPicObj.nthOrdinal ?? '' ) + ( draPicObj.nthWeekday ?? '' ) } // What: Summary Key. Why: The summary fades whenever any schedule field changes. How: This joins the cadence ('daily' when unset) with every anchor field (blank when unset), so any change remounts the span.
 
 									className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 								>{ /* What: Setting Sub Span Element. Why: The row needs a live one-line summary of the exact configured schedule, cross-faded via its own composite key. How: This computes and returns the matching summary JSX for the picker's current cadence/anchor fields. */ }
@@ -1484,7 +1484,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								<select
 									className={ cssModObj.cadOptSel }
 
-									value={ draPicObj.cadence || 'daily' }
+									value={ draPicObj.cadence || 'daily' } // What: Cadence Value Fallback. Why: The select needs a cadence to show even when the picker has none set. How: This shows the picker's cadence, or 'daily' when it's missing.
 
 									aria-label='Cadence'
 
@@ -1683,7 +1683,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								<span className={ cssModObj.setNamSpa }>Days</span>{ /* What: Setting Name Span Element. Why: The row needs its own literal name. How: This renders the literal text "Days". */ }
 
 								<span
-									key={ ( draPicObj.daysOfWeek || [] ).join( ',' ) }
+									key={ ( draPicObj.daysOfWeek || [] ).join( ',' ) } // What: Days Summary Key. Why: The summary fades whenever the chosen days change. How: This keys the span on the chosen days joined by commas, or an empty key when none are set.
 
 									className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 								>{ /* What: Setting Sub Span Element. Why: The row needs a live one-line summary of the chosen weekdays, cross-faded via its own key. How: This lists every chosen day, or a prompt when none are chosen. */ }
@@ -1732,7 +1732,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 								<span className={ cssModObj.setNamSpa }>Skip on holidays</span>{ /* What: Setting Name Span Element. Why: The row needs its own literal name. How: This renders the literal text "Skip on holidays". */ }
 
 								<span
-									key={ draPicObj.skipHolidays ? 'on' : 'off' }
+									key={ draPicObj.skipHolidays ? 'on' : 'off' } // What: Explanation Key. Why: The explanation fades between its two versions. How: This keys the span 'on' while skipHolidays is true and 'off' otherwise, so a change remounts it.
 
 									className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 								>{ /* What: Setting Sub Span Element. Why: The row needs a live one-line explanation, cross-faded via its own key change. How: This renders whichever of the 2 explanations below matches draPicObj.skipHolidays. */ }
@@ -1806,7 +1806,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 						<span className={ cssModObj.setNamSpa }>Avoid duplicate items</span>{ /* What: Setting Name Span Element. Why: The row needs its own literal name. How: This renders the literal text "Avoid duplicate items". */ }
 
 						<span
-							key={ draPicObj.avoidDuplicates ? 'on' : 'off' }
+							key={ draPicObj.avoidDuplicates ? 'on' : 'off' } // What: Explanation Key. Why: The explanation fades between its two versions. How: This keys the span 'on' while avoidDuplicates is true and 'off' otherwise, so a change remounts it.
 
 							className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 						>{ /* What: Setting Sub Span Element. Why: The row needs a live one-line explanation, cross-faded via its own key change. How: This renders whichever of the 2 explanations below matches draPicObj.avoidDuplicates. */ }

@@ -1263,7 +1263,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 								<span
-									key={ runPhaStr === 'sent' ? 'sent' : 'send' }
+									key={ runPhaStr === 'sent' ? 'sent' : 'send' } // What: Send Label Key. Why: The label fades between its send and sent text. How: This keys the span 'sent' once runPhaStr is 'sent' and 'send' otherwise, so the change remounts it.
 
 									className={` ${ cssModObj.senLabSpa }   ${ cssModObj.senLabSpaFade } `}
 								>{ /* What: Send Label Span Element. Why: The label itself needs to cross-fade between its two states. How: This is keyed by whether runPhaStr is 'sent', so React remounts it and replays the fade that senLabSpaFade plays when the label changes. */ }
@@ -1373,7 +1373,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 
 								<IcoSvgCom
-									icoNamStr={ shoDriBoo ? 'eyoEle' : 'eyeEle' }
+									icoNamStr={ shoDriBoo ? 'eyoEle' : 'eyeEle' } // What: Eye Icon Name. Why: The glyph shows whether the drift bars are showing. How: This picks the eye-off icon while shoDriBoo is true and the eye otherwise.
 									sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 								/>{ /* What: Icon SVG Component. Why: An eye/eye-off glyph reads faster than text alone for a show/hide toggle. How: This switches icon name based on shoDriBoo. */ }
 
@@ -1531,7 +1531,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 														<ProBarCom
 															curValNum={ reaValNum }
 															maxValNum={ 1 }
-															tonValStr={ picDatObj.mode === 'ease-down' ? 'warm' : 'accent' }
+															tonValStr={ picDatObj.mode === 'ease-down' ? 'warm' : 'accent' } // What: Bar Tone String. Why: An Ease Down picker's bar takes the warm tint. How: This picks 'warm' for an Ease Down picker and 'accent' otherwise.
 														/>{ /* What: Progress Bar Component. Why: A visual bar reads faster than the raw number alone. How: This renders reaValNum against a max of 1, tinted warm for Ease Down and accent otherwise. */ }
 
 

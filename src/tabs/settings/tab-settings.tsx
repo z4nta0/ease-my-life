@@ -1851,7 +1851,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 									] }
-									value={ ( staAppObj.appearance && staAppObj.appearance.completionStyle ) || 'confetti' }
+									value={ ( staAppObj.appearance && staAppObj.appearance.completionStyle ) || 'confetti' } // What: Celebration Style Value. Why: The radios need a style chosen even when none is saved. How: This reads the saved completionStyle, or 'confetti' when appearance or the style is missing.
 
 									onChange={ actStoObj.setCelFun }
 									onPreStyFun={ plaCelFun }
@@ -1904,7 +1904,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 									] }
-									value={ ( staAppObj.appearance && staAppObj.appearance.pickAnim ) || 'reel' }
+									value={ ( staAppObj.appearance && staAppObj.appearance.pickAnim ) || 'reel' } // What: Picker Animation Value. Why: The radios need a style chosen even when none is saved. How: This reads the saved pickAnim, or 'reel' when appearance or the style is missing.
 
 									onChange={ ( newValStr ) => { // What: Picker Animation Change Handler. Why: Choosing a new style must also drop any stale preview, so the stage shows the newly selected style. How: This clears picPreStr, then saves the new style.
 
@@ -1922,7 +1922,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 								<PicAniCom
 									repTokNum={ picTokNum }
-									styKeyStr={ picPreStr || ( staAppObj.appearance && staAppObj.appearance.pickAnim ) || 'reel' }
+									styKeyStr={ picPreStr || ( staAppObj.appearance && staAppObj.appearance.pickAnim ) || 'reel' } // What: Shown Style Key. Why: A preview plays its own style in place of the saved one. How: This picks picPreStr while a preview runs, then the saved pickAnim, then 'reel'.
 								/>{ /* What: Picker Animation Component. Why: The user should be able to actually watch each picker-animation style before committing to it. How: This plays picPreStr while a preview is active, otherwise the selected pickAnim, replaying every time picTokNum bumps. */ }
 
 
@@ -1960,7 +1960,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 										<span className={ cssModObj.setNamSpa }>Tab bar placement</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Tab bar placement". */ }
 
 										<span
-											key={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' }
+											key={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' } // What: Placement Description Key. Why: The description fades whenever the placement changes. How: This keys the span on the saved tabPlacement, or 'bottom' when none is saved.
 
 											className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade }   ${ cssModObj.setSubSpaLayout } `}
 										>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the selected placement, and should fade between versions. How: This remounts (via its own placement key) and renders whichever of 3 explanatory sentences matches the current placement. Its layout modifier caps its width so the segmented control keeps room on its line. */ }
@@ -2004,7 +2004,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 										] }
-										value={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' }
+										value={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' } // What: Placement Value. Why: The control needs a placement chosen even when none is saved. How: This reads the saved tabPlacement, or 'bottom' when appearance or the placement is missing.
 
 										ariLabStr='Tab bar placement'
 
@@ -2061,7 +2061,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									<span className={ cssModObj.setNamSpa }>Run automatically</span>{ /* What: Settings Name Span Element. Why: Each row names itself with this span. How: This renders the fixed label "Run automatically". */ }
 
 									<span
-										key={ daiModStr + ( staAppObj.daily && staAppObj.daily.runTime ) }
+										key={ daiModStr + ( staAppObj.daily && staAppObj.daily.runTime ) } // What: Mode And Time Key. Why: The description fades whenever the mode or run time changes. How: This joins daiModStr with the saved runTime, so a change to either remounts the span.
 
 										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 									>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the mode and run time, and should fade between versions. How: This remounts (via its own mode+time key) and renders one of 2 explanatory sentences depending on daiModStr. */ }
@@ -2095,7 +2095,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									aria-label='Run the Daily generator automatically'
 									aria-pressed={ daiModStr === 'auto' }
 
-									onClick={ () => actStoObj.daiModFun( daiModStr === 'auto' ? 'manual' : 'auto' ) }
+									onClick={ () => actStoObj.daiModFun( daiModStr === 'auto' ? 'manual' : 'auto' ) } // What: Mode Toggle Handler. Why: Each press flips the generator between its two modes. How: This saves 'manual' while daiModStr is 'auto' and 'auto' otherwise.
 								>{ /* What: Toggle Switch Button Element. Why: This is the actual control that flips between automatic and manual generator runs. How: This calls actStoObj.daiModFun with the toggled value when clicked. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
@@ -2141,7 +2141,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 									disabled={ daiModStr !== 'auto' }
 									type='time'
-									value={ ( staAppObj.daily && staAppObj.daily.runTime ) || '04:00' }
+									value={ ( staAppObj.daily && staAppObj.daily.runTime ) || '04:00' } // What: Run Time Value. Why: The time field needs a time to show even when none is saved. How: This reads the saved runTime, or '04:00' when daily or runTime is missing.
 
 									aria-label='Daily generator run time'
 
@@ -2705,7 +2705,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 										kinValStr='secondary'
 										sizValStr='sm'
 
-										onClick={ () => filInpRef.current && filInpRef.current.click() }
+										onClick={ () => filInpRef.current && filInpRef.current.click() } // What: Import Click Handler. Why: The visible button stands in for the hidden file input. How: This calls the input's click() once filInpRef holds it.
 									>Import</ButBasCom> // What: Button Base Component. Why: This is the actual trigger that opens the native file picker. How: This calls the hidden file input's own click() when clicked.
 
 

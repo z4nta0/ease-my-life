@@ -3887,7 +3887,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								</span>
 
 								<span
-									key={ isaFulBoo ? celNonNum : 'idle' }
+									key={ isaFulBoo ? celNonNum : 'idle' } // What: Title Key. Why: The title replays its reveal each time the day becomes complete. How: This keys the span on celNonNum while isaFulBoo is true and 'idle' otherwise, so each completion remounts it.
 
 									className={` ${ cssModObj.titStaSpa }   ${ cssModObj.titStaSpaDone } `}
 
@@ -4552,7 +4552,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 											donCouNum={ curDonNum }
 											ediModBoo={ ediModBoo }
 											groNamStr={ curGroObj.namStr }
-											logOpeBoo={ opeLogStr === curGroObj.namStr && !ediModBoo }
+											logOpeBoo={ opeLogStr === curGroObj.namStr && !ediModBoo } // What: Log Open Prop. Why: Only the group whose Day Log is open shows it, and never in Edit Mode. How: This is true when opeLogStr names this group and ediModBoo is false.
 											merPenObj={ merProObj && merProObj.oldStr === curGroObj.namStr ? merProObj : null } // What: Merge Pending Prop. Why: Only the group being renamed into an existing one shows the merge prompt. How: This passes merProObj when its old name is this group's name, otherwise null.
 											totCouNum={ curGroObj.entArr.length }
 
@@ -4633,7 +4633,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 															ediModBoo={ ediModBoo }
 															entRcdObj={ entRcdObj }
 															isaEdiBoo={ actEdiStr === `item:${ entRcdObj.eid }` }
-															isaRmvBoo={ rmvIdeSet.has( entRcdObj.eid ) || leaEntSet.has( entRcdObj.eid ) }
+															isaRmvBoo={ rmvIdeSet.has( entRcdObj.eid ) || leaEntSet.has( entRcdObj.eid ) } // What: Removing Prop. Why: A row leaving the list plays its collapse animation. How: This is true when the row's eid is in rmvIdeSet (a skip or delete) or leaEntSet (dropped by a regenerate).
 															isaRolBoo={ rolIdeSet.has( entRcdObj.eid ) }
 															jusCheStr={ jusCheStr }
 															picRcdObj={ picRcdObj }
@@ -4913,13 +4913,13 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 										type='button'
 
-										onClick={ () => onNavTabFun && onNavTabFun( 'data' ) }
+										onClick={ () => onNavTabFun && onNavTabFun( 'data' ) } // What: Data Tab Link Handler. Why: The link only navigates when a tab change handler was passed. How: This calls onNavTabFun with 'data' when it exists, and does nothing otherwise.
 									>Data tab</button> to change this behavior or you can run them manually via the <button
 										className={ cssModObj.subLinBut }
 
 										type='button'
 
-										onClick={ () => onNavTabFun && onNavTabFun( 'picker' ) }
+										onClick={ () => onNavTabFun && onNavTabFun( 'picker' ) } // What: Pickers Tab Link Handler. Why: The link only navigates when a tab change handler was passed. How: This calls onNavTabFun with 'picker' when it exists, and does nothing otherwise.
 									>Pickers tab</button> and then push them here to the Today tab.
 
 
@@ -5104,9 +5104,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				<RemTouCom
 					actStoObj={ actStoObj }
 					staAppObj={ staAppObj }
-					varKeyStr={ minTouObj.ideStr === 'tk_ob_meds' ? 'once' : 'recurring' }
+					varKeyStr={ minTouObj.ideStr === 'tk_ob_meds' ? 'once' : 'recurring' } // What: Variant Key Prop. Why: The tour runs the variant matching its sample reminder. How: This picks 'once' for the tk_ob_meds sample and 'recurring' otherwise.
 
-					onCloForFun={ () => setActEdiStr( ( curValStr ) => curValStr === 'reminder-add' ? null : curValStr ) }
+					onCloForFun={ () => setActEdiStr( ( curValStr ) => curValStr === 'reminder-add' ? null : curValStr ) } // What: Close Form Handler. Why: The tour's close should only shut the reminder add form, never another editor opened since. How: This clears actEdiStr while it holds 'reminder-add' and keeps it otherwise.
 					onCloTouFun={ () => setMinTouObj( null ) }
 				/> // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it renders directly here. How: This is passed which variant to run plus a close handler that clears minTouObj.
 

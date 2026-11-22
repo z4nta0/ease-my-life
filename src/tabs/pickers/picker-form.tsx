@@ -130,7 +130,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEl
 				>{ labTexStr }</label>{ /* What: Form Label Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch through ideValStr. */ }
 
 				<p
-					key={ value ? 'on' : 'off' }
+					key={ value ? 'on' : 'off' } // What: Help Text Key. Why: The help line fades between its on and off text. How: This keys the paragraph 'on' while value is true and 'off' otherwise, so a toggle remounts it.
 
 					className={` ${ cssModObj.forHelPar }   ${ cssModObj.forHelParFade } `}
 				>{ value ? enaHelEle : disHelEle }</p>{ /* What: Form Help Paragraph Fade Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by value so the text cross-fades on every flip, showing enaHelEle or disHelEle. */ }
@@ -1957,7 +1957,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 								<ButBasCom
-									disabled={ !detReaBoo || conColBoo }
+									disabled={ !detReaBoo || conColBoo } // What: Save Disabled Check. Why: Saving needs Step 1's required fields and no clash with an existing conditional's name. How: This disables the button until detReaBoo holds, and while conColBoo flags a clash.
 									icoNamStr='cheEle'
 									kinValStr='primary'
 
@@ -1971,7 +1971,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								<ButBasCom
 									data-element-name-hook='forNexBut'
 
-									disabled={ !detReaBoo || conColBoo }
+									disabled={ !detReaBoo || conColBoo } // What: Next Disabled Check. Why: Moving on needs Step 1's required fields and no clash with an existing conditional's name. How: This disables the button until detReaBoo holds, and while conColBoo flags a clash.
 									icoNamStr='chvEle'
 									kinValStr='primary'
 
@@ -2461,7 +2461,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							<ButBasCom
 								data-element-name-hook='forCreBut'
 
-								disabled={ !enoIteBoo || conColBoo }
+								disabled={ !enoIteBoo || conColBoo } // What: Create Disabled Check. Why: Creating needs at least 2 committed items and no clash with an existing conditional's name. How: This disables the button until enoIteBoo holds, and while conColBoo flags a clash.
 								icoNamStr='cheEle'
 								kinValStr='primary'
 

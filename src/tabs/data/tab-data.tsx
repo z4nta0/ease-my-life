@@ -2133,7 +2133,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 									data-element-name-hook='catHeaBut'
 
-									disabled={ isaDraBoo || detPicBoo }
+									disabled={ isaDraBoo || detPicBoo } // What: Header Disabled Check. Why: A draft card always stays expanded, and some edit tour steps need this picker kept open. How: This disables the collapse toggle for a draft, and while detPicBoo guards those steps.
 									type='button'
 
 									aria-expanded={ secOpeBoo }
@@ -2238,12 +2238,12 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 										<IcoSvgCom
-											icoNamStr={ allVacBoo ? 'mooEle' : 'spaEle' }
+											icoNamStr={ allVacBoo ? 'mooEle' : 'spaEle' } // What: Vacation Icon Name. Why: The glyph reflects the bulk toggle's state. How: This picks the moon while allVacBoo is true and the sparkle otherwise.
 											sizSteStr='bas' // Vertical Rhythm Base ~= 14.572px
 										/>{ /* What: Icon SVG Component. Why: The bulk active/inactive toggle needs a recognizable glyph reflecting its own current state. How: This renders 'moon' while allVacBoo, 'sparkle' otherwise. */ }
 
 										<span
-											key={ allVacBoo ? 'inactive' : 'active' }
+											key={ allVacBoo ? 'inactive' : 'active' } // What: Label Key. Why: The label fades between its two states. How: This keys the span 'inactive' while allVacBoo is true and 'active' otherwise, so a change remounts it.
 
 											className={ cssModObj.vacLabSpa }
 										>{ allVacBoo ? 'Inactive' : 'Active' }</span>{ /* What: Vacation Label Span Element. Why: The toggle also needs its own live text, cross-faded via its own key change. How: This renders "Inactive" while allVacBoo, "Active" otherwise. */ }
@@ -2294,7 +2294,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 										<PicConCom
 											actStoObj={ actStoObj }
 											allGroArr={ exiGroArr }
-											conIteArr={ staAppObj.conditionals || [] }
+											conIteArr={ staAppObj.conditionals || [] } // What: Conditionals Fallback. Why: The controls need a list even when the state holds no conditionals array. How: This passes staAppObj.conditionals, or an empty list when it's missing.
 											hasNewBoo={ ownNewBoo }
 											incDaiBoo={ incDaiBoo }
 											isaNewBoo={ isaDraBoo }

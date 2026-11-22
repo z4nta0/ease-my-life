@@ -362,7 +362,7 @@ function HolEdiCom ( { actStoObj, staAppObj } : HecProTyp ) : React.JSX.Element 
 
 
 				<ButBasCom
-					disabled={ !draNamStr.trim() || !draDatStr }
+					disabled={ !draNamStr.trim() || !draDatStr } // What: Add Disabled Check. Why: A holiday needs both a name and a date. How: This disables the button while the trimmed name is blank or no date is chosen.
 					icoNamStr='pluEle'
 					kinValStr='primary'
 					sizValStr='sm'

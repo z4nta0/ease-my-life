@@ -171,7 +171,7 @@ function TheCusCom ( { actStoObj, actTheBoo, cusColObj, darModBoo, theModStr } :
 				maxLength={ 18 }
 				placeholder='Custom'
 				type='text'
-				value={ draColObj.name || '' }
+				value={ draColObj.name || '' } // What: Name Value Fallback. Why: A controlled input needs a string before the theme is named. How: This shows draColObj.name, or an empty string when it's missing.
 
 				aria-label={ `Name for your custom ${ theModStr === 'dark' ? 'dark' : 'light' } theme` } // What: Name Label Text. Why: The input's accessible name should say which custom theme it names. How: This reads "dark" on the Dark card and "light" otherwise.
 

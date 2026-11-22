@@ -375,7 +375,7 @@ function IntRowCom ( { ariLabStr, desIdeStr, maxValStr, onChange, uniLabStr, val
 				max={ maxValStr }
 				min='1'
 				type='number'
-				value={ value || 1 }
+				value={ value || 1 } // What: Interval Value Fallback. Why: The number input needs an interval to show before one is set. How: This shows value, or 1 when it's missing or 0.
 
 				aria-describedby={ desIdeStr }
 				aria-label={ ariLabStr }
@@ -450,7 +450,7 @@ function FreFieCom ( { ancHinEle, ariLabStr, desIdeStr, intValNum, maxValStr, on
 				<span className={ cssModObj.fieLabSpa }>Frequency</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "Frequency". */ }
 
 				<span
-					key={ intValNum || 1 }
+					key={ intValNum || 1 } // What: Summary Key. Why: The summary fades to its new text whenever the interval changes. How: This keys the span on intValNum, or 1 when it's missing or 0, so a new interval remounts it.
 
 					className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
 				>shows on the Today page <strong>every { ( intValNum || 1 ) > 1 ? `${ intValNum } ${ uniWorStr }s` : uniWorStr }</strong></span>{ /* What: Field Subtitle Span Element. Why: This is the live cadence summary, re-fading whenever the interval changes. How: This picks between the plain unit word and an "every N" phrase with the plural unit word, based on intValNum. Its fieSubSpaFading class plays the fade. */ }
@@ -532,7 +532,7 @@ function MonSelCom ( { desIdeStr, onChange, value } : MecProTyp ) : React.JSX.El
 		<select
 			className={` ${ cssModObj.ancPicSel } `}
 
-			value={ value || 1 }
+			value={ value || 1 } // What: Month Value Fallback. Why: The select needs a month to show before one is set. How: This shows value, or January's 1 when it's missing or 0.
 
 			aria-describedby={ desIdeStr }
 			aria-label='Month'
@@ -611,7 +611,7 @@ function NthSelCom ( { desIdeStr, dowValNum, onPatTasFun, ordValNum } : NlcProTy
 			<select
 				className={` ${ cssModObj.ancPicSel } `}
 
-				value={ ordValNum || 1 }
+				value={ ordValNum || 1 } // What: Ordinal Value Fallback. Why: The ordinal select needs a choice to show before one is set. How: This shows ordValNum, or 1 when it's missing or 0.
 
 				aria-describedby={ desIdeStr }
 				aria-label='Week of the month'
@@ -1099,7 +1099,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 							<span className={ cssModObj.fieLabSpa }>On these days</span>{ /* What: Field Label Span Element. Why: This is the subsection's own plain label. How: This renders the literal text "On these days". */ }
 
 							<span
-								key={ tasRcdObj.interval || 1 }
+								key={ tasRcdObj.interval || 1 } // What: Summary Key. Why: The summary fades to its new text whenever the interval changes. How: This keys the span on tasRcdObj.interval, or 1 when it's missing or 0, so a new interval remounts it.
 
 								className={` ${ cssModObj.fieSubSpa }   ${ cssModObj.fieSubSpaFading } `}
 							>{ /* What: Field Subtitle Span Element. Why: This is the live summary of which days and how often the reminder shows. How: This re-keys (and so re-fades) whenever interval changes, rendering one of the 2 branches below. Its fieSubSpaFading class plays the fade. */ }
@@ -1132,7 +1132,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 
 
 						<WeeChiCom
-							value={ tasRcdObj.daysOfWeek || [] }
+							value={ tasRcdObj.daysOfWeek || [] } // What: Weekdays Value Fallback. Why: The weekday chips need a list to read even before any day is set. How: This passes tasRcdObj.daysOfWeek, or an empty list when it's missing.
 
 							desIdeStr={ schNotStr }
 
@@ -1296,7 +1296,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								<select
 									className={` ${ cssModObj.ancPicSel } `}
 
-									value={ tasRcdObj.dayOfMonth || 1 }
+									value={ tasRcdObj.dayOfMonth || 1 } // What: Day Of Month Fallback. Why: The select needs a day to show before one is set. How: This shows tasRcdObj.dayOfMonth, or 1 when it's missing or 0.
 
 									aria-describedby={ schNotStr }
 									aria-label='Day of the month'
@@ -1452,7 +1452,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 								<select
 									className={` ${ cssModObj.ancPicSel } `}
 
-									value={ tasRcdObj.day || 1 }
+									value={ tasRcdObj.day || 1 } // What: Day Value Fallback. Why: The day select needs a day to show before one is set. How: This shows tasRcdObj.day, or 1 when it's missing or 0.
 
 									aria-describedby={ schNotStr }
 									aria-label='Day'

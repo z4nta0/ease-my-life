@@ -553,7 +553,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 								<ButBasCom
 									data-element-name-hook='accBuyBut'
 
-									disabled={ buyActBoo || accSynObj.purPenBoo }
+									disabled={ buyActBoo || accSynObj.purPenBoo } // What: Unlock Disabled Check. Why: A second press mustn't start another checkout. How: This disables the button while buyActBoo shows the checkout opening, and while purPenBoo waits for the purchase to land.
 									kinValStr='primary'
 									sizValStr='sm'
 

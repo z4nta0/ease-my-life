@@ -636,7 +636,7 @@ function TabPicCom ( { actStoObj, aniStyStr, onNavHomFun, onNavTabFun, staAppObj
 			<div
 				className={ cssModObj.pagBodDiv }
 
-				style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined }
+				style={ touBusObj.resTopNum ? { paddingTop : touBusObj.resTopNum } : undefined } // What: Tour Padding Style. Why: A running tour can reserve top padding to keep its coach clear of the header. How: This sets paddingTop to touBusObj.resTopNum while it holds a nonzero value, and no style otherwise.
 			>{ /* What: Page Body Div Element. Why: A running tour can reserve extra top padding to keep its own coach clear of the header. How: This wraps every filter row, the Show row, and the active create/view content below. */ }
 
 

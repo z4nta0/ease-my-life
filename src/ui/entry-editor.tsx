@@ -675,7 +675,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 							<span className={ cssModObj.ediNamSpa }>Boost</span>{ /* What: Editor Name Span Element. Why: This is the row's own heading text. How: This renders the literal word "Boost". */ }
 
 							<span
-								key={ ( iteDatObj.value || 0 ) > 0 ? 'boost' : 'none' }
+								key={ ( iteDatObj.value || 0 ) > 0 ? 'boost' : 'none' } // What: Subtitle Key. Why: The subtitle fades between its boosted and unboosted text. How: This keys the span 'boost' while the item's value is above 0 and 'none' otherwise, so a change remounts it.
 
 								className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
 							>{ ( iteDatObj.value || 0 ) > 0 ? <><strong>+{ iteDatObj.value }</strong> to weight, resets when picked</> : <><strong>no bonus</strong> to weight, will increase when not picked</> }</span>{ /* What: Editor Sub Span Element. Why: The live boost subtitle needs its own fade-replace key so a change visibly refreshes it. How: This renders one of two phrasings depending on whether item.value is currently positive, keyed by which one is showing. */ }
@@ -687,7 +687,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 
 							<BooResCom
-								booValNum={ iteDatObj.value || 0 }
+								booValNum={ iteDatObj.value || 0 } // What: Boost Value Fallback. Why: The boost control needs a number to show before the item has one. How: This passes iteDatObj.value, or 0 when it's missing.
 
 								onResBooFun={ () => onPatIteFun( { value : 0 } ) }
 							/>{ /* What: Boost Reset Component. Why: This is the actual control for zeroing out a dynamic item's own accumulated boost. How: This is passed item.value and writes 0 into the draft via onPatIteFun on reset. */ }
@@ -732,7 +732,7 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 
 						data-element-name-hook='togSwiBut'
 
-						aria-label={ iteDatObj.vacation ? 'Activate' : 'Deactivate' }
+						aria-label={ iteDatObj.vacation ? 'Activate' : 'Deactivate' } // What: Toggle Label Text. Why: The switch's accessible name says what a press does. How: This reads "Activate" while the item is inactive and "Deactivate" otherwise.
 						aria-pressed={ !iteDatObj.vacation }
 
 						onClick={ () => onPatIteFun( { vacation : !iteDatObj.vacation } ) }

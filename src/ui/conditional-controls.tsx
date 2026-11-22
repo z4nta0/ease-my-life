@@ -850,7 +850,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 									<BooResCom
-										booValNum={ conDraObj.value || 0 }
+										booValNum={ conDraObj.value || 0 } // What: Boost Value Fallback. Why: The boost control needs a number to show before the draft has one. How: This passes conDraObj.value, or 0 when it's missing.
 										sufTexStr='%'
 
 										onResBooFun={ () => patSetFun( { value : 0 } ) }
