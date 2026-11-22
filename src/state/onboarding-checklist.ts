@@ -88,11 +88,11 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
 const ONB_EPT_ARR = [ // What: Onboarding Explore-Page-Tours Array. Why: This is the ordered manifest of every "Explore the page" tour. How: This is mapped into CHE_IDE_ARR below.
 
 
-	{ ideStr : 'explore_today',    labStr : 'Today',    pagStr : 'today',    timStr : '1 min'   },
-	{ ideStr : 'explore_pickers',  labStr : 'Pickers',  pagStr : 'picker',   timStr : '1.5 min' },
-	{ ideStr : 'explore_stats',    labStr : 'Stats',    pagStr : 'stats',    timStr : '1 min'   },
-	{ ideStr : 'explore_data',     labStr : 'Data',     pagStr : 'data',     timStr : '< 1 min' },
-	{ ideStr : 'explore_settings', labStr : 'Settings', pagStr : 'settings', timStr : '1 min'   }
+	{ ideStr : 'explore_today',    labStr : 'Today',    pagStr : 'today',    timStr : '1 min'   }, // What: Today Page Tour Row. Why: This is the Today page tour's manifest entry. How: This lists its id, launcher label, nav button key, and time estimate.
+	{ ideStr : 'explore_pickers',  labStr : 'Pickers',  pagStr : 'picker',   timStr : '1.5 min' }, // What: Pickers Page Tour Row. Why: This is the Pickers page tour's manifest entry. How: This lists its id, launcher label, nav button key, and time estimate.
+	{ ideStr : 'explore_stats',    labStr : 'Stats',    pagStr : 'stats',    timStr : '1 min'   }, // What: Stats Page Tour Row. Why: This is the Stats page tour's manifest entry. How: This lists its id, launcher label, nav button key, and time estimate.
+	{ ideStr : 'explore_data',     labStr : 'Data',     pagStr : 'data',     timStr : '< 1 min' }, // What: Data Page Tour Row. Why: This is the Data page tour's manifest entry. How: This lists its id, launcher label, nav button key, and time estimate.
+	{ ideStr : 'explore_settings', labStr : 'Settings', pagStr : 'settings', timStr : '1 min'   }  // What: Settings Page Tour Row. Why: This is the Settings page tour's manifest entry. How: This lists its id, launcher label, nav button key, and time estimate.
 
 
 ];
@@ -101,7 +101,7 @@ const ONB_EPT_ARR = [ // What: Onboarding Explore-Page-Tours Array. Why: This is
 
 
 
-const ONB_GII_STR = 'ob_generate'; // What: Onboarding Generate-Item-ID String. Why: This is the fixed, load-bearing id for the single closing "Generate a real list" checklist card. How: This is CHE_IDE_ARR's own last entry and the checklist map's own key for that card's resolution.
+const ONB_GII_STR = 'ob_generate'; // What: Onboarding Generate-Item-Identifier String. Why: This is the fixed, load-bearing id for the single closing "Generate a real list" checklist card. How: This is CHE_IDE_ARR's own last entry and the checklist map's own key for that card's resolution.
 
 
 
@@ -149,7 +149,7 @@ const CHE_IDE_ARR = [ // What: Checklist Identifier Array. Why: This is the full
  *
 */
 
-const entLooFun = ( appStaObj : StaAppTyp, iteIdeStr : string ) : { status : CheStaTyp } | null => ( appStaObj.onboarding && appStaObj.onboarding.checklist || {} )[ iteIdeStr ] || null; // What: Entry Lookup Function. Why: cheStaFun and othRmnFun below need to know whether one specific checklist item has already been resolved (any status), keyed by its own id. How: This reads appStaObj.onboarding.checklist (falling back to an empty object when either is missing) and looks up iteIdeStr, defaulting to null when there's no entry yet.
+const entLooFun = ( appStaObj : StaAppTyp, iteIdeStr : string ) : { status : CheStaTyp } | null => ( appStaObj.onboarding && appStaObj.onboarding.checklist || {} )[ iteIdeStr ] || null; // What: Entry Lookup Function. Why: A checklist item's resolution, of any status, has to be readable by its id alone. How: This reads appStaObj.onboarding.checklist (falling back to an empty object when either is missing) and looks up iteIdeStr, defaulting to null when there's no entry yet.
 
 // #endregion entLooFun
 
@@ -312,10 +312,7 @@ function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRmnFun( appSt
  *
  * @summary
  * Whether we're anywhere between the Welcome Tour's very first step and the
- * closing Generate card's flow actually completing. Used to gate every "add
- * new X" control that would otherwise let a user create real data
- * mid-tutorial, before the sample data every step is narrating has even
- * finished being reviewed.
+ * closing Generate card's flow actually completing.
  *
  * True for the tour's ENTIRE run (checked via activeTour, since maiTouBoo
  * below doesn't flip until the tour's next-to-last step hides the samples),

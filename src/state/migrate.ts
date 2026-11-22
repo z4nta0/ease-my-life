@@ -119,7 +119,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	if ( curStaObj && curStaObj.today && curStaObj.today.streakClaimed === undefined ) { // What: Streak-Claimed Backfill Guard. Why: Old state predates today.streakClaimed; whether today already counts toward the streak must be inferred from whether anything is done. How: This backfills true when any existing entry is already done, else false.
 
 
-		curStaObj.today.streakClaimed = ( curStaObj.today.entries || [] ).some( ( curEntObj : RawSavTyp ) => curEntObj.done ); // What: Streak-Claimed Backfill. Why: This is the same "was anything already done today" rule stkSynFun itself uses. How: This checks whether any of today's own entries is already done.
+		curStaObj.today.streakClaimed = ( curStaObj.today.entries || [] ).some( ( curEntObj : RawSavTyp ) => curEntObj.done ); // What: Streak-Claimed Backfill. Why: Whether today already counts toward the streak is inferred from whether any entry is done. How: This checks whether any of today's own entries is already done.
 
 
 	}
@@ -442,9 +442,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	 * established account, not a first-time one.
 	 *
 	 * Setting checklistDone:true here keeps such an account out of first-time
-	 * mode: the checklist's real-picker name-collision suppression and the App
-	 * Features section both require checklistDone to be true, and the closing
-	 * Generate card requires it to be false.
+	 * mode.
 	 *
 	 * Fresh clean state sets welcomed:false (and, via the block below,
 	 * checklistDone:false) explicitly to trigger the real first-run flow; this
@@ -519,17 +517,10 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	 * migrate.ts = Generate-Scroll-Pending Backfill
 	 *
 	 * @summary
-	 * A one-shot signal (added later) for tab-today.tsx's own auto-scroll to
-	 * the Generate card: set the instant every OTHER checklist item becomes
-	 * resolved (see setCarFun in store.ts), consumed (and cleared back to
-	 * false) the next time TabTodCom renders with it true. Persisted state
-	 * rather than a local ref/effect, deliberately: the LAST checklist item to
-	 * resolve is very often finished from a mini-tour or Page Tour running on
-	 * a DIFFERENT tab, which unmounts TabTodCom for the whole tour, so a plain
-	 * "did I see false-then-true" ref would miss the transition entirely (it
-	 * only resets, matching whatever the value already is, on each fresh
-	 * mount). This flag survives that gap by living in state instead of the
-	 * component.
+	 * A one-shot signal (added later) for the Today tab's auto-scroll to the
+	 * Generate card: set when every other checklist item becomes resolved, and
+	 * cleared once consumed. It lives in persisted state so it survives the
+	 * Today tab unmounting during a tour.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -567,7 +558,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 
 
-	if ( curStaObj && curStaObj.onboarding && ( !curStaObj.onboarding.appFeatures || typeof curStaObj.onboarding.appFeatures !== 'object' ) ) { // What: App-Features Map Backfill. Why: App Features tutorials (see onboarding/app-features.tsx) are deliberately separate from checklist above (no donCouNum/total ring, no closing Generate-style card), just a per-item resolved/not flag. How: This backfills appFeatures to {} when it's missing or not a plain object.
+	if ( curStaObj && curStaObj.onboarding && ( !curStaObj.onboarding.appFeatures || typeof curStaObj.onboarding.appFeatures !== 'object' ) ) { // What: App-Features Map Backfill. Why: App Features tutorials keep a per-item resolved/not flag in their own map. How: This backfills appFeatures to {} when it's missing or not a plain object.
 
 
 		curStaObj.onboarding.appFeatures = {}; // What: App-Features Map Set. Why: The per-item resolved/not map itself must exist as a real object before any item can be written into it. How: This sets curStaObj.onboarding.appFeatures to a fresh empty object.
@@ -583,15 +574,10 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 	 * migrate.ts = App-Features Intro-Seen Backfill
 	 *
 	 * @summary
-	 * The "One Last Thing..." App Features intro tip (see
-	 * onboarding/app-features.tsx's FeaTipCom) shows right after the closing
-	 * checklist's own generate() finishes, pointing at the freshly-appeared
-	 * App Features section. An existing user whose checklist was ALREADY done
-	 * before this existed has long since passed that moment, so backfilling
-	 * them straight to "already seen" avoids ambushing a returning user with
-	 * it on their next ordinary Regenerate; a brand-new save (or one still
-	 * mid-checklist) keeps the real default (false), so the tip still fires
-	 * naturally once they finish for the first time.
+	 * Whether the "One Last Thing..." App Features intro tip has been seen. An
+	 * existing user whose checklist was already done has passed that moment,
+	 * so they backfill to "already seen"; a new save, or one still
+	 * mid-checklist, keeps the default (false).
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *

@@ -3,12 +3,12 @@
 
 // #region Imports
 
-import { PIC_NAM_OBJ } from '../core/pickers.ts';    // What: Pickers Namespace Object. Why: An ease-mode item is stamped with its picker's average drift band, and an ease-down item starts at the shared full-charge ceiling when its picker has no threshold of its own. How: This is called via PIC_NAM_OBJ.aveEasFun and read for THR_VAL_NUM.
+import { PIC_NAM_OBJ } from '../core/pickers.ts';    // What: Pickers Namespace Object. Why: An ease-mode item is stamped with its picker's average drift band, and an ease-down item starts at the shared full-charge ceiling when its picker has no threshold of its own. How: This supplies the ease modes' drift-band and charge-threshold defaults.
 import { ranIdeFun   } from '../utils/random-id.ts'; // What: Random Identifier Function. Why: A new item with no id of its own needs a fresh one. How: This mints an 'it_' id.
 import { uniNamFun   } from '../utils/format.ts';    // What: Unique Name Function. Why: Two items in the same picker can't share a name. How: This de-duplicates the new item's name against its siblings.
 
 
-import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Both functions build or reset item fields. How: This types the new item and the sibling items.
+import type { IteRcdTyp } from '../core/data-model.ts'; // What: Item Record Type. Why: Both functions build or reset item fields. How: This types the new item, the sibling items, and the item fields a mode change resets.
 import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record Type. Why: A new item takes its owning picker's mode and threshold. How: This types curPicObj.
 
 // #endregion Imports
