@@ -20,8 +20,7 @@ import type { PicRcdTyp } from './data-model.ts'; // What: Picker Record Type. W
  * depBoo, patObj }. `updArr` is the list of items whose own value (and
  * sometimes weight/chargeStep) changed as a side effect of this one pick
  * (drift, reset, decay, fairness bookkeeping). `cycArr` is the pool the
- * cycle animation flashes through before settling on `picObj`; it is
- * just the eligible set for that mode.
+ * cycle animation flashes through before settling on `picObj`.
  *
  * The entries of `updArr` ({id, value}, or {id, weight} and {id, chargeStep,
  * value} elsewhere) keep the saved field names, since consumers store the
@@ -270,13 +269,13 @@ function norPicFun ( rawNamStr : string | undefined ) : string { return titCasFu
  * aveEasFun = Average Ease Function
  *
  * @summary
- * Computes a fallback easeMin/easeMax drift band for an ease-up/ease-down
- * item with no band of its own, by averaging the OTHER items already on
- * the same picker (each falling back to DEF_EAS_OBJ itself, so a single
- * bare sibling can't skew this into NaN), rather than keeping a separate
- * per-picker default in sync by hand. Used both to stamp a freshly added
- * item's own easeMin/easeMax immediately. It is also the fallback band
- * picIteFun rolls from for an item with no band of its own.
+ * Computes a fallback easeMin/easeMax drift band for an ease-up/ease-down item
+ * with no band of its own, by averaging the OTHER items already on the same
+ * picker (each falling back to DEF_EAS_OBJ itself, so a single bare sibling
+ * can't skew this into NaN), rather than keeping a separate per-picker default
+ * in sync by hand. Its result is the band a freshly added item starts with,
+ * and the fallback band picIteFun rolls from for an item with no band of its
+ * own.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -401,11 +400,10 @@ const driDayFun = ( driValNum : number | undefined ) : number => Math.max( 1, Ma
  * easEliFun = Ease Eligible Function
  *
  * @summary
- * Whether an ease-mode item has charged up to its picker's threshold,
- * within EAS_TOL_NUM's tolerance, so a fixed threshold/N step that lands
- * a hair under the threshold still counts. This is the one eligibility
- * check ease-up items go through, so the generator and the re-roll count
- * share the same threshold.
+ * Whether an ease-mode item has charged up to its picker's threshold, within
+ * EAS_TOL_NUM's tolerance, so a fixed threshold/N step that lands a hair under
+ * the threshold still counts. This is the one tolerance-aware eligibility
+ * check for ease-up items.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -423,7 +421,7 @@ const driDayFun = ( driValNum : number | undefined ) : number => Math.max( 1, Ma
  *
 */
 
-const easEliFun = ( iteRcdObj : IteRcdTyp, thrValNum : number ) : boolean => ( iteRcdObj.value ?? 0 ) >= ( ( thrValNum ?? THR_VAL_NUM ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) can make an item at 99.7 invisible to a re-roll cycle count while the generator still treats it as eligible. How: This treats iteRcdObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, with thrValNum defaulting to THR_VAL_NUM when missing.
+const easEliFun = ( iteRcdObj : IteRcdTyp, thrValNum : number ) : boolean => ( iteRcdObj.value ?? 0 ) >= ( ( thrValNum ?? THR_VAL_NUM ) - EAS_TOL_NUM ); // What: Ease Eligible Function. Why: Comparing an item's own value against its threshold directly (with no tolerance) would miss an item sitting a hair under it, such as one at 99.7. How: This treats iteRcdObj as eligible once its own value reaches thrValNum minus EAS_TOL_NUM, with thrValNum defaulting to THR_VAL_NUM when missing.
 
 // #endregion easEliFun
 

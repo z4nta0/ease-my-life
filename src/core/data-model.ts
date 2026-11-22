@@ -20,11 +20,11 @@ import type { PicUpdTyp } from './pickers.ts'; // What: Pick Update Type. Why: A
  * holidays, reminders, onboarding, and the UI, plus the fixed value sets
  * several fields draw from. They live in core/ because core/ is the lowest
  * layer that reads these records, and nothing below it may import from state/.
- * Every field name is the one saved in user data, so none of them follow the
- * naming rule; renaming them waits for the persisted-name migration. Fields
- * only some records carry, such as the ease band on items outside the ease
- * modes, are optional. RawSavTyp marks a save not yet migrated to this
- * shape.
+ * Every field of a saved record keeps the name saved in user data, so none of
+ * them follow the naming rule; renaming them waits for the persisted-name
+ * migration. Fields only some records carry, such as the ease band on items
+ * outside the ease modes, are optional. RawSavTyp marks a save not yet
+ * migrated to this shape.
  *
  * Sections:
  *  - Types
