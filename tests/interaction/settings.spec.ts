@@ -114,7 +114,7 @@ test( 'celebration and pick animation choices save', async ( { page : curPagObj 
 
 
 
-test( 'the tab bar moves to the side', async ( { page : curPagObj } ) => { // What: Placement Test. Why: The tab bar's placement must save and apply. How: This picks Side and checks the body's placement and the saved setting.
+test( 'the tab bar moves to the side', async ( { page : curPagObj } ) => { // What: Placement Test. Why: The tab bar's placement must save and apply. How: This picks Side and checks the app root's placement and the saved setting.
 
 
 	await curPagObj.locator( '[data-element-name-hook~="segConDiv"][aria-label="Tab bar placement"]' ).getByRole( 'button', { exact : true, name : 'Side' } ).click(); // What: Side Click Call. Why: Side is a different placement. How: This clicks it.
@@ -125,7 +125,7 @@ test( 'the tab bar moves to the side', async ( { page : curPagObj } ) => { // Wh
 
 
 
-	await expect( curPagObj.locator( 'body' ), 'body placement' ).toHaveAttribute( 'data-placement', 'side' ); // What: Placement Applied Assertion. Why: The layout follows the body's placement. How: This checks the attribute.
+	await expect( curPagObj.locator( '[data-placement]:has( > [data-element-name-hook~="appTabNav"] )' ), 'app root placement' ).toHaveAttribute( 'data-placement', 'side' ); // What: Placement Applied Assertion. Why: The layout follows the app root's placement. How: This finds the app root as the tab bar's parent and checks its attribute.
 
 
 } );

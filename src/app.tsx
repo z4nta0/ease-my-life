@@ -620,19 +620,9 @@ function AppRooCom () : React.JSX.Element {
 
 
 
-	React.useEffect( () => { // What: Placement Dataset Effect. Why: The body carries the current tab placement as a data attribute. How: This mirrors the persisted tabPlacement onto body.dataset.placement.
-
-
-		document.body.dataset.placement = staAppObj.appearance.tabPlacement; // What: Placement Dataset Write. Why: This keeps the body's placement attribute in step with the persisted setting. How: This writes the persisted tabPlacement onto the body element.
-
-
-	}, [ staAppObj.appearance.tabPlacement ] ); // What: Effect Dependency Array. Why: The dataset only needs rewriting when the persisted placement itself actually changes. How: This depends on the specific tabPlacement field rather than the whole appearance object, so unrelated appearance changes don't trigger it.
-
-
-
 	// #region Placement Switch Animation
 
-	const tabPlaStr = staAppObj.appearance.tabPlacement; // What: Tab Placement String. Why: Both the JSX below and the layout-switch effect need the current resolved placement as a plain value, not buried in staAppObj. How: This reads the persisted tabPlacement, the same value the dataset effect above writes.
+	const tabPlaStr = staAppObj.appearance.tabPlacement; // What: Tab Placement String. Why: Both the JSX below and the layout-switch effect need the current resolved placement as a plain value, not buried in staAppObj. How: This reads the persisted tabPlacement.
 
 
 	React.useLayoutEffect( () => { // What: Layout Switch Animation Effect. Why: Moving the tab bar to a new placement needs a ghost of the old bar to play an exit keyframe while the real bar enters from its new edge. How: This detects an actual placement change, stages the ghost's exit and the real bar's enter flags, then clears them after their keyframes finish.
