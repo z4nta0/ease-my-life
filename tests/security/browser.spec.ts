@@ -21,17 +21,14 @@ import { watErrFun   } from '../support/watch.ts';  // What: Watch Errors Functi
  * browser.spec.ts = Browser Spec
  *
  * @summary
- * Checks that the app works under its own security policy, in whichever
- * engine the project runs. Each page loads from the production build, which
- * the preview server serves, since the dev server injects inline scripts the
+ * Checks that the app works under its own security policy, in whichever engine
+ * the project runs. Each page loads from the production build, which the
+ * preview server serves, since the dev server injects inline scripts the
  * policy would block. Neither server reads Netlify's headers file, so every
  * response is given the headers the built dist/_headers sends with its path.
- * First a check proves the policy is live, by injecting an inline script and
- * seeing it refused and reported. Then every state in the shared list the
- * suites visit, and the two legal pages, are checked for policy violations
- * and checked to close off every new tab link, with neither an opener nor a
- * referrer. Last, an unknown address has to load the app and be replaced by
- * the root, keeping its query and hash, since the app answers at one address.
+ * Its checks cover the policy and the protections the pages keep under it,
+ * such as every state in the shared list the suites visit loading with no
+ * policy violation.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

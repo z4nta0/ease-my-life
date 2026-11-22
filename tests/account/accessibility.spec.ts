@@ -39,9 +39,9 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * main suite's axe-core scan, limited to the Account section and the reset
  * row, since the main suite scans the rest of Settings (WCAG 2.2 AA plus best
  * practices, zero violations) at 1,280px and 375px wide, and a reflow check at
- * 320px: signed in but unpaid, with Unlock sync; paid and synced; the
- * first-sync choice, for a device with its own data joining an account that
- * already has a cloud copy; and the reset confirm with its cloud option.
+ * 320px. The screens cover the section's signed-in states, such as the
+ * first-sync choice for a device with its own data joining an account that
+ * already has a cloud copy.
  *
  * Sections:
  *  - Helpers

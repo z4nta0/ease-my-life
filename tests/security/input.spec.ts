@@ -25,14 +25,12 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The text check
  *
  * @summary
  * Checks that what a person types is shown as text, never run or rendered as
- * HTML, in whichever engine the project runs. A picker's name, a reminder's
- * name, and a custom holiday's name are each set to an image tag whose error
- * handler would set a flag on the window, then saved and shown again. The
- * name has to read back as text, as typed or, for a picker, tidied into
- * plain words with no markup left, with no image added to the page,
- * no flag set, and no policy violation reported, which the policy's refusal
- * of the inline handler would raise. Each page loads from the production
- * build under the headers the built dist/_headers sends.
+ * HTML, in whichever engine the project runs. Each test sets a name the app
+ * shows again, such as a reminder's, to an image tag whose error handler would
+ * set a flag on the window, saves it, and checks that it reads back as text
+ * with no image added to the page, no flag set, and no policy violation
+ * reported. Each page loads from the production build under the headers the
+ * built dist/_headers sends.
  *
  * Sections:
  *  - Constants

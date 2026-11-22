@@ -23,15 +23,10 @@ import { watErrFun   } from '../support/watch.ts';   // What: Watch Errors Funct
  * settings.spec.ts = Settings Spec
  *
  * @summary
- * Drives the Settings tab on real data. Choosing a theme saves it and fades
- * the page between palettes; the celebration and pick animation choices save;
- * the tab bar moves when its placement changes; the daily generator switch and
- * run time save; a built-in holiday can be turned off, and a custom one added
- * and removed with its exit animation; a backup exported here imports back
- * cleanly; the Buy Me a Coffee button opens its tip page in a new tab; the
- * legal panels open and close with their closing animation; and cancelling a
- * reset leaves the data alone. A flow that changes data checks the saved state
- * in IndexedDB, and every flow fails on any page or console error.
+ * Drives the Settings tab's controls on real data, such as choosing a theme,
+ * which saves it and fades the page between palettes. A flow that changes data
+ * checks the saved state in IndexedDB, and every flow fails on any page or
+ * console error.
  *
  * Sections:
  *  - Module State

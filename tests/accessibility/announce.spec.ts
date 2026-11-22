@@ -19,16 +19,13 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * announce.spec.ts = Announce Spec
  *
  * @summary
- * Checks that the Settings tab's support form tells screen reader users what
- * happened once it's sent, in whichever engine the project runs. The sent
- * note's status region is in the page and empty on load, and the form's alert
- * region is in the open form and empty. An empty send puts the validation
- * note in the alert region, a failed send puts the fallback note there and
- * hands focus back to Send, and a sent message fills the status region and
- * moves focus to the Contact Support button as the form closes. The Today
- * tab's reminder form has a status region of its own, empty on load, which
- * fills with the note once a reminder is added. Adapted from
- * TechGeek.support's own.
+ * Checks that the app's forms tell screen reader users what happened once
+ * they're sent, in whichever engine the project runs, such as the Settings
+ * tab's support form. Each form's live regions start out in the page and
+ * empty, and each kind of result fills its region or moves focus to what
+ * replaces the form, such as a failed send putting the fallback note in the
+ * alert region and handing focus back to Send. Adapted from TechGeek.support's
+ * own.
  *
  * Sections:
  *  - Constants

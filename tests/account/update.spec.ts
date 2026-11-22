@@ -38,12 +38,9 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * around this suite. In each test a paid device signs in on a chosen day and
  * uploads, waits for that day's list, makes a change that waits to sync, and
  * receives a new version while visible, so the update note shows. Hiding the
- * app then starts the waiting upload, whose commit requests a route holds. In
- * the first, the page must not reload while the change waits or the upload
- * runs, and has to reload once the commit lands and the manifest's revision
- * moves. In the second, a further change made during the held upload is
- * uploaded by the sync that reruns after it, and the page has to reload once
- * that rerun lands, rather than waiting out the further change's two minutes.
+ * app then starts the waiting upload, whose commit requests a route holds.
+ * Each test then checks when the page reloads, such as only once the held
+ * commit lands and the manifest's revision moves.
  *
  * Sections:
  *  - Constants

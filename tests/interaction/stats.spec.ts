@@ -17,13 +17,10 @@ import { watErrFun } from '../support/watch.ts'; // What: Watch Errors Function.
  * stats.spec.ts = Stats Spec
  *
  * @summary
- * Drives the Stats tab on real data: every scope tab is selected in turn with
- * each of six range pills, All Time through Week, each showing its headline
- * cards without errors, and a heatmap day opens its detail panel. A mouse
- * wheel scrolls a pill rail sideways, then scrolls the page once the rail
- * reaches its end. The figures themselves are checked against the logs by the
- * simulation; this suite checks the controls. Every flow fails on any page or
- * console error.
+ * Drives the Stats tab's controls on real data, such as each scope tab with
+ * each range pill showing its headline cards without errors. The figures
+ * themselves are checked against the logs by the simulation; this suite checks
+ * the controls. Every flow fails on any page or console error.
  *
  * Sections:
  *  - Module State

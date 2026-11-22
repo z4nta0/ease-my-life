@@ -30,19 +30,11 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * today.spec.ts = Today Spec
  *
  * @summary
- * Drives the Today tab's controls on real data and checks each one both
- * ways: the saved state in IndexedDB changed as it should, and the animation
- * tied to it played. Checking a card off pulses the progress ring and is
- * undone by checking it again; finishing every card celebrates, and bumps the
- * streak when that claims the day, and pushing an item onto the finished day
- * gives that streak point back and untints the badge. Re-rolling spins the
- * card and rejects its pick-log row; skipping slides it out and removes it.
- * The item editor writes only on Save, and refilling an Ease Down item about
- * to run out keeps it active once checked off. Reminders can be added,
- * renamed, and skipped. Edit Mode opens and its Cancel closes it without
- * reordering anything; Regenerate rebuilds the list; groups can be renamed in
- * Edit Mode; the day log opens; and an unknown address opens the app at its
- * root. Every flow also fails on any page or console error.
+ * Drives the Today tab's controls on real data and checks each one both ways:
+ * the saved state in IndexedDB changed as it should, and the animation tied to
+ * it played, such as checking a card off pulsing the progress ring and
+ * checking it again undoing it. Every flow also fails on any page or console
+ * error.
  *
  * Sections:
  *  - Constants

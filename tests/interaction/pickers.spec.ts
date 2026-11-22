@@ -21,12 +21,9 @@ import { watErrFun } from '../support/watch.ts';   // What: Watch Errors Functio
  * pickers.spec.ts = Pickers Spec
  *
  * @summary
- * Drives the Pickers tab on real data: running Pick One and sending the
- * result to Today, which adds an entry and flashes the Sent state; editing,
- * then deleting, a pool item, each saved only on its own confirm; and
- * building a new picker through the form, from its details step through two
- * items to Create. Every flow checks the saved state in IndexedDB, and fails
- * on any page or console error.
+ * Drives the Pickers tab's flows on real data, such as running Pick One and
+ * sending the result to Today. Every flow checks the saved state in IndexedDB,
+ * and fails on any page or console error.
  *
  * Sections:
  *  - Constants

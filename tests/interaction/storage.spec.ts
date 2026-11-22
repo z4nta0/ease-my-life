@@ -24,16 +24,14 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  *
  * @summary
  * Checks that nothing saved during a launch where IndexedDB was slow or hung
- * is lost on the next normal launch. When IndexedDB misses the boot
- * deadline, a whole session runs on the localStorage mirror; custom holidays
- * added in such a session used to vanish once IndexedDB answered again, since
- * its older copy won. Two flows open the real backup, add a custom holiday in
- * a launch whose IndexedDB hangs or answers late, then relaunch normally twice
- * and check that the holiday is still listed, that IndexedDB holds it, and
- * that IndexedDB kept every Stats history row. A third flow checks that the
- * boot sweep of old storage keeps the persistence prompt key. An init script
- * slows or hangs IndexedDB while the emlTesIdbMod key is set, a name the app's
- * own key sweep never matches.
+ * is lost on the next normal launch. When IndexedDB misses the boot deadline,
+ * a whole session runs on the localStorage mirror; custom holidays added in
+ * such a session used to vanish once IndexedDB answered again, since its older
+ * copy won. Its flows check what has to survive such a launch or the boot
+ * sweep of old storage, such as a custom holiday added while IndexedDB hangs,
+ * still listed after two normal relaunches. An init script slows or hangs
+ * IndexedDB while the emlTesIdbMod key is set, a name the app's own key sweep
+ * never matches.
  *
  * Sections:
  *  - Constants

@@ -22,13 +22,11 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The driver ste
  *
  * @summary
  * Runs the whole new-user onboarding from an empty install, at a phone and a
- * desktop width: the Welcome tour from its intro modal, then every launcher
- * on Today's checklist (the reminder, page, and picker tours), the Generate
- * card that closes the checklist, the one-time App Features tip, every App
- * Features tour, and finally Replay from Settings, which brings the Welcome
- * tour back. Each tour must finish rather than skip itself, which the saved
- * checklist and App Features records confirm, and the whole run must log no
- * page or console errors.
+ * desktop width, through every kind of tour it offers, such as the Welcome
+ * tour from its intro modal, ending with Replay from Settings, which brings
+ * the Welcome tour back. Each tour must finish rather than skip itself, which
+ * the saved checklist and App Features records confirm, and the whole run must
+ * log no page or console errors.
  *
  * One driver walks every tour. A tour is running while the body carries
  * data-tour-active or an intro modal is open, and its coach card hides for a

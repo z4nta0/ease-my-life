@@ -26,12 +26,8 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The helpers dr
  * project runs. The suites block service workers, so an init script fakes the
  * parts the app reads: a worker already controlling the page, a registration
  * whose update call it counts, and the page's visibility, which each test
- * switches. A new version taking control of a visible page shows the update
- * note, whose Reload button reloads; one taking control of a hidden page with
- * nothing being edited reloads at once; one taking control while an editor is
- * open waits with the note instead; one taking control while account sync is
- * busy waits until the sync ends; the app looks for a new version each time it
- * comes back to the foreground; and a first install shows nothing.
+ * switches. The tests cover how a new version is found and taken, such as one
+ * taking control of a hidden page with nothing being edited reloading at once.
  *
  * Sections:
  *  - Constants

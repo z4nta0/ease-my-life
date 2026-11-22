@@ -27,14 +27,11 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The open helpe
  *
  * @summary
  * Checks the standalone /privacy and /terms pages, which the app's own state
- * list can't reach since they aren't tabs of the app. Each page is scanned
- * with axe, has its links' names checked, and is walked with Tab by the
- * app's own checks in tests/support/scripted.ts, at a phone and a desktop
- * width. Its skip link has to be the first Tab stop, wholly on screen, and
- * move focus to the main content without adding a hash, it has to reflow at
- * 320px without scrolling sideways, and under reduced motion focusing its
- * skip link must play no transition. Anything axe can't decide is printed as
- * needing review. Every test opens its own page, so they run in parallel.
+ * list can't reach since they aren't tabs of the app, at a phone and a desktop
+ * width. Each page gets the kinds of accessibility check the app's own states
+ * get, such as a Tab walk by the checks in tests/support/scripted.ts, and its
+ * skip link is checked too. Anything axe can't decide is printed as needing
+ * review. Every test opens its own page, so they run in parallel.
  *
  * Sections:
  *  - Constants

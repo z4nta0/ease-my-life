@@ -37,19 +37,12 @@ import type { StaAppTyp      } from '../../src/core/data-model.ts'; // What: Sta
  *
  * @summary
  * Runs paid sync end to end against the Firebase Emulator, which npm run
- * test:account starts and stops around this suite. Two browser contexts
- * stand in for two devices. The emulator's admin API creates the account
- * and gives it the paid claim, standing in for the payment webhook, and
- * reads back each emailed sign-in link. The first device, on the real
- * backup, signs in with that link and uploads. The second, a fresh install,
- * signs in and adopts the account's data, adds a holiday, and syncs, and the
- * first device's next sync brings the holiday over. A second flow buys sync
- * on an unpaid account, with the checkout stubbed and the claim set as the
- * webhook would, and the app has to notice the claim by itself. Another
- * opens a device on a new day with the previous day's list, which has to
- * take the list another device already checked off rather than build its
- * own. Signing out has to end the session for good, surviving a reload, and
- * a signed-in device keeps no token in local storage.
+ * test:account starts and stops around this suite. Two browser contexts stand
+ * in for two devices. The emulator's admin API creates the account and gives
+ * it the paid claim, standing in for the payment webhook, and reads back each
+ * emailed sign-in link. The flows drive the account across those devices, from
+ * buying and signing in to syncing and signing out, such as a holiday added on
+ * one device syncing to the other.
  *
  * Sections:
  *  - Constants

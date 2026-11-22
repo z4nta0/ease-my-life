@@ -23,17 +23,13 @@ import { test          } from '@playwright/test';      // What: Test. Why: Each 
  *
  * @summary
  * Checks the security policy and what ships rather than a page, so it runs in
- * the Chromium project only, since a file reads the same in every engine. The
- * headers public/_headers sends have to hold the app to its own strict
- * policy, such as refusing framing, with nothing from another origin but the
- * Firebase and reCAPTCHA addresses the optional paid sync needs, and inline
- * code allowed only for styles. The production build, which the preview
- * server builds before the run, has to rewrite the two legal pages to their
- * own files and then hand every other path to the app with a 200, and hold no
- * private key or provider token, the Firebase web config and the reCAPTCHA
- * site key aside, since both are meant for the browser. npm audit has to find
- * no high or critical advisory in the shipped dependencies, and skips with a
- * message when npm can't reach its registry.
+ * the Chromium project only, since a file reads the same in every engine. Its
+ * checks cover the headers public/_headers sends, the production build the
+ * preview server builds before the run, and the shipped dependencies, such as
+ * the headers holding the app to its own strict policy with nothing from
+ * another origin but the Firebase and reCAPTCHA addresses the optional paid
+ * sync needs. The npm audit check skips with a message when npm can't reach
+ * its registry.
  *
  * Sections:
  *  - Constants

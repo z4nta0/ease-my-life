@@ -23,18 +23,10 @@ import { watErrFun     } from '../support/watch.ts';   // What: Watch Errors Fun
  * @summary
  * Checks the app's SEO setup in whichever engine the project runs. The app
  * answers at one address, with the privacy policy and terms on pages of their
- * own, and all three are indexed. Each raw page, read from the build without
- * running a script the way link checkers read it, has one title and one
- * description of its own, the description 120 to 125 characters, one
- * canonical address on this domain, techgeek.dev as its author, and nothing
- * that keeps it out of search. In a browser every state in the shared list
- * keeps that one description, and each legal page shows its own head and one
- * h1. The home page's raw head carries a complete link preview with absolute
- * addresses, every icon it links to is served at its size, and the preview
- * image is a 1,200x630 PNG under 300 KB. The structured data describes a
- * WebApplication whose sync offer has the price the app shows. robots.txt
- * lets every crawler in and names the sitemap, which lists exactly the three
- * pages.
+ * own, and all three are indexed. Its checks cover each raw page, read from
+ * the build without running a script the way link checkers read it, the head
+ * every state keeps in a browser, and the files crawlers read, such as the
+ * sitemap, which has to list exactly the three pages.
  *
  * Sections:
  *  - Constants
