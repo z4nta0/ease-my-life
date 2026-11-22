@@ -116,7 +116,7 @@
 
 .braHomAnc,
 .legDocArt a,
-.legLinAnc { /* What: Page Text Links. Why: Every text link on the page should answer hover, press, and focus. How: This holds a hidden ring and eases its hover color, press dim, and focus ring. */
+.legLinAnc { /* What: Page Text Links. Why: The page's text links should answer hover, press, and focus. How: This holds a hidden ring and eases its hover color, press dim, and focus ring. */
 
 
 	border-radius  : var( --rad-bor-xsm );         /* Radius Border Extra Small ~= 3.571px */

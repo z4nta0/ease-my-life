@@ -26,8 +26,9 @@ import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Ty
  * @summary
  * The Holidays section's own editable list: HolEdiCom shows every computed
  * U.S. holiday for the current year, each toggleable on or off for the "Skip
- * on holidays" gate every picker reads, plus the user's own custom recurring
- * days off, with a small form beneath the list for adding another one.
+ * on holidays" gate that pickers with that toggle on respect, plus the user's
+ * own custom recurring days off, with a small form beneath the list for adding
+ * another one.
  *
  * Sections:
  *  - Components
@@ -50,10 +51,10 @@ type HecProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Holi
  *
  * @summary
  * Renders the Holidays section's own editable list: every computed U.S.
- * holiday for the current year (each toggleable on/off via the
- * "Skip on holidays" gate every picker reads), plus any custom recurring
- * days off the user has added of their own, with a small form beneath
- * the list for adding another one.
+ * holiday for the current year (each toggleable on/off for the "Skip on
+ * holidays" gate that pickers with that toggle on respect), plus any custom
+ * recurring days off the user has added of their own, with a small form
+ * beneath the list for adding another one.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

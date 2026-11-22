@@ -2354,11 +2354,11 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	 *
 	 * @summary
 	 * Formats a raw day-count metric for the value column, returning its
-	 * number and unit word. A daily picker shows daiDayNum as a whole number
-	 * of days. A cadenced picker always shows one forced decimal, so eligible
-	 * and calendar values line up, and in calendar mode its raw day count is
-	 * first divided by perDayNum to turn it into periods, while in eligible
-	 * mode it is already a period count.
+	 * number and unit word. A daily picker shows daiDayNum unchanged, with a
+	 * singular or plural day word. A cadenced picker always shows one forced
+	 * decimal, so eligible and calendar values line up, and in calendar mode
+	 * its raw day count is first divided by perDayNum to turn it into periods,
+	 * while in eligible mode it is already a period count.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -2366,7 +2366,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	 *                    calendar mode or periods for eligible mode.
 	 * @param uniModStr - Unit Mode String: The active unit mode, 'calendar' or
 	 *                    'eligible'.
-	 * @param daiDayNum - Daily Day Number: The whole-day value a daily picker
+	 * @param daiDayNum - Daily Day Number: The value a daily picker
 	 *                    shows as is.
 	 *
 	 * @returns A { numStr, worStr } pair: the number to show and its unit
@@ -2382,7 +2382,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const cadDisFun = ( rawDayNum : number, uniModStr : string, daiDayNum : number ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through.
 
 
-		if ( !isaCadBoo ) return { // What: Daily Return. Why: A daily picker's own value column already has its own whole-day formatting computed by the caller. How: This returns daiDayNum as-is, with a simple singular/plural "day"/"days" word.
+		if ( !isaCadBoo ) return { // What: Daily Return. Why: A daily picker's value needs no period conversion. How: This returns daiDayNum as-is, with a simple singular/plural "day"/"days" word.
 
 
 			numStr : String( daiDayNum ),                 // What: Number String. Why: The value column renders its number as text. How: This converts daiDayNum to a string unchanged.

@@ -1533,7 +1533,7 @@
 
 /* #region sumLisUno */
 
-.sumLisUno { /* What: Summary List Unordered. Why: Each conditional's triggers stack as ruled rows. How: This clears the list styling and stacks the rows. */
+.sumLisUno { /* What: Summary List Unordered. Why: The conditionals stack as ruled rows. How: This clears the list styling and stacks the rows. */
 
 
 	display        : flex;

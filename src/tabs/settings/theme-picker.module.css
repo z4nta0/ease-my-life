@@ -246,7 +246,7 @@
 .cusSwaInp { /* What: Custom Swatch Input. Why: Each custom color is a live color input that should fill its segment like a preset swatch. How: This strips the native color input's chrome so it fills the full height. */
 
 
-	-webkit-appearance : none; /* What: WebKit Appearance. Why: The color input's native styling has to be dropped in WebKit too. How: This sets the prefixed appearance, the same as the standard appearance line below. */
+	-webkit-appearance : none; /* What: WebKit Appearance. Why: This drops the color input's native styling through the prefixed property. How: This sets the prefixed appearance, the same as the standard appearance line below. */
 	appearance         : none;
 	background         : none;
 	border             : 0;

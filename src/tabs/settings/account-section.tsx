@@ -117,8 +117,9 @@ type AscProTyp = { accSynObj : AccSynTyp }; // What: Account-Section-Component P
  * @summary
  * Renders the Account section's intro, its card of rows for the current
  * account state (see the file summary), and its two announcement regions.
- * A row's text sits beside its control, or above it when the app is 500px
- * wide or less.
+ * A row's text sits beside its control, or above it when the app is 500px wide
+ * or less, except the first-sync choice row, which always stacks its text
+ * above its two buttons.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
