@@ -2267,7 +2267,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		addTasFun : ( tasArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Add Task Function. Why: Hidden reminders are excluded from the sibling-name check, the same policy as addPicFun's own uniNamFun call, so a new real reminder never collides with a hidden one. How: This builds a default task via TAS_NAM_OBJ.defTasFun, resolves tasArgObj.replaceId, de-duplicates its own name, then replaces or prepends it.
+		addTasFun : ( tasArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Add Task Function. Why: Hidden reminders are excluded from the sibling-name check, the same policy as addPicFun's own uniNamFun call, so a hidden reminder never forces a suffix onto a new one. How: This builds a default task via TAS_NAM_OBJ.defTasFun, resolves tasArgObj.replaceId, de-duplicates its own name, then replaces or prepends it.
 
 
 			const newTasObj = TAS_NAM_OBJ.defTasFun( tasArgObj );  // What: New Task Object. Why: TAS_NAM_OBJ itself owns the real default shape for a brand-new task. How: This calls TAS_NAM_OBJ.defTasFun with the given tasArgObj.
