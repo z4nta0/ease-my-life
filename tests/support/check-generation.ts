@@ -357,7 +357,7 @@ const cmpUpdFun = ( expUpdArr : PicUpdTyp[], actUpdArr : PicUpdTyp[], issAddFun 
  *
 */
 
-const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : TodEntTyp | undefined, picNamSet : Set< string >, issAddFun : IssAddTyp ) : void => { // What: Check Pick Function. Why: Each picker's pick must follow its mode exactly. How: This rebuilds the pool and compares the pick and its staged updates.
+const chePicFun = ( picRcdObj : PicRcdTyp, preIteArr : IteRcdTyp[], curEntObj : TodEntTyp | undefined, picNamSet : Set< string >, issAddFun : IssAddTyp ) : void => { // What: Check Pick Function. Why: Each picker's pick must follow its mode's rules. How: This rebuilds the pool and compares the pick and its staged updates.
 
 
 	const labTexStr = `${ picRcdObj.name } (${ picRcdObj.mode })`;                                                     // What: Label Text String. Why: Reports name the picker. How: This is its name and mode.

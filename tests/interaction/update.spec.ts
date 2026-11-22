@@ -4,7 +4,7 @@
 // #region Imports
 
 import { conChaFun   } from '../support/update.ts';  // What: Controller Change Function. Why: A new version taking control starts each flow. How: This fires the control change.
-import { expect      } from '@playwright/test';      // What: Expect. Why: Each check asserts on the note, the reload, and the update check. How: This compares what each check reads with what it should be.
+import { expect      } from '@playwright/test';      // What: Expect. Why: Each check asserts on what the page shows or did. How: This compares what each check reads with what it should be.
 import { fakWorFun   } from '../support/update.ts';  // What: Fake Worker Function. Why: The suites block service workers, so the update flow's inputs are faked. How: This fakes the controller, the registration, and the visibility.
 import { NOT_MES_STR } from '../support/update.ts';  // What: Note Message String. Why: The note is found by its message. How: This is the text it shows.
 import { opeFixFun   } from '../support/app.ts';     // What: Open Fixture Function. Why: The app should hold real data, the way it's used. How: This loads the backup and opens the app.

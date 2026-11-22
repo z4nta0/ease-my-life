@@ -700,7 +700,7 @@ async function reaHitFun ( hanCurObj : ElementHandle< Element > ) : Promise< boo
  *
  * @param conCurEle - Control Current Element: The element probed.
  * @param conSelStr - Control Selector String: {@link CON_SEL_STR}, so a card
- *                    is told apart from one.
+ *                    that isn't a control is told apart from a control.
  *
  * @returns Whether the element may skip its hover look, and its press look.
  *

@@ -152,7 +152,7 @@ test( 'the signed-in Account screens pass the accessibility checks', async ( { p
 
 	await creAccFun( paiEmaStr ); // What: Paid Account Call. Why: The paid screens show sync. How: This creates the account with the claim.
 
-	await curPagObj.setViewportSize( { height : 900, width : 1280 } ); // What: Width Reset Call. Why: Signing in uses the desktop layout. How: This restores the width.
+	await curPagObj.setViewportSize( { height : 900, width : 1280 } ); // What: Width Reset Call. Why: The earlier check left the page at a narrow width, so the sign-in runs at the desktop width. How: This restores the width.
 
 	await sigLinFun( curPagObj, paiEmaStr ); // What: Paid Sign-In Call. Why: The screen is signed in. How: This signs in the paid account.
 

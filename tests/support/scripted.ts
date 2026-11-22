@@ -60,7 +60,7 @@ const TAB_MAX_NUM = 300;                                    // What: Tab Maximum
  * or without saying so at the end of its name. Elements hidden from assistive
  * technology don't appear in the tree, so decorative icons hidden from it are
  * never counted. A tree with no link or button at all is a problem too, since
- * every page it reads shows at least one, such as the tab bar's buttons.
+ * every page it reads shows at least one, such as the skip link.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
