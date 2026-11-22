@@ -4,7 +4,7 @@
 // #region Imports
 
 import { AppRooCom   } from './app.tsx';          // What: App Root Component. Why: This is the single component the whole app renders as, owning every tab and overlay. How: This is rendered into the mounted root inside booAppFun.
-import { createRoot  } from 'react-dom/client';   // What: Create Root. Why: This is the React 18 API for creating a concurrent-mode root to render into. How: This is called once against the #appMouDiv DOM node inside booAppFun.
+import { createRoot  } from 'react-dom/client';   // What: Create Root. Why: This is the React API for creating a concurrent-mode root to render into. How: This is called once against the #appMouDiv DOM node inside booAppFun.
 import { STG_NAM_OBJ } from './state/storage.ts'; // What: Storage Namespace Object. Why: The mount must wait for persisted state to finish loading so store.ts's own loaStaFun() can stay synchronous. How: This is called below, and its promise settles once storage has loaded, while its own boot deadline keeps a slow or hung IndexedDB from blocking the app.
 
 
@@ -28,10 +28,10 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
  * mount from the localStorage mirror while IndexedDB finishes loading
  * behind it and takes over its saves.
  *
- * booAppFun creates the single React 18 root on the #appMouDiv DOM node,
- * renders AppRooCom into it, and dismisses index.html's own boot splash (a
- * plain CSS/inline-JS overlay, not React) once the first paint has had a
- * chance to settle.
+ * booAppFun creates the single React root on the #appMouDiv DOM node, renders
+ * AppRooCom into it, and dismisses index.html's own boot splash (a plain
+ * CSS/inline-JS overlay, not React) once the first paint has had a chance to
+ * settle.
  *
  * Sections:
  *  - Helpers
@@ -52,7 +52,7 @@ import './styles/styles.css'; // What: Styles Stylesheet Import. Why: This is th
  *
  * @summary
  * This is the app's actual mount step, called once storage has settled on
- * IndexedDB or localStorage. It creates the single React 18 root on the
+ * IndexedDB or localStorage. It creates the single React root on the
  * #appMouDiv DOM node and renders AppRooCom into it, then lets the first paint
  * settle before releasing the boot splash: a plain CSS/inline-JS overlay
  * defined in index.html, dismissed by calling its own exposed

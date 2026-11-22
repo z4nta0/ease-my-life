@@ -76,7 +76,7 @@ type SynBacTyp = { // What: Sync Backend Type. Why: The engine works against any
 
 // #region Constants
 
-const TRY_MAX_NUM = 4; // What: Try Maximum Number. Why: Losing the upload race repeatedly means another device is syncing right now, so this sync gives up and tries again later. How: This caps how many times one sync starts over.
+const TRY_MAX_NUM = 4; // What: Try Maximum Number. Why: Losing the upload race repeatedly means another device is syncing right now, so this sync gives up and tries again later. How: This caps how many times one sync tries.
 
 // #endregion Constants
 
@@ -120,14 +120,14 @@ type SynResTyp = { merStaObj : StaAppTyp | null, pusNeeBoo : boolean, synMetObj 
  * synRunFun = Sync Run Function
  *
  * @summary
- * Runs one sync. It reads the cloud's manifest, compares every document's
- * hash on this device, in the cloud, and as of the last sync, downloads the
+ * Runs one sync. It reads the cloud's manifest, compares every document's hash
+ * on this device, in the cloud, and as of the last sync, downloads the
  * documents the cloud changed, merges any both sides changed (the side that
- * saved last wins, and a device's first sync lets the cloud win), and
- * uploads the documents whose merged content differs from the cloud's. When
- * another device committed first, it starts over, up to TRY_MAX_NUM times.
- * It never changes anything when the cloud was saved by a newer schema. The
- * caller saves the merged state, when there is one, and the new meta.
+ * saved last wins, and a device's first sync lets the cloud win), and uploads
+ * the documents whose merged content differs from the cloud's. When another
+ * device committed first, it starts over, trying up to TRY_MAX_NUM times in
+ * all. It never changes anything when the cloud was saved by a newer schema.
+ * The caller saves the merged state, when there is one, and the new meta.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

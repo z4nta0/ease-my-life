@@ -40,12 +40,12 @@ import type { TodEntTyp } from '../core/data-model.ts'; // What: Today Entry Typ
  *
  * A direct edit to an item's own value (Fill/Refill/Reset, all three living on
  * entry-editor.tsx's EntEdiCom, patched via store.ts's own updIteFun) is meant
- * to win immediately, so it deliberately bypasses this staging. But
- * ease-up/dynamic pick()s stash an updates row for EVERY pool item on each
- * not-yet-done entry's own pending, not just the one actually picked (see
- * pick()'s own ease-up/dynamic cases in pickers.ts), snapshotted from value at
- * generation time. Left alone, later completing a SIBLING entry for the same
- * picker would silently overwrite the fresh direct edit with that stale
+ * to win immediately, so it deliberately bypasses this staging. But picIteFun
+ * calls in ease-up/dynamic mode stash an updates row for EVERY pool item on
+ * each not-yet-done entry's own pending, not just the one actually picked (see
+ * picIteFun's own ease-up/dynamic cases in pickers.ts), snapshotted from value
+ * at generation time. Left alone, later completing a SIBLING entry for the
+ * same picker would silently overwrite the fresh direct edit with that stale
  * snapshot via enpAplFun below, which is the actual bug spuDroFun exists to
  * prevent (items looked like they "lost" a manual Fill/Refill/Reset).
  * spuDroFun strips the touched item's own stale row from every OTHER entry's
@@ -151,7 +151,7 @@ function depDonFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], conIdeStr :
 
 
 
-		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a plain boolean verdict. How: This is true only when matPicObj exists and shares conIdeStr.
+		return matPicObj && matPicObj.conditionalId === conIdeStr; // What: Dependent Match Return. Why: The filter above needs a truthy or falsy verdict for each entry. How: This is true only when matPicObj exists and shares conIdeStr.
 
 
 	} ).length; // What: Match Count Read. Why: The caller only needs how many entries matched. How: This reads the filtered array's own length.

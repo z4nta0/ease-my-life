@@ -549,8 +549,8 @@ const ONB_STI_ARR = ONB_TAS_ARR.map( ( curTasObj ) => curTasObj.id ); // What: O
  * src/state/onboarding-stats-data.ts and scripts/build-onboarding-stats.mts)
  * into real pickLog / reminderLog / reminderSkipLog rows, dated relative to
  * the ACTUAL current date rather than whenever that file happened to be
- * generated. Its only work is date arithmetic over the precomputed rows,
- * anchored on the current date.
+ * generated. Beyond copying each row's fields and minting its id, its work is
+ * date arithmetic over the precomputed rows, anchored on the current date.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

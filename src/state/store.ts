@@ -2212,7 +2212,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			items : curStaObj.items.map( ( curIteObj ) => curIteObj.id === tarIdeStr ? { ...curIteObj, ...patValObj } : curIteObj ), // What: Items. Why: Only the one matching item gets patched. How: This merges patValObj onto the item matching tarIdeStr.
 
-			...( 'value' in patValObj ? { // What: Stale-Pending Drop Spread. Why: A direct value edit would otherwise be silently overwritten later by a still-staged pending mutation on one of today's entries. How: This replaces today.entries with spuDroFun's output, stripping stale pending for tarIdeStr, only when patValObj sets value.
+			...( 'value' in patValObj ? { // What: Stale-Pending Drop Spread. Why: A direct value edit would otherwise be silently overwritten later by a still-staged pending mutation on one of today's entries. How: This replaces today.entries with spuDroFun's output, reworked by rebPenFun, stripping stale pending for tarIdeStr, only when patValObj sets value.
 
 
 				today : { // What: Today. Why: Only today's own entries list changes here. How: This rebuilds today with its entries replaced.
@@ -2895,7 +2895,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			const newPicObj = { // What: New Picker Object. Why: This is the actual picker being created (or, with replaceId, re-created in place). How: This bundles the given fields with schedule/gate/visibility defaults resolved below.
 
 
-				avoidDuplicates : !!picArgObj.avoidDuplicates,                                    // What: Avoid-Duplicates Flag. Why: This excludes an item from this picker's own pool for the day if its name (case-insensitively) is already present elsewhere on today's list. How: This coerces picArgObj.avoidDuplicates to a real boolean; see pickers.ts's own pick() for how it's applied.
+				avoidDuplicates : !!picArgObj.avoidDuplicates,                                    // What: Avoid-Duplicates Flag. Why: This excludes an item from this picker's own pool for the day if its name (case-insensitively) is already present elsewhere on today's list. How: This coerces picArgObj.avoidDuplicates to a real boolean; see pickers.ts's own picIteFun for how it's applied.
 				conditionalId   : madConObj ? madConObj.id : ( picArgObj.conditionalId || null ), // What: Conditional ID Resolve. Why: A freshly-made inline conditional wins over an explicitly-passed existing one. How: This prefers madConObj's own id, else picArgObj.conditionalId, else null.
 				easeMax         : picArgObj.easeMax ?? 20,                                        // What: Ease Maximum. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMax, defaulting to 20.
 				easeMin         : picArgObj.easeMin ?? 10,                                        // What: Ease Minimum. Why: The picker-level drift band is only a fallback span for its items. How: This reads picArgObj.easeMin, defaulting to 10.
