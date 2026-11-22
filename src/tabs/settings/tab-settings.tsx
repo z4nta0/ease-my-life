@@ -579,7 +579,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 	// #region Rail Fade
 
-	React.useEffect( () => { // What: Rail Fade Effect. Why: The mobile pill bar's own start/end fade edges need to reflect real scroll position, toggled on the non-scrolling outer rail. How: This reads scroll position from the inner scroller but writes the resulting attributes onto the outer rail, subscribing to scroll and resize. // Scroll-edge fades on the mobile rail (horizontal pill bar), the same affordance as the Data/Stats filter rows. The fade itself (setRaiAsi::before/::after, tab-settings.module.css) lives on the STICKY outer rail, not on the element that actually scrolls (raiScrRef, the inner wrapper around <ul>); an earlier version put overflow-x AND the fade pseudo-elements on the same (outer) element, which meant the fade (a position:absolute child of that scrolling element) scrolled away WITH the pills instead of staying pinned to the visible edges (confirmed on real devices, not a Chromium-sandbox-only quirk: reproduced in both Firefox and Chrome emulation). Reading scroll state from the inner wrapper but toggling the state classes on the outer (non-scrolling) rail keeps the fade itself immobile while still tracking real scroll position.
+	React.useEffect( () => { // What: Rail Fade Effect. Why: The mobile pill bar's own start/end fade edges need to reflect real scroll position, toggled on the non-scrolling outer rail. How: This reads scroll position from the inner scroller but writes the resulting attributes onto the outer rail, subscribing to scroll and resize. // Scroll-edge fades on the mobile rail (horizontal pill bar), the same affordance as the Data/Stats filter rows. The fade itself (setRaiAsi::before/::after, tab-settings.module.css) lives on the STICKY outer rail, not on the element that actually scrolls (raiScrRef, the inner wrapper around <ul>); an earlier version put overflow-x AND the fade pseudo-elements on the same (outer) element, which meant the fade (a position:absolute child of that scrolling element) scrolled away WITH the pills instead of staying pinned to the visible edges (confirmed on real devices, not a Chromium-sandbox-only quirk: reproduced in both Firefox and Chrome emulation). Reading scroll state from the inner wrapper but toggling the state attributes on the outer (non-scrolling) rail keeps the fade itself immobile while still tracking real scroll position.
 
 
 		const scrCurEle = raiScrRef.current; // What: Scroll Current Element. Why: The scrolling inner wrapper is what actually needs measuring. How: This is read once from raiScrRef.current.
@@ -1309,7 +1309,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 				setPenImpObj( { datObj : impDatObj, namStr : impFilObj.name } ); // What: Pending Import Set. Why: This is what actually surfaces the in-app confirmation row below. How: This stages the file's own name and parsed data together.
 
-				setTimeout( () => { if ( impConRef.current ) impConRef.current.focus(); }, 300 ); // What: Confirm Focus Timeout. Why: Focus must wait for the file dialog's own close transition to settle before landing on the confirm button. How: This focuses impConRef's own current element 300ms later.
+				setTimeout( () => { if ( impConRef.current ) impConRef.current.focus(); }, 300 ); // What: Confirm Focus Timeout. Why: The confirm button needs a moment to mount before it can take focus. How: This focuses impConRef's own current element 300ms later, if it is mounted.
 
 
 			}
@@ -1824,7 +1824,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						>{ /* What: Celebration Style Div Element. Why: The completion-celebration style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
-							<div className={ cssModObj.subHeaDiv }>Completion celebration</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Completion celebration". */ }
+							<div className={ cssModObj.subHeaDiv }>Completion celebration</div>{ /* What: Subsection Header Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Completion celebration". */ }
 
 							<p className={ cssModObj.secSubPar }>Pick which animation will play when all tasks are marked as completed inside of the Today page.</p>{ /* What: Section Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the celebration picker. */ }
 
@@ -1877,7 +1877,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						>{ /* What: Pick Animation Div Element. Why: The picker-animation style picker needs its own labeled subsection. How: This wraps its own heading, intro copy, reduced-motion note, and the style picker plus preview CarSurCom. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
-							<div className={ cssModObj.subHeaDiv }>Picker animation</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Picker animation". */ }
+							<div className={ cssModObj.subHeaDiv }>Picker animation</div>{ /* What: Subsection Header Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Picker animation". */ }
 
 							<p className={ cssModObj.secSubPar }>Pick which animation will play when the &ldquo;Pick One&rdquo; button is clicked inside of the Pickers page.</p>{ /* What: Section Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the picker-animation picker. */ }
 
@@ -1938,7 +1938,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						>{ /* What: Settings Layout Div Element. Why: The tab-bar-placement control needs its own labeled subsection. How: This wraps its own heading, intro copy, and the placement row's own CarSurCom. Its data-element-name-hook is read by help mode. */ }
 
 
-							<div className={ cssModObj.subHeaDiv }>Layout</div>{ /* What: Set Subsection H Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Layout". */ }
+							<div className={ cssModObj.subHeaDiv }>Layout</div>{ /* What: Subsection Header Div Element. Why: Every Appearance subsection names itself with this same heading style. How: This renders the fixed text "Layout". */ }
 
 							<p className={ cssModObj.secSubPar }>Pick where the app&rsquo;s main navigation links should be located.</p>{ /* What: Section Sub Paragraph Element. Why: This subsection needs its own short intro line beneath its heading. How: This renders the fixed intro copy for the placement control. */ }
 
