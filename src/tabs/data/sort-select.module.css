@@ -63,14 +63,6 @@
 
 
 }
-.sorDroSel::placeholder { /* What: Sort Dropdown Select Placeholder. Why: Placeholder text should read as a hint, not a value. How: This mutes and fades it. */
-
-
-	color   : var( --tex-mut-col );     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	opacity : var( --cdn-pow-001-rec ); /* Core-Design-Number to the Power of 1 Reciprocal ~= 0.755 */
-
-
-}
 .sorDroSel:focus { /* What: Focused Sort Dropdown Select. Why: A focused field needs a visible cue. How: This switches its border to the accent color. */
 
 
