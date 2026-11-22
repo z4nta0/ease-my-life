@@ -337,7 +337,9 @@ type EasStaTyp = Record< string, { activeItemId : string | null, charge : number
  * @param allIteArr - All Item Array: Every seeded item to draw picks from.
  * @param allPicArr - All Picker Array: Every seeded picker to generate history
  *                    for.
- * @param isaVacFun - Is-A Vacation Function: {@link isaVacFun}
+ * @param isaVacFun - Is-A Vacation Function: Reports whether an item is
+ *                    inactive on a given day, taking the item's ID and the
+ *                    day's YYYY-MM-DD key; true drops it from that day's pool.
  * @param totDayNum - Total Day Number: How many days of history to generate,
  *                    counting back from today; defaults to 365.
  *

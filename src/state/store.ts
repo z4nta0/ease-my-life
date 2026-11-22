@@ -702,7 +702,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-	const perActBoo = !( optArgObj && optArgObj.perBoo === false ); // What: Persist Active Boolean. Why: The onboarding demo needs to opt entirely out of the idle-save/flush effects below. How: This is false only when optArgObj.perBoo is explicitly false.
+	const perActBoo = !( optArgObj && optArgObj.perBoo === false ); // What: Persist Active Boolean. Why: A caller can opt out of the idle-save and flush effects below through optArgObj.perBoo. How: This is false only when optArgObj.perBoo is explicitly false.
 
 
 	const latStaRef = React.useRef( appStaObj ); // What: Latest State Reference. Why: The idle-save/flush effects below need the CURRENT state even when they fire outside a fresh render (e.g. from a pagehide handler). How: This starts pointing at appStaObj and is kept in sync on every render below.
@@ -1637,7 +1637,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		renTouFun : ( rawNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Tours Function. Why: Page Tours has no pickers to rewrite (unlike renGroFun), just a label swap; an existing group's name must be blocked before this fires. How: This normalizes rawNamStr and writes it onto onboarding.pageToursName.
+		renTouFun : ( rawNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Tours Function. Why: Page Tours has no pickers to rewrite (unlike renGroFun), just a label swap, so this writes the tidied name with no merge; it expects a name that doesn't collide with an existing group. How: This normalizes rawNamStr and writes it onto onboarding.pageToursName.
 
 
 			const nexNamStr = ( norGroFun && norGroFun( rawNamStr ) ) || String( rawNamStr || '' ).trim(); // What: Next Name String. Why: The write below needs a tidied, real name. How: This calls norGroFun, else falls back to a plain trim.
@@ -3466,13 +3466,14 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * Adds a new Today entry for picIdeStr showing iteIdeStr. Ease Down is
 		 * the exception: since it has a single ongoing "active item", the new
 		 * entry replaces that picker's existing entry instead of stacking a
-		 * second one. The entry's value mutation is staged as `pending`
-		 * (applied on DONE), so sending an item doesn't change picker state
-		 * until it's completed. penArgObj is the staged pick result; when it's
-		 * undefined, an Ease Down picker's default is staged (make this item
-		 * active, recharge the previously active one on done). The new entry
-		 * starts unchecked, so a day that was fully done gives its streak
-		 * point back through stkSynFun.
+		 * second one, unless the picker is suppressed behind its day-off card,
+		 * in which case the entry is added beside the card. The entry's value
+		 * mutation is staged as `pending` (applied on DONE), so sending an
+		 * item doesn't change picker state until it's completed. penArgObj is
+		 * the staged pick result; when it's undefined, an Ease Down picker's
+		 * default is staged (make this item active, recharge the previously
+		 * active one on done). The new entry starts unchecked, so a day that
+		 * was fully done gives its streak point back through stkSynFun.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
