@@ -1797,16 +1797,16 @@ function LogChiCom ( { onTogLogFun, open } : LccProTyp ) : React.JSX.Element {
 			aria-label={ open ? 'Hide day log' : 'Show day log' } // What: Chip Label Pick. Why: The screen reader label names the action the chip will take. How: This says Hide while open and Show otherwise.
 			aria-pressed={ open }
 
-			onClick={ ( cliEveObj ) => { // What: Chip Click Handler. Why: The chip sits inside a clickable group header whose own click must not also fire. How: This stops the click from bubbling, then toggles the panel.
+			onClick={ ( cliEveObj ) => { // What: Chip Click Handler. Why: A click on the chip must not reach any click handler on an ancestor element. How: This stops the click from bubbling, then toggles the panel.
 
 
-				cliEveObj.stopPropagation(); // What: Header Click Isolation. Why: The group header has its own click behavior. How: This stops the click from bubbling to it.
+				cliEveObj.stopPropagation(); // What: Header Click Isolation. Why: The chip's click is handled here alone. How: This stops the click from bubbling to its ancestors.
 
 				onTogLogFun(); // What: Log Toggle Call. Why: The caller owns the panel's open state. How: This calls onTogLogFun.
 
 
 			} }
-		>{ /* What: Log Chip Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open through its aria-pressed state, which its styling keys off, and toggles the panel without the click reaching the group header. Its data-element-name-hook is read by help mode and the test suites. */ }
+		>{ /* What: Log Chip Button Element. Why: This is LogChiCom's own single rendered element. How: This shows open through its aria-pressed state, which its styling keys off, and toggles the panel without the click reaching an ancestor. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
 			<IcoSetCom
