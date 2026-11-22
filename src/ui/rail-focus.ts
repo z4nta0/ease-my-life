@@ -17,12 +17,11 @@ import { scrBehFun } from '../utils/motion.ts'; // What: Scroll Behavior Functio
  *
  * @summary
  * Keeps a keyboard-focused control inside one of the app's sideways pill rails
- * fully in view. Browsers scroll a focused element into view only when it's
- * entirely hidden, so a pill focused at a rail's edge stayed half clipped, and
- * behind the rail's edge fade. A rail opts in with the same presence-only
- * data-rail-wheel-scroll attribute the mouse wheel support uses, and one
- * document-level listener scrolls the focused control fully into its rail,
- * clear of the fade by the rail's scroll padding.
+ * fully in view. A pill focused at a rail's edge could otherwise stay half
+ * clipped, behind the rail's edge fade. A rail opts in with the same
+ * presence-only data-rail-wheel-scroll attribute the mouse wheel support uses,
+ * and one document-level listener scrolls the focused control fully into its
+ * rail, clear of the fade by the rail's scroll padding.
  *
  * Sections:
  *  - Helpers

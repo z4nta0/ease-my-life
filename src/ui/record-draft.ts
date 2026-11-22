@@ -214,7 +214,7 @@ function useIteDraFun ( tarActObj : Pick< ActStoTyp, 'renIteFun' | 'setWeiFun' |
 
 
 
-	return { cmtDraFun, draIteObj : draRcdObj, patDraFun }; // What: Draft Handle Return. Why: The caller's name input and editor both read the draft, patch it, and commit it. How: This returns the three together.
+	return { cmtDraFun, draIteObj : draRcdObj, patDraFun }; // What: Draft Handle Return. Why: A caller needs the draft to show, the patch function to edit it, and the commit to save it. How: This returns the three together.
 
 
 }
@@ -320,7 +320,7 @@ function useTasDraFun ( tarActObj : Pick< ActStoTyp, 'renTasFun' | 'updTasFun' >
 
 
 
-	return { cmtDraFun, draTasObj : draRcdObj, patDraFun }; // What: Draft Handle Return. Why: The caller's name input and schedule editor both read the draft, patch it, and commit it. How: This returns the three together.
+	return { cmtDraFun, draTasObj : draRcdObj, patDraFun }; // What: Draft Handle Return. Why: A caller needs the draft to show, the patch function to edit it, and the commit to save it. How: This returns the three together.
 
 
 }

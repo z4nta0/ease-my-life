@@ -12,16 +12,16 @@
  * document-level listeners, committing a new order via the caller's own
  * onDroOrdFun callback.
  *
- * Technique: every sibling's rect is snapshotted at gesture start. The
- * grabbed element is translated by the pointer delta, lifted via a CSS
- * class, and raised above its siblings. The target index is derived from
+ * Technique: every sibling's rect is snapshotted at gesture start. The grabbed
+ * element is translated by the pointer delta, lifted via a presence-only data
+ * attribute, and raised above its siblings. The target index is derived from
  * where the grabbed element's projected center falls among the original
- * sibling centers. Siblings between the origin and target shift by the
- * grabbed element's outer height (plus gap) to open a hole at the
- * target, with a smooth CSS transition on transform animating them out
- * of the way. On release, every transform is cleared and the new index
- * order is handed to onDroOrdFun; React re-renders the list already in that
- * order, so the swap is seamless.
+ * sibling centers. Siblings between the origin and target shift by the grabbed
+ * element's outer height (plus gap) to open a hole at the target, with a
+ * smooth CSS transition on transform animating them out of the way. On
+ * release, every transform is cleared and the new index order is handed to
+ * onDroOrdFun; React re-renders the list already in that order, so the swap is
+ * seamless.
  *
  * Sections:
  *  - Constants
@@ -122,7 +122,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 
 
-	if ( dowEveObj.button != null && dowEveObj.button !== 0 ) return; // What: Primary Button Guard. Why: Only the primary mouse button (or a touch/pen contact, which reports no button at all) should start a drag. How: This bails out early when a real, non-primary button value is present.
+	if ( dowEveObj.button != null && dowEveObj.button !== 0 ) return; // What: Primary Button Guard. Why: Only a primary-button press, or an event carrying no button value, should start a drag. How: This bails out early when a non-primary button value is present.
 
 
 
@@ -154,7 +154,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	if ( poiIdeNum != null && capTarEle.setPointerCapture ) { // What: Pointer Capture Availability Guard. Why: Capture should only be attempted when the event actually carries a pointerId and the browser supports the capture API at all. How: This gates the capture attempt below on both conditions holding.
 
 
-		try { // What: Pointer Capture Attempt. Why: A small number of environments can throw here even though the feature-detected method exists, so the actual capture call and its success flag must both stay inside this guarded block. How: This wraps the capture call and the success flag update below.
+		try { // What: Pointer Capture Attempt. Why: The capture call can throw, so it and its success flag stay inside this guarded block. How: This wraps the capture call and the success flag update below.
 
 
 			capTarEle.setPointerCapture( poiIdeNum ); // What: Pointer Capture Call. Why: This is the spec-guaranteed mechanism that routes every later pointer event straight to capTarEle, regardless of what is under the cursor. How: This asks the browser to capture the given pointer id on capTarEle.
@@ -164,7 +164,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 		}
 
-		catch {} // What: Capture Failure Guard. Why: A small number of environments can throw here even though the feature-detected method exists. How: This silently ignores the failure, leaving capSucBoo at its default false.
+		catch {} // What: Capture Failure Guard. Why: A throw from the capture call must not stop the gesture. How: This silently ignores the failure, leaving capSucBoo at its default false.
 
 
 	}
@@ -569,7 +569,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 			try { capTarEle.releasePointerCapture( poiIdeNum ); } // What: Pointer Capture Release Call. Why: This is the actual release, matching the capture acquired earlier in staDraFun. How: This calls releasePointerCapture with the same poiIdeNum.
 
-			catch {} // What: Pointer Capture Release Failure Guard. Why: An already-implicitly-released capture (e.g. after a pointercancel) can throw on an explicit release attempt. How: This silently ignores any such failure.
+			catch {} // What: Pointer Capture Release Failure Guard. Why: A failed explicit release must not stop the rest of the teardown. How: This silently ignores any such failure.
 
 
 		}

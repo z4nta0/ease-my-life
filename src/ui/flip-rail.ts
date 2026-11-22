@@ -75,7 +75,7 @@ import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function
 function useFliRaiFun ( raiNodRef : React.RefObject< HTMLElement | null >, trgKeyStr : string ) : void {
 
 
-	const fliFirRef = React.useRef( new Map< string, number >() ); // What: Flip First Reference. Why: Each pill's PREVIOUS x position is needed to compute how far it moved. How: This starts as an empty map and is repopulated at the end of every effect run.
+	const fliFirRef = React.useRef( new Map< string, number >() ); // What: Flip First Reference. Why: Each pill's PREVIOUS x position is needed to compute how far it moved. How: This starts as an empty map and is repopulated at the end of each effect run that finds the rail.
 
 
 	React.useLayoutEffect( () => { // What: Rail Flip Effect. Why: A re-sorted pill would otherwise snap to its new spot; this plays a FLIP tween instead. How: This measures each pill's new x, inverts it back to its recorded old x, and plays the transform to none.
