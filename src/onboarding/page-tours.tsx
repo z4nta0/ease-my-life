@@ -42,9 +42,10 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * launcher card (see onboarding-checklist.ts's ONB_EPT_ARR and
  * tabs/today/page-tour-card.tsx). PagTouCom opens a page's intro modal (its
  * copy in PAG_COP_OBJ), then runs its tour: Step 1 is the shared nav-button
- * highlight built by page-steps.tsx's own buiTs1Fun (also reused verbatim by
- * onboarding/app-features.tsx's own App Features tours), and the rest walks
- * that page's own interior elements.
+ * highlight built by page-steps.tsx's own buiTs1Fun (also called by
+ * onboarding/app-features.tsx's own App Features tours, whose Step 1 keeps the
+ * same title but leaves the button unnamed in its click sentence), and the
+ * rest walks that page's own interior elements.
  *
  * The Pickers/Data tours need real pickers on screen to point at, but both
  * expose real edit/delete controls, so they seed disposable `pt_`-prefixed

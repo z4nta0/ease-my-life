@@ -643,11 +643,10 @@ let pgtNamStr = 'Page Tours'; // What: Page-Tours Name String. Why: canRenFun/fo
  *
  * @summary
  * Step 1 for every page tour: highlight that page's own navbar button, reusing
- * the Welcome Tour's own copy for it verbatim (navTarObj already carries a
- * selStr/titStr/bodEle written to stand alone). Unlike this file's own
- * per-page catalogs (which deliberately write THEIR own copy instructing the
- * click), this one is asked to match the Welcome Tour's wording exactly,
- * cirBoo's own hover hint is what tells the user to click.
+ * the Welcome Tour's own copy for it (navTarObj already carries a
+ * selStr/titStr/bodEle written to stand alone). Its title is copied verbatim,
+ * and its body is the Welcome Tour's body with a sentence appended telling
+ * the user to click the button, which cirBoo then waits for.
  *
  * tabStr: This property in the returned object uses 'today' in order to keep
  * this from auto-navigating when the step opens (a page tour is launched from

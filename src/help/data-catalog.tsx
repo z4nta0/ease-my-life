@@ -358,7 +358,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	// #region Reminders Manager
 
-	// The participation-settings matrix is new content (not present anywhere else); the per-reminder row + its editor reuse Today's own editReminderRepeat/editReminderFoot verbatim, since this is the exact same .inlEdiDiv markup either way.
+	// The participation-settings matrix is new content (not present anywhere else); the per-reminder editor reuses Today's own editReminderRepeat verbatim, and its editReminderFoot with the Save line shortened, since this is the exact same .inlEdiDiv markup either way.
 	{ // What: Reminders Help Item. Why: This is the on-demand help tip for the Reminders element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
@@ -484,7 +484,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	},
 
-	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Reused verbatim from TOD_HEL_ARR's editReminderRepeat/editReminderFoot, same .inlEdiDiv markup, and this tab has no quickadd form for that selector's own :not(.remAddDiv *) exclusion to worry about.
+	{ // What: Reminder Schedule Help Item. Why: This is the on-demand help tip for the Reminder Schedule element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Reused verbatim from TOD_HEL_ARR's editReminderRepeat, same .inlEdiDiv markup, and this tab has no quickadd form for that selector's own :not(.remAddDiv *) exclusion to worry about.
 
 
 		ideStr    : 'dataReminderRepeat',

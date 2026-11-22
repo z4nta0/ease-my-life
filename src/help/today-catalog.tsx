@@ -355,7 +355,7 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 
 	// #region Editing A Picker Item
 
-	// This is reachable from Today's own Edit button too, not just the Data tab (DAT_HEL_ARR has its own copy of these same 6 items, scoped identically via .entEdiDiv, that class is shared verbatim by both tabs since it's literally the same EntEdiCom component either way). // Item Name is the one exception: Today's own name field lives right on the card (.entNamInp, EntCarCom's own markup), not inside .entEdiDiv like Data's .rowNamInp does.
+	// This is reachable from Today's own Edit button too, not just the Data tab (DAT_HEL_ARR has its own copy of these same 7 items, their titles and bodies copied verbatim and scoped through .entEdiDiv, that class is shared verbatim by both tabs since it's literally the same EntEdiCom component either way). // Two selectors differ: Today's own name field lives right on the card (.entNamInp, EntCarCom's own markup), not inside .entEdiDiv like Data's .rowNamInp does, and Data's footer selector also requires the Delete button through a :has().
 	{ // What: Item Name Help Item. Why: This is the on-demand help tip for the Item Name element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
