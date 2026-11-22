@@ -77,10 +77,10 @@ type TwcProTyp = { 'data-element-name-hook' : string, className : string, disHel
  * TogRowCom = Toggle Row Component
  *
  * @summary
- * Renders one form toggle: a label and a live help paragraph beside an
- * on/off switch. The paragraph shows the on or off wording for the
- * setting's current state and cross-fades whenever the state flips, and the
- * switch takes the label as its own accessible name.
+ * Renders one form toggle: a label and a live help paragraph beside an on/off
+ * switch. The paragraph shows the on or off wording for the setting's current
+ * state and fades in anew whenever the state flips, and the switch takes the
+ * label as its own accessible name.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -130,7 +130,7 @@ function TogRowCom ( { 'data-element-name-hook' : hooNamStr, className, disHelEl
 				>{ labTexStr }</label>{ /* What: Form Label Label Element. Why: The switch below needs an associated, readable label. How: This is linked to the switch through ideValStr. */ }
 
 				<p
-					key={ value ? 'on' : 'off' } // What: Help Text Key. Why: The help line fades between its on and off text. How: This keys the paragraph 'on' while value is true and 'off' otherwise, so a toggle remounts it.
+					key={ value ? 'on' : 'off' } // What: Help Text Key. Why: The help line fades in anew with its on or off text. How: This keys the paragraph 'on' while value is true and 'off' otherwise, so a toggle remounts it.
 
 					className={` ${ cssModObj.forHelPar }   ${ cssModObj.forHelParFade } `}
 				>{ value ? enaHelEle : disHelEle }</p>{ /* What: Form Help Paragraph Element. Why: The user should immediately see the practical consequence of the toggle's own current state. How: This is re-keyed by value so its Fade modifier fades the text in on every flip, showing enaHelEle or disHelEle. */ }
