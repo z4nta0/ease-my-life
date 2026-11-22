@@ -1322,7 +1322,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	// #region Reminder Availability
 
 	const remOptObj = React.useMemo( () => TAS_NAM_OBJ.norOptFun( staAppObj.reminderOpts ), [ staAppObj.reminderOpts ] );                                 // What: Reminder Options Object. Why: Which reminder types opt into Stats is a persisted setting that may be missing/partial on an older save. How: This normalizes the raw persisted reminderOpts via TAS_NAM_OBJ' own helper. It's memoized on the saved options, so it keeps one identity until they change.
-	const enaTypArr = React.useMemo( () => ( [ 'once', 'recurring' ] as const ).filter( ( typCurStr ) => remOptObj[ typCurStr ].stats ), [ remOptObj ] ); // What: Enabled Type Array. Why: Every reminder-scoped query below needs to know exactly which of the two types are opted into Stats. How: This keeps whichever of 'once'/'recurring' has its own stats flag turned on, memoized on remOptObj so the dependency arrays below see one stable array until the options change. // What: Type Assertion Note. Why: Each class name indexes the reminder options. How: The two names are read as a constant tuple so each one is a real class key.
+	const enaTypArr = React.useMemo( () => ( [ 'once', 'recurring' ] as const ).filter( ( typCurStr ) => remOptObj[ typCurStr ].stats ), [ remOptObj ] ); // What: Enabled Type Array. Why: Every reminder-scoped query below needs to know exactly which of the two types are opted into Stats. How: This keeps whichever of 'once'/'recurring' has its own stats flag turned on, memoized on remOptObj so the dependency arrays below see one stable array until the options change. // What: Type Assertion Note. Why: Each reminder type name indexes the reminder options. How: The two names are read as a constant tuple so each one is a real key of those options.
 	const remEnaBoo = enaTypArr.length > 0; // What: Reminder Enabled Boolean. Why: The whole Reminders scope, and its Type-row pill, should only exist once at least one reminder type opts in. How: This is true when enaTypArr isn't empty.
 
 
@@ -2347,7 +2347,40 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		: ( valCouNum === 1 ? 'day' : 'days' );         // What: Daily Branch. Why: A daily picker counts in plain days. How: This pluralizes "day" by valCouNum.
 
 
-	const cadDisFun = ( rawDayNum : number, uniModStr : string, daiDayNum : number ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through. // Format a raw day-count metric for the value column. A cadence picker converts calendar days into periods and ALWAYS shows one decimal (forced ".0") so eligible and calendar line up; a daily picker keeps its existing whole-day display via daiDayNum. Returns { numStr, worStr }.
+
+	// #region cadDisFun
+
+	/**
+	 * cadDisFun = Cadence Display Function
+	 *
+	 * @summary
+	 * Formats a raw day-count metric for the value column, returning its
+	 * number and unit word. A daily picker shows daiDayNum as a whole number
+	 * of days. A cadenced picker always shows one forced decimal, so eligible
+	 * and calendar values line up, and in calendar mode its raw day count is
+	 * first divided by perDayNum to turn it into periods, while in eligible
+	 * mode it is already a period count.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param rawDayNum - Raw Day Number: The metric's raw count, in days for
+	 *                    calendar mode or periods for eligible mode.
+	 * @param uniModStr - Unit Mode String: The active unit mode, 'calendar' or
+	 *                    'eligible'.
+	 * @param daiDayNum - Daily Day Number: The whole-day value a daily picker
+	 *                    shows as is.
+	 *
+	 * @returns A { numStr, worStr } pair: the number to show and its unit
+	 * word.
+	 *
+	 * @example
+	 * ```ts
+	 * cadDisFun(14, 'calendar', 14) // => { numStr : '2.0', worStr : 'weeks' }
+	 * ```
+	 *
+	*/
+
+	const cadDisFun = ( rawDayNum : number, uniModStr : string, daiDayNum : number ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through.
 
 
 		if ( !isaCadBoo ) return { // What: Daily Return. Why: A daily picker's own value column already has its own whole-day formatting computed by the caller. How: This returns daiDayNum as-is, with a simple singular/plural "day"/"days" word.
@@ -2376,6 +2409,9 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 	};
+
+	// #endregion cadDisFun
+
 
 
 	const lasForFun = ( dayCouNum : number, uniModStr : string ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct elapsed-time label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days ago" string. // Human label for "last picked", in the active unit.
