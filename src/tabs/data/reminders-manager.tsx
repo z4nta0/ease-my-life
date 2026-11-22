@@ -1276,7 +1276,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 												data-row-edit-active={ carOpeBoo || undefined } // What: Row Edit Active Attribute. Why: An open row's header stops reacting like a button and its chevron turns the accent color. How: This sets the presence-only attribute while carOpeBoo is true.
 
 												onAnimationEnd={ () => { if ( insIdeStr === curTasObj.id ) setInsIdeStr( null ); } } // What: Insert Flag Clear. Why: The entrance animation must play only once. How: This clears insIdeStr when this row's own animation ends while it still matches.
-											>{ /* What: List Item Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
+											>{ /* What: List Item Div Element. Why: This is one reminder's own full-bleed row, holding either its plain summary or its live name input, plus its own expanding editor below. How: This renders one of the 2 header branches below, then the shared editor ColDisCom. It also carries the lisIteDivInsert modifier class while its row is newly added or its editor has just closed. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 												{ carOpeBoo ? ( // What: Row Editing Check. Why: The row's own header swaps between a live-editable div and a plain clickable button depending on whether it's open. How: This renders the editing div while carOpeBoo is true, the plain toggle button otherwise.
@@ -1346,7 +1346,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 															aria-label='Collapse'
 
 															onClick={ () => keeCloFun( curTasObj.id ) }
-														>{ /* What: Row Chevron Button Element. Why: This is the row's own real, separate close affordance (see the row-editing div's own comment above for why it can't be the button itself). How: This calls keeCloFun, which marks the editor kept before closing it. */ }
+														>{ /* What: Row Chevron Button Element. Why: This is the row's own real, separate close affordance (see the row-editing div's own comment above for why it can't be the button itself). How: This calls keeCloFun, which marks the editor kept before closing it. It also carries chvDisBut, the shared disclosure chevron look. */ }
 
 
 															<IcoSvgCom
@@ -1407,7 +1407,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 															className={` ${ cssModObj.rowChvSpa }   ${ cssModObj.chvDisSpa } `}
 
 															aria-hidden='true'
-														>{ /* What: Row Chevron Span Element. Why: The plain state's own chevron is purely decorative (the whole row is already the real toggle), so it's a span rather than a separate button. How: This wraps the single IcoSvgCom below, hidden from screen readers. */ }
+														>{ /* What: Row Chevron Span Element. Why: The plain state's own chevron is purely decorative (the whole row is already the real toggle), so it's a span rather than a separate button. How: This wraps the single IcoSvgCom below, hidden from screen readers. It also carries chvDisSpa, the shared disclosure chevron look. */ }
 
 
 															<IcoSvgCom

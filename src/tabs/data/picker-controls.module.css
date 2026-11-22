@@ -566,7 +566,7 @@
 
 
 }
-.groOkaBut:disabled { /* What: Disabled Group Okay Button. Why: A blank or colliding name can't be confirmed and should look it. How: This dims it and drops the pointer cursor. */
+.groOkaBut:disabled { /* What: Disabled Group Okay Button. Why: A blank name can't be confirmed and should look it. How: This dims it and drops the pointer cursor. */
 
 
 	cursor  : default;

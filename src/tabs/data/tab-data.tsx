@@ -999,7 +999,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const draCarRef = React.useRef< HTMLElement | null >( null ); // What: Draft Card Reference. Why: The freshly-created draft's own card needs to scroll all the way to the viewport's own top, since its form is tall enough that "nearest" would still leave most of it below the fold. How: This is attached to the draft card's own ref prop.
 
 
-	React.useEffect( () => { // What: Draft Scroll Effect. Why: The draft's own final layout height is already correct by the time this runs (its own Collapses are forced instant), so there's no animation to wait for first, unlike the item row scroll above. How: This scrolls draCarRef into view at the viewport's own top.
+	React.useEffect( () => { // What: Draft Scroll Effect. Why: The draft's own final layout height is already correct by the time this runs (its own body and Controls collapses are forced instant), so there's no animation to wait for first, unlike the item row scroll above. How: This scrolls draCarRef into view at the viewport's own top.
 
 
 		if ( !newDraStr || !draCarRef.current ) return; // What: Not Applicable Guard. Why: Only an actual, mounted draft card needs this scroll. How: This bails out when either condition fails.
@@ -1663,7 +1663,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						ariLabStr='Filter pickers by type'
 
 						onAllPilFun={ () => setFilTypStr( 'all' ) }
-					/> // What: Filter Rail Component. Why: The Type label and its own pill rail narrow the list by type. How: This renders the shared rail with an "All" pill, then every mode, Conditionals, and Reminders entry sorted together by name, disabled during the matching tour step. Its data-element-name-hook is read by the tours and help mode.
+					/> // What: Filter Rail Component. Why: The Type label and its own pill rail narrow the list by type. How: This renders the shared rail with an "All" pill, then every mode, Conditionals, and Reminders entry sorted together by name, disabled during the tour's Group filter step, which disGroBoo marks. Its data-element-name-hook is read by the tours and help mode.
 
 
 				) }
@@ -1706,7 +1706,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 						ariLabStr='Filter pickers by conditional'
 
 						onAllPilFun={ () => setFilConStr( 'all' ) }
-					/> // What: Filter Rail Component. Why: The Conditionals label and its own pill rail narrow the list to pickers gated by one conditional. How: This renders the shared rail with an "All" pill and one pill per conditional, disabled during the matching tour step. Its data-element-name-hook is read by help mode.
+					/> // What: Filter Rail Component. Why: The Conditionals label and its own pill rail narrow the list to pickers gated by one conditional. How: This renders the shared rail with an "All" pill and one pill per conditional, disabled during the tour's Group filter step, which disGroBoo marks. Its data-element-name-hook is read by help mode.
 
 
 				) }

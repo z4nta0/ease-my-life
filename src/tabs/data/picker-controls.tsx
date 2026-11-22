@@ -438,7 +438,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	const fooDisBoo = shoSavBoo ? false : ( neeNamBoo || neeGroBoo || iteSecBoo );              // What: Footer Disabled Boolean. Why: The footer button stays disabled until every prerequisite for its current label is satisfied. How: This is never disabled once shoSavBoo is true, otherwise disabled while name/group is missing or the Items section is already open.
 
 
-	const fooTipStr = neeNamBoo && neeGroBoo // What: Footer Tip String. Why: The disabled button's own InfTipCom needs a specific reason for whichever prerequisite is still unmet. How: This chains through every prerequisite in the same priority order the footer itself checks them.
+	const fooTipStr = neeNamBoo && neeGroBoo // What: Footer Tip String. Why: The disabled button's own InfTipCom needs a specific reason for whichever prerequisite is still unmet. How: This returns the message for the first unmet prerequisite in the chain below, or a ready message once none is unmet.
 		? 'A picker name and group are both required.'                                                // What: Both Missing Branch. Why: Neither required field has been filled in yet. How: This names both at once.
 		: neeNamBoo                                                                                   // What: Name Missing Check. Why: Only the name may still be missing. How: This tests neeNamBoo next.
 		? 'A picker name is required.'                                                                // What: Name Missing Branch. Why: The group is set but the name isn't. How: This asks for the name.
@@ -733,7 +733,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 		let rafIdeNum : number; // What: Request-Animation-Frame Identifier Number. Why: The pin loop below needs to be cancellable on cleanup. How: This is assigned by every requestAnimationFrame call below and read by the cleanup return.
 
-		const staTimNum = performance.now(); // What: Start Time Number. Why: The pin loop must stop after a fixed duration matching the unfurl animation, not run forever. How: This records the loop's own start time to compare against on every frame.
+		const staTimNum = performance.now(); // What: Start Time Number. Why: The pin loop must stop after a fixed duration that outlasts the input's growth animation, not run forever. How: This records the loop's own start time to compare against on every frame.
 
 
 		const pinScrFun = ( curTimNum : number ) => { // What: Pin Scroll Function. Why: The existing pills must slide left IN SYNC with the input's own growth, one continuous motion, instead of a jump once the animation finishes. How: This re-scrolls the row to its own full width every frame for 280ms.
@@ -1390,7 +1390,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 						data-element-name-hook='togSwiBut'
 
-						aria-label={ `${ draPicObj.includeInDaily ? 'Remove from' : 'Add to' } the daily generator` }
+						aria-label={ `${ draPicObj.includeInDaily ? 'Remove from' : 'Add to' } the daily generator` } // What: Switch Label. Why: The accessible name should say what pressing the switch does. How: This reads "Remove from the daily generator" while the picker is in the daily generator and "Add to the daily generator" while it isn't.
 						aria-pressed={ draPicObj.includeInDaily }
 
 						onClick={ () => patPicFun( { includeInDaily : !draPicObj.includeInDaily } ) } // What: On Click Handler. Why: The switch adds or removes this picker from the daily generator, as part of the draft. How: This flips the draft's includeInDaily.
@@ -1527,7 +1527,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 									<select
 										className={ cssModObj.cadOptSel }
 
-										value={ draPicObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' }
+										value={ draPicObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date' } // What: Date Mode Select Value. Why: The select offers only 'date' and 'nthWeekday', so an unset dateMode must show as the fixed date. How: This shows 'nthWeekday' only when draPicObj.dateMode is that, otherwise 'date'.
 
 										aria-label='Day selection'
 
@@ -1634,7 +1634,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 										<select
 											className={ cssModObj.cadOptSel }
 
-											value={ Math.min( draPicObj.anchorDay ?? 1, dimCouFun( 2024, draPicObj.anchorMonth ?? 1 ) ) }
+											value={ Math.min( draPicObj.anchorDay ?? 1, dimCouFun( 2024, draPicObj.anchorMonth ?? 1 ) ) } // What: Clamped Anchor Day Value. Why: A day saved for a longer month must not exceed what the chosen month can hold, or the select would match no option. How: This takes the smaller of anchorDay and the month's length from dimCouFun, using the leap year 2024.
 
 											aria-label='Anchor day'
 
@@ -1708,10 +1708,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 							<WeeChiCom
-								locDayNum={ draPicObj.cadence === 'weekly' ? ( draPicObj.anchorDow ?? 0 ) : null }
-								locTipStr={ draPicObj.cadence === 'weekly' ? CAD_NAM_OBJ.locTipFun( draPicObj.anchorDow ?? 0 ) : '' }
+								locDayNum={ draPicObj.cadence === 'weekly' ? ( draPicObj.anchorDow ?? 0 ) : null } // What: Locked Day Number. Why: Only a weekly cadence pins its anchor weekday on. How: This passes anchorDow for a weekly cadence, otherwise null.
+								locTipStr={ draPicObj.cadence === 'weekly' ? CAD_NAM_OBJ.locTipFun( draPicObj.anchorDow ?? 0 ) : '' } // What: Locked Day Tip String. Why: The pinned anchor weekday explains why it can't be turned off. How: This passes CAD_NAM_OBJ.locTipFun's text for a weekly cadence, otherwise an empty string.
 								sizValStr='sm'
-								value={ draPicObj.daysOfWeek || [ 0, 1, 2, 3, 4, 5, 6 ] }
+								value={ draPicObj.daysOfWeek || [ 0, 1, 2, 3, 4, 5, 6 ] } // What: Chosen Days Value. Why: A picker with no saved daysOfWeek runs on every day. How: This passes daysOfWeek, or all seven weekday numbers when it's unset.
 
 								onChange={ ( dayValArr ) => patPicFun( { daysOfWeek : dayValArr } ) }
 							/>{ /* What: Weekday Chip Component. Why: This is the actual multi-select for which weekdays this picker runs on. How: This locks the anchor weekday when draPicObj.cadence is 'weekly', otherwise every day is freely toggleable. */ }
