@@ -27,7 +27,7 @@
  * @summary
  * Closes the clicked notification, then brings the app forward: it focuses
  * an app window that is already open anywhere, and opens a new one only as a
- * last resort. It only navigates and posts no message to the page. The work is
+ * last resort. It posts no message to the page. The work is
  * passed to waitUntil, so the browser keeps the worker alive until the window
  * is focused or opened.
  *

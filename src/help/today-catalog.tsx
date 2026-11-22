@@ -722,12 +722,12 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 
 	// #region Reminders Log Panel
 
-	// day-log.tsx's RemLogCom, each column's header cell and data cells share one data-element-name-hook value, so one selector highlights the whole column without the header borrowing the data rows' font styling.
+	// day-log.tsx's RemLogCom, each column's header cell and data cells share one data-element-name-hook value, so one selector highlights the whole column without the header borrowing the data rows' font styling. // groStr (see help/mode.tsx) makes the 3 highlights meet edge-to-edge with no gap or overlap between them, rather than each shrinking to its own content.
 	{ // What: Reminder Column Help Item. Why: This is the on-demand help tip for the Reminder Column element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 
 		bodEle : <>This lists every reminder you've created, whether it's due today or not.</>,
-		groStr : 'reminderLogCols', // groStr (see help/mode.tsx) makes the 3 highlights meet edge-to-edge with no gap or overlap between them, rather than each shrinking to its own content.
+		groStr : 'reminderLogCols',
 		ideStr : 'logReminderName',
 		selStr : '[data-element-name-hook~="remNamSpa"]',
 		titStr : 'Reminder Column'

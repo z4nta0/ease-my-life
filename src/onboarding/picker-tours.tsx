@@ -111,7 +111,7 @@ const FIR_PAR_ELE = <>Pickers are where the magic happens. They have rules for w
  *   picCopObj.namEle inside buiNamFun below, falling back to DEF_NAM_ELE when
  *   absent.
  *
- * - `preStr` (String, optional): Prefill String is the name Step 7's own
+ * - `preStr` (String): Prefill String is the name Step 7's own
  *   runFun() stages for the tour's own added item, a new item distinct from
  *   anything already in that sample's own pool, themed to fit; read as
  *   picCopObj.preStr inside buiAddFun's own runFun() below.
@@ -1010,8 +1010,8 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 	 *
 	 * @param staValStr - Status Value String: How the tour ended, one of
 	 *                    'cancelled' (the intro modal's Skip), 'skipped' (the
-	 *                    coach card's Skip or the not-found watchdog), or
-	 *                    'finished'.
+	 *                    coach card's Skip, the not-found watchdog, or a step
+	 *                    index past the last step), or 'finished'.
 	 *
 	 * @returns This function does not return anything.
 	 *

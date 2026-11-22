@@ -69,7 +69,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  *
 */
 
-const newLogFun = ideMakFun( 'pl_' ); // What: New Log Function. Why: The caller needs a short, sortable, collision-resistant ID. How: This is the factory's ID function, joining the 'pl_' prefix, the current time in base 36, and this file's own counter in base 36.
+const newLogFun = ideMakFun( 'pl_' ); // What: New Log Function. Why: The caller needs a short, sortable, collision-resistant ID. How: This is the ID function the factory makes for the 'pl_' prefix, with a counter of this file's own.
 
 // #endregion newLogFun
 

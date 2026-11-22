@@ -20,7 +20,8 @@ import type { HelIteTyp } from './catalog-item.ts'; // What: Help Item Type. Why
  * catalog, same targets, same underlying explanation, with directive tour
  * language ("click Next", "click Done when ready", "these buttons are
  * disabled for this tutorial") stripped out, since a help-mode tip has no
- * steps to advance through and nothing it points at is ever disabled.
+ * steps to advance through and nothing it points at is disabled for a
+ * tutorial.
  *
  * One item per DISTINCT piece of functionality, not one per DOM element, so
  * a row of related controls gets one tip explaining what the whole row does
@@ -117,7 +118,7 @@ const DAT_HEL_ARR : HelIteTyp[] = [ // What: Data Help Array. Why: This is the o
 
 	// #region Conditionals Manager
 
-	// Each conditional gets its own highlight/tooltip, not just the section as a whole. The per-type controls (Type/Weight/Odds/Boost/Charge Controls/Active) reuse the EXACT same selectors as the Pickers-page create-flow verbatim: CodConCom is the same shared component either way (this tab passes variant="inline" instead of the default 'card', but that only swaps a wrapper class neither selector touches), so there was nothing to re-derive, see PIC_HEL_ARR's own newCondName through newCondActive entries for the original comments on each of these.
+	// Each conditional gets its own highlight/tooltip, not just the section as a whole. The per-type controls (Type/Weight/Odds/Boost/Charge Controls/Active) reuse the EXACT same selectors as the Pickers-page create-flow verbatim: CodConCom is the same shared component either way (this tab passes layVarStr='inline' instead of the default 'card', but that only swaps a wrapper class neither selector touches), so there was nothing to re-derive, see PIC_HEL_ARR's own newCondName through newCondActive entries for the original comments on each of these.
 	{ // What: Conditionals Help Item. Why: This is the on-demand help tip for the Conditionals element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge.
 
 

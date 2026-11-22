@@ -38,13 +38,14 @@ import type { SynMetTyp } from './sync-engine.ts';        // What: Sync Meta Typ
  * with a change still waiting. One sync runs at a time, and a request during a
  * sync runs once it ends. A sync that starts ends the two-minute wait, since
  * it uploads every change made before it, and one that fails or finds the
- * cloud busy starts the wait again. While one runs or a change waits, it holds
- * back the quiet reload that brings in a new app version. A sync that started
- * from a state the person has since changed never replaces their newer state:
- * when it found changes from another device, it's thrown away and run again,
- * so the newer state is merged instead. Today asks it to bring the account's
- * copy in before building a new day's list, so a device opened with an old
- * list takes the one another device already built rather than replacing it.
+ * cloud busy starts the wait again when a change was waiting as it began.
+ * While one runs or a change waits, it holds back the quiet reload that brings
+ * in a new app version. A sync that started from a state the person has since
+ * changed never replaces their newer state: when it found changes from another
+ * device, it's thrown away and run again, so the newer state is merged
+ * instead. Today asks it to bring the account's copy in before building a new
+ * day's list, so a device opened with an old list takes the one another device
+ * already built rather than replacing it.
  *
  * A device's first sync, when the account already holds data and this
  * device has some too, waits for the person to choose which to keep: the

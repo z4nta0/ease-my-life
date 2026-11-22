@@ -24,11 +24,9 @@ import type { TasRcdTyp } from '../core/data-model.ts'; // What: Task Record Typ
  * when its own normal render gate is off, or Today needs to push its
  * list down by resTopNum while a tall highlight is up.
  *
- * This is kept in its own module, not onboarding/welcome-tour.tsx, so the
- * guided-tour engine (onboarding/tour-runner.tsx) and whatever authors an
- * individual tour's step content (onboarding/welcome-tour.tsx, future
- * mini-tour modules) can both import it without a circular dependency
- * between them.
+ * This is kept in its own module so the guided-tour engine and each tour's
+ * step content can both import it without a circular dependency between
+ * them.
  *
  * Sections:
  *  - Types

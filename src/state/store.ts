@@ -2385,7 +2385,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: Just this one switch must flip, every other one untouched. How: This spreads norOptObj, overriding [tasTypStr]'s own sub-object with [optKeyStr] replaced by value.
+			return { // What: Next State Return. Why: Just this one switch must flip, every other one untouched. How: This spreads curStaObj with reminderOpts replaced by norOptObj plus the one patched type's own sub-object.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -3411,7 +3411,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
 
-			groupOrder : ordGroArr.slice() // What: Group Order. Why: The dragged group order must be saved as-is. How: This copies ordGroArr so later edits to the caller's own array can't leak in.
+			groupOrder : ordGroArr.slice() // What: Group Order. Why: The dragged group order must be saved as-is. How: This copies ordGroArr, so the saved order shares no array with the argument.
 
 
 		} ) ),
@@ -3611,8 +3611,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * kinds of descriptors: a CARRIED entry (has carBoo + entObj) is kept
 		 * VERBATIM (same eid/itemId/pending/done/revert/periodKey) so a
 		 * cadence pick persists across days until completed, log row included;
-		 * a FRESH descriptor (no eid) gets a new eid and a fresh 'auto' log
-		 * row. optArgObj.resBoo, when true, clears today.streakClaimed so the
+		 * a FRESH descriptor (not carried) gets a new eid, and a fresh 'auto'
+		 * log row unless it is a day-off card, which never writes to the pick
+		 * log. optArgObj.resBoo, when true, clears today.streakClaimed so the
 		 * new period starts unclaimed, and deliberately isn't derived from the
 		 * date; this is what stops a user from "farming" extra streak points
 		 * by repeatedly regenerating and completing within the same day.
@@ -3633,7 +3634,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		setEntFun : ( lisEntArr, optArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Entries Function. Why: The whole Today list is rebuilt at once, carrying unfinished cadence picks forward and adding fresh ones. How: This keeps every carried entry verbatim, gives every fresh descriptor a new eid and 'auto' log row, and clears streakClaimed only when optArgObj.resBoo is set.
+		setEntFun : ( lisEntArr, optArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Set Entries Function. Why: The whole Today list is rebuilt at once, carrying unfinished cadence picks forward and adding fresh ones. How: This keeps every carried entry verbatim, gives every fresh descriptor a new eid and every fresh ordinary pick an 'auto' log row (day-off cards get none), and clears streakClaimed only when optArgObj.resBoo is set.
 
 
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: The fresh-row and pick-log-purge logic below both need today's own calendar day. How: This reads isoDayFun().

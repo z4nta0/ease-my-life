@@ -252,8 +252,8 @@ function PagTouCom ( { actIdeStr, actStoObj, onCloTouFun, pagIdeStr, selTabFun, 
 	 *
 	 * @param staValStr - Status Value String: How the tour ended, one of
 	 *                    'cancelled' (the intro modal's Skip), 'skipped' (the
-	 *                    coach card's Skip or the not-found watchdog), or
-	 *                    'finished'.
+	 *                    coach card's Skip, the not-found watchdog, or a step
+	 *                    index past the last step), or 'finished'.
 	 *
 	 * @returns This function does not return anything.
 	 *

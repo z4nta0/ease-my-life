@@ -6,9 +6,9 @@
 import { isoDayFun } from '../utils/date.ts'; // What: ISO Day Function. Why: A hydrated log row's date is a local-calendar YYYY-MM-DD string. How: This formats a Date as that key.
 
 
-import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A precomputed pick row is a saved pick-log row minus its dated fields. How: This is the base of RawPicTyp and part of hydStaFun's return.
+import type { PclRowTyp } from '../core/data-model.ts'; // What: Pick-Log Row Type. Why: A precomputed pick row is a saved pick-log row minus the fields hydStaFun fills in. How: This is the base of RawPicTyp and part of hydStaFun's return.
 import type { PicForTyp } from '../core/data-model.ts'; // What: Picker Form Type. Why: The sample pickers are seeded through addPicFun. How: This types them as its argument.
-import type { RmlRowTyp } from '../core/data-model.ts'; // What: Reminder-Log Row Type. Why: A precomputed reminder row is a saved reminder-log row minus its dated fields. How: This is the base of RawRemTyp and part of hydStaFun's return.
+import type { RmlRowTyp } from '../core/data-model.ts'; // What: Reminder-Log Row Type. Why: A precomputed reminder row is a saved reminder-log row minus the fields hydStaFun fills in. How: This is the base of RawRemTyp and part of hydStaFun's return.
 import type { RslRowTyp } from '../core/data-model.ts'; // What: Reminder-Skip-Log Row Type. Why: Skipped reminders hydrate into their own log. How: This is part of hydStaFun's return.
 import type { TasArgTyp } from '../core/data-model.ts'; // What: Task Argument Type. Why: The sample reminders are seeded through addTasFun. How: This types them as its argument.
 
@@ -280,8 +280,9 @@ const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > 
  *
  * @summary
  * The sample "Daily Chores" picker seeded alongside the Welcome Tour.
- * Doubles as prefill data for whenever a future create-a-picker mini-tour
- * reuses this same data.
+ * Its `step` holds the create-a-picker form's starting step, for a tour
+ * that prefills the form from this sample; the picker engine never reads
+ * it.
  *
  * Every property below shares this exact shape, and none of them repeat
  * these same fields' own boilerplate comments on their own lines (see
@@ -311,9 +312,9 @@ const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > 
  *   throughout the app; read wherever a picker's name needs displaying,
  *   exactly like any real, user-created picker.
  *
- * - `step` (Number): Step prefills a picker-creation wizard's own step,
- *   for whenever a future create-a-picker mini-tour needs it; not read
- *   by the picker engine itself.
+ * - `step` (Number): Step is the create-a-picker form's starting step,
+ *   for a tour that prefills the form from this sample; the picker engine
+ *   never reads it.
  *
  * Every entry inside `items` above shares this exact shape too, and
  * none of them repeat these same fields' own boilerplate comments
@@ -522,10 +523,8 @@ const ONB_TAS_ARR : ( TasArgTyp & Required< Pick< TasArgTyp, 'id' | 'name' > > )
  * ONB_STI_ARR = Onboarding Sample-Task-Identifiers Array
  *
  * @summary
- * Every sample picker/task id in one place, used to hide them once the
- * Welcome Tour ends (see onboarding/welcome-tour.tsx) and to recognize a
- * still-hidden one as a mini-tour launcher card on Today (see
- * tab-today.tsx / reminders-section.tsx).
+ * Every sample picker and task ID in one place, so code can tell a seeded
+ * sample from the person's own data.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
