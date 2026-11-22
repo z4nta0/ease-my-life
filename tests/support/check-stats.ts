@@ -24,13 +24,13 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
  * Pick figures count the pick log's rows that weren't re-rolled away or
  * skipped, for pickers that aren't hidden, done or not: items done, the
  * completion rate (done over all such rows, rounded), full days (days where
- * every row is done), active days, the day streak (consecutive days back
- * from today, or from yesterday when today has no rows, each with at least
- * one done row), how picks were chosen by source, and the five most picked
- * items. Reminder figures count completions of classes with stats on, for
- * reminders that aren't hidden: total, active days, and the busiest day's
- * count. Conditional figures count the conditional log: triggered days,
- * cycles (every row), and the fire rate.
+ * every row is done), the day streak (consecutive days back from today, or
+ * from yesterday when today has no rows, each with at least one done row), how
+ * picks were chosen by source, and the five most picked items. Reminder
+ * figures count completions of classes with stats on, for reminders that
+ * aren't hidden: total, active days, and the busiest day's count. Conditional
+ * figures count the conditional log: triggered days, cycles (every row), and
+ * the fire rate.
  *
  * Sections:
  *  - Helpers

@@ -17,7 +17,7 @@ import type { SynManTyp } from '../../src/state/sync-engine.ts'; // What: Sync M
  * An in-memory stand-in for the cloud copy, so the sync engine can be tested
  * without Firebase. It keeps one manifest and the documents it lists, commits
  * an upload only when the manifest's revision is still the one the upload was
- * built from, as the real backend's transaction will, and records the ids of
+ * built from, as the real backend's transaction does, and records the ids of
  * each download and each committed upload, so a test can check what a sync
  * downloaded and uploaded. A test can also make the next uploads lose the
  * race, as if another device had committed first, or delete the manifest, as
@@ -74,7 +74,7 @@ type FakBacTyp = SynBacTyp & { // What: Fake Backend Type. Why: Tests read what 
 function fakBacFun () : FakBacTyp {
 
 
-	const docTexMap = new Map< string, string >(); // What: Document Text Map. Why: The fake stores documents as the real one will, as JSON text. How: This maps each id to its text.
+	const docTexMap = new Map< string, string >(); // What: Document Text Map. Why: The fake stores documents as the real one does, as JSON text. How: This maps each id to its text.
 	const rejCouObj = { couNum : 0 };              // What: Reject Count Object. Why: Tests can fake a lost race. How: This counts the uploads still to refuse.
 
 	const getIdeArr : string[][] = []; // What: Get Identifier Array. Why: Downloads are recorded for tests. How: Each entry is one download's ids.

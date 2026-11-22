@@ -42,7 +42,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
 
 // #region Constants
 
-const DAY_ONE_STR = '2026-10-05'; // What: Day One String. Why: The account flows build a daily list on a known day, after the backup's 6 AM run time. How: This is that Chicago date.
+const DAY_ONE_STR = '2026-10-05'; // What: Day One String. Why: The account flows build a daily list on a known day, after the backup's daily run time. How: This is that Chicago date.
 
 // #endregion Constants
 

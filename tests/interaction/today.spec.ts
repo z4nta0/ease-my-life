@@ -527,7 +527,7 @@ test( 'reminders can be added, renamed, and skipped', async ( { page : curPagObj
 
 
 
-test( 'edit mode opens and cancels without reordering', async ( { page : curPagObj } ) => { // What: Edit Mode Test. Why: Cancelling Edit Mode must leave the order alone. How: This opens and cancels it, checking the banner and grips come and go and the order is unchanged.
+test( 'edit mode opens and cancels without reordering', async ( { page : curPagObj } ) => { // What: Edit Mode Test. Why: Cancelling Edit Mode must leave the order alone. How: This opens and cancels it, checking the banner comes and goes, the grips show, and the order is unchanged.
 
 
 	// #region Edit Mode Open

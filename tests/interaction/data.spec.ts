@@ -23,9 +23,9 @@ import type { Page    } from '@playwright/test'; // What: Page. Why: Helpers dri
  * data.spec.ts = Data Spec
  *
  * @summary
- * Drives the Data tab's editors on real data, such as a picker's controls, a
- * draft that commits on Save and also when the controls close. Every flow
- * checks the saved state in IndexedDB, and fails on any page or console error.
+ * Drives the Data tab's editors on real data, such as a picker's controls,
+ * whose draft commits on Save and when they close. Every flow checks the saved
+ * state in IndexedDB, and fails on any page or console error.
  *
  * Sections:
  *  - Module State
