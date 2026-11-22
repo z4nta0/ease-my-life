@@ -1957,7 +1957,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	}, [ staAppObj.vacationLog ] ); // What: Memo Dependency Array. Why: This only ever needs rebuilding when the raw vacation log itself changes. How: staAppObj.vacationLog is the sole source the grouping loop above reads from.
 
 
-	const actDatArr = React.useMemo( () => [ ...new Set( picRowArr.map( ( rowCurObj ) => rowCurObj.date ) ) ].sort(), [ picRowArr ] ); // What: Active Date Array Memo. Why: The Frequency/Spent/Last-picked metrics all need the distinct set of days the picker actually ran, in order. How: This deduplicates picRowArr's own date field via a Set, then sorts it. // Picker run days in range (distinct active-pick dates).
+	const actDatArr = React.useMemo( () => [ ...new Set( picRowArr.map( ( rowCurObj ) => rowCurObj.date ) ) ].sort(), [ picRowArr ] ); // What: Active Date Array Memo. Why: The Frequency and Last-picked metrics need the distinct set of days the picker actually ran, in order. How: This deduplicates picRowArr's own date field via a Set, then sorts it. // Picker run days in range (distinct active-pick dates).
 
 	// #endregion Single-Picker Breakdown Setup
 
@@ -2703,7 +2703,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 	const remBreArr = remMetStr === 'skipped' ? remSkiArr : remMetStr === 'completions' ? remDonArr : remLatArr; // What: Reminder Breakdown Array. Why: The card's own rendered list depends on which of the three metric pivots is active. How: This selects remSkiArr/remDonArr/remLatArr by remMetStr.
-	const remPagNum = Math.max( 1, Math.ceil( remBreArr.length / REM_SIZ_NUM ) );                                // What: Reminder Page Number. Why: PagNavCom needs the total page count to disable the next arrow on the last page. How: This divides remBreArr's own length by REM_SIZ_NUM, rounding up, floored at 1.
+	const remPagNum = Math.max( 1, Math.ceil( remBreArr.length / REM_SIZ_NUM ) );                                // What: Reminder Page Number. Why: remSafNum needs the total page count to clamp the current page. How: This divides remBreArr's own length by REM_SIZ_NUM, rounding up, floored at 1.
 	const remSafNum = Math.min( remIndNum, remPagNum - 1 );                                                      // What: Reminder Safe Number. Why: remIndNum can go stale if the underlying list shrinks (e.g. switching metric pivots), landing past the new last page. How: This clamps remIndNum down to the highest valid page index.
 	const remIteArr = remBreArr.slice( remSafNum * REM_SIZ_NUM, ( remSafNum + 1 ) * REM_SIZ_NUM );               // What: Reminder Item Array. Why: Only the current page's own slice of remBreArr should actually render. How: This slices remBreArr from the safe page's own start to its own end.
 
