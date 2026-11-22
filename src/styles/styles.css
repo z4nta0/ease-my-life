@@ -492,7 +492,7 @@ button,
 input,
 select,
 textarea,
-:where( [tabindex='0'] ) { /* What: Focus Ring Controls. Why: Keyboard focus should ease in rather than snap, and the browser's own ring can't. How: This gives every link, button, field, and focusable element a zero-width outline in the accent color, held a step away from it, and eases the ring's width and offset when focus arrives, the focusable element's selector weighing nothing so its module's own transition wins; an element with its own transition has to list the two outline properties so the ease survives. */
+:where( [tabindex='0'] ) { /* What: Focus Ring Controls. Why: Keyboard focus should ease in rather than snap, and the browser's own ring can't. How: This gives every link, button, field, and tabindex 0 element a zero-width outline in the accent color, held a step away from it, and eases the ring's width and offset when focus arrives, the tabindex selector weighing nothing so a module's own transition wins; an element with its own transition has to list the two outline properties so the ease survives. */
 
 
 	outline        : 0 solid var( --acc-mai-col );                                                                                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */ /* What: Zero Width Outline. Why: A zero width stays invisible, even in forced colors mode, until something is focused. How: The focused rule below grows it. */
