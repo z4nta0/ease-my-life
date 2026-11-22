@@ -165,7 +165,7 @@ function StyRadCom ( { groLabStr, groNamStr, onChange, onPreStyFun, radOptArr, v
 
 									type='button'
 
-									onClick={ ( cliEveObj ) => { // What: Preview Click Handler. Why: Pressing Preview must play the style and nothing else. How: This cancels the click's own default label behavior, then plays the preview.
+									onClick={ ( cliEveObj ) => { // What: Preview Click Handler. Why: Pressing Preview must play the style and nothing else. How: This cancels the click's default, then plays the style.
 
 
 										cliEveObj.preventDefault(); // What: Default Prevention Call. Why: Pressing Preview should only play the style. How: This cancels the click's own default action.
