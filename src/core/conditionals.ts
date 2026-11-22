@@ -236,14 +236,14 @@ function truOddFun ( conCurObj : ConRcdTyp ) : number {
  * resDayFun = Resolve Day Function
  *
  * @summary
- * Phase A of generate: resolves the day's own triggered state for
- * every conditional. Probability and dynamic modes roll fresh now
- * (dynamic's own odds already include its accrued value); ease-up and
- * ease-down instead carry forward whatever triggered state their own
- * last completion left behind, with the actual effect deferred to
- * this next generate. Also clears every conditional's own per-day
- * charge guard. A conditional's own active field (enabled or not) is
- * separate and is never touched here.
+ * Phase A of generate: resolves the day's own triggered state for every active
+ * conditional, leaving an inactive one's as it was. Probability and dynamic
+ * modes roll fresh now (dynamic's own odds already include its accrued value);
+ * ease-up and ease-down instead carry forward whatever triggered state their
+ * own last completion left behind, with the actual effect deferred to this
+ * next generate. Also clears every conditional's own per-day charge guard. A
+ * conditional's own active field (enabled or not) is separate and is never
+ * touched here.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

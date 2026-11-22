@@ -319,7 +319,7 @@ function defTasFun ( tasInpObj : Partial< TasRcdTyp > = {} ) : TasRcdTyp {
 		repeat     : tasInpObj.repeat || 'once',                                                            // What: Repeat. Why: Every task needs one of the 5 recognized schedule kinds; a brand new draft defaults to the simplest one. How: This keeps tasInpObj's own repeat when given, otherwise falls back to 'once'.
 		skipUntil  : tasInpObj.skipUntil ?? null,                                                           // What: Skip Until. Why: Every task needs a defined (if empty) manual-skip marker for visTodFun/todVisFun to read. How: This keeps tasInpObj's own skipUntil when given, otherwise defaults to null.
 
-		...( tasInpObj.createdFromSample ? { createdFromSample : tasInpObj.createdFromSample } : {} ) // What: Created From Sample Spread. Why: Set only when a task is created by finishing a mini-tour, linking back to the sample template it was built from (see onboarding-checklist.ts); ignored everywhere else in the app. How: This spreads in a createdFromSample field only when tasInpObj actually carries one, adding nothing otherwise.
+		...( tasInpObj.createdFromSample ? { createdFromSample : tasInpObj.createdFromSample } : {} ) // What: Created From Sample Spread. Why: Set only when a task is created by finishing a mini-tour, linking back to the sample template it was built from (see onboarding-checklist.ts). How: This spreads in a createdFromSample field only when tasInpObj actually carries one, adding nothing otherwise.
 
 
 	};
@@ -1123,7 +1123,7 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 		const curDatObj = new Date( basDatObj ); // What: Current Date Object. Why: Each iteration needs its own fresh Date to step forward, without mutating basDatObj itself. How: This copies basDatObj.
 
 
-		curDatObj.setDate( basDatObj.getDate() + dayOffNum ); // What: Current Date Step. Why: This is the actual step to today's candidate day. How: This mutates curDatObj in place to basDatObj's own date plus dayOffNum.
+		curDatObj.setDate( basDatObj.getDate() + dayOffNum ); // What: Current Date Step. Why: This is the actual step to this iteration's candidate day. How: This mutates curDatObj in place to basDatObj's own date plus dayOffNum.
 
 
 
@@ -1142,7 +1142,7 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 
 
-		if ( optNorObj.excludeHolidays && HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, curDatObj ) ) continue; // What: Holiday Exclusion Guard. Why: This class has opted out of showing on a holiday, and curDatObj is one; the HOL_NAM_OBJ existence check must stay part of this same short-circuit chain, never split out, since holDatFun can't be called before HOL_NAM_OBJ itself is confirmed to exist. How: This skips to the next iteration when all 3 conditions hold.
+		if ( optNorObj.excludeHolidays && HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, curDatObj ) ) continue; // What: Holiday Exclusion Guard. Why: This class has opted out of showing on a holiday, and curDatObj is one. How: This skips to the next iteration when its conditions hold; the HOL_NAM_OBJ check is redundant, since the static import always exists.
 
 
 
@@ -1302,7 +1302,7 @@ function visTodFun ( tasLisArr : TasRcdTyp[], remOptObj : RemOptTyp | null | und
 
 
 	const isaWkdBoo = wkdDayFun( cheDatObj );                                             // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
-	const isaHolBoo = !!( HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) ); // What: Is-A Holiday Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself is an active holiday. How: This guards on HOL_NAM_OBJ existing before calling its own holDatFun, coercing the result to a real boolean.
+	const isaHolBoo = !!( HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) ); // What: Is-A Holiday Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself is an active holiday. How: This calls holDatFun, coercing the result to a real boolean; the HOL_NAM_OBJ check is redundant, since the static import always exists.
 	const cheIsoStr = isoDayFun( cheDatObj );                                             // What: Check ISO String. Why: The filter below compares a task's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 
 
