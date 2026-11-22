@@ -49,7 +49,7 @@ type IscProTyp = { className? : string, icoNamStr : string, sizSteStr? : string 
  *
  * @example
  * ```tsx
- * IcoSvgCom({ icoNamStr : 'plus', sizSteStr : 'p01' }) // => <IcoSvgCom />
+ * IcoSvgCom({ icoNamStr : 'pluEle', sizSteStr : 'p01' }) // => <IcoSvgCom />
  * ```
  *
 */

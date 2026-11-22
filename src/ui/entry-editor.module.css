@@ -51,13 +51,13 @@
 
 /* #region ediLisDiv */
 
-.ediLisDiv { /* What: Editor List Div. Why: The rows run edge to edge under a hairline, apart from where the editor's context already draws one. How: This stacks them in a column pulled base horizontal spacing past each side, since every context insets the editor's content by that much, reading its top border and top margin from the parent. */
+.ediLisDiv { /* What: Editor List Div. Why: The rows run edge to edge under a hairline, apart from where the editor's context already draws one. How: This stacks them in a column pulled base horizontal spacing past each side so they run edge to edge, reading its top border and top margin from the parent. */
 
 
-	border-top     : var( --ent-lis-bor, var( --bor-wid-sma ) solid var( --bor-mai-col ) );          /* Entry List Border, set by its parent, falling back to Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */ /* What: Rows Top Border. Why: Today's card and a new-item row already draw a divider above the rows. How: Their parents set this to 0, falling back to a hairline. */
+	border-top     : var( --ent-lis-bor, var( --bor-wid-sma ) solid var( --bor-mai-col ) );          /* Entry List Border, set by its parent, falling back to Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */ /* What: Rows Top Border. Why: A parent that already draws a divider above the rows has no use for this one. How: That parent sets this to 0, falling back to a hairline. */
 	display        : flex;
 	flex-direction : column;
-	margin         : var( --ent-lis-mar, var( --spa-ver-m07 ) ) calc( var( --spa-hor-bas ) * -1 ) 0; /* Entry List Margin, set by its parent, falling back to Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base ~= 14.572px */ /* What: Rows Margin. Why: A new-item row's name row already provides the gap above. How: Its parent sets the top margin to 0, falling back to a small vertical spacing step. */
+	margin         : var( --ent-lis-mar, var( --spa-ver-m07 ) ) calc( var( --spa-hor-bas ) * -1 ) 0; /* Entry List Margin, set by its parent, falling back to Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base ~= 14.572px */ /* What: Rows Margin. Why: A parent whose name row already provides the gap above has no use for this one. How: That parent sets the top margin to 0, falling back to a small vertical spacing step. */
 
 
 }
@@ -300,7 +300,7 @@
 /* #endregion weiSteDiv */
 
 
-.weiNonSpa { /* What: Weight None Span. Why: A random item has no weight to set, and says so in place of a control. How: This sets the note small and muted. */
+.weiNonSpa { /* What: Weight None Span. Why: A random item has no weight to set, and says so in place of a control. How: This sets the note muted, at body size. */
 
 
 	color     : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
@@ -412,16 +412,16 @@
 
 /* #region ediFooDiv */
 
-.ediFooDiv { /* What: Editor Footer Div. Why: Delete sits apart on the left while Cancel and Save pair up on the right, below a divider that doubles against the last row's, except in a new-item row, which has nothing to delete. How: This spreads the row out, slides it in each time it mounts, and reads its alignment and Delete visibility from the parent. */
+.ediFooDiv { /* What: Editor Footer Div. Why: Delete sits apart on the left while Cancel and Save pair up on the right, below a divider that doubles against the last row's. How: This spreads the row out, slides it in each time it mounts, and reads its alignment and Delete visibility from the parent. */
 
 
-	--but-dan-dis : var( --ent-del-dis ); /* Entry Delete Display, set by its parent */ /* What: Delete Visibility. Why: A brand-new item is discarded with Cancel, so its Delete is redundant. How: A new-item row sets --ent-del-dis to none, which ButBasCom's danger variant reads, and anywhere else this stays unset. */
+	--but-dan-dis : var( --ent-del-dis ); /* Entry Delete Display, set by its parent */ /* What: Delete Visibility. Why: A parent that already offers its own Delete has no use for this one. How: A parent sets --ent-del-dis to none, which ButBasCom's danger variant reads, and anywhere else this stays unset. */
 
 	animation       : global( footerSwapFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ) both; /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global footerSwapFadeIn Keyframes. Why: The footerSwapFadeIn keyframes are shared with other editor footers, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	border-top      : var( --bor-wid-sma ) solid var( --bor-mai-col );                           /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display         : flex;
 	gap             : var( --spa-hor-m02 );                                                      /* Spacing Horizontal Base Minus 2 ~= 8.304px */
-	justify-content : var( --ent-foo-jus, space-between );                                       /* Entry Footer Justify, set by its parent, falling back to space-between */ /* What: Footer Alignment. Why: Without Delete, Cancel and Save sit alone on the right. How: A new-item row sets this to flex-end, falling back to space-between. */
+	justify-content : var( --ent-foo-jus, space-between );                                       /* Entry Footer Justify, set by its parent, falling back to space-between */ /* What: Footer Alignment. Why: Without Delete, Cancel and Save sit alone on the right. How: A parent sets this to flex-end, falling back to space-between. */
 	margin          : 0 calc( var( --spa-hor-bas ) * -1 );                                       /* Spacing Horizontal Base ~= 14.572px */
 	padding         : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;                               /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 

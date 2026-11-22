@@ -13,11 +13,11 @@ import cssModObj from './filter-rail.module.css'; // What: CSS Module Object. Wh
  * filter-rail.tsx = Filter Rail
  *
  * @summary
- * The labeled row of filter pills a tab offers for narrowing by group or by
- * type: an "All" pill that clears the filter, then one pill per choice, each
- * with its own count, in a rail that scrolls sideways once its pills outgrow
- * the row. Each tab decides which choices
- * and counts the rail shows and what a pill does when chosen.
+ * The labeled row of filter pills a tab offers for narrowing its list: an
+ * "All" pill that clears the filter, then one pill per choice, each with its
+ * own count, in a rail that scrolls sideways once its pills outgrow the row.
+ * Each tab decides which choices and counts the rail shows and what a pill
+ * does when chosen.
  *
  * Sections:
  *  - Components
@@ -43,7 +43,7 @@ type FacProTyp = { allCouNum : number, allSelBoo : boolean, ariLabStr : string, 
  * list holding an "All" pill first and then one pill per entry, in the
  * order given. Each pill shows its own count, marks itself selected through
  * aria-selected, and runs its own action when clicked. The rail element
- * takes the given ref, so its tab can fade the rail's edges as it scrolls.
+ * takes the given ref.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -93,7 +93,7 @@ function FilRaiCom ( { allCouNum, allSelBoo, ariLabStr, 'data-element-name-hook'
 				className={ cssModObj.filRaiDiv }
 
 				data-element-name-hook={ hooNamStr }
-				data-rail-wheel-scroll
+				data-rail-wheel-scroll // What: Rail Wheel Scroll Attribute. Why: A rail that scrolls sideways needs the shared wheel and focus scrolling to reach it. How: This presence-only attribute marks the scroller for the handlers that find it by the attribute.
 
 				aria-label={ ariLabStr }
 				role='tablist'

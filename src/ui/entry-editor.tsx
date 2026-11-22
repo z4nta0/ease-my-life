@@ -9,12 +9,12 @@ import React     from 'react';                     // What: React. Why: This is 
 
 import { BooResCom    } from './boost-reset.tsx';    // What: Boost Reset Component. Why: A dynamic-mode item's inline editor needs a control for resetting its boost value back to 0. How: This is rendered inside EntEdiCom's own Boost row.
 import { ButBasCom    } from './button.tsx';         // What: Button Base Component. Why: The editor's own Save, Cancel and Delete actions are shared styled buttons. How: This is rendered for each footer action and the delete confirm.
-import { CAD_NAM_OBJ  } from '../core/cadence.ts';   // What: Cadence Namespace Object. Why: An ease item's day range reads in its picker's own cadence unit. How: This is called via CAD_NAM_OBJ.uniWorFun to word the Soonest/Latest range as days, weeks or months.
+import { CAD_NAM_OBJ  } from '../core/cadence.ts';   // What: Cadence Namespace Object. Why: An ease item's day range reads in its picker's own cadence unit. How: This is called via CAD_NAM_OBJ.uniWorFun to word the Soonest/Latest range in the picker's own unit (days, weeks, months, or years).
 import { EUR_WAR_STR  } from '../constants.ts';      // What: Ease-Up-Range Warning String. Why: An ease-up item's Soonest/Latest row needs its own explanatory warning text. How: This is passed as an InfTipCom's own label prop inside EasRowCom.
 import { FilButCom    } from './fill-button.tsx';    // What: Fill Button Component. Why: Ease-up and ease-down items each need a button that instantly fills the item to its threshold. How: This is rendered inside ChrRowCom's own full-charge row, labeled per direction.
 import { InfTipCom    } from './info-tip.tsx';       // What: Info Tip Component. Why: The ease range rows need an inline explanation of what their values mean. How: This renders an info bubble carrying EUR_WAR_STR next to those rows.
 import { NumSteCom    } from './number-stepper.tsx'; // What: Number Stepper Component. Why: An ease-mode item's Soonest/Latest values need a shared plus/minus numeric control. How: This is rendered inside EasRowCom's own control cluster, once per ease bound.
-import { PIC_NAM_OBJ  } from '../core/pickers.ts';   // What: Pickers Namespace Object. Why: An item with no ease band of its own falls back to its picker's average band, and the ease day range converts between drift values and days. How: This is called via PIC_NAM_OBJ.aveEasFun, driDayFun, and dayDriFun, and read for THR_VAL_NUM, the full-charge ceiling its subtitle checks, and DEF_EAS_OBJ, the default band an item with none falls back to.
+import { PIC_NAM_OBJ  } from '../core/pickers.ts';   // What: Pickers Namespace Object. Why: An item with no ease band of its own falls back to its picker's average band, and the ease day range converts between drift values and days. How: This is called for the ease band and day conversion helpers (PIC_NAM_OBJ.aveEasFun, for one) and read for the full-charge ceiling and default band constants.
 import { useEscCanFun } from './escape-cancel.ts';   // What: Use Escape Cancel Function. Why: EntEdiCom's own Escape key needs to cancel the edit (or back out of a delete confirm), as the other inline editors do. How: This is called once inside EntEdiCom with a handler that checks conDelBoo first.
 
 
@@ -29,12 +29,12 @@ import type { PicRcdTyp } from '../core/data-model.ts'; // What: Picker Record T
  * entry-editor.tsx = Entry Editor
  *
  * @summary
- * The shared inline editor for one picker item, used by the Today, Pickers and
- * Data tabs so every tab edits an item through the same component. It mirrors
- * the Pickers tab's per-item controls (a weight stepper, the ease day range,
- * an Active/Inactive toggle and a confirm-gated delete) and edits the
- * caller's own draft copy of the item (see record-draft.ts), so nothing
- * reaches the real item until the caller commits it.
+ * The shared inline editor for one picker item, shared across tabs so each of
+ * them edits an item through the same component. It mirrors the Pickers
+ * tab's per-item controls (a weight stepper, the ease day range, an
+ * Active/Inactive toggle and a confirm-gated delete) and edits the caller's
+ * own draft copy of the item (see record-draft.ts), so nothing reaches the
+ * real item until the caller commits it.
  *
  * Sections:
  *  - Components
@@ -261,7 +261,7 @@ function EasRowCom ( { dayValNum, isaDowBoo, iteNamStr, labTexStr, maxValNum, on
 
 
 
-type EecProTyp = { isaNewBoo? : boolean, iteCouNum? : number, iteDatObj : IteRcdTyp, onCanEdiFun : () => void, onDelIteFun? : () => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Entry-Editor-Component Props Type. Why: The editor edits one draft item against its picker, which can itself be an unsaved draft, and hands every change, save, cancel, and delete to its parent. How: This types EntEdiCom's props, with the count, delete, and item list optional, since the Pickers tab enforces its own delete floor on each row instead.
+type EecProTyp = { isaNewBoo? : boolean, iteCouNum? : number, iteDatObj : IteRcdTyp, onCanEdiFun : () => void, onDelIteFun? : () => void, onPatIteFun : ( patValObj : Partial< IteRcdTyp > ) => void, onSavEdiFun : () => void, picDatObj : Partial< PicRcdTyp > | null, picIteArr? : IteRcdTyp[] }; // What: Entry-Editor-Component Props Type. Why: The editor edits one draft item against its picker, which can itself be an unsaved draft, and hands every change, save, cancel, and delete to its parent. How: This types EntEdiCom's props, with the new flag, count, delete handler, and item list optional.
 
 // #region EntEdiCom
 
@@ -269,14 +269,13 @@ type EecProTyp = { isaNewBoo? : boolean, iteCouNum? : number, iteDatObj : IteRcd
  * EntEdiCom = Entry Editor Component
  *
  * @summary
- * The shared inline editor for a picker item, reused by the Today, Pickers,
- * and Data tabs so every one of them edits an item identically: a weight
- * stepper for weighted/dynamic pickers, a cadence range for ease-up/
- * ease-down, a Boost row for dynamic, an Active/Inactive toggle, and a
- * confirm-gated Delete. It only ever shows the caller's own draft copy of
- * the item and reports each change through onPatIteFun, so Cancel, Escape,
- * a tab switch, or a reload simply drop the draft, while Save hands it to
- * the caller to commit.
+ * The shared inline editor for a picker item, shared across tabs so each of
+ * them edits an item identically: a weight stepper for weighted/dynamic
+ * pickers, a cadence range for ease-up/ease-down, a Boost row for dynamic,
+ * an Active/Inactive toggle, and a confirm-gated Delete. It shows the
+ * caller's own draft copy of the item and reports each change through
+ * onPatIteFun, so nothing reaches the real item until Save hands the draft
+ * to the caller to commit.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -540,9 +539,9 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 								chrValNum={ iteDatObj.value ?? 0 }
 								isaDowBoo={ false }
 								labTexStr='Fill'
-								thrValNum={ picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
+								thrValNum={ picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM } // What: Threshold Value Fallback. Why: A picker with no threshold of its own still needs a ceiling for the Fill row to check against. How: This passes the picker's threshold, or THR_VAL_NUM when none is set. // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 
-								onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) } ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
+								onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) } ) } // What: Fill Action Handler. Why: Fill must only raise the charge, never lower it. How: This patches the item's value to the larger of its current charge and the picker's threshold, or THR_VAL_NUM when none is set. // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 							/> // What: Charge Row Component. Why: This is ease-up's Fill row. How: This raises the item's charge to its picker's threshold, falling back to the shared ceiling.
 
 
@@ -557,9 +556,9 @@ function EntEdiCom ( { isaNewBoo, iteCouNum, iteDatObj, onCanEdiFun, onDelIteFun
 								chrValNum={ iteDatObj.value ?? 0 }
 								isaDowBoo={ true }
 								labTexStr='Refill'
-								thrValNum={ picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
+								thrValNum={ picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM } // What: Threshold Value Fallback. Why: A picker with no threshold of its own still needs a ceiling for the Refill row to check against. How: This passes the picker's threshold, or THR_VAL_NUM when none is set. // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 
-								onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) } ) } // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
+								onFilActFun={ () => onPatIteFun( { value : Math.max( iteDatObj.value ?? 0, picDatObj!.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) } ) } // What: Refill Action Handler. Why: Refill must only raise the charge, never lower it. How: This patches the item's value to the larger of its current charge and the picker's threshold, or THR_VAL_NUM when none is set. // What: Non-Null Note. Why: The ease rows only render for an ease-mode picker, so a picker is always present here. How: The ! tells TypeScript picDatObj is set.
 							/> // What: Charge Row Component. Why: This is ease-down's Refill row. How: This raises the item's charge to its picker's threshold, falling back to the shared ceiling.
 
 

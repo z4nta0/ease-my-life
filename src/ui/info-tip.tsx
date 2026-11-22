@@ -68,10 +68,9 @@ type ItcProTyp = { actNamStr? : string | null, children : React.ReactNode, class
  * text isn't actually truncated, since there's nothing extra to
  * reveal. Watched via ResizeObserver on the trigger itself rather than
  * a window resize listener: a column can narrow (or a name can stop
- * fitting) for reasons that never fire resize, e.g. a sibling row's
- * ColDisCom animation later adding a scrollbar that shaves a few px off
- * every row's width, and only observing the element's own box catches
- * all of those, not just an outer-viewport size change.
+ * fitting) for reasons that never fire resize, such as a scrollbar
+ * appearing beside it, and observing the element's own box catches those
+ * as well as a viewport size change.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -352,7 +351,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 
 
-	if ( !actTipBoo ) return ( // What: Inert Guard. Why: With nothing extra to reveal (untruncated text under trnOnlBoo), this must render as a totally inert, non-interactive span. How: This returns just the ref-and-className span, skipping every interactive attribute and the portal entirely.
+	if ( !actTipBoo ) return ( // What: Inert Guard. Why: With nothing extra to reveal (untruncated text under trnOnlBoo), this must render as a totally inert, non-interactive span. How: This returns just the ref, className, and data-attribute span, skipping every interactive attribute and the portal entirely.
 
 
 		<span
@@ -362,7 +361,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 
 			data-element-name-hook={ hooNamStr }
 			{ ...datAttObj } // What: Data Attributes Spread. Why: A caller's state attributes (e.g. a selected tab) must land on the trigger its module styles. How: This spreads every remaining data-* prop onto the span.
-		>{ children }</span> // What: Inert Trigger Span Element. Why: With nothing to reveal, this must still keep the ref attached so a later resize can re-measure and flip actTipBoo. How: This renders only the ref and the caller's own className, no interactive attributes at all.
+		>{ children }</span> // What: Inert Trigger Span Element. Why: With nothing to reveal, this must still keep the ref attached so a later resize can re-measure and flip actTipBoo. How: This renders the ref, the caller's own className, and the forwarded data attributes, with no interactive attributes at all.
 
 
 	);
@@ -413,7 +412,7 @@ const InfTipCom = ( { actNamStr = null, children, className = '', 'data-element-
 			onPointerDown={ ( poiDowObj ) => { lasPoiRef.current = poiDowObj.pointerType || 'mouse'; } }                           // What: Pointer Type Record. Why: The click handler must know whether a touch or a mouse triggered it. How: This only stores the pointer type in lasPoiRef for that handler to read.
 			onPointerEnter={ ( poiEntObj ) => { if ( ( poiEntObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( true ); } }  // What: Mouse Hover Open. Why: A mouse hovers, and a touch or pen opens the tip on tap instead. How: This opens the tip only for a mouse pointer.
 			onPointerLeave={ ( poiLeaObj ) => { if ( ( poiLeaObj.pointerType || 'mouse' ) === 'mouse' ) setTipOpeBoo( false ); } } // What: Mouse Hover Close. Why: A tip opened by hovering must close when the mouse leaves, while a tapped tip stays open. How: This closes the tip only for a mouse pointer.
-		>{ /* What: Info Trigger Span Element. Why: This is the actual focusable, interactive trigger, wrapping the caller's own children and (while open) the portaled tooltip. How: This handles hover for mouse, tap for touch/pen, and Enter/Space/Escape/blur for keyboard, per the design-rationale block above. */ }
+		>{ /* What: Info Trigger Span Element. Why: This is the actual focusable, interactive trigger, wrapping the caller's own children and (while open) the portaled tooltip. How: This handles hover for mouse, tap for touch/pen, and Enter/Space/Escape/blur for keyboard, as the component's summary describes. */ }
 
 
 			{ children }{ /* What: Trigger Content. Why: InfTipCom wraps whatever the caller wants the tip attached to (a word, an icon, a chip). How: This renders the caller's own children inside the interactive trigger. */ }
