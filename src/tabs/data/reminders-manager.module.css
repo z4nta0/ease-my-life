@@ -639,7 +639,7 @@
 
 
 }
-.rowAddSpa[data-tour-disabled-active] { /* What: Disabled Row Add Span. Why: While the tutorials run, adding a reminder is unavailable and should look it. How: This dims the control and drops the pointer cursor, keying off data-tour-disabled-active, which its info tip forwards. */
+.rowAddSpa[data-tour-disabled-active] { /* What: Disabled Row Add Span. Why: While the tutorials run, adding a reminder is unavailable and should look it. How: This dims the control and sets the default cursor, keying off data-tour-disabled-active, which its info tip forwards. */
 
 
 	cursor  : default;

@@ -8,7 +8,7 @@ import React     from 'react';                         // What: React. Why: AppF
 
 
 import { bloReaFun   } from '../../onboarding/app-features.tsx'; // What: Blocked Reason Function. Why: An app-feature tour can require an earlier one first, and its card must explain why it can't start yet. How: This is called with the card's feature id.
-import { IcoSvgCom   } from '../../ui/icon.tsx';                 // What: Icon SVG Component. Why: The card's Play and uncheck controls show small glyphs. How: This is rendered inside those buttons.
+import { IcoSvgCom   } from '../../ui/icon.tsx';                 // What: Icon SVG Component. Why: The card's buttons show small glyphs, such as Play's. How: This is rendered inside those buttons.
 import { InfTipCom   } from '../../ui/info-tip.tsx';             // What: Info Tip Component. Why: A blocked tour's Play button needs to explain why it is disabled. How: This wraps that button with the blocked reason as its tip.
 import { PAG_LAB_OBJ } from '../../onboarding/app-features.tsx'; // What: Page Label Object. Why: The card's meta row names the page its feature lives on. How: This is looked up by the feature's page.
 
