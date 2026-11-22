@@ -53,7 +53,7 @@ import { ideMakFun } from '../utils/sequence-id.ts'; // What: Identifier Make Fu
  *
 */
 
-const newIdeFun = ideMakFun( 'e_' ); // What: New Identifier Function. Why: The caller needs a short, sortable, collision-resistant id. How: This is the factory's id function, joining the 'e_' prefix, the current time in base 36, and this file's own counter in base 36.
+const newIdeFun = ideMakFun( 'e_' ); // What: New Identifier Function. Why: The caller needs a short, collision-resistant ID. How: This is the factory's ID function, joining the 'e_' prefix, the current time in base 36, and this file's own counter in base 36.
 
 // #endregion newIdeFun
 

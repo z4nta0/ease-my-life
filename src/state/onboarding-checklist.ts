@@ -317,10 +317,10 @@ function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRmnFun( appSt
  * True for the Welcome Tour's entire run (checked via activeTour), since
  * maiTouBoo below only turns true once a sample is hidden, then true again
  * straight through the mini-tour checklist phase until checklistDone. False
- * afterward, including for a Replay (checklistDone never resets, see
- * tab-today.tsx) and false for any existing user who upgraded into a build
- * with onboarding and so never had sample data seeded at all: maiTouBoo
- * requires actual hidden samples to exist, which protects that case.
+ * afterward, including once a Replay's Welcome Tour ends (checklistDone never
+ * resets, see tab-today.tsx) and false for any existing user who upgraded into
+ * a build with onboarding and so never had sample data seeded at all:
+ * maiTouBoo requires actual hidden samples to exist, which protects that case.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

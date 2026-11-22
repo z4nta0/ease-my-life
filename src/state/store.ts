@@ -20,7 +20,7 @@ import { logRowFun   } from './pick-log.ts';             // What: Log Row Functi
 import { migStaFun   } from './migrate.ts';              // What: Migrate State Function. Why: Every loaded or imported state must be brought up to the current shape. How: This is called on load and on import.
 import { MIR_KEY_STR } from './storage.ts';              // What: Mirror Key String. Why: The fallback paths keep the warm mirror's own key when the storage engine can't be used. How: This is the localStorage key the fallback reads and writes under.
 import { modDefFun   } from './new-item.ts';             // What: Mode Defaults Function. Why: savEdiFun resets a picker's items to the defaults for its new type. How: This is called with the new mode and threshold.
-import { newIdeFun   } from './ids.ts';                  // What: New Identifier Function. Why: Migrated entries and new Today entries both need unique ids. How: This is called once per entry that needs one.
+import { newIdeFun   } from './ids.ts';                  // What: New Identifier Function. Why: Each new Today entry needs a unique entry ID. How: This is called once per entry that needs one.
 import { norConFun   } from '../core/pickers.ts';        // What: Normalize Conditional Function. Why: A newly-authored inline conditional's own name needs the same tidy Title-Case treatment as a picker's. How: This is called by madConFun on the inline conditional's name.
 import { norGroFun   } from '../core/pickers.ts';        // What: Normalize Group Function. Why: A picker's own group label needs tidying/de-duplication in several places. How: This is called by renGroFun and renTouFun below.
 import { norPicFun   } from '../core/pickers.ts';        // What: Normalize Picker Function. Why: A picker's own display name needs tidying wherever one is created or renamed. How: This is called by the actions below that create or rename a picker, such as addPicFun.
@@ -28,7 +28,7 @@ import { ONB_CHE_OBJ } from './onboarding-checklist.ts'; // What: Onboarding Che
 import { ONB_SPI_ARR } from './onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: A sample picker being (re)seeded must skip the normal name de-duplication so its canonical name stays intact. How: This is checked against inside addPicFun below.
 import { PIC_NAM_OBJ } from '../core/pickers.ts';        // What: Pickers Namespace Object. Why: Pickers, items, and conditionals with no threshold or drift band of their own fall back to the shared defaults. How: This reads PIC_NAM_OBJ.THR_VAL_NUM and DEF_EAS_OBJ wherever one is resolved.
 import { PWA_NAM_OBJ } from '../platform/pwa.ts';        // What: Progressive Web App Namespace Object. Why: The very first picker a user creates is the first data worth protecting from storage eviction. How: This is called (askFirFun) once, from inside addPicFun below.
-import { ranIdeFun   } from '../utils/random-id.ts';     // What: Random Identifier Function. Why: New pickers, items, conditionals, holidays, and log rows each need a fresh id. How: This mints one from each kind's own prefix.
+import { ranIdeFun   } from '../utils/random-id.ts';     // What: Random Identifier Function. Why: Each new record, such as a picker, needs a fresh ID. How: This mints one from each kind's own prefix.
 import { rebPenFun   } from './pending-mutations.ts';    // What: Rebase Pending Function. Why: A direct value edit to an Ease Down item must not leave its own entry decaying from the old value. How: This is called by updIteFun after spuDroFun.
 import { SED_NAM_OBJ } from './seed.ts';                 // What: Seed Namespace Object. Why: A brand-new install, and a hard reset, both need this fresh empty-state shape rather than the design-time demo fixture. How: This is called (buiCleFun) by loaStaFun and by the reset action below.
 import { spuDroFun   } from './pending-mutations.ts';    // What: Stale-Pending-Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by updIteFun.
@@ -371,7 +371,7 @@ function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : Con
 
 
 
-	return { // What: Made Conditional Return. Why: The picker below attaches to this conditional by its fresh id. How: This returns the form's fields with each default filled in.
+	return { // What: Made Conditional Return. Why: The caller needs the full conditional record, with its fresh ID and every default filled in. How: This returns the form's fields with each default filled in.
 
 
 		active       : newConObj.active !== undefined ? newConObj.active : true,                                     // What: Active. Why: A new conditional is enabled unless the form says otherwise. How: This honors newConObj.active when given, else defaults to true.
@@ -379,7 +379,7 @@ function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : Con
 		chargedToday : false,                                                                                        // What: Charged Today. Why: A brand-new conditional hasn't charged yet today, so its per-day charge guard starts clear. How: This is false.
 		easeMax      : newConObj.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax,                                         // What: Ease Maximum. Why: An ease-mode conditional needs the upper end of its own drift band. How: This reads newConObj.easeMax, defaulting to the pickers' default band, DEF_EAS_OBJ.
 		easeMin      : newConObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin,                                         // What: Ease Minimum. Why: An ease-mode conditional needs the lower end of its own drift band. How: This reads newConObj.easeMin, defaulting to the pickers' default band, DEF_EAS_OBJ.
-		id           : ranIdeFun( 'cnd_' ),                                                                          // What: ID. Why: The picker below attaches to this conditional by id, so it must exist before the picker is built. How: This mints a random 'cnd_' id.
+		id           : ranIdeFun( 'cnd_' ),                                                                          // What: ID. Why: Every conditional needs a unique ID that pickers can link to. How: This mints a random 'cnd_' ID.
 		mode         : newConObj.mode || 'random',                                                                   // What: Mode. Why: The mode decides how this conditional rolls or charges each day. How: This reads newConObj.mode, defaulting to 'random'.
 		name         : norConFun( newConObj.name ) || newConObj.name || 'Conditional',                               // What: Name. Why: The conditional needs a tidied display name. How: This title-cases newConObj.name via norConFun, falling back to the raw name, then 'Conditional'.
 		oddsPct      : newConObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM,                                                 // What: Odds Percent. Why: A probability-mode conditional needs its own daily firing odds. How: This reads newConObj.oddsPct, defaulting to CON_NAM_OBJ.DEF_ODD_NUM.
