@@ -493,7 +493,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 
 	const varCopObj = VAR_COP_OBJ[ varKeyStr ];                                                                                    // What: Variant Copy Object. Why: Both the intro modal and cloTouFun below need this varKeyStr's own sample task id, icon, title, and second paragraph. How: This looks up VAR_COP_OBJ by the varKeyStr prop.
 	const onbStaObj = staAppObj.onboarding;                                                                                        // What: Onboarding State Object. Why: A reload can resume a tour left running, so this reads the persisted onboarding state to decide whether to skip the intro modal and which step to resume into. How: This reads staAppObj.onboarding, which migStaFun guarantees on every state.
-	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `reminder-${ varKeyStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: See onboarding/tour-runner.tsx's own resBoo field doc comment for why this is a checkpoint, not necessarily the exact step the user was last on. How: This reads onbStaObj.activeTour back out only when its own id matches this varKeyStr's own touIdeStr, otherwise null.
+	const resTouObj = onbStaObj.activeTour && onbStaObj.activeTour.id === `reminder-${ varKeyStr }` ? onbStaObj.activeTour : null; // What: Resume Tour Object. Why: A reload resumes from the persisted checkpoint, which is not necessarily the exact step the user was last on (see resBoo in onboarding/tour-runner.tsx). How: This reads onbStaObj.activeTour back out only when its own id matches this varKeyStr's own touIdeStr, otherwise null.
 
 	const { draRepStr }               = useEmlTouFun();                                 // What: Draft Repeat String. Why: Only the recurring tour's own Step 4 actually depends on this, but the hook itself has to run unconditionally either way. How: This subscribes to the shared bus and reads its own draRepStr field, harmless to read up front even when unused.
 	const [ touPhaStr, setTouPhaStr ] = React.useState( resTouObj ? 'tour' : 'intro' ); // What: Tour Phase String And Setter. Why: This is the mini-tour's own top-level position, 'intro' (the modal showing) or 'tour' (GuiTouCom running). How: This starts on 'tour' whenever resTouObj says a tour was left running, otherwise 'intro'.
@@ -528,7 +528,7 @@ function RemTouCom ( { actStoObj, onCloForFun, onCloTouFun, staAppObj, varKeyStr
 	 *
 	*/
 
-	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: This ends the tour by clearing the shared bus's prefill and recording how it ended in the checklist. How: This never touches the sample task itself (see buiAddFun's own runFun above), only the new draft it seeded gets built from it.
+	const cloTouFun = ( staValStr : CheStaTyp ) : void => { // What: Close Tour Function. Why: This ends the tour by clearing the shared bus's prefill and recording how it ended in the checklist. How: This clears the bus prefill, records staValStr in the checklist, and calls onCloTouFun, never touching the sample task itself.
 
 
 		emlTouObj.set( { prePayObj : null } ); // What: Prefill Clear Call. Why: A stale prefill left over from Step 1 must not leak into whatever the add-reminder form shows next. How: This clears the shared bus's own prePayObj field.

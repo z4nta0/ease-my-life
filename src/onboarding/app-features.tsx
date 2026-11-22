@@ -82,8 +82,8 @@ import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type.
  *   title on Today, rendered directly as the card's own name.
  *
  * - `pagStr` (String): Page String says which real nav tab this
- *   feature's own Step 1 highlights; buiTs1Fun below reads this
- *   to find the matching NAV_TAR_OBJ entry.
+ *   feature's own Step 1 highlights; buiTs1Fun (imported from
+ *   page-steps.tsx) reads this to find the matching NAV_TAR_OBJ entry.
  *
  * - `pilArr` (Array): Pills Array holds 3 short tags describing this
  *   tutorial, rendered as the intro modal's own pill row (IntModCom's
@@ -237,7 +237,7 @@ const APP_FEA_ARR = [ // What: App Feature Array. Why: Every App Feature tutoria
  *
 */
 
-const PAG_LAB_OBJ : Record< string, string > = { // What: Page Label Object. Why: app-feature-card.tsx's own AppFeaCom reads this by a feature's own page id for its kicker text. How: This is looked up by an APP_FEA_ARR entry's own pagStr wherever the real tab's display name is needed.
+const PAG_LAB_OBJ : Record< string, string > = { // What: Page Label Object. Why: app-feature-card.tsx's own AppFeaCom reads this by a feature's own page id for its meta text. How: This is looked up by an APP_FEA_ARR entry's own pagStr wherever the real tab's display name is needed.
 
 
 	data     : 'Data',     // What: Data Label. Why: This names the Data tab for any feature whose own page is 'data'. How: This is read back as PAG_LAB_OBJ.data.
@@ -554,7 +554,7 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 
 			},
 
-			{ // What: Edit Picker Settings Step. Why: This is the edit-item tour's own 4th step. How: This invites free exploration, then collapses Controls again on the way to the Items Section step. // Same selStr as the previous step, still the whole picker box, now with Controls ITSELF expanded (the previous step's own click), so the box has grown to include all of PicConCom' real fields. No cliSelStr this time: every click inside stays genuinely usable (name/group/type fields, weight steppers, the works), "explore and do whatever you want" is the point. The only two things still guarded are the picker's own header and the Items header, both via real `disabled` props in tab-data.tsx (detPicBoo/detIteBoo) rather than the click-guard, since collapsing either would pull this step's own target out from under the user mid-step. catBoo: true, Controls' real field set is easily taller than a short viewport can fit alongside the coach, same "start the section below the coach and let it run off the bottom" treatment as the manual-pick tour's own tall-target steps, see catBoo's own doc comment in onboarding/tour-runner.tsx.
+			{ // What: Edit Picker Settings Step. Why: This is the edit-item tour's own 4th step. How: This invites free exploration, then collapses Controls again on the way to the Items Section step. // Same selStr as the previous step, still the whole picker box, now with Controls ITSELF expanded (the previous step's own click), so the box has grown to include all of PicConCom's real fields. No cliSelStr this time: every click inside stays genuinely usable (name/group/type fields, weight steppers, the works), "explore and do whatever you want" is the point. The only two things still guarded are the picker's own header and the Items header, both via real `disabled` props in tab-data.tsx (detPicBoo/detIteBoo) rather than the click-guard, since collapsing either would pull this step's own target out from under the user mid-step. catBoo: true, Controls' real field set is easily taller than a short viewport can fit alongside the coach, same "start the section below the coach and let it run off the bottom" treatment as the manual-pick tour's own tall-target steps, see catBoo's own doc comment in onboarding/tour-runner.tsx.
 
 
 				bacBoo : true,   // What: Back Boolean. Why: The user should always be able to return to Controls Section. How: GuiTouCom shows its own Back button whenever this is true.
@@ -898,7 +898,7 @@ type FtcProTyp = { actStoObj : ActStoTyp }; // What: Feature-Tip-Component Props
  * @summary
  * "One Last Thing...", a single, standalone tip pointing at the
  * freshly-appeared App Features section. NOT a per-feature tutorial like
- * FeaTouCom above (no intro modal, no per-feature id): a single `solBoo`
+ * FeaTouCom below (no intro modal, no per-feature id): a single `solBoo`
  * GuiTouCom step, which hides the step counter and Skip/Back and shows one
  * full-width "Dismiss" button instead. It never navigates to another tab, so
  * it passes actIdeStr='today' and a no-op selTabFun.

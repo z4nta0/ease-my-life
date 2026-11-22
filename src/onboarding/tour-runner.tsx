@@ -150,7 +150,7 @@ const arrHorFun = ( curRecObj : { left : number, width : number }, coaLefNum : n
  *
  * @example
  * ```ts
- * coaWidFun(1440) // => about 272.6 at an 11px root font size
+ * coaWidFun(1440) // => about 272.7 at an 11px root font size
  * ```
  *
 */
@@ -1378,7 +1378,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-		if ( curSteObj.cirBoo && curSteObj.advSelStr ) { // What: Advance-When Poll Guard. Why: The real click just kicked off something ASYNC whose result is the next step's own target, e.g. the Pickers tour's "Manual Generation" step, where clicking Pick One starts a multi-second spin animation and the Send to Today button (the next step's target) does not exist until it resolves. How: Advancing on the usual immediate timer would move the step index forward before that target exists, and the position-tracking effect's own "target not found yet" fallback would render a bare dim with no coach at all for however long that takes, reading as the tour blanking out mid-click; polling here instead means THIS step's own already-resolved coach and highlight just keep sitting there, unbothered, for the whole wait, and the jump to the next step only happens once its target is actually ready to be found immediately.
+		if ( curSteObj.cirBoo && curSteObj.advSelStr ) { // What: Advance-Selector Poll Guard. Why: The real click just kicked off something ASYNC whose result is the next step's own target, e.g. the Pickers tour's "Manual Generation" step, where clicking Pick One starts a multi-second spin animation and the Send to Today button (the next step's target) does not exist until it resolves. How: Advancing on the usual immediate timer would move the step index forward before that target exists, and the position-tracking effect's own "target not found yet" fallback would render a bare dim with no coach at all for however long that takes, reading as the tour blanking out mid-click; polling here instead means THIS step's own already-resolved coach and highlight just keep sitting there, unbothered, for the whole wait, and the jump to the next step only happens once its target is actually ready to be found immediately.
 
 
 			const begSteNum = curSteNum; // What: Began Step Number. Why: The poll below checks the LIVE step number (via steNumRef, not this closure's own curSteNum) on each frame, so if the user goes Back/Skip in the meantime this can notice and bail out instead of firing a stale advance() later. How: This snapshots curSteNum at the moment the poll starts.
