@@ -23,15 +23,14 @@ import type { AccSynTyp } from '../../state/sync-run.ts'; // What: Account Sync 
  *
  * @summary
  * The Settings tab's Account section. Signed out, it offers Google sign-in and
- * an emailed sign-in link, with a box to paste the link into, since an
- * installed app on a phone often can't open a link itself (the email opens it
- * in the browser instead). A link opened where it wasn't requested asks for
- * the address it was sent to. Signed in, it names the account and offers
- * sign-out, then either the paid sync upgrade or, once bought, how sync is
- * going and a Sync now button. A device's first sync onto an account that
- * already holds data asks which copy to keep. Failures are announced through
- * an alert region, and sign-in, link-sent, and purchase news through a status
- * region, both in the page and empty from the first render.
+ * an emailed sign-in link, with a box to paste the link into, for a link that
+ * opened in a browser instead of the app. A link opened where it wasn't
+ * requested asks for the address it was sent to. Signed in, it names the
+ * account and offers sign-out, then either the paid sync upgrade or, once
+ * bought, how sync is going and a Sync now button. A device's first sync onto
+ * an account that already holds data asks which copy to keep. Failures are
+ * announced through an alert region, and sign-in, link-sent, and purchase news
+ * through a status region, both in the page and empty from the first render.
  *
  * Sections:
  *  - Helpers
@@ -118,7 +117,8 @@ type AscProTyp = { accSynObj : AccSynTyp }; // What: Account-Section-Component P
  * @summary
  * Renders the Account section's intro, its card of rows for the current
  * account state (see the file summary), and its two announcement regions.
- * A row's text sits beside its control, or above it on a narrow screen.
+ * A row's text sits beside its control, or above it when the app is 500px
+ * wide or less.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -374,7 +374,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										id='accEmaSpa'
 
 										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
-									>{ linSenStr ? `A sign-in link is on its way to ${ linSenStr }. Open it on this device to finish.` : "We'll email you a link that signs you in, with no password to remember." }</span>{ /* What: Settings Sub Span Element. Why: The row explains the link before sending it and where it went after. How: This picks its sentence by whether a link was sent, and describes the field. */ }
+									>{ linSenStr ? `A sign-in link is on its way to ${ linSenStr }. Open it on this device to finish.` : "We'll email you a link that signs you in, with no password to remember." }</span>{ /* What: Settings Sub Span Element. Why: The row explains the link before sending it and where it went after. How: This picks its sentence by whether a link was sent, fading the new one in through its second class, setSubSpaFade, and describes the field. */ }
 
 
 									<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field when there isn't room. */ }
@@ -418,7 +418,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 						) }
 
 
-						{ linSenStr && ( // What: Link Sent Check. Why: A phone's installed app often can't open the link itself. How: This offers a box to paste it into.
+						{ linSenStr && ( // What: Link Sent Check. Why: A link that opened in a browser instead of this app can still finish the sign-in here. How: This offers a box to paste it into.
 
 
 							<form
@@ -443,7 +443,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										id='accPasSpa'
 
 										className={ cssModObj.setSubSpa }
-									>Using the installed app? If the link opened in your browser instead, copy that page's address and paste it here.</span>{ /* What: Settings Sub Span Element. Why: The link opening elsewhere is the usual snag on a phone. How: This explains the workaround, and describes the field. */ }
+									>Using the installed app? If the link opened in your browser instead, copy that page's address and paste it here.</span>{ /* What: Settings Sub Span Element. Why: A link that opened somewhere other than this app needs another way to finish. How: This explains the workaround, and describes the field. */ }
 
 
 									<div className={ cssModObj.accFieDiv }>{ /* What: Account Field Div Element. Why: A field and its button belong on one line, so the button lines up with the field rather than with the whole row. How: This holds them side by side, wrapping the button under the field when there isn't room. */ }
@@ -542,7 +542,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 										key={ String( accSynObj.purPenBoo ) }
 
 										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
-									>{ accSynObj.purPenBoo ? 'Finishing your purchase. This usually takes a few seconds.' : `A one-time purchase of ${ SYN_PRI_STR }, not a subscription. Once it's unlocked, this account keeps your data the same on every device you sign in to.` }</span>{ /* What: Settings Sub Span Element. Why: The price model matters to the decision, and a returning buyer should know the unlock is on its way. How: This states the price and model, or the wait, fading between them. */ }
+									>{ accSynObj.purPenBoo ? 'Finishing your purchase. This usually takes a few seconds.' : `A one-time purchase of ${ SYN_PRI_STR }, not a subscription. Once it's unlocked, this account keeps your data the same on every device you sign in to.` }</span>{ /* What: Settings Sub Span Element. Why: The price model matters to the decision, and a returning buyer should know the unlock is on its way. How: This states the price and model, or the wait, fading between them through its second class, setSubSpaFade. */ }
 
 
 								</div>
@@ -569,7 +569,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 						{ accSynObj.synStaStr === 'choose' && ( // What: Choice Check. Why: A first sync onto an account that has data needs the person's choice. How: This shows the two options.
 
 
-							<div className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivStack } `}>{ /* What: Settings Row Div Element. Why: The choice needs room to explain both options. How: This stacks the text above the two buttons. */ }
+							<div className={` ${ cssModObj.setRowDiv }   ${ cssModObj.setRowDivStack } `}>{ /* What: Settings Row Div Element. Why: The choice needs room to explain both options. How: This stacks the text above the two buttons through its second class, setRowDivStack. */ }
 
 
 								<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The row's name and description stack together. How: This wraps them. */ }
