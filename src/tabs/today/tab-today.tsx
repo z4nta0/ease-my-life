@@ -11,9 +11,9 @@ import { APP_FEA_ARR  } from '../../onboarding/app-features.tsx';   // What: App
 import { AppFeaCom    } from './app-feature-card.tsx';              // What: App Feature Component. Why: Each app feature gets a launcher card in the App Features group. How: This is rendered once per feature.
 import { BacFloCom    } from '../../ui/bg-flourish.tsx';            // What: Background Flourish Component. Why: The decorative background glyphs render behind Today's own centered column too, same as every other tab. How: This is passed Today's own body ref and the fixed 'today' tab id.
 import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: Nearly every action button in this file (confirm, cancel, done, generate) is a shared styled button. How: This is used throughout instead of a bare <button> for anything that needs the app's own button styling.
-import { CAD_NAM_OBJ  } from '../../core/cadence.ts';               // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math shared with the rest of the app. How: This is called for perKeyFun/fulPerFun throughout generate() and the charging checks.
+import { CAD_NAM_OBJ  } from '../../core/cadence.ts';               // What: Cadence Namespace Object. Why: Non-daily pickers need period-key math shared with the rest of the app. How: This is called for perKeyFun/fulPerFun throughout genLisFun and the charging checks.
 import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: A group's Day Log panel and an entry's inline editor both need an animated expand/collapse wrapper. How: This wraps GroLogCom and EntEdiCom, gated on whichever key/eid currently owns the open state.
-import { CON_NAM_OBJ  } from '../../core/conditionals.ts';          // What: Conditionals Namespace Object. Why: Day-off suppression during generate() needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
+import { CON_NAM_OBJ  } from '../../core/conditionals.ts';          // What: Conditionals Namespace Object. Why: Day-off suppression during genLisFun needs the shared conditional-evaluation logic. How: This is called via CON_NAM_OBJ.supGatFun against each picker's own resolved conditional.
 import { createPortal } from 'react-dom';                           // What: Create Portal. Why: The completion celebration's confetti/sparkle overlay must escape the tabFadDiv wrapper's own containing block. How: This portals the celebration overlay straight onto document.body.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { emlTouObj    } from '../../state/tour-bus.ts';             // What: Ease-My-Life Tour Object. Why: Several onboarding-adjacent features (checklist visibility, drag-hiding the tour coach, starting a create-picker flow) need to publish onto the shared tour event bus. How: This is written to directly (never read here) via its own .set method.
@@ -28,7 +28,7 @@ import { GroHeaCom    } from './group-header.tsx';                  // What: Gro
 import { GroLogCom    } from './day-log.tsx';                       // What: Group Log Component. Why: A group's Day Log panel needs to render that group's own picker audit rows. How: This is rendered inside a ColDisCom, scoped to one group's own name.
 import { HelButCom    } from '../../help/button.tsx';               // What: Help Button Component. Why: Today needs the same help-mode toggle every other tab exposes. How: This is rendered in the header, toggling helModBoo.
 import { HelOveCom    } from '../../help/mode.tsx';                 // What: Help Overlay Component. Why: Help mode needs its own coach-mark overlay driven by this tab's own catalog of targets. How: This is rendered once, passed TOD_HEL_ARR and the helModBoo/helExiFun pair.
-import { HOL_NAM_OBJ  } from '../../core/holidays.ts';              // What: Holidays Namespace Object. Why: Both generate()'s own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against staAppObj.holidays.
+import { HOL_NAM_OBJ  } from '../../core/holidays.ts';              // What: Holidays Namespace Object. Why: Both genLisFun's own skipHolidays gate and the no-run-today empty state need to know if today is an active holiday. How: This is called via HOL_NAM_OBJ.holDatFun against staAppObj.holidays.
 import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: Nearly every card/button in this file needs a small named glyph alongside its label. How: This is rendered throughout, given a name and a size.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled action (a locked re-roll, a blocked tutorial, a disabled Regenerate) still needs to explain itself on hover/tap. How: This wraps whichever control needs an explanatory label throughout this file.
 import { isaTruFun    } from '../../utils/guard.ts';                // What: Is-A Truthy Function. Why: The drag-drop order and the loader's picker set both drop missing ids. How: This filters them through the shared truthy guard, so TypeScript sees only real ids.
@@ -42,7 +42,7 @@ import { ONB_GII_STR  } from '../../state/onboarding-checklist.ts'; // What: Onb
 import { ONB_SPI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Picker-Identifiers Array. Why: Every count/filter that distinguishes a real picker from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own counts.
 import { ONB_STI_ARR  } from '../../state/onboarding-seed-data.ts'; // What: Onboarding Sample-Task-Identifiers Array. Why: Every count/filter that distinguishes a real reminder from a sample one needs this fixed id list. How: This is checked with .includes throughout TabTodCom's own tutorial-task counts.
 import { PagTouCom    } from './page-tour-card.tsx';                // What: Page Tour Component. Why: Each page tour gets a launcher card in the Page Tours group. How: This is rendered once per page tour.
-import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: Picking, re-rolling, and ease eligibility all funnel through this shared namespace. How: This is called for picIteFun/easEliFun throughout generate() and hanRerFun, and read for THR_VAL_NUM.
+import { PIC_NAM_OBJ  } from '../../core/pickers.ts';               // What: Pickers Namespace Object. Why: Picking, re-rolling, and ease eligibility all funnel through this shared namespace. How: This is called for picIteFun/easEliFun throughout genLisFun and hanRerFun, and read for THR_VAL_NUM.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: Nearly every animated sequence in this file (celebration, reel cascade, card flip, scroll) needs to skip or shorten itself for a user who prefers reduced motion. How: This is checked throughout as a plain function call.
 import { RemSecCom    } from './reminders-section.tsx';             // What: Reminder Section Component. Why: The Reminders block is one whole section rendered alongside the picker groups. How: This is rendered once per the '__reminders' sentinel in genOrdArr.
 import { RemTouCom    } from '../../onboarding/reminder-tours.tsx'; // What: Reminder Tour Component. Why: A reminder mini-tour never leaves Today, so it is rendered directly here rather than lifted to app.tsx. How: This is rendered while minTouObj holds a 'reminder' kind entry.
@@ -388,8 +388,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	*/
 
 	const cheDonBoo = !!staAppObj.onboarding.checklistDone;                                                                // What: Checklist Done Boolean. Why: This decides whether the mini-tour checklist phase should still be showing at all. How: This reads staAppObj.onboarding.checklistDone.
-	const picHidBoo = staAppObj.pickers.some( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) ); // What: Picker Hidden Boolean. Why: Sample pickers flip hidden exactly once, at the main Welcome Tour's last step. How: This is true once any sample picker is hidden.
-	const tasHidBoo = staAppObj.tasks.some( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) );   // What: Task Hidden Boolean. Why: Sample reminders flip hidden at that same moment. How: This is true once any sample task is hidden.
+	const picHidBoo = staAppObj.pickers.some( ( curPicObj ) => curPicObj.hidden && ONB_SPI_ARR.includes( curPicObj.id ) ); // What: Picker Hidden Boolean. Why: A sample picker is flagged hidden once the main tour ends. How: This is true once any sample picker is hidden.
+	const tasHidBoo = staAppObj.tasks.some( ( curTasObj ) => curTasObj.hidden && ONB_STI_ARR.includes( curTasObj.id ) );   // What: Task Hidden Boolean. Why: A sample reminder is flagged hidden at the same point. How: This is true once any sample task is hidden.
 	const maiEndBoo = picHidBoo || tasHidBoo;                                                                              // What: Main Ended Boolean. Why: Whether the main Welcome Tour has concluded decides whether the checklist phase should be considered at all, independent of cheDonBoo. How: This is true once either kind of sample has flipped hidden.
 	const shoCheBoo = maiEndBoo && !cheDonBoo;                                                                             // What: Show Checklist Boolean. Why: The whole checklist phase (launcher cards, Page Tours, the closing Generate card) should only show between the main tour ending and the checklist actually concluding. How: This combines maiEndBoo with the negation of cheDonBoo.
 
@@ -451,7 +451,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	*/
 
 	const feaStaObj = staAppObj.onboarding.appFeatures;                  // What: Feature State Object. Why: Every App Features check below needs this same map. How: This reads staAppObj.onboarding.appFeatures.
-	const fsrFlaBoo = !!staAppObj.onboarding.appFeaturesSectionResolved; // What: Feature-Section-Resolved Flag Boolean. Why: A persisted snapshot, only ever flipped true inside generate() itself, deliberately NOT a live check during the user's ORIGINAL first-ever pass, so finishing the last of the 8 tutorials doesn't yank the whole section out from under them mid-session with no natural boundary; it stays visible, fully checked, until their NEXT real generation. How: This reads staAppObj.onboarding.appFeaturesSectionResolved.
+	const fsrFlaBoo = !!staAppObj.onboarding.appFeaturesSectionResolved; // What: Feature-Section-Resolved Flag Boolean. Why: A persisted snapshot, only ever flipped true inside genLisFun itself, deliberately NOT a live check during the user's ORIGINAL first-ever pass, so finishing the last of the 8 tutorials doesn't yank the whole section out from under them mid-session with no natural boundary; it stays visible, fully checked, until their NEXT real generation. How: This reads staAppObj.onboarding.appFeaturesSectionResolved.
 	const fecDonBoo = !!staAppObj.onboarding.appFeaturesEverCompleted;   // What: Feature-Ever-Completed Done Boolean. Why: Unlike fsrFlaBoo, this is NEVER reset by Replay Tour, set once alongside it and staying true forever after, same "permanent, one-way" semantics as cheDonBoo itself; it distinguishes "this is the user's ORIGINAL, first-ever pass" from "this is a REPLAY", since both share the identical feaStaObj shape otherwise. How: This reads staAppObj.onboarding.appFeaturesEverCompleted.
 
 	// #endregion App Features Gates
@@ -1490,7 +1490,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				const eliIteArr = staAppObj.items.filter( isaEliFun ).sort( ordIteFun ); // What: Eligible Item Array. Why: This is the actual candidate pool re-roll cycles through; deterministic order (value desc, then oldest lastPicked, then id) is stable since done-gating freezes values between rolls. How: This filters with isaEliFun and sorts with ordIteFun.
 
 
-				if ( eliIteArr.length >= 2 ) { // What: Enough Candidates Guard. Why: Fewer than 2 eligible candidates means the UI already disabled the button, so this is a safe no-op rather than a real error case. How: This only proceeds once eliIteArr has at least 2 entries.
+				if ( eliIteArr.length >= 2 ) { // What: Enough Candidates Guard. Why: Fewer than 2 eligible candidates leaves nothing to cycle to, so this is a safe no-op rather than a real error case. How: This only proceeds once eliIteArr has at least 2 entries.
 
 
 					const fouIndNum = eliIteArr.findIndex( ( curIteObj ) => curIteObj.id === entRcdObj.itemId );                      // What: Found Index Number. Why: The next candidate is found relative to whichever one is currently picked. How: This finds entRcdObj's own itemId within eliIteArr.
@@ -1705,7 +1705,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			// #region Closest Section Search
 
 			let besGroStr = secEntArr[ 0 ][ 0 ]; // What: Best Group String And Reassignment. Why: The search loop below needs a running best-match default, starting at the first section. How: This starts at secEntArr's own first entry's own key.
-			let besDisNum = Infinity;            // What: Best Distance Number And Reassignment. Why: The search loop below needs a running best-match distance, starting unbeaten. How: This starts at Infinity so the very first real candidate always replaces it.
+			let besDisNum = Infinity;            // What: Best Distance Number And Reassignment. Why: The search loop below needs a running best-match distance, starting unbeaten. How: This starts at Infinity so the first candidate that passes the guard below replaces it.
 
 
 			for ( const [ curNamStr, secCurEle ] of secEntArr ) { // What: Closest Section Search Loop. Why: The active group is whichever section's own header sits closest to (without crossing past) biaLinNum. How: This walks every section, tracking the smallest qualifying distance.
@@ -1875,7 +1875,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * Features section is on screen with a real generation already
 	 * behind it. shoFeaBoo alone (gated on cheDonBoo) already guarantees
 	 * a generation happened, since the closing checklist item IS the
-	 * generate() call, so no separate today.generatedAt check is needed
+	 * genLisFun call, so no separate today.generatedAt check is needed
 	 * here. Delayed a beat past genActBoo flipping back to false rather
 	 * than firing the instant it does: genLisFun's own entrance animations
 	 * (arriving reminders, etc.) are still settling for a few hundred ms
@@ -2699,9 +2699,9 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		 * nexEntArr = Next Entry Array
 		 *
 		 * @summary
-		 * Commits picks all at once, then hides the loader. Value
-		 * mutations are staged as `pending` on each entry and applied
-		 * only when the entry is marked done.
+		 * Builds the whole new entry list in one array, so the picks commit
+		 * all at once afterwards. Value mutations are staged as `pending` on
+		 * each entry and applied only when the entry is marked done.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *

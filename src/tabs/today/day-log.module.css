@@ -455,7 +455,7 @@
 
 
 	.bloHeaBut,
-	.bloHeaDiv { /* What: Tighter Block Header. Why: The summary column needs to shrink. How: This caps it at a smaller rhythm step. */
+	.bloHeaDiv { /* What: Tighter Block Header Button And Div. Why: The summary column needs to shrink. How: This caps it at a smaller rhythm step. */
 
 
 		grid-template-columns : calc( var( --ver-rhy-p01 ) * 1rem ) 1fr minmax( 0, calc( var( --ver-rhy-p07 ) * 1rem ) ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Vertical Rhythm Base Plus 7 ~= 104.323px */

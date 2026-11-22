@@ -108,7 +108,7 @@
 
 /* #region carCheBut */
 
-.carCheBut { /* What: Card Check Button. Why: The check spot holds the play and undo buttons, shaped like a real card's checkbox. How: This draws the clickable rounded square with the button chrome reset and a color fade, and eases its focus ring in, and eases its press and focus ring. */
+.carCheBut { /* What: Card Check Button. Why: The check spot holds the play and undo buttons, shaped like a real card's checkbox. How: This draws the clickable rounded square with the button chrome reset, and eases its color fade, press, and focus ring. */
 
 
 	-webkit-appearance : none;                                            /* What: WebKit Appearance. Why: This drops the button's native styling through the prefixed property. How: This resets the chrome in WebKit, the same as the standard appearance line below. */
@@ -143,7 +143,7 @@
 
 
 }
-.todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Card Check Button In Done Today Card Article. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This adds a thin background-colored inset line inside the gap. */
+.todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Card Check Button In Done Today Card Article. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This keeps the background-colored outer gap and adds a thin background-colored inset line just inside the filled box's edge. */
 
 
 	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ), Vertical Rhythm Base Minus 8 ~= 1.537px */

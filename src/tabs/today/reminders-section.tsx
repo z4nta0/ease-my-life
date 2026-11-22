@@ -1516,7 +1516,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 								staAppObj={ staAppObj }
 
 								onCloEdiFun={ () => setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ) } // What: On Close Edit Function. Why: Another editor may already hold the shared slot, which must not be cleared. How: This clears the slot only while it still holds this card's own sentinel.
-								onDelTasFun={ () => { // What: On Delete Task Function. Why: Deleting this reminder needs to close its own inline editor and stage the same collapse-then-remove sequence the card-level Delete uses. How: This closes actEdiStr, then either removes immediately (reduced motion) or defers it behind the collapse-out animation.
+								onDelTasFun={ () => { // What: On Delete Task Function. Why: Deleting this reminder needs to close its own inline editor and play the card's collapse-then-remove sequence. How: This closes actEdiStr, then either removes immediately (reduced motion) or defers it behind the collapse-out animation.
 
 
 									setActEdiStr( ( curEdiStr ) => curEdiStr === `reminder:${ curTasObj.id }` ? null : curEdiStr ); // What: Reminder Editor Close Call. Why: Deleting this reminder must also close its own now-stale inline editor. How: This clears actEdiStr only while it still equals this exact card's own sentinel.

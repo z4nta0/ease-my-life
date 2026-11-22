@@ -107,7 +107,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 		hanDraEle,   // What: Handle Drag Element. Why: This is the specific row/section actually being dragged. How: This is looked up in iteEleArr to find oriIndNum, and its own transform is set directly inside appShiFun.
 		iteSelStr,   // What: Item Selector String. Why: Not every child of conLisEle is necessarily a draggable sibling. How: This is used as the CSS selector for the initial querySelectorAll below.
 		onDroOrdFun, // What: On Drop Order Function. Why: The caller needs to be notified of the final reordering, but only once it actually changed. How: This is called from onRelPoiFun with the freshly-built index order.
-		onEndDraFun, // What: On End Drag Function. Why: The caller may want to react to the gesture finishing, symmetrically with onStaDraFun above. How: This is called once, at the end of cleDraFun.
+		onEndDraFun, // What: On End Drag Function. Why: The caller may want to react to the gesture finishing, symmetrically with onStaDraFun below. How: This is called once, at the end of cleDraFun.
 		onStaDraFun, // What: On Start Drag Function. Why: The caller may want to react to the gesture beginning, e.g. toggling a body class. How: This is called once, near the end of staDraFun's own setup.
 		scrConEle    // What: Scroll Container Element. Why: Edge auto-scroll is optional and needs its own scrollable ancestor to act on. How: This is read by onMovPoiFun and edgLooFun, both of which no-op when it is absent.
 
