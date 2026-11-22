@@ -7,17 +7,17 @@ import cssModObj from './reminders-manager.module.css'; // What: CSS Module Obje
 import React     from 'react';                          // What: React. Why: The components in this file are built directly on React's own APIs. How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 
-import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: The add form and each open reminder's own actions need consistently-styled buttons. How: This is rendered throughout RemManCom.
-import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: Each reminder row and the add form need to animate open and closed instead of snapping. How: This wraps each of those bodies in RemManCom, driven by its own open state.
+import { ButBasCom    } from '../../ui/button.tsx';                 // What: Button Base Component. Why: The matrix's Cancel and Save need consistently-styled buttons. How: This is rendered in OptMatCom's footer.
+import { ColDisCom    } from '../../ui/collapse.tsx';               // What: Collapse Disclosure Component. Why: The section body, its disclosures, and each reminder's editor need to animate open and closed instead of snapping. How: This wraps each of those bodies, driven by its own open state.
 import { colMapFun    } from '../../state/store.ts';                // What: Collapsed Map Function. Why: The saved section collapse state may be missing on an old save. How: This is called with the app state to read the collapse map, empty when there is none.
 import { durMilFun    } from '../../utils/rhythm.ts';               // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { EdiFooCom    } from '../../ui/editor-footer.tsx';          // What: Editor Footer Component. Why: Every reminder editor ends with the same Delete/Cancel/Save row. How: This is rendered at the bottom of each reminder editor.
 import { freEdiFun    } from './list-sorting.ts';                   // What: Freeze Edited Function. Why: The Data tab's reminder list must not visibly reorder out from under an open editor as its own fields change. How: This is called once to compute disTasArr from sorTasArr.
-import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The reminder rows and the add control need a recognizable glyph. How: This is rendered throughout OptMatCom and RemManCom.
+import { IcoSvgCom    } from '../../ui/icon.tsx';                   // What: Icon SVG Component. Why: The reminder rows and the add control need a recognizable glyph. How: This is rendered for the section's icons, a disclosure chevron for one.
 import { InfTipCom    } from '../../ui/info-tip.tsx';               // What: Info Tip Component. Why: A disabled add control still needs to explain why it can't be clicked while a mini-tour checklist is in progress. How: This wraps the disabled add button in RemManCom.
 import { ONB_CHE_OBJ  } from '../../state/onboarding-checklist.ts'; // What: Onboarding Checklist Object. Why: Adding a reminder must stay disabled while any onboarding tutorial is still in progress. How: This is read via its own tutProFun helper in RemManCom.
 import { redMotFun    } from '../../utils/motion.ts';               // What: Reduced Motion Function. Why: A user who prefers reduced motion should get an instant close or remove instead of a timed animation. How: This is checked before the smooth scroll and before the delayed remove in RemManCom.
-import { SchEdiCom    } from '../../ui/schedule-editor.tsx';        // What: Schedule Editor Component. Why: A reminder's own repeat and schedule fields are edited with one shared editor. How: This is rendered for the add form and each open reminder.
+import { SchEdiCom    } from '../../ui/schedule-editor.tsx';        // What: Schedule Editor Component. Why: A reminder's own repeat and schedule fields are edited with one shared editor. How: This is rendered in each reminder row's editor, a new reminder's included.
 import { sorEntFun    } from './list-sorting.ts';                   // What: Sort Entries Function. Why: The Data tab's reminder list needs the exact same sort vocabulary as the rest of the Data tab. How: This is called once per comparison inside RemManCom's own sorTasArr sort.
 import { SorSelCom    } from './sort-select.tsx';                   // What: Sort Select Component. Why: The Data tab's reminder Items list needs the same sort control as the other Data tab lists. How: This is rendered in RemManCom, driven by ITE_SOR_ARR.
 import { TAS_NAM_OBJ  } from '../../core/tasks.ts';                 // What: Tasks Namespace Object. Why: A reminder's own summary, next date, and default shape defer to the reminders engine instead of duplicating its logic. How: This namespace object is called throughout RemManCom.
@@ -121,9 +121,8 @@ const ITE_SOR_ARR = [ // What: Item Sort Array. Why: RemManCom's own Items list 
  * paiSubFun = Pair Subtitle Function
  *
  * @summary
- * Data tab: full reminder management. Builds the dynamic
- * sub-explanation for a paired one-time/recurring toggle row, so it
- * always reflects which of the 2 types the setting actually applies
+ * Builds the dynamic sub-explanation for a paired one-time/recurring toggle
+ * row, so it always reflects which of the 2 types the setting actually applies
  * to right now.
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -1133,7 +1132,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 					className={ cssModObj.catBodDiv }
 
 					data-element-name-hook='catBodDiv'
-				>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures need to sit together as one scrollable body. How: This renders both disclosure toggles and their own ColDisCom-wrapped content below. Its data-element-name-hook is read by the tours and help mode. */ }
+				>{ /* What: Category Body Div Element. Why: The Controls and Items disclosures need to sit together as one body. How: This renders both disclosure toggles and their own ColDisCom-wrapped content below. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 
@@ -1175,7 +1174,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 					<ColDisCom open={ !iteColBoo }>{ /* What: Collapse Disclosure Component. Why: The whole Items list (full-bleed rows: type icon + name + schedule, expanding into the shared schedule editor) only exists while this disclosure is open. How: This animates the fragment below open/closed based on iteColBoo. */ }
 
 
-						<React.Fragment>{ /* What: Items Fragment. Why: The add button and the list/empty-state below need to sit together with no extra dom wrapper of their own. How: This groups both below as one returned value. */ }
+						<React.Fragment>{ /* What: Items Fragment. Why: The add button and the list/empty-state below need to sit together with no extra DOM wrapper of their own. How: This groups both below as one returned value. */ }
 
 
 							{ tutProBoo ? ( // What: Tutorials In Progress Check. Why: This second add-reminder entry point must also stay disabled with an explanation while the guided checklist is running. How: This renders the disabled InfTipCom while tutProBoo is true, the real button otherwise.
@@ -1303,7 +1302,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 																	if ( inpCurEle && focInpRef.current !== inpCurEle ) { // What: New Input Guard. Why: Re-renders call this ref again, but focus should only happen once per input. How: This runs only for a real node not already focused.
 
 
-																		inpCurEle.focus( { preventScroll : true } ); // What: Quiet Focus Call. Why: The row's own smooth scroll handles bringing it into view. How: This focuses without scrolling.
+																		inpCurEle.focus( { preventScroll : true } ); // What: Quiet Focus Call. Why: A brand-new reminder's own smooth scroll brings it into view, so the focus itself must not scroll. How: This focuses without scrolling.
 
 
 																		if ( newAddRef.current === curTasObj.id ) inpCurEle.select(); // What: New Reminder Select Check. Why: A brand-new reminder opens with a default name that typing should replace outright, while an existing one's name is edited in place. How: This selects the whole name only for the new reminder.
@@ -1440,7 +1439,7 @@ function RemManCom ( { actStoObj, staAppObj } : RmcProTyp ) : React.JSX.Element 
 
 
 															<SchEdiCom
-																aniExtBoo
+																aniExtBoo // What: Animate Extra Boolean. Why: The Data tab's rows should grow and shrink the schedule's extra fields instead of snapping. How: This makes SchEdiCom wrap its once and extra fields in ColDisCom.
 																layVarStr='rows' // What: Layout Variant String. Why: The Data tab lays each field out as its own full-bleed row, matching the picker item editor. How: SchEdiCom's own module applies its rows layout class.
 																staAppObj={ staAppObj }
 																tasRcdObj={ draTasObj && draTasObj.id === curTasObj.id ? draTasObj : curTasObj } // What: Task Record Object. Why: The open row's editor shows its draft, while one still collapsing after a close shows the reminder itself. How: This picks the draft only when it belongs to this row's own reminder.

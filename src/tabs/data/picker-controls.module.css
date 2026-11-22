@@ -7,10 +7,9 @@
  * @summary
  * Styles for PicConCom, the Controls body of each picker card on the Data tab:
  * its groups of controls, such as the How it picks mode radio, and the footer
- * with its delete confirm. Each group runs edge to edge inside the body's
- * padding as full-bleed rows divided by hairlines. A chosen control keys off
- * an aria or data attribute, such as the chosen mode's
- * data-option-select-active.
+ * with its delete confirm. Its groups and footer run past the body's padding
+ * as full-bleed rows divided by hairlines. A chosen control keys off an aria
+ * or data attribute, such as the chosen mode's data-option-select-active.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

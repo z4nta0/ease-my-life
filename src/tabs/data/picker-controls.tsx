@@ -938,7 +938,7 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 						aria-label='Picker name'
 
 						onChange={ ( chaEveObj ) => patPicFun( { name : chaEveObj.target.value } ) }
-						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } }
+						onKeyDown={ ( keyEveObj ) => { if ( keyEveObj.key === 'Enter' ) keyEveObj.currentTarget.blur(); } } // What: On Key Down Handler. Why: Enter should end editing the name, as it ends editing the group input. How: This blurs the input when keyEveObj.key is 'Enter'.
 					/>{ /* What: Basics Name Input Element. Why: A picker's own name is edited right in Controls rather than through a separate form. How: This writes every keystroke into the draft, tidied when the draft is committed, and blurs on Enter. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
