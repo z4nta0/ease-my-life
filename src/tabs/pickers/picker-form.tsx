@@ -298,7 +298,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 				behavior : scrBehFun(),                    // What: Behavior. Why: A user who prefers reduced motion gets an instant jump instead of a glide. How: This picks 'auto' under reduced motion, otherwise 'smooth'.
-				top      : scrConEle.scrollTop + oveBelNum // What: Top. Why: The page scrolls just enough to reveal the editor's bottom edge. How: This adds oveBelNum to the current scroll.
+				top      : scrConEle.scrollTop + oveBelNum // What: Top. Why: The page scrolls just enough to reveal the Daily schedule block's bottom edge. How: This adds oveBelNum to the current scroll.
 
 
 			});
@@ -399,7 +399,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 *
 	*/
 
-	const raiCalFun = React.useCallback( ( raiCurEle : HTMLElement | null ) => { // What: Rail Callback Function. Why: ColDisCom (below) mounts this rail one render AFTER conAttBoo flips true (it stages its own `render` state first), so a plain useEffect keyed on conAttBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires as the DOM node attaches (and with null when it detaches), plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
+	const raiCalFun = React.useCallback( ( raiCurEle : HTMLElement | null ) => { // What: Rail Callback Function. Why: ColDisCom (below) mounts this rail one render AFTER conAttBoo flips true (it mounts its children from an effect once open flips), so a plain useEffect keyed on conAttBoo would fire while the ref is still null and never get another chance to run once the rail actually appears; a callback ref, which fires as the DOM node attaches (and with null when it detaches), plus a ResizeObserver, which re-fires whenever conditionals are added/removed and the rail's content width changes, sidesteps that race entirely. How: This registers a scroll listener and a ResizeObserver on whatever element the rail's own ref prop attaches to below, tearing down the previous ones first.
 
 
 		if ( raiCleRef.current ) { // What: Previous Cleanup Guard. Why: A remount (or unmount) must not leave the prior element's own listeners dangling. How: This runs and clears whatever teardown function was registered for the previous element, if any.
@@ -1880,14 +1880,14 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						className={ cssModObj.detFooDiv }
 
 						data-element-name-hook='detFooDiv'
-					>{ /* What: Details Footer Div Element. Why: The step's own guidance note and its Cancel/Next actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode. */ }
+					>{ /* What: Details Footer Div Element. Why: The step's own guidance note and its Cancel and Save or Add Items actions sit in one footer row. How: This wraps fooNotDiv and forActDiv. Its data-element-name-hook is read by help mode. */ }
 
 
 						<div
 							className={ cssModObj.fooNotDiv }
 
 							data-element-name-hook='fooNotDiv'
-						>{ /* What: Footer Note Div Element. Why: The Step 1 footer explains what's still missing before Next works. How: This renders the note text below. Its data-element-name-hook is read by help mode. */ }
+						>{ /* What: Footer Note Div Element. Why: The Step 1 footer explains what's still missing before Add Items works. How: This renders the note text below. Its data-element-name-hook is read by help mode. */ }
 
 
 							{ ( () => { // What: Footer Note Render. Why: The exact guidance sentence depends on which required field (if any) is still missing, and whether this is a create or an edit. How: This checks name/group completeness first, branching separately for edit versus create phrasing.
@@ -1954,7 +1954,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 
 
-							{ isaEdiBoo ? ( // What: Edit Mode Check. Why: Editing saves right away, while creating still has an Items step. How: This picks the Save or Next button based on isaEdiBoo.
+							{ isaEdiBoo ? ( // What: Edit Mode Check. Why: Editing saves right away, while creating still has an Items step. How: This picks the Save or Add Items button based on isaEdiBoo.
 
 
 								<ButBasCom

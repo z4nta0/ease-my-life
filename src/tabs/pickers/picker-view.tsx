@@ -696,7 +696,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region Picker Details Edit
 
-	const [ ediOpeBoo, setEdiOpeBoo ] = React.useState( false ); // What: Editing Open Boolean And Setter. Why: Editing this picker's own Details reuses PicForCom's Details step, pre-filled from its current settings, in place of the normal run/pool view. How: This is NOT an early return: every hook above still needs to run every render regardless of ediOpeBoo, so the branch only happens at the very end, where this component actually returns its JSX.
+	const [ ediOpeBoo, setEdiOpeBoo ] = React.useState( false ); // What: Editing Open Boolean And Setter. Why: Editing this picker's own Details reuses PicForCom's Details step, pre-filled from its current settings, in place of the normal run/pool view. How: This is NOT an early return: every hook in this component still needs to run every render regardless of ediOpeBoo, so the branch only happens at the very end, where this component actually returns its JSX.
 
 
 	const ediGroArr = React.useMemo( () => { // What: Edit Group Array. Why: This is the same distinct-groups memo TabPicCom itself computes, duplicated here rather than threaded down as a prop, since it's only needed while this one picker's own edit form is open. How: This walks staAppObj.pickers collecting each visible picker's own group name once, then alphabetizes them.
@@ -1205,7 +1205,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 									? 'Nothing eligible yet. Run again to drift items closer.' // What: Ease Up Message. Why: Nothing in an ease-up pool has drifted to eligibility yet. How: This tells the user to run again.
 									: picDatObj.mode === 'ease-down'                           // What: Ease Down Check. Why: An ease-down picker empties because everything is depleted. How: This picks the ease-down sentence when the mode matches.
 										? 'Everything is depleted. Refill the picker to bring items back.' // What: Ease Down Message. Why: Every item in an ease-down pool is depleted. How: This points the user at Refill.
-										: 'No items in this picker.'                                       // What: Empty Pool Branch. Why: The other modes have no drift or charge to explain, so their empty stage gives one plain sentence. How: This renders a fixed sentence.
+										: 'No items in this picker.'                                       // What: Empty Pool Branch. Why: The other modes never empty out through drift or charge, so their empty stage gives one plain sentence. How: This renders a fixed sentence.
 								}
 
 
@@ -1266,7 +1266,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 									key={ runPhaStr === 'sent' ? 'sent' : 'send' }
 
 									className={` ${ cssModObj.senLabSpa }   ${ cssModObj.senLabSpaFade } `}
-								>{ /* What: Send Label Span Element. Why: The label itself needs to cross-fade between its two states. How: This is keyed by whether runPhaStr is 'sent', so React remounts it and replays the fade when the label changes. */ }
+								>{ /* What: Send Label Span Element. Why: The label itself needs to cross-fade between its two states. How: This is keyed by whether runPhaStr is 'sent', so React remounts it and replays the fade that senLabSpaFade plays when the label changes. */ }
 
 
 									{ runPhaStr === 'sent' ? 'Sent!' : 'Send to Today' }{ /* What: Send Label Expression. Why: The label confirms the send once it happens. How: This reads 'Sent!' while runPhaStr is 'sent', otherwise 'Send to Today'. */ }
@@ -1301,7 +1301,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 								style={{ animationDelay : ( butLeaBoo || runPhaStr === 'sent' ) ? '0ms' : '120ms' }} // What: Animation Delay. Why: The buttons rise in staggered but leave together, so the action never cuts a later button's exit short. How: This keeps the entrance delay, dropping it to 0ms while the buttons leave.
 
-								data-tour-disabled-active={ disDonBoo || undefined } // What: Tour Disabled Active Attribute. Why: While the tour asks for Send to Today, this action must look and act unavailable, since a disabled button alone looks no different. How: This sets the presence-only attribute, which ButBasCom passes to its button, while disDonBoo is true.
+								data-tour-disabled-active={ disDonBoo || undefined } // What: Tour Disabled Active Attribute. Why: While a tour step is narrating the settled pick (the page tour's Add to Todo List step or App Features' manual-pick step), this action must look and act unavailable, since a disabled button alone looks no different. How: This sets the presence-only attribute, which ButBasCom passes to its button, while disDonBoo is true.
 
 								disabled={ disDonBoo }
 								kinValStr='ghost'
