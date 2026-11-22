@@ -56,6 +56,31 @@ function subMakFun () : SmfResTyp {
 	const subFunSet = new Set< () => void >(); // What: Subscriber Function Set. Why: The module's subscribers are kept apart from every other module's. How: subAddFun adds to this set and notSubFun walks it.
 
 
+
+	// #region notSubFun
+
+	/**
+	 * notSubFun = Notify Subscribers Function
+	 *
+	 * @summary
+	 * Calls every subscriber in subFunSet, in insertion order and with no
+	 * arguments. Each call runs in its own try/catch and any error it throws
+	 * is swallowed, so one broken subscriber never stops the rest from being
+	 * called, and the caller never sees a subscriber's error.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns This function does not return anything.
+	 *
+	 * @example
+	 * ```ts
+	 * notSubFun() // => void
+	 * ```
+	 *
+	*/
+
 	const notSubFun = () => { // What: Notify Subscribers Function. Why: Every subscriber must hear about a change the module tracks. How: This calls every function currently in subFunSet, isolating each call in its own try/catch so one throwing subscriber cannot stop the rest from being notified.
 
 
@@ -71,6 +96,8 @@ function subMakFun () : SmfResTyp {
 
 
 	};
+
+	// #endregion notSubFun
 
 
 

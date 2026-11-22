@@ -6,12 +6,12 @@
  *
  * @summary
  * The vertical rhythm's step sizes in pixels, for layout math that works with
- * measured element positions (placing a tooltip, scrolling a target clear of
- * a sticky header), and the duration scale's steps in milliseconds, for
- * timers that wait on a CSS animation. Each length step is the root font size
- * times a power of the core design number, and each duration step is a power
- * of it in milliseconds, the same formulas styles.css uses for its --ver-rhy-*
- * and --dur-* tokens, so a step read here matches the stylesheet's own value.
+ * measured element positions (placing a tooltip, say), and the duration
+ * scale's steps in milliseconds, for timers that wait on a CSS animation. Each
+ * length step is the root font size times a power of the core design number,
+ * and each duration step is a power of it in milliseconds, the same formulas
+ * styles.css uses for its --ver-rhy-* and --dur-* tokens, so a step read here
+ * matches the stylesheet's own value.
  *
  * Sections:
  *  - Constants

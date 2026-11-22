@@ -63,10 +63,10 @@ const motEasFun = ( easFamStr : string ) : string => getComputedStyle( document.
  * redMotFun = Reduced Motion Function
  *
  * @summary
- * Whether the user asked their system for reduced motion. JS-driven
- * animations (rAF tweens, Element.animate, smooth scrolls) check this,
- * since the CSS media query alone can't stop them. It reads the live
- * setting on every call, so a change takes effect immediately.
+ * Whether the user asked their system for reduced motion. JS-driven animations
+ * (an Element.animate call, say) check this, since the CSS media query alone
+ * can't stop them. It reads the live setting on every call, so a change takes
+ * effect immediately.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -81,7 +81,7 @@ const motEasFun = ( easFamStr : string ) : string => getComputedStyle( document.
  *
 */
 
-const redMotFun = () : boolean => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ); // What: Reduced Motion Function. Why: JS-driven animations (rAF tweens, Element.animate, smooth scrolls) must check this since the CSS media query alone does not reach them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
+const redMotFun = () : boolean => !!( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ); // What: Reduced Motion Function. Why: JS-driven animations (an Element.animate call, say) must check this since the CSS media query alone does not reach them. How: This reports whether the OS's prefers-reduced-motion media query currently matches reduce.
 
 // #endregion redMotFun
 

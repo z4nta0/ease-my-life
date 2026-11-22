@@ -6,11 +6,9 @@
  *
  * @summary
  * App-agnostic date helpers shared across the app: the local-calendar ISO day
- * key that dated state fields and log rows use, the compact, long, and
- * time-of-day display formatters, and the calendar math behind monthly and
- * yearly schedules (days in a month, the nth weekday of a month, and ordinal
- * suffixes), plus the weekday and month names those schedules are read by, and
- * whether a date falls on a weekend. Nothing here knows about pickers, tasks,
+ * key that dated state fields and log rows use, display formatters, the
+ * calendar math behind monthly and yearly schedules, and the weekday and month
+ * names those schedules are read by. Nothing here knows about pickers, tasks,
  * or app state.
  *
  * Sections:
@@ -260,7 +258,32 @@ function ordSufFun ( ordValNum : number ) : string {
 
 
 
+// #region parDatFun
+
+/**
+ * parDatFun = Parse Date Function
+ *
+ * @summary
+ * Builds a Date from an ISO date string, or the current moment when the
+ * string is omitted, null, or empty.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param isoDatStr - ISO Date String: The date to parse, or omitted or null
+ *                    for now.
+ *
+ * @returns The parsed Date, or the current moment when none is given.
+ *
+ * @example
+ * ```ts
+ * parDatFun('2026-09-27') // => new Date('2026-09-27')
+ * ```
+ *
+*/
+
 const parDatFun = ( isoDatStr? : string | null ) : Date => isoDatStr ? new Date( isoDatStr ) : new Date(); // What: Parse Date Function. Why: The date formatters below take an ISO string or nothing, meaning now. How: This parses the string, or makes the current date when none is given.
+
+// #endregion parDatFun
 
 
 
