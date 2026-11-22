@@ -62,8 +62,8 @@ const BOO_DEA_NUM = 3500;                          // What: Boot Deadline Number
 const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
 const DAT_NAM_STR = 'easemylife';                  // What: Database Name String. Why: This is the fixed IndexedDB database name every browser profile opens under. How: This is passed as the first argument to indexedDB.open inside opeDatFun.
 const DAT_VER_NUM = 1;                             // What: Database Version Number. Why: This is the fixed IndexedDB schema version, structural only, tracking which object stores exist rather than their contents. How: This is passed as the second argument to indexedDB.open inside opeDatFun.
-const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in iniStoFun and removed there once IndexedDB has booted cleanly SNA_KEE_NUM times.
-const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by the fallback paths. How: This is written by wriLocFun and read by reaLocFun, and exported by name at the end of the file.
+const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in idbBooFun before the first migration and removed in iniStoFun once IndexedDB has booted cleanly SNA_KEE_NUM times.
+const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by the fallback paths. How: This is written by wriLocFun, read by reaLocFun and by the snapshot step in idbBooFun, and exported by name at the end of the file.
 const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. Why: Mirror freshness must survive a reload, not just live in memory, since the Settings storage panel reports it on a cold load before any tab-hide has happened this session. How: This is written by wriLocFun and read by staRepFun.
 
 
@@ -72,13 +72,11 @@ const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. 
  * OWN_KEY_REG = Own Key Regular Expression
  *
  * @summary
- * Matches every localStorage key this app has ever written, across
- * every past naming generation ('ease-my-life-v1', 'easemylife.v1',
- * 'easemylife.v2', ...). This is a prefix match rather than a fixed
- * list precisely so wipDatFun's "Delete all data" and iniStoFun's
- * dead-generation sweep both catch whatever future key generation
- * this app ever writes next, not just the ones already known about
- * today.
+ * Matches every localStorage key this app has ever written, across every past
+ * naming generation ('ease-my-life-v1', 'easemylife.v1', 'easemylife.v2',
+ * ...). This is a prefix match rather than a fixed list precisely so a key
+ * from a future generation is caught too, not just the ones already known
+ * about today.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -88,8 +86,8 @@ const OWN_KEY_REG = /^ease[-]?my[-]?life/i; // What: Own Key Regular Expression.
 
 
 
-const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked for persistent storage once, so a denial is not re-requested on every later launch (browsers ignore a repeat request anyway). How: This is the localStorage key that records it, kept by the boot sweep.
-const PIC_LOG_STR = 'picklog';                 // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun everywhere the pick log alone is read or written.
+const PER_ASK_STR = 'easemylife.persistasked'; // What: Persist Ask String. Why: This is the localStorage key recording whether this device has already been asked for persistent storage once, so a denial is not re-requested on every later launch. How: This is the localStorage key that records it, kept by the boot sweep.
+const PIC_LOG_STR = 'picklog';                 // What: Pick Log String. Why: This is the object store name holding the pick log alone, under key 'main', kept separate so writing it is not on the hot path of every other save. How: This is passed to traStoFun wherever the pick log alone is read or written, and to createObjectStore in opeDatFun.
 const SIG_EMA_STR = 'easemylife.signinemail';  // What: Sign-In Email String. Why: Finishing an emailed-link sign-in needs the address the link was sent to. How: This is the localStorage key that holds the address until the link is used.
 
 
@@ -112,7 +110,7 @@ const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clea
 
 
 
-const STA_STO_STR = 'state';               // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun everywhere the non-log portion of state is read or written.
+const STA_STO_STR = 'state';               // What: State Store String. Why: This is the object store name holding everything except the pick log, under key 'main'. How: This is passed to traStoFun wherever the non-log portion of state is read or written, and to createObjectStore in opeDatFun.
 const SYN_MET_STR = 'easemylife.syncmeta'; // What: Sync Meta String. Why: Each sync compares against what this device last synced, and conflicts need the time of its last change. How: This is the localStorage key that holds that record as JSON.
 
 
@@ -128,7 +126,7 @@ const LIV_KEY_ARR = [ ACC_SIG_STR, BOO_KEY_STR, MIR_KEY_STR, MIR_TIM_STR, PER_AS
 let booAbaBoo : boolean            = false;    // What: Boot Abandoned Boolean. Why: An IndexedDB boot that runs past the deadline must not open or use a connection afterward. How: This is set by iniStoFun's fallback and checked by idbBooFun once its open settles.
 let cacStaObj : RawSavTyp          = null;     // What: Cached State Object. Why: This is the state iniStoFun loaded, held in memory so later synchronous reads (like STG_NAM_OBJ.cacStaFun()) do not need to touch storage again. How: This starts null (a fresh install) and is assigned inside iniStoFun.
 let curEngStr : string             = 'memory'; // What: Current Engine String. Why: Every read/write in this file needs to know which backend is actually of record right now: 'idb', 'localStorage', or the fallback 'memory'. How: This starts at 'memory' and is updated by iniStoFun/savStaFun whenever the active engine changes.
-let datConObj : IDBDatabase | null = null;     // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by iniStoFun once opeDatFun resolves.
+let datConObj : IDBDatabase | null = null;     // What: Database Connection Object. Why: Every other function in this file that talks to IndexedDB needs the same open connection. How: This starts null (no connection yet) and is assigned by idbBooFun once opeDatFun resolves, and cleared back to null by iniStoFun and savStaFun when IndexedDB fails.
 
 
 
@@ -149,7 +147,7 @@ let datConObj : IDBDatabase | null = null;     // What: Database Connection Obje
  *
 */
 
-let logSusBoo = false; // What: Log Suspect Boolean. Why: wriDatFun must refuse to let a suspect empty pickLog overwrite real history in IDB. How: This is computed in iniStoFun from the loaded state's own __mirrorNoLog or __logPartial marker, checked in wriDatFun, read by wriLocFun to mark a full write's pick log partial, and cleared by logAutFun.
+let logSusBoo = false; // What: Log Suspect Boolean. Why: wriDatFun must refuse to let a suspect empty pickLog overwrite real history in IDB. How: This is computed in iniStoFun from the loaded state's own __mirrorNoLog or __logPartial marker, checked in wriDatFun, read by wriLocFun to mark a full write's pick log partial, and cleared by logAutFun or by wriDatFun once a non-empty pick log is written.
 
 
 
@@ -433,10 +431,8 @@ async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
  * ownKeyFun = Own Key Function
  *
  * @summary
- * Enumerates every localStorage key this app currently owns, per
- * OWN_KEY_REG above. wipDatFun uses this so "Delete all data" really
- * does, and iniStoFun uses it to sweep dead pre-IDB generations once
- * IDB has proven itself over SNA_KEE_NUM clean boots.
+ * Enumerates every localStorage key this app currently owns, per OWN_KEY_REG
+ * above.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -670,7 +666,7 @@ function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
  *
 */
 
-const cacStaFun = () : RawSavTyp => cacStaObj; // What: Cached State Function. Why: store.ts's own loaStaFun() reads this synchronously to seed React state before any save has happened yet. How: This closes over the module-private cacStaObj rather than exposing it directly.
+const cacStaFun = () : RawSavTyp => cacStaObj; // What: Cached State Function. Why: This hands back the state iniStoFun loaded, synchronously, so a reader never has to await storage. How: This closes over the module-private cacStaObj rather than exposing it directly.
 
 // #endregion cacStaFun
 
@@ -1093,7 +1089,7 @@ async function iniStoFun () : Promise< RawSavTyp > {
 
 
 
-	return cacStaObj; // What: Cached State Object Return. Why: main.tsx awaits this before React mounts, and store.ts's own loaStaFun() reads it back synchronously afterward. How: This returns the same cacStaObj populated throughout this function.
+	return cacStaObj; // What: Cached State Object Return. Why: The caller needs the state loaded here, which STG_NAM_OBJ.cacStaFun() hands back afterward. How: This returns the same cacStaObj populated throughout this function.
 
 
 }
@@ -1146,7 +1142,7 @@ function savStaFun ( appStaObj : StaAppTyp ) : void {
 
 
 
-		return; // What: IndexedDB Path Return. Why: The IDB write above is already in flight (or has already failed and fallen back), so the plain localStorage call below must not also run. How: This exits before reaching wriLocFun's own unconditional call.
+		return; // What: IndexedDB Path Return. Why: The IDB write above is already in flight, with its own failure fallback attached, so the plain localStorage call below must not also run. How: This exits before reaching wriLocFun's own unconditional call.
 
 
 	}
@@ -1168,13 +1164,13 @@ function savStaFun ( appStaObj : StaAppTyp ) : void {
  * wipDatFun = Wipe Data Function
  *
  * @summary
- * Full teardown for "Delete all data": clears both IDB object stores
- * and every localStorage key this layer owns, including the migration
- * snapshot. Without this, a reset would leave a complete plaintext copy
- * of the user's data behind, contradicting both the reset copy ("This
- * can't be undone") and the promise that data stays on this device unless
- * the account syncs it. Any future delete-account control must call this
- * too.
+ * Full teardown for "Delete all data": clears both IDB object stores when
+ * IndexedDB is the engine in use, and every localStorage key this layer owns,
+ * including the migration snapshot. Without this, a reset would leave a
+ * complete plaintext copy of the user's data behind, contradicting both the
+ * reset copy ("This can't be undone") and the promise that data stays on this
+ * device unless the account syncs it. Any future delete-account control must
+ * call this too.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
