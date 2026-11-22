@@ -22,7 +22,7 @@ import { ranIdeFun    } from '../../utils/random-id.ts';  // What: Random Identi
 import { redMotFun    } from '../../utils/motion.ts';     // What: Reduced Motion Function. Why: The buttons' exit delay must be skipped for a user who prefers reduced motion. How: This is checked before the exit delay, so the action runs at once.
 import { rhyPixFun    } from '../../utils/rhythm.ts';     // What: Rhythm Pixel Function. Why: Pixel layout math here needs the same step sizes the stylesheet uses. How: This returns a vertical rhythm step in pixels at the current root font size.
 import { scrBehFun    } from '../../utils/motion.ts';     // What: Scroll Behavior Function. Why: Script-driven scrolls here should jump instead of glide for a user who prefers reduced motion. How: This is called for each scroll's behavior.
-import { SED_NAM_OBJ  } from '../../state/seed.ts';       // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) throughout to show the active mode's label/hint and to render the mode-choice radio list.
+import { SED_NAM_OBJ  } from '../../state/seed.ts';       // What: Seed Namespace Object. Why: This is the canonical lookup of every picker mode's own label and hint text. How: This is read (MOD_DEF_OBJ) once, to look up the active mode's label and hint.
 import { selAllFun    } from '../../utils/input.ts';      // What: Select All Function. Why: A new pool item opens with a default name that typing should replace outright. How: This is the name field's ref callback, selecting its text once as it mounts.
 import { useDelConFun } from './delete-confirm.ts';       // What: Use Delete Confirm Function. Why: A pool row's inline delete confirmation is shared with the other pool on this tab. How: This is called once for the confirm state and its Cancel handler.
 import { useEmlTouFun } from '../../state/tour-bus.ts';   // What: Use Ease-My-Life Tour Function. Why: Several behaviors here read the shared tour bus as React state. How: This is called once to subscribe to the tour bus's phase, tour ID, step, and nonces.
@@ -1205,7 +1205,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 									? 'Nothing eligible yet. Run again to drift items closer.' // What: Ease Up Message. Why: Nothing in an ease-up pool has drifted to eligibility yet. How: This tells the user to run again.
 									: picDatObj.mode === 'ease-down'                           // What: Ease Down Check. Why: An ease-down picker empties because everything is depleted. How: This picks the ease-down sentence when the mode matches.
 										? 'Everything is depleted. Refill the picker to bring items back.' // What: Ease Down Message. Why: Every item in an ease-down pool is depleted. How: This points the user at Refill.
-										: 'No items in this picker.'                                       // What: Empty Pool Branch. Why: Every other mode only empties when it has no items at all. How: This renders a fixed sentence.
+										: 'No items in this picker.'                                       // What: Empty Pool Branch. Why: The other modes have no drift or charge to explain, so their empty stage gives one plain sentence. How: This renders a fixed sentence.
 								}
 
 
@@ -1739,7 +1739,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 				>{ /* What: Item Add Div Element. Why: The new-item form, the existing-item editor, and the plain "+ Add Item" button all share this one below-the-list slot. How: This wraps whichever of those three the IIFE below currently resolves to. Its data-element-name-hook is read by the tours. */ }
 
 
-					{ ( () => { // What: Additem Slot Render. Why: Exactly one of three things belongs in this slot at a time (an open existing-item editor, an open new-item draft editor, or the plain add button), and that choice is easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then newDraObj, falling back to the plain button.
+					{ ( () => { // What: Add Item Slot Render. Why: Exactly one of three things belongs in this slot at a time (an open existing-item editor, an open new-item draft editor, or the plain add button), and that choice is easier to express as a small function than as a nested ternary. How: This checks ediIteStr first, then newDraObj, falling back to the plain button.
 
 
 						if ( ediIteStr ) { // What: Existing Item Editor Branch. Why: An existing item's own editor takes priority whenever one is open. How: This looks up the live item (needed while the editor closes and to notice a deletion) and renders its editor, or nothing if it vanished.
