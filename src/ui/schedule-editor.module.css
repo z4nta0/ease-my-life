@@ -89,7 +89,7 @@
 
 
 }
-.schEdiDiv--stacked .remExtDiv > .forFieDiv { /* What: Form Field Div In Reminder Extra Div In Schedule Editor Div Stacked. Why: A field inside the fade wrapper isn't a sibling of the fields above it, so it misses both the divider and the padding the rules above give. How: This restores its divider and top padding, and must stay after the first-field rule so it wins. */
+.schEdiDiv--stacked .remExtDiv > .forFieDiv { /* What: Form Field Div In Reminder Extra Div In Schedule Editor Div Stacked. Why: A field inside the fade wrapper isn't a sibling of the fields above it, so it misses their divider, and as the wrapper's first child it loses its top padding to the first-field rule. How: This restores its divider and top padding, and must stay after the first-field rule so it wins. */
 
 
 	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

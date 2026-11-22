@@ -1520,7 +1520,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 			className={` ${ cssModObj.schEdiDiv }   ${ layVarStr === 'stacked' ? cssModObj.schEdiDivStacked : '' }   ${ layVarStr === 'rows' ? cssModObj.schEdiDivRows : '' } `}
 
 			data-element-name-hook='schEdiDiv'
-		>{ /* What: Schedule Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then the once fields and the extra fields, each shown only for its own repeat kinds, and its schEdiDivStacked or schEdiDivRows class sets the layout from layVarStr. Its data-element-name-hook is read by help mode. */ }
+		>{ /* What: Schedule Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then the once fields (shown only while repeat is 'once') and the extra fields (hidden while repeat is 'once' only in the animated layout), and its schEdiDivStacked or schEdiDivRows class sets the layout from layVarStr. Its data-element-name-hook is read by help mode. */ }
 
 
 			<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: The Repeat control is its own schedule subsection, always shown regardless of which kind is selected. How: This renders the segmented control plus its own live summary and visibility note. */ }

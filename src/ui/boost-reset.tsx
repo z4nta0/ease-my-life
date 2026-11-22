@@ -7,7 +7,7 @@ import cssModObj from './boost-reset.module.css'; // What: CSS Module Object. Wh
 import React     from 'react';                    // What: React. Why: BooResCom is built directly on React's own APIs. How: This is used directly (React.useEffect, for one) instead of importing individual named hooks.
 
 
-import { durMilFun } from '../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
+import { durMilFun } from '../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: The Reset tick loop's shortest and longest durations come from the duration scale. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { redMotFun } from '../utils/motion.ts'; // What: Reduced Motion Function. Why: Under reduced motion the boost value drops to 0 at once instead of ticking down. How: This is checked when Reset is pressed.
 
 // #endregion Imports

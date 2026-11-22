@@ -1158,9 +1158,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		if ( isaEasBoo && !isaEdiBoo ) { // What: Legacy Ease Summary Guard. Why: Items carry their own ease bands, and the picker-level easeMin/easeMax is only a legacy summary that addPicFun still accepts. How: This is skipped for edit, which leaves the picker's existing summary fields alone.
 
 
-			payForObj.easeMin = Math.min( ...pooIteArr.map( ( iteCurObj ) => iteCurObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin ) ); // What: Legacy Ease Minimum Attach. Why: A summary value is still expected on the created payload. How: This takes the smallest easeMin across every committed item.
+			payForObj.easeMin = Math.min( ...pooIteArr.map( ( iteCurObj ) => iteCurObj.easeMin ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMin ) ); // What: Legacy Ease Minimum Attach. Why: A summary value is still expected on the created payload. How: This takes the smallest easeMin across every item in pooIteArr, falling back to DEF_EAS_OBJ's own easeMin for an item without one.
 
-			payForObj.easeMax = Math.max( ...pooIteArr.map( ( iteCurObj ) => iteCurObj.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax ) ); // What: Legacy Ease Maximum Attach. Why: A summary value is still expected on the created payload. How: This takes the largest easeMax across every committed item.
+			payForObj.easeMax = Math.max( ...pooIteArr.map( ( iteCurObj ) => iteCurObj.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax ) ); // What: Legacy Ease Maximum Attach. Why: A summary value is still expected on the created payload. How: This takes the largest easeMax across every item in pooIteArr, falling back to DEF_EAS_OBJ's own easeMax for an item without one.
 
 
 		}
