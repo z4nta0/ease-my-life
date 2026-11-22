@@ -377,7 +377,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 				className={ cssModObj.preParDiv }
 
 				aria-hidden='true'
-			>{ /* What: Preview Particle Div Element. Why: The confetti/sparkle overlay renders above the mock cards but must never be exposed to assistive tech, since it is purely decorative. How: This renders one piece per entry in parIteArr, each already fully styled/positioned. */ }
+			>{ /* What: Preview Particles Div Element. Why: The confetti/sparkle overlay renders above the mock cards but must never be exposed to assistive tech, since it is purely decorative. How: This renders one piece per entry in parIteArr, each already fully styled/positioned. */ }
 
 
 				{ parIteArr.map( ( parCurObj ) => ( // What: Particle Item Map. Why: One piece is needed per entry in parIteArr. How: This maps parIteArr to one confetti or sparkle piece per entry, keyed by its own ideStr.

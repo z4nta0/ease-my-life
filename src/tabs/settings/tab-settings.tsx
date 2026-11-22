@@ -51,13 +51,9 @@ import type { StoRepTyp } from '../../state/storage.ts';   // What: Storage Repo
  * tab-settings.tsx = Tab Settings
  *
  * @summary
- * The Settings tab. TabSetCom ties every section together: Appearance (the
- * system-preference switch, the Light and Dark theme cards from
- * theme-picker.tsx, the 2 style pickers built on style-radio.tsx's own
- * StyRadCom, and the tab-bar placement control), the Daily generator schedule
- * and its notification row, the Holidays editor (holiday-editor.tsx), Data
- * control (storage status, install, export, import, and reset), Account, About
- * (including contact-support.tsx's own support form), and Legal. A section
+ * The Settings tab. TabSetCom ties its sections together, each a group of rows
+ * for one kind of setting (Appearance, for one), with the larger pieces, such
+ * as the theme cards and the support form, in neighboring files. A section
  * rail, on the left above 760px wide and a sticky bar above the sections at
  * 760px and below, tracks and drives scroll position across all of them.
  *
