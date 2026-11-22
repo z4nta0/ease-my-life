@@ -11,10 +11,7 @@
  * Controls and Items toggles, the Add control, and each item's row above its
  * inline editor), and the dashed Create Picker button. The Group, Type, and
  * Conditionals rows draw their rails from the shared filter rail's own module.
- * Many of these classes are shared with the Pickers, Stats, and the Data tab's
- * other sections, so their rules are copies of the global ones, resolved where
- * this tab's own overrides used to win on specificity. A selected Show tab
- * keys off data-tab-select-active, an open chevron off
+ * A selected Show tab keys off data-tab-select-active, an open chevron off
  * data-chevron-open-active, an open row off data-row-edit-active, a
  * vacationing card or row off data-card-vacation-active or
  * data-row-vacation-active, the vacation toggle off its own aria-pressed, and
