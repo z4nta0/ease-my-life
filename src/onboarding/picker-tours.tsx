@@ -1128,7 +1128,7 @@ function PicTouCom ( { actIdeStr, actStoObj, onCloTouFun, picIdeStr, selTabFun, 
 
 				}
 
-				else if ( tarSteNum === 6 ) { // What: Item Editor Cancel Check. Why: buiNamFun's own step opened the inline item editor, which is also a one-way transition (no toggle); Cancel is the only real-DOM way to close it back to the bare "+ Add Item" button from outside. How: This clicks the item editor's own Cancel button, same reasoning as the tarSteNum === 5 branch above.
+				else if ( tarSteNum === 6 ) { // What: Item Editor Cancel Check. Why: Backing from buiNamFun's own step to buiAddFun's own step must close the inline item editor that buiAddFun's click opened, which is also a one-way transition (no toggle); Cancel is the only real-DOM way to close it back to the bare "+ Add Item" button from outside. How: This clicks the item editor's own Cancel button, same reasoning as the tarSteNum === 5 branch above.
 
 
 					const canButEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="iteCanBut"]' ); // What: Cancel Button Element. Why: This is the real control that closes the inline item editor back to buiAddFun's own step. How: This looks it up fresh, since it may not exist outside an open item editor.
