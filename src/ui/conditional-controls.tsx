@@ -388,7 +388,7 @@ type CocProTyp = { conDraObj : Partial< ConRcdTyp >, hidNamBoo? : boolean, layVa
 function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrStr, onChange } : CocProTyp ) : React.JSX.Element {
 
 
-	const insIdeStr = React.useId(); // What: Instance Identifier String. Why: This component is reused in more than one place at once (see the file header comment), so its own field ids and the mode radio's own name must never collide across instances. How: This calls React.useId() once per mount, prefixed onto every id/name below.
+	const insIdeStr = React.useId(); // What: Instance Identifier String. Why: This component is reused in more than one place at once (see the file header comment), so its own field ids and the mode radio's own name must never collide across instances. How: This calls React.useId() once per mount, appended to every id/name below.
 
 
 
@@ -652,7 +652,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 											className={ cssModObj.modDotSpa }
 
 											aria-hidden='true'
-										/>{ /* What: Mode Dot Span Element. Why: This is the small decorative marker showing the option's own on/off state via CSS. How: This renders empty, styled purely off its parent label's own data-option-select-active. */ }
+										/>{ /* What: Mode Dot Span Element. Why: This is the small decorative marker showing the option's own on/off state via CSS. How: This renders empty, its ring color and fill keying off its parent label's own data-option-select-active. */ }
 
 										<span className={ cssModObj.modTexSpa }>{ /* What: Mode Text Span Element. Why: The option's own name and its expandable hint text need to sit together as one unit. How: This wraps the name span and the ColDisCom below. */ }
 
@@ -992,7 +992,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 						>{ /* What: Toggle Switch Button Element. Why: This is the actual enabled/disabled toggle control. How: This flips conDraObj.active and marks itself checked via aria-checked, which its own styling also keys off. Its data-element-name-hook is read by help mode and the test suites. */ }
 
 
-							<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, positioned entirely via CSS off its parent button's own aria-checked. */ }
+							<i className={ cssModObj.swiKnoIta } />{ /* What: Switch Knob Italic Element. Why: This is the switch's own purely decorative sliding knob. How: This renders empty, its slide across the track keying off its parent button's own aria-checked. */ }
 
 
 						</button>
