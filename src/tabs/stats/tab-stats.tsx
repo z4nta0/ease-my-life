@@ -2336,7 +2336,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const staCadStr = ( scoPicObj && scoPicObj.cadence ) || 'daily';              // What: Stat Cadence String. Why: Every unit-formatting helper below needs to know the scoped picker's own cadence. How: This reads scoPicObj.cadence, falling back to 'daily' for a picker with none set. // Cadence-aware unit words. A cadence picker runs once per period, so its own "eligible" (run-count) values ARE period counts, shown as weeks, months, or years, and calendar mode converts its literal days into periods by perDayNum.
 	const isaCadBoo = staCadStr !== 'daily';                                      // What: Is-A Cadenced Boolean. Why: A daily picker's own values never need relabeling into a different unit word. How: This is true whenever staCadStr isn't the 'daily' default.
 	const perDayNum = PER_DAY_OBJ[ staCadStr ] || 1;                              // What: Period Day Number. Why: cadDisFun below needs this scoped picker's own approximate days-per-period value. How: This looks staCadStr up in PER_DAY_OBJ, falling back to 1 for a daily picker.
-	const eliUniStr = isaCadBoo ? CAD_NAM_OBJ.uniWorFun( staCadStr, 2 ) : 'days'; // What: Eligible Unit String. Why: The eligible-mode toggle button's own label needs a plural unit word matching the picker's cadence. How: This asks CAD_NAM_OBJ.uniWorFun for the plural form (using 2 as a representative plural count), or falls back to 'days'. // Plural unit word for the eligible-mode toggle labels (weeks/months/ years).
+	const eliUniStr = isaCadBoo ? CAD_NAM_OBJ.uniWorFun( staCadStr, 2 ) : 'days'; // What: Eligible Unit String. Why: The eligible-mode toggle button's own label needs a plural unit word matching the picker's cadence. How: This asks CAD_NAM_OBJ.uniWorFun for the plural form (using 2 as a representative plural count), or falls back to 'days'. // Plural unit word for the eligible-mode toggle labels (weeks/months/years).
 	const calUniStr = isaCadBoo ? `calendar ${ eliUniStr }` : 'calendar days';    // What: Calendar Unit String. Why: The calendar-mode toggle button's own label needs the same cadence-aware relabeling as the eligible one. How: This prefixes eliUniStr with "calendar", or falls back to the literal "calendar days". // Toggle-button label for calendar mode (relabelled to the cadence unit).
 
 
@@ -2412,7 +2412,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-	const lasForFun = ( dayCouNum : number, uniModStr : string ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct elapsed-time label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware or literal "N days" string, with exactly one calendar day read as "Yesterday". // Human label for "last picked", in the active unit.
+	const lasForFun = ( dayCouNum : number, uniModStr : string ) => { // What: Last Format Function. Why: The Last Picked metric's own value column needs a distinct elapsed-time label rather than the plain cadDisFun format. How: This special-cases zero (as "Most recent"), otherwise phrasing a cadence-aware period string for a cadenced picker or a literal "N days" string for a daily one, with exactly one calendar day on a daily picker read as "Yesterday". // Human label for "last picked", in the active unit.
 
 
 		if ( uniModStr === 'eligible' ) { // What: Eligible Mode Branch. Why: Eligible-mode "last picked" is already a period count, phrased differently from the calendar branch below. How: This special-cases zero, then a cadenced or plain count.
@@ -2620,7 +2620,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	), [ remRowArr ] ); // What: Memo Dependency Array. Why: This only ever needs resorting when the underlying reminder rows themselves change. How: remRowArr is the sole source the sort above reads from.
 
 
-	const remDonArr = React.useMemo( () => { // What: Reminder Done Array Memo. Why: The Completions metric pivot needs one row per reminder with its own total completion count in range. How: This groups remRowArr by taskId, then sorts the grouped totals by remSorStr. // "Reminders breakdown" card data. Per-reminder COMPLETION totals in range (grouped by taskId, denormalized name/type). Includes long- gone one-time reminders, since the log row persists after the task is purged, so its history stays counted.
+	const remDonArr = React.useMemo( () => { // What: Reminder Done Array Memo. Why: The Completions metric pivot needs one row per reminder with its own total completion count in range. How: This groups remRowArr by taskId, then sorts the grouped totals by remSorStr. // "Reminders breakdown" card data. Per-reminder COMPLETION totals in range (grouped by taskId, denormalized name/type). Includes long-gone one-time reminders, since the log row persists after the task is purged, so its history stays counted.
 
 
 		if ( !isaRemBoo ) return []; // What: Scope Guard. Why: This grouping only matters while the Reminders scope is active. How: This returns an empty array otherwise.
@@ -3458,7 +3458,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 											key={ conMetStr + conSorStr }
 
 											className={` ${ cssModObj.ranLisUno }   ${ cssModObj.ranLisUnoBreakdown }   ${ cssModObj.ranLisUnoFade }   ${ ( conMetStr === 'interval' || conMetStr === 'last' ) ? cssModObj.ranLisUnoWide : '' } `}
-										>{ /* What: Rank List Unordered Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps conBreArr to one list item per conditional. Its wide modifier adds room above it under the interval and last metrics' unit note. */ }
+										>{ /* What: Rank List Unordered Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric or sort changes. How: This maps conBreArr to one list item per conditional. Its wide modifier is applied under the interval and last metrics. */ }
 
 
 											{ conBreArr.map( ( conRowObj ) => { // What: Conditional Row Render. Why: Every conditional in the breakdown needs its own list item showing its name, mode-intrinsic target, and the active metric's own value. How: This computes that row's own target suffix, then returns the list item.
@@ -3470,7 +3470,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 												const conTarStr = conRowObj.delBoo // What: Conditional Target String. Why: Every non-deleted conditional's own configured target is worth surfacing alongside its measured rate. How: This branches on the conditional's own mode to phrase either a percentage or a day-band string. // Mode-intrinsic "target" (what you configured), shown as a suffix under the name like the Pickers breakdown does. Probability modes show a trigger %; ease modes show an interval band.
 													? null                                     // What: Deleted Branch. Why: A deleted conditional has no configured target left. How: This returns null so no suffix renders.
-													: conRowObj.modStr === 'random'            // What: Random Check. Why: A random conditional always fires half the time. How: This tests for the random mode next.
+													: conRowObj.modStr === 'random'            // What: Random Check. Why: A random conditional's own odds are fixed at 50%. How: This tests for the random mode next.
 													? 'set 50%'                                // What: Random Branch. Why: Random odds are fixed. How: This returns the fixed 50% label.
 													: conRowObj.modStr === 'weighted'          // What: Weighted Check. Why: A weighted conditional has its own set odds. How: This tests for the weighted mode next.
 													? `set ${ conRowObj.oddNum }%`             // What: Weighted Branch. Why: Weighted odds stay where they were set. How: This shows the configured odds.
