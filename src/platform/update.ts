@@ -71,6 +71,7 @@ let updReaBoo = false; // What: Update Ready Boolean. Why: The app shows its Rel
  * @param void - This function takes no parameters.
  *
  * @returns True while any of those holds, false when a reload is safe.
+ * @see {@link busNowBoo}
  *
  * @example
  * ```ts

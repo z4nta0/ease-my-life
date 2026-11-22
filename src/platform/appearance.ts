@@ -381,6 +381,7 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
  *
  * @returns The theme key that should actually be applied, e.g. 'ink' or
  *          'customDark'.
+ * @see {@link wanKeyStr}
  *
  * @example
  * ```ts
