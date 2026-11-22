@@ -1413,7 +1413,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	const conRowRef = React.useRef< HTMLDivElement | null >( null ); // What: Conditional Row Reference. Why: The Conditionals breakdown metric row's own scroll-fade effect below needs a handle on its DOM node. How: This is attached to that row's own ref prop and read inside the effect.
 
 
-	React.useEffect( () => { // What: Scroll Fade Effect. Why: Every filter/metric pill row needs the same "fade the scrollable edge" affordance, without duplicating the logic once per row. How: This attaches one scroll/resize-driven class toggler to each currently-mounted ref, then tears every one of them down on cleanup.
+	React.useEffect( () => { // What: Scroll Fade Effect. Why: Every filter/metric pill row needs the same "fade the scrollable edge" affordance, without duplicating the logic once per row. How: This attaches one scroll/resize-driven attribute toggler to each currently-mounted ref, then tears every one of them down on cleanup.
 
 
 		const rowEleArr = [ scoRowRef.current, groRowRef.current, typRowRef.current, ranRowRef.current, metRowRef.current, remRowRef.current, conRowRef.current ].filter( isaTruFun ); // What: Row Element Array. Why: Not every row is mounted at once (e.g. the Group row only exists with 2+ groups), so only the currently-real DOM nodes should get a listener. How: This collects every ref's own current value, dropping any that are still null.

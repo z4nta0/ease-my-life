@@ -382,8 +382,8 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 	 * plain effect would run while the ref is still empty; this ref runs as
 	 * the node attaches and again with null as it detaches. Every call first
 	 * tears down the previous attachment's listeners, records the new node in
-	 * raiNodRef, and wires the rail's edge-fade classes to its own scroll and
-	 * a ResizeObserver.
+	 * raiNodRef, and wires the rail's edge-fade attributes to its own scroll
+	 * and a ResizeObserver.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -424,9 +424,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 		const updRaiFun = () => togFadFun( raiCurEle ); // What: Update Rail Function. Why: The scroll-edge attributes need recomputing every time the rail scrolls or resizes. How: This calls togFadFun on raiCurEle.
 
 
-		updRaiFun(); // What: Initial Update Call. Why: The classes need to be correct immediately on mount, without waiting for a scroll or resize event. How: This invokes updRaiFun once, synchronously.
+		updRaiFun(); // What: Initial Update Call. Why: The attributes need to be correct immediately on mount, without waiting for a scroll or resize event. How: This invokes updRaiFun once, synchronously.
 
-		raiCurEle.addEventListener( 'scroll', updRaiFun, { passive : true } ); // What: Scroll Listener Call. Why: The classes must stay correct as the user actually scrolls the rail. How: This re-runs updRaiFun on every scroll event.
+		raiCurEle.addEventListener( 'scroll', updRaiFun, { passive : true } ); // What: Scroll Listener Call. Why: The attributes must stay correct as the user actually scrolls the rail. How: This re-runs updRaiFun on every scroll event.
 
 
 		const resObsObj = new ResizeObserver( updRaiFun ); // What: Resize Observer Object. Why: Adding or removing a conditional pill can change the rail's own scrollable width without the rail itself scrolling. How: This re-runs updRaiFun whenever the observed element's size changes.

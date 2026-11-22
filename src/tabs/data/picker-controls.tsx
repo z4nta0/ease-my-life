@@ -476,9 +476,9 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 * The callback ref for the conditional pill rail. Every attach first tears
 	 * down whatever the previous attachment wired up, then records the new
 	 * node in raiNodRef for the FLIP effect and wires the rail's edge-fade
-	 * classes to its own scroll, a ResizeObserver, and window resizes, storing
-	 * the teardown in raiCleRef. A detach (null) only runs that teardown and
-	 * clears the node.
+	 * attributes to its own scroll, a ResizeObserver, and window resizes,
+	 * storing the teardown in raiCleRef. A detach (null) only runs that
+	 * teardown and clears the node.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -517,10 +517,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
-		const updFadFun = () => togFadFun( raiCurEle ); // What: Update Fade Function. Why: The rail's own edge-fade classes must reflect whether it can currently scroll, and how far. How: This calls togFadFun on raiCurEle.
+		const updFadFun = () => togFadFun( raiCurEle ); // What: Update Fade Function. Why: The rail's own edge-fade attributes must reflect whether it can currently scroll, and how far. How: This calls togFadFun on raiCurEle.
 
 
-		updFadFun(); // What: Initial Fade Call. Why: The fade classes need to reflect the rail's own real layout immediately on attach. How: This invokes updFadFun once, synchronously.
+		updFadFun(); // What: Initial Fade Call. Why: The fade attributes need to reflect the rail's own real layout immediately on attach. How: This invokes updFadFun once, synchronously.
 
 		requestAnimationFrame( updFadFun ); // What: Next Frame Fade Call. Why: The rail's own real scrollWidth may not be final until after this same paint settles. How: This re-runs updFadFun one frame later to catch any late layout change.
 
@@ -690,10 +690,10 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 
 
 
-		const updFadFun = () => togFadFun( groCurEle ); // What: Update Fade Function. Why: The fade classes need recomputing on every relevant change. How: This calls togFadFun on groCurEle.
+		const updFadFun = () => togFadFun( groCurEle ); // What: Update Fade Function. Why: The fade attributes need recomputing on every relevant change. How: This calls togFadFun on groCurEle.
 
 
-		updFadFun(); // What: Initial Fade Call. Why: The fade classes need to reflect the row's own real layout immediately on mount. How: This invokes updFadFun once, synchronously.
+		updFadFun(); // What: Initial Fade Call. Why: The fade attributes need to reflect the row's own real layout immediately on mount. How: This invokes updFadFun once, synchronously.
 
 
 		groCurEle.addEventListener( 'scroll', updFadFun, { passive : true } ); // What: Group Scroll Listener. Why: Scrolling the row itself is the most common way its own edges change. How: This re-runs updFadFun on every scroll event, passively so it never blocks the scroll itself.

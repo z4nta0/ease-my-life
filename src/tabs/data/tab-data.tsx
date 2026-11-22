@@ -1166,10 +1166,10 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 		const cleFunArr = rowEleArr.map( ( rowCurEle ) => { // What: Cleanup Function Array. Why: Every row needs its own independent wiring and its own independent teardown. How: This maps each row element to its own cleanup function, collected for the effect's own return below.
 
 
-			const updFadFun = () => togFadFun( rowCurEle ); // What: Update Fade Function. Why: Each row's own fade classes need recomputing on every relevant change. How: This calls togFadFun on rowCurEle.
+			const updFadFun = () => togFadFun( rowCurEle ); // What: Update Fade Function. Why: Each row's own fade attributes need recomputing on every relevant change. How: This calls togFadFun on rowCurEle.
 
 
-			updFadFun(); // What: Initial Fade Call. Why: The fade classes need to reflect this row's own real layout immediately. How: This invokes updFadFun once, synchronously.
+			updFadFun(); // What: Initial Fade Call. Why: The fade attributes need to reflect this row's own real layout immediately. How: This invokes updFadFun once, synchronously.
 
 			rowCurEle.addEventListener( 'scroll', updFadFun, { passive : true } ); // What: Row Scroll Listener. Why: Scrolling the row itself is the most common way its own edges change. How: This re-runs updFadFun on every scroll event, passively so it never blocks the scroll itself.
 
