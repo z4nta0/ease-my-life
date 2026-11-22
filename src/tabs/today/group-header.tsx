@@ -221,7 +221,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 
 
-	const cmtEdiFun = () => { // What: Commit Edit Function. Why: Both blur (Enter blurs the input) and an explicit commit path need this exact same validation-then-close sequence. How: This trims the draft, checks whether it actually changed, validates it, and either stages an error or finishes closing.
+	const cmtEdiFun = () => { // What: Commit Edit Function. Why: Blur, which Enter triggers, needs this validation-then-close sequence. How: This trims the draft, checks whether it actually changed, validates it, and either stages an error or finishes closing.
 
 
 		if ( cloOutBoo ) return; // What: Already Closing Guard. Why: A commit already in flight must not be re-triggered by a second event (e.g. Enter's own blur firing after the click that started this). How: This bails out while cloOutBoo is already true.
@@ -242,7 +242,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 
 				setNamErrStr( errMesStr );  // What: Name Error Stage. Why: The banner beneath the header needs this exact message to display. How: This publishes errMesStr into namErrStr.
-				namInpRef.current?.focus(); // What: Focus Reclaim. Why: cmtEdiFun runs from onBlur too (Enter blurs the input), so focus may already be gone; reclaiming it lets the user just keep typing to fix the collision. How: This focuses namInpRef's own current node, if it still exists.
+				namInpRef.current?.focus(); // What: Focus Reclaim. Why: cmtEdiFun runs from onBlur (Enter blurs the input), so focus may already be gone; reclaiming it lets the user just keep typing to fix the collision. How: This focuses namInpRef's own current node, if it still exists.
 
 
 
