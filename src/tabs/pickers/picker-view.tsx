@@ -154,11 +154,11 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	 * @summary
 	 * The shared follow-through for Re-roll and Done. It runs runActFun
-	 * straight away under reduced motion; otherwise it flags the result
-	 * buttons as leaving so they play their exit animation, then clears that
-	 * flag and runs runActFun once the exit's own p01 duration step has
-	 * passed. The buttons leave together, since the entrance stagger only
-	 * applies on the way in.
+	 * straight away under reduced motion; otherwise it flags Re-roll and Done
+	 * as leaving so they play their exit animation, then clears that flag and
+	 * runs runActFun once the exit's own p01 duration step has passed. Those
+	 * two leave together, since the entrance stagger only applies on the way
+	 * in.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
