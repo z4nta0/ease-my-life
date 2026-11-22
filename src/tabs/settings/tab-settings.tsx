@@ -202,7 +202,7 @@ function InsRowCom ( { labTexStr, steTexEle, warTexEle } : IocProTyp ) : React.J
 			className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivNote } `}
 
 			data-element-name-hook='insRowDiv'
-		>{ /* What: Install Row Div Element. Why: A platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block. Its data-element-name-hook is read by the tours and help mode. */ }
+		>{ /* What: Install Row Div Element. Why: A platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block. Its note modifier sets the note text as prose. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 			<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The note's own name and its 2 explanatory paragraphs need their own grouping. How: This wraps the name span and both sub spans. */ }
@@ -2453,7 +2453,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivNote } `}
 
 									data-element-name-hook='insRowDiv'
-								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the tours and help mode. */ }
+								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its note modifier sets the note text as prose. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 									<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }
@@ -2480,7 +2480,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 									className={` ${ cssModObj.insRowDiv }   ${ cssModObj.insRowDivNote } `}
 
 									data-element-name-hook='insRowDiv'
-								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its data-element-name-hook is read by the tours and help mode. */ }
+								>{ /* What: Install Row Div Element. Why: This platform-specific note needs the same info-row shape as every other row here, minus any action. How: This wraps just the info block, with no action beside it. Its note modifier sets the note text as prose. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 									<div className={ cssModObj.setInfDiv }>{ /* What: Settings Info Div Element. Why: The note's own name and explanation need their own grouping. How: This wraps the name span and the description span. */ }

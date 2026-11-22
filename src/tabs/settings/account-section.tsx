@@ -370,7 +370,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 									>Email address</label>{ /* What: Settings Name Label Element. Why: The field needs a short name of its own. How: This names it. */ }
 
 									<span
-										key={ linSenStr }
+										key={ linSenStr } // What: Sentence Key. Why: Each new sentence should fade in. How: A new key remounts the span, replaying its fade.
 
 										id='accEmaSpa'
 
@@ -540,7 +540,7 @@ function AccSecCom ( { accSynObj } : AscProTyp ) : React.JSX.Element {
 									<span className={ cssModObj.setNamSpa }>Sync across devices</span>{ /* What: Settings Name Span Element. Why: The row names the upgrade. How: This renders its name. */ }
 
 									<span
-										key={ String( accSynObj.purPenBoo ) }
+										key={ String( accSynObj.purPenBoo ) } // What: Pending Key. Why: The swap between the price and the wait should fade. How: A new key remounts the span when the purchase starts or ends, replaying its fade.
 
 										className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade } `}
 									>{ accSynObj.purPenBoo ? 'Finishing your purchase. This usually takes a few seconds.' : `A one-time purchase of ${ SYN_PRI_STR }, not a subscription. Once it's unlocked, this account keeps your data the same on every device you sign in to.` }</span>{ /* What: Settings Sub Span Element. Why: The price model matters to the decision, and a returning buyer should know the unlock is on its way. How: This states the price and model, or the wait, fading between them through its second class, setSubSpaFade. */ }
