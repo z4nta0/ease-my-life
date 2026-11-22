@@ -827,10 +827,11 @@ function PicConCom ( { actStoObj, allGroArr, conIteArr = [], hasNewBoo, incDaiBo
 	 * Commits an existing picker's draft, once, through the same savEdiFun the
 	 * Pickers tab's own edit form uses, so a type change resets the items to
 	 * the new type's defaults exactly as it does there. A pressed Fill all or
-	 * Refill all then charges the items. Does nothing for a brand-new draft
-	 * picker (its own Save creates it), for a Controls already saved,
-	 * cancelled, or deleted, or when nothing changed. An emptied name keeps
-	 * the old one.
+	 * Refill all then charges the items, even when the draft itself is
+	 * unchanged. Does nothing for a brand-new draft picker (its own Save
+	 * creates it) or for a Controls already saved, cancelled, or deleted, and
+	 * skips the save when the draft is unchanged. An emptied name keeps the
+	 * old one.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
