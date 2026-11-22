@@ -759,7 +759,7 @@
 
 
 }
-@container appRooDiv ( max-width : 440px ) { /* What: Narrowest Nav Tab Button In App Tab Nav Bottom. Why: Below about 430px, five buttons at their full side padding overflow the pill's rounded edges. How: This applies only when the app is 440px wide or less. */
+@container appRooDiv ( max-width : 440px ) { /* What: Narrowest Nav Tab Button In App Tab Nav Bottom. Why: At 440px wide and below, five buttons at their full side padding overflow the pill's rounded edges. How: This applies only when the app is 440px wide or less. */
 
 
 	.appTabNav--bottom .navTabBut { /* What: Tight Nav Tab Button In App Tab Nav Bottom. Why: The buttons should stay inside the pill down to the narrowest phones. How: This trims the side padding to the p01 step. */

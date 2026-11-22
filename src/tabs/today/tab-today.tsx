@@ -1670,7 +1670,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest appConMai hook ancestor.
 
 
-			const botEdgBoo = scrCurEle // What: Bottom Edge Boolean. Why: A user scrolled all the way to the end should always spy the LAST section, even if its own header can never reach the spy line. How: This checks either the scroller's own metrics or, without one, the window's.
+			const botEdgBoo = scrCurEle // What: Bottom Edge Boolean. Why: A user scrolled all the way to the end should spy the LAST section, even if its own header can never reach the spy line, unless a pinned bottom-cluster group is holding the highlight. How: This checks either the scroller's own metrics or, without one, the window's.
 				? scrCurEle.scrollTop + scrCurEle.clientHeight >= scrCurEle.scrollHeight - 2        // What: Scroller Bottom Branch. Why: The list normally scrolls inside the app's main scroller (the appConMai element). How: This checks whether that scroller is within 2px of its own end.
 				: window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2; // What: Window Bottom Branch. Why: Without a scroll container the page itself scrolls. How: This checks whether the window is within 2px of the document end.
 
@@ -2769,7 +2769,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 		const depIdeArr = ( staAppObj.today.entries || [] ) // What: Departing Identifier Array. Why: This is the actual list of eids about to be removed, needing their own exit animation first. How: This filters every current entry down to the ones matching neither exclusion above.
-			.filter( ( curEntObj ) => {                     // What: Departing Filter. Why: Only entries this generation is about to replace should play an exit animation. How: This keeps carried entries, keeps still-produced day-off cards, and flags any other entry whose picker produced nothing this time.
+			.filter( ( curEntObj ) => {                     // What: Departing Filter. Why: Only entries this generation is about to replace should play an exit animation. How: This drops carried entries, drops still-produced day-off cards, and keeps any other entry whose picker produced no slot this time.
 
 
 				if ( keeIdeSet.has( curEntObj.eid ) ) return false; // What: Kept Entry Guard. Why: A carried entry survives the generation untouched. How: This keeps it out of the departing list.
