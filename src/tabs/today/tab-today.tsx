@@ -1072,7 +1072,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		// #endregion Previous Value Tracking
 
 
-	}, [ celStyStr, donCouNum, totCouNum ] ); // What: Effect Dependency Array. Why: This effect only ever needs to re-run when the ring's own numerator or denominator changes. How: donCouNum/totCouNum are exactly what preDonRef/preFulRef are compared against, and a re-run from a celebration style change finds no rise and only refreshes the refs.
+	}, [ celStyStr, donCouNum, totCouNum ] ); // What: Effect Dependency Array. Why: This effect re-runs when the ring's numerator or denominator changes, or when the celebration style does. How: donCouNum/totCouNum are what preDonRef/preFulRef are compared against, and a re-run from a celebration style change finds no rise and only refreshes the refs.
 
 	// #endregion Completion Celebration
 
@@ -1757,7 +1757,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 		};
 
 
-	}, [ groDisArr.length, bloOrdArr, shoFeaBoo ] ); // What: Effect Dependency Array. Why: A changed group count, block order, or App Features visibility can all change which sections even exist to spy on. How: Each of these 3 can add/remove a whole section.
+	}, [ groDisArr.length, bloOrdArr, shoFeaBoo ] ); // What: Effect Dependency Array. Why: A changed group count or App Features visibility can add or remove a section, a changed block order moves them, and the spy's section list reads both. How: groDisArr.length and shoFeaBoo change which sections exist, and bloOrdArr changes their order.
 
 
 	// #region jumGroFun

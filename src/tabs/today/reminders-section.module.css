@@ -424,7 +424,7 @@
 
 
 	.remAddDiv,
-	.remAddDiv.remAddDiv--closing { /* What: Still Reminder Add Div And Reminder Add Div Closing. Why: The form should appear and close at once, while still ending the animation its handler waits on. How: This shortens its fades to .01ms instead of turning them off. */
+	.remAddDiv.remAddDiv--closing { /* What: Still Reminder Add Div And Reminder Add Div Closing. Why: The form should appear and close at once. How: This shortens its fades to .01ms instead of turning them off. */
 
 
 		animation-duration : .01ms;
