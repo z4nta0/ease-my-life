@@ -756,6 +756,7 @@ const isaWkdFun = ( dowSetArr : number[] ) : boolean => { // What: Is-A Weekend 
  *                    being summarized.
  *
  * @returns The short human summary string.
+ * @see {@link uniLabStr}
  *
  * @example
  * ```ts
@@ -979,6 +980,7 @@ function defOptFun () : RemOptTyp {
  *                    missing reminderOpts state to normalize.
  *
  * @returns A fully-shaped { once, recurring } participation-options object.
+ * @see {@link defOptObj}
  *
  * @example
  * ```ts
@@ -1086,6 +1088,7 @@ function optForFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
  * @returns The next eligible Date, or null if nothing qualifies within this
  *          function's own search horizon (e.g. an annual task that always
  *          lands on an excluded holiday).
+ * @see {@link curDatObj}
  *
  * @example
  * ```ts

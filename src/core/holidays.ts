@@ -552,6 +552,7 @@ function actYeaFun ( holStaObj : HolStaTyp | null | undefined, yeaValNum : numbe
  *
  * @returns The matching full holiday/custom-day record, or null if cheDatObj
  *          is not an active day off.
+ * @see {@link hitHolObj}
  *
  * @example
  * ```ts

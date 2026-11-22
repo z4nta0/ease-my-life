@@ -173,6 +173,7 @@ const neaEquFun = ( oneValNum : number | undefined, twoValNum : number | undefin
  * @param easMinNum - Ease Minimum Number: The range's minimum.
  *
  * @returns Whether the step is a legal roll.
+ * @see {@link legSteBoo}
  *
  * @example
  * ```ts

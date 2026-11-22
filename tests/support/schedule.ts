@@ -201,6 +201,7 @@ const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { /
  * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
  *
  * @returns Whether Today shows the reminder.
+ * @see {@link visRemBoo}
  *
  * @example
  * ```ts

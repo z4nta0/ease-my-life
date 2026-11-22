@@ -481,6 +481,7 @@ function ownKeyFun () : string[] {
  *
  * @returns The parsed localStorage state object, or null when nothing is
  *          stored under MIR_KEY_STR, or the stored value fails to parse.
+ * @see {@link parStaObj}
  *
  * @example
  * ```ts
@@ -860,6 +861,9 @@ function mirAdoFun ( idbStaObj : RawSavTyp, mirStaObj : RawSavTyp ) : RawSavTyp 
  * @returns A promise that resolves with the state to boot from, or null for a
  *          fresh install. It rejects when IndexedDB can't be opened or read,
  *          or a first migration can't be verified.
+ * @see {@link verStaObj}
+ * @see {@link idbStaObj}
+ * @see {@link adoStaObj}
  *
  * @example
  * ```ts

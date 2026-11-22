@@ -228,6 +228,7 @@ function hasDocFun ( docAnyObj : RawSavTyp ) : string {
  *                    included.
  *
  * @returns The joined app state.
+ * @see {@link joiStaObj}
  *
  * @example
  * ```ts
@@ -282,6 +283,7 @@ function joiDocFun ( docMapObj : SynDocTyp ) : StaAppTyp {
  * @param staAppObj - State App Object: The whole app state.
  *
  * @returns The documents, keyed by id.
+ * @see {@link docMapObj}
  *
  * @example
  * ```ts

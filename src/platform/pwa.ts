@@ -501,6 +501,7 @@ async function askInsFun () : Promise< 'accepted' | 'dismissed' | 'unavailable' 
  * @returns A promise that resolves with whether this call's request left
  *          persistent storage granted, or false when this device was already
  *          asked and the call was not forced.
+ * @see {@link askOkaBoo}
  *
  * @example
  * ```ts

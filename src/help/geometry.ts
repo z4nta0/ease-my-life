@@ -209,6 +209,7 @@ function cliHorFun ( tarRecObj : EdgRecTyp, tarDomEle : HTMLElement ) : EdgRecTy
  *                    actually matches a visible element.
  *
  * @returns The first alternative's matched, currently-visible elements.
+ * @see {@link tarEleArr}
  *
  * @example
  * ```ts

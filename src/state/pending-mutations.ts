@@ -191,6 +191,7 @@ function depDonFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], conIdeStr :
  *
  * @returns The updated conditionalLog array, or the same reference when
  *          nothing about it actually changes.
+ * @see {@link curLogArr}
  *
  * @example
  * ```ts
@@ -349,6 +350,7 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
  *
  * @returns The updated conditionals array, or the same reference when nothing
  *          about it actually changes.
+ * @see {@link curConArr}
  *
  * @example
  * ```ts

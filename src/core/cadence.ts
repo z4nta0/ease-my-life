@@ -120,6 +120,7 @@ const CAD_STR_ARR : string[] = [ 'daily', 'weekly', 'monthly', 'yearly' ]; // Wh
  * @returns The corrected daysOfWeek array (with the anchor day added when it
  *          was missing), or the same array unchanged when nothing needs
  *          adding.
+ * @see {@link dowSetArr}
  *
  * @example
  * ```ts
@@ -316,6 +317,9 @@ function tdmResFun ( picCadObj : CadFieTyp, yeaValNum : number, monOneNum : numb
  *                    is wanted, defaulting to right now.
  *
  * @returns The Date (at midnight) that starts cheDatObj's own current period.
+ * @see {@link midDatObj}
+ * @see {@link weeStaObj}
+ * @see {@link curAncObj}
  *
  * @example
  * ```ts

@@ -268,6 +268,7 @@ const safBotFun = () : number => { // What: Safe Bottom Function. Why: A bottom-
  *
  * @returns The lowest bottom edge in px among the sticky header, the mobile
  *          group rail, and the Edit Mode banner, or 0 for the coach.
+ * @see {@link floBotNum}
  *
  * @example
  * ```ts
@@ -1506,6 +1507,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @returns The nearest scrolling ancestor, or the document's own
 		 *          scrolling element when none qualifies.
+		 * @see {@link ancCurEle}
 		 *
 		 * @example
 		 * ```ts

@@ -113,6 +113,7 @@ const SUP_EMA_STR = 'support@easemylife.app'; // What: Support Email String. Why
  *
  * @returns A short "Name X.Y" label for a recognized browser, or the raw
  *          navigator.userAgent string otherwise.
+ * @see {@link usrAgeStr}
  *
  * @example
  * ```ts

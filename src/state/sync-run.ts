@@ -373,6 +373,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 	 * @param void - This function takes no parameters.
 	 *
 	 * @returns A promise that resolves with the Firebase module.
+	 * @see {@link firModObj}
 	 *
 	 * @example
 	 * ```ts

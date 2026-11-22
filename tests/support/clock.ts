@@ -95,6 +95,7 @@ const locDayFun = ( timValStr : string ) : string => DAY_FOR_OBJ.format( new Dat
  * @param minValNum - Minute Value Number: The Chicago minute, defaulting to 0.
  *
  * @returns The matching instant.
+ * @see {@link canTimObj}
  *
  * @example
  * ```ts

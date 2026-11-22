@@ -61,6 +61,7 @@ import type { PolOrdTyp } from '../lib/polar.mts'; // What: Polar Order Type. Wh
  *
  * @returns A promise that resolves with the account's id, or null when no
  *          account matches.
+ * @see {@link tagUidStr}
  *
  * @example
  * ```ts

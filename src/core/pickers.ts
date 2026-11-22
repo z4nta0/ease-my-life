@@ -186,6 +186,8 @@ function norConFun ( rawNamStr : string | undefined ) : string { return titCasFu
  * @returns The existing group's own exact spelling on a case-insensitive
  *          match, the freshly Title Cased name otherwise, or an empty string
  *          when rawNamStr had nothing but separator characters.
+ * @see {@link hitGroStr}
+ * @see {@link titNamStr}
  *
  * @example
  * ```ts

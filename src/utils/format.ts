@@ -39,6 +39,7 @@
  * @returns The unique name: namRawStr trimmed if it doesn't collide, otherwise
  *          namRawStr (or its already-numbered base) with the next free " (N)"
  *          suffix appended.
+ * @see {@link basNamStr}
  *
  * @example
  * ```ts
