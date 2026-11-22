@@ -877,7 +877,7 @@
 
 
 }
-.insRowDiv--note .setSubSpa + .setSubSpa { /* What: Following Settings Sub Span In Install Row Div Note. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one down by Spacing Vertical Base Minus 2. */
+.insRowDiv--note .setSubSpa + .setSubSpa { /* What: Settings Sub Span Following In Install Row Div Note. Why: The steps and the warning are two notes, not a name and description, so they need room between them. How: This spaces the second one down by Spacing Vertical Base Minus 2. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */

@@ -256,7 +256,7 @@
 
 
 }
-.catTogBut ~ .catTogBut { /* What: Following Category Toggle Button. Why: The second toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
+.catTogBut ~ .catTogBut { /* What: Category Toggle Button Following. Why: The second toggle needs a divider above it too. How: This draws a hairline on top of every toggle after the first. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

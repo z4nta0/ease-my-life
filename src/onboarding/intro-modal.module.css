@@ -160,7 +160,7 @@
 
 
 }
-.intBodPar + .intBodPar { /* What: Following Intro Body Paragraph. Why: Consecutive paragraphs need a gap between them. How: This adds top margin to every paragraph after the first. */
+.intBodPar + .intBodPar { /* What: Intro Body Paragraph Following. Why: Consecutive paragraphs need a gap between them. How: This adds top margin to every paragraph after the first. */
 
 
 	margin-top : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */

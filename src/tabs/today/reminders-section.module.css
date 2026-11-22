@@ -35,7 +35,7 @@
 
 
 }
-.todGroSec:not( :first-child ) { /* What: Following Today Group Section. Why: A section after another one needs a divider above it. How: This draws a hairline and pads below it, since the siblings in the group column are group sections, standing in for the old sibling selector that can't reach across modules. */
+.todGroSec:not( :first-child ) { /* What: Today Group Section Following. Why: A section after another one needs a divider above it. How: This draws a hairline and pads below it, since the siblings in the group column are group sections, standing in for the old sibling selector that can't reach across modules. */
 
 
 	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -43,10 +43,10 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Following Today Group Section. Why: On a narrow screen the sections sit closer. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Group Section Following. Why: On a narrow screen the sections sit closer. How: This applies only when the app is 760px wide or less. */
 
 
-	.todGroSec:not( :first-child ) { /* What: Narrow Following Today Group Section. Why: The divider needs less room. How: This shrinks the padding above the section. */
+	.todGroSec:not( :first-child ) { /* What: Narrow Today Group Section Following. Why: The divider needs less room. How: This shrinks the padding above the section. */
 
 
 		padding-top : var( --spa-ver-p01 ); /* Spacing Vertical Base Plus 1 ~= 19.304px */

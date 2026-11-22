@@ -113,7 +113,7 @@
 
 
 }
-.tipBodDiv p + p { /* What: Following Tip Body Paragraph. Why: Consecutive paragraphs still need a small gap between them. How: This adds top margin to each paragraph that directly follows another paragraph, reached by tag since the paragraphs come from each help catalog item's own body. */
+.tipBodDiv p + p { /* What: Tip Body Paragraph Following. Why: Consecutive paragraphs still need a small gap between them. How: This adds top margin to each paragraph that directly follows another paragraph, reached by tag since the paragraphs come from each help catalog item's own body. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */

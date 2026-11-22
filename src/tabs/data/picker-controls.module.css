@@ -871,7 +871,7 @@
 
 
 }
-.modHinSpa + .modHinSpa { /* What: Following Mode Hint Span. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
+.modHinSpa + .modHinSpa { /* What: Mode Hint Span Following. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */

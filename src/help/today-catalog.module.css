@@ -17,7 +17,7 @@
 
 /* #region butIteDiv */
 
-.butIteDiv + .butIteDiv { /* What: Following Button Item Div. Why: Each button's block in a tip should read as its own entry. How: This spaces every block after the first away from the one above it. */
+.butIteDiv + .butIteDiv { /* What: Button Item Div Following. Why: Each button's block in a tip should read as its own entry. How: This spaces every block after the first away from the one above it. */
 
 
 	margin-top : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */

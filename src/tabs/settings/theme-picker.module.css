@@ -116,7 +116,7 @@
 
 
 }
-.theRowDiv + .theRowDiv { /* What: Following Theme Row Div. Why: Stacked rows need a little space between them. How: This adds top margin to every row after the first. */
+.theRowDiv + .theRowDiv { /* What: Theme Row Div Following. Why: Stacked rows need a little space between them. How: This adds top margin to every row after the first. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */

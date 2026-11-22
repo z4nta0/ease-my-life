@@ -1804,7 +1804,7 @@
 
 
 }
-.groDraDiv > .todGroSec:not( :first-child ) { /* What: Following Today Group Section In Group Drag Div. Why: Each section after the first is divided from the one above. How: This draws a hairline above it with room below. */
+.groDraDiv > .todGroSec:not( :first-child ) { /* What: Today Group Section Following In Group Drag Div. Why: Each section after the first is divided from the one above. How: This draws a hairline above it with room below. */
 
 
 	border-top  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -1812,7 +1812,7 @@
 
 
 }
-@container appRooDiv ( max-width : 760px ) { /* What: Narrow Following Today Group Section In Group Drag Div. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
+@container appRooDiv ( max-width : 760px ) { /* What: Narrow Today Group Section Following In Group Drag Div. Why: On a narrow app the rail becomes a pill row under the header and the layout collapses to one column. How: This applies only when the app is 760px wide or less. */
 
 
 	.groDraDiv > .todGroSec:not( :first-child ) { /* What: Tighter Following Today Group Section In Group Drag Div. Why: The narrow list needs less room above each divider. How: This trims the space to Spacing Vertical Base Plus 1. */

@@ -273,7 +273,7 @@
 
 
 }
-.steHinPar + .steHinPar { /* What: Following Step Hint Paragraph. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
+.steHinPar + .steHinPar { /* What: Step Hint Paragraph Following. Why: Stacked hints need a little space between them. How: This spaces every hint after the first. */
 
 
 	margin-top : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
@@ -702,7 +702,7 @@
 
 
 }
-.modHinDiv + .modHinDiv { /* What: Following Mode Hint Div. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
+.modHinDiv + .modHinDiv { /* What: Mode Hint Div Following. Why: Stacked hints need space between them. How: This spaces every hint after the first. */
 
 
 	margin-top : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */

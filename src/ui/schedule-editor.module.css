@@ -81,7 +81,7 @@
 
 
 }
-.schEdiDiv--stacked .forFieDiv + .forFieDiv { /* What: Following Form Field Div In Schedule Editor Div Stacked. Why: Consecutive fields read as separate rows. How: This draws a divider above each field that directly follows another field. */
+.schEdiDiv--stacked .forFieDiv + .forFieDiv { /* What: Form Field Div Following In Schedule Editor Div Stacked. Why: Consecutive fields read as separate rows. How: This draws a divider above each field that directly follows another field. */
 
 
 	border-top : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */

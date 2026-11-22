@@ -871,7 +871,7 @@
 
 
 }
-.barSegSpa + .barSegSpa { /* What: Following Bar Segment Span. Why: Neighboring segments need a hairline between them. How: This draws a surface-colored line on its left. */
+.barSegSpa + .barSegSpa { /* What: Bar Segment Span Following. Why: Neighboring segments need a hairline between them. How: This draws a surface-colored line on its left. */
 
 
 	box-shadow : calc( var( --bor-wid-bas ) * -1 ) 0 0 var( --bac-sur-col ); /* Border Width Base ~= 1.160px, Background Surface Color = oklch( 0.975 0.004 240 ) */
