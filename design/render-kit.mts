@@ -83,7 +83,7 @@ async function opeCapFun ( vieSizObj? : { height : number, width : number } ) : 
 
 
 
-	return { broInsObj, capPagObj }; // What: Browser And Page Return. Why: The browser and page are what opeCapFun produces. How: This returns both under their own names, so a caller destructures them as they are.
+	return { broInsObj, capPagObj }; // What: Browser And Page Return. Why: The browser and page are what opeCapFun produces. How: This returns both under their own names.
 
 
 }
@@ -125,7 +125,7 @@ async function staVitFun () : Promise< ViteDevServer > {
 
 
 
-	return vitSerObj; // What: Server Return. Why: The caller closes the server once its image is saved. How: This returns the listening server.
+	return vitSerObj; // What: Server Return. Why: The caller needs the server in hand to close it. How: This returns the listening server.
 
 
 }

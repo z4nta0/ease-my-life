@@ -3,7 +3,7 @@
 
 // #region Rules Version
 
-rules_version = '2'; // What: Rules Version. Why: Version 2 allows functions with let bindings and recursive wildcards. How: This selects it.
+rules_version = '2'; // What: Rules Version. Why: The rules below are written for version 2 of the rules language. How: This selects it.
 
 // #endregion Rules Version
 
