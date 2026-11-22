@@ -1142,7 +1142,7 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 
 
-		if ( optNorObj.excludeHolidays && HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, curDatObj ) ) continue; // What: Holiday Exclusion Guard. Why: This class has opted out of showing on a holiday, and curDatObj is one. How: This skips to the next iteration when its conditions hold; the HOL_NAM_OBJ check is redundant, since the static import always exists.
+		if ( optNorObj.excludeHolidays && HOL_NAM_OBJ.holDatFun( holStaObj, curDatObj ) ) continue; // What: Holiday Exclusion Guard. Why: This class has opted out of showing on a holiday, and curDatObj is one. How: This skips to the next iteration when both conditions hold.
 
 
 
@@ -1301,9 +1301,9 @@ function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 function visTodFun ( tasLisArr : TasRcdTyp[], remOptObj : RemOptTyp | null | undefined, holStaObj : HolStaTyp | null | undefined, cheDatObj : Date = new Date() ) : TasRcdTyp[] {
 
 
-	const isaWkdBoo = wkdDayFun( cheDatObj );                                             // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
-	const isaHolBoo = !!( HOL_NAM_OBJ && HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ) ); // What: Is-A Holiday Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself is an active holiday. How: This calls holDatFun, coercing the result to a real boolean; the HOL_NAM_OBJ check is redundant, since the static import always exists.
-	const cheIsoStr = isoDayFun( cheDatObj );                                             // What: Check ISO String. Why: The filter below compares a task's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
+	const isaWkdBoo = wkdDayFun( cheDatObj );                          // What: Is-A Weekend Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself falls on a weekend. How: This checks cheDatObj's own weekday against Sunday (0) and Saturday (6).
+	const isaHolBoo = !!HOL_NAM_OBJ.holDatFun( holStaObj, cheDatObj ); // What: Is-A Holiday Boolean. Why: The filter below needs to know once, not per-task, whether cheDatObj itself is an active holiday. How: This calls holDatFun, coercing the holiday's name or null to a real boolean.
+	const cheIsoStr = isoDayFun( cheDatObj );                          // What: Check ISO String. Why: The filter below compares a task's own skipUntil against cheDatObj as a plain string. How: This converts cheDatObj via isoDayFun.
 
 
 
