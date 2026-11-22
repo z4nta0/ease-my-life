@@ -282,7 +282,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 		if ( delCliNum > 0 ) { // What: Downward Movement Check. Why: A positive delta means the dragged element moved down, so the candidate index should only ever walk forward. How: This gates the downward-walking while loop below.
 
 
-			while ( tarCanNum < iteEleArr.length - 1 && proCenNum > cenPosArr[ tarCanNum + 1 ] ) tarCanNum++; // What: Downward Walk Loop. Why: The candidate must advance past every sibling whose own center the projected center has already crossed. How: This increments tarCanNum while a next sibling exists and its center is still below proCenNum.
+			while ( tarCanNum < iteEleArr.length - 1 && proCenNum > cenPosArr[ tarCanNum + 1 ] ) tarCanNum++; // What: Downward Walk Loop. Why: The candidate must advance past every sibling whose own center the projected center has already crossed. How: This increments tarCanNum while a next sibling exists and its center sits above proCenNum on screen.
 
 
 		}
@@ -290,7 +290,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 		else if ( delCliNum < 0 ) { // What: Upward Movement Check. Why: A negative delta means the dragged element moved up, so the candidate index should only ever walk backward. How: This gates the upward-walking while loop below.
 
 
-			while ( tarCanNum > 0 && proCenNum < cenPosArr[ tarCanNum - 1 ] ) tarCanNum--; // What: Upward Walk Loop. Why: The candidate must retreat past every sibling whose own center the projected center has already crossed. How: This decrements tarCanNum while a previous sibling exists and its center is still above proCenNum.
+			while ( tarCanNum > 0 && proCenNum < cenPosArr[ tarCanNum - 1 ] ) tarCanNum--; // What: Upward Walk Loop. Why: The candidate must retreat past every sibling whose own center the projected center has already crossed. How: This decrements tarCanNum while a previous sibling exists and its center sits below proCenNum on screen.
 
 
 		}
@@ -346,22 +346,22 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 			const iteAftBoo = iteIndNum > oriIndNum;  // What: Item After Boolean. Why: Only a sibling below the origin can close the gap a downward drag leaves. How: This compares iteIndNum against oriIndNum.
 			const iteUntBoo = iteIndNum <= tarIndNum; // What: Item Until Boolean. Why: A sibling past the target stays put during a downward drag. How: This checks iteIndNum sits at or above tarIndNum.
 
-			const shiUpwBoo = draDowBoo && iteAftBoo && iteUntBoo; // What: Shift Upward Boolean. Why: A sibling strictly between the origin and a lower target must shift up. How: This combines the three downward-drag checks above.
+			const shiUpwBoo = draDowBoo && iteAftBoo && iteUntBoo; // What: Shift Upward Boolean. Why: A sibling after the origin, up to and including a lower target, must shift up. How: This combines the three downward-drag checks above.
 
 
 			const draUpwBoo = tarIndNum < oriIndNum;  // What: Drag Upward Boolean. Why: Siblings only shift down while the target sits above the origin. How: This compares tarIndNum against oriIndNum.
 			const iteBefBoo = iteIndNum < oriIndNum;  // What: Item Before Boolean. Why: Only a sibling above the origin can move down into the hole an upward drag opens. How: This compares iteIndNum against oriIndNum.
 			const iteFroBoo = iteIndNum >= tarIndNum; // What: Item From Boolean. Why: A sibling before the target stays put during an upward drag. How: This checks iteIndNum sits at or below tarIndNum.
 
-			const shiDowBoo = draUpwBoo && iteBefBoo && iteFroBoo; // What: Shift Down Boolean. Why: A sibling strictly between a higher target and the origin must shift down. How: This combines the three upward-drag checks above.
+			const shiDowBoo = draUpwBoo && iteBefBoo && iteFroBoo; // What: Shift Down Boolean. Why: A sibling from a higher target (included) up to just before the origin must shift down. How: This combines the three upward-drag checks above.
 
 
 			let eleOffNum = 0; // What: Element Offset Number. Why: This is the specific sibling's own shift amount, defaulting to no shift at all. How: This starts at 0 and is set by whichever branch below actually applies to this sibling.
 
 
-			if ( shiUpwBoo ) eleOffNum = -shiDisNum; // What: Downward Range Check. Why: A sibling strictly between the origin and a lower target must shift up to close the gap the dragged element left behind. How: This applies -shiDisNum when all three range conditions hold.
+			if ( shiUpwBoo ) eleOffNum = -shiDisNum; // What: Downward Range Check. Why: A sibling after the origin, up to and including a lower target, must shift up to close the gap the dragged element left behind. How: This applies -shiDisNum when all three range conditions hold.
 
-			else if ( shiDowBoo ) eleOffNum = shiDisNum; // What: Upward Range Check. Why: A sibling strictly between a higher target and the origin must shift down to open a hole at the target. How: This applies shiDisNum when all three range conditions hold.
+			else if ( shiDowBoo ) eleOffNum = shiDisNum; // What: Upward Range Check. Why: A sibling from a higher target (included) up to just before the origin must shift down to open a hole at the target. How: This applies shiDisNum when all three range conditions hold.
 
 
 
