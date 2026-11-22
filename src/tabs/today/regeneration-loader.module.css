@@ -15,8 +15,7 @@
  *
  * The card's declarations are copied from the shared Today card classes the
  * real cards still use. Under reduced motion the reel's name animation and
- * the settled name's landing are turned off; the Today tab skips the reel by
- * settling its slots at once.
+ * the settled name's landing are turned off.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -186,7 +185,7 @@
 
 	animation   : reeNamSpaTickFadeIn var( --dur-ani-m02 ) var( --mot-dec-eas ); /* Duration Animation Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	display     : inline-block;
-	will-change : transform, opacity;                                            /* What: Reel Name Will Change. Why: Each reel name mounts for a single quick tick and starts its drop at once, so promoting it up front avoids a first-frame hitch. How: The hint lives only as long as each short-lived name does, since the next tick replaces the element. */
+	will-change : transform, opacity;                                            /* What: Reel Name Will Change. Why: Each reel name mounts for a single quick tick and starts its drop at once. How: The hint lives only as long as each short-lived name does, since the next tick replaces the element. */
 
 
 }

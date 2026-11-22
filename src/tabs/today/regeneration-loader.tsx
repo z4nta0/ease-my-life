@@ -36,7 +36,7 @@ import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Recor
 
 // #region Types
 
-type GenSloTyp = { canArr? : { id : string, name : string }[], conStr? : string, ideStr? : string | null, kinStr? : 'charging' | 'dayoff' | 'pick', staStr? : 'active' | 'pending' | 'settled', texStr? : string }; // What: Generate Slot Type. Why: Each picker slot in a regeneration shows its candidates cycling, then the item it settled on. How: This types one slot's candidates, day-off conditional id, chosen item id, kind, phase, and day-off text, as TabTodCom builds them.
+type GenSloTyp = { canArr? : { id : string, name : string }[], conStr? : string, ideStr? : string | null, kinStr? : 'charging' | 'dayoff' | 'pick', staStr? : 'active' | 'pending' | 'settled', texStr? : string }; // What: Generate Slot Type. Why: Each picker slot in a regeneration shows its candidates cycling, then the item it settled on. How: This types one slot's candidates, day-off conditional id, chosen item id, kind, phase, and day-off text.
 
 // #endregion Types
 
@@ -143,8 +143,7 @@ type LacProTyp = { infRcdObj : GenSloTyp | undefined, picRcdObj : Partial< PicRc
  *
  * @param props.infRcdObj - Info Record Object: The slot's own
  *                          generation-in-progress record (its candidates,
- *                          chosen item, kind, phase, and day-off text), built
- *                          up in TabTodCom's own genLisFun.
+ *                          chosen item, kind, phase, and day-off text).
  * @param props.picRcdObj - Picker Record Object: The picker this loader slot
  *                          belongs to.
  *
@@ -161,7 +160,7 @@ type LacProTyp = { infRcdObj : GenSloTyp | undefined, picRcdObj : Partial< PicRc
 function LoaCarCom ( { infRcdObj, picRcdObj } : LacProTyp ) : React.JSX.Element {
 
 
-	const sloStaStr = infRcdObj?.staStr || 'pending'; // What: Slot Status String. Why: Every branch below renders differently depending on this slot's own current phase. How: This reads infRcdObj's own staStr, defaulting to 'pending' before the generator even sets one.
+	const sloStaStr = infRcdObj?.staStr || 'pending'; // What: Slot Status String. Why: The slot's card attribute and its pending, active, and settled branches below render by this slot's own current phase. How: This reads infRcdObj's own staStr, defaulting to 'pending' before the generator even sets one.
 	const sloKinStr = infRcdObj?.kinStr || 'pick';    // What: Slot Kind String. Why: A non-pick slot (day-off/charging) has no candidate reel and a fixed settled name instead. How: This reads infRcdObj's own kinStr, defaulting to 'pick'.
 	const canIteArr = infRcdObj?.canArr || [];        // What: Candidate Item Array. Why: Both the settled name lookup and the reel below read this slot's own candidate pool. How: This reads infRcdObj's own canArr, defaulting to an empty array.
 
