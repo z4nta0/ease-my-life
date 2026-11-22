@@ -4,9 +4,9 @@
 // #region Imports
 
 import { DAY_ABB_ARR } from '../utils/date.ts';      // What: Day Abbreviation Array. Why: A weekly multi-day or yearly nth-weekday summary names its weekdays in short form. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
-import { DAY_FUL_ARR } from '../utils/date.ts';      // What: Day Full Array. Why: Single-day weekly and nth-weekday summaries name their weekday in full. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
+import { DAY_FUL_ARR } from '../utils/date.ts';      // What: Day Full Array. Why: Single-day weekly and monthly nth-weekday summaries name their weekday in full. How: This is indexed by a weekday number from daysOfWeek or nthWeekday.
 import { dimCouFun   } from '../utils/date.ts';      // What: Days-In-Month Count Function. Why: Monthly and yearly clamping need a month's real length. How: This is called with a year and 1-based month.
-import { HOL_NAM_OBJ } from './holidays.ts';         // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called, guarded since it's an external module, wherever a reminder's visibility or next occurrence is worked out.
+import { HOL_NAM_OBJ } from './holidays.ts';         // What: Holidays Namespace Object. Why: A reminder's own weekend/holiday participation switches need to know whether a given date is an active day off. How: This is called for holiday lookups when a reminder's visibility or next occurrence is worked out.
 import { isoDayFun   } from '../utils/date.ts';      // What: ISO Day Function. Why: Dates are stored and compared as local-calendar YYYY-MM-DD keys. How: This formats a Date (or now) as that key.
 import { nwmDayFun   } from '../utils/date.ts';      // What: Nth-Weekday-Month Day Function. Why: An nth-weekday schedule needs the day that weekday falls on. How: This is called with a year, month, nth and weekday.
 import { ordSufFun   } from '../utils/date.ts';      // What: Ordinal Suffix Function. Why: Schedule summaries read days as ordinals like 1st or 22nd. How: This is called with the day number.
@@ -302,7 +302,7 @@ function defTasFun ( tasInpObj : Partial< TasRcdTyp > = {} ) : TasRcdTyp {
 
 
 		anchor     : tasInpObj.anchor || curIsoFun(),                                                       // What: Anchor. Why: Weekly/interval/monthly/annual all count their own "every N" cadence from this date. How: This keeps tasInpObj's own anchor when given, otherwise defaults to today via curIsoFun.
-		createdAt  : tasInpObj.createdAt || curIsoFun(),                                                    // What: Created At. Why: Weekly/interval fall back to this as their own anchor when none is set, and dueTodFun's own sort uses it to order same-day additions. How: This keeps tasInpObj's own createdAt when given, otherwise defaults to today via curIsoFun.
+		createdAt  : tasInpObj.createdAt || curIsoFun(),                                                    // What: Created At. Why: Weekly, interval, monthly, and annual schedules fall back to this as their own anchor when none is set, and dueTodFun's own sort uses it to order same-day additions. How: This keeps tasInpObj's own createdAt when given, otherwise defaults to today via curIsoFun.
 		dateMode   : tasInpObj.dateMode === 'nthWeekday' ? 'nthWeekday' : 'date',                           // What: Date Mode. Why: Monthly/annual need to know whether a plain date or an Nth-weekday rule decides the due day. How: This keeps 'nthWeekday' only when tasInpObj already says so, 'date' otherwise.
 		day        : tasInpObj.day || curDatObj.getDate(),                                                  // What: Day. Why: An annual task in plain-date mode needs a target day within its own month. How: This keeps tasInpObj's own day when given, otherwise defaults to today's own date.
 		dayOfMonth : tasInpObj.dayOfMonth || curDatObj.getDate(),                                           // What: Day Of Month. Why: A monthly task in plain-date mode needs a target day-of-month. How: This keeps tasInpObj's own dayOfMonth when given, otherwise defaults to today's own date.
@@ -1070,8 +1070,7 @@ function optForFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
  * skipUntil; it's OFF by default since the "Skip until ..." action
  * calls this to find the next natural occurrence to skip TO, where the
  * current skipUntil must be ignored or it could never advance. A
- * caller describing when tasRcdObj will actually REAPPEAR (the editor
- * advisory, the day log) must pass true.
+ * caller describing when tasRcdObj will actually REAPPEAR must pass true.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -1171,7 +1170,7 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
  *
  * @summary
  * Will tasRcdObj show on Today, and if not, WHY and when will it?
- * Separates 2 causes because they mean different things to the user:
+ * Tells its causes apart because they mean different things to the user:
  * 'schedule' means the repeat rule simply doesn't land on today, and
  * nothing is wrong, it will appear on its own day; 'weekends'/
  * 'holidays' means tasRcdObj IS due today but its own class's
