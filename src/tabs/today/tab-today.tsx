@@ -4627,7 +4627,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												return (
 
 
-													<React.Fragment key={ entRcdObj.eid }>{ /* What: Row Fragment Element. Why: The card itself and its own inline editor's ColDisCom are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+													<React.Fragment key={ entRcdObj.eid }>{ /* What: Row Fragment. Why: The card itself and its own inline editor's ColDisCom are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
 														<EntCarCom
@@ -5015,7 +5015,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 							) : ( // What: Normal Footer Branch. Why: Outside both the confirm prompt and Edit Mode, the normal Regenerate/generated-on footer belongs here instead. How: This renders the else branch, taken while neither prior condition holds.
 
 
-								<React.Fragment>{ /* What: Normal Footer Fragment Element. Why: The Edit Mode/Regenerate action row and the generated-on sub-line are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+								<React.Fragment>{ /* What: Normal Footer Fragment. Why: The Edit Mode/Regenerate action row and the generated-on sub-line are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
 									<div

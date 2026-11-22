@@ -2337,7 +2337,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 									<ColDisCom open={ !iteColBoo }>{ /* What: Collapse Disclosure Component. Why: The item rows themselves only need to exist while the Items disclosure is actually open. How: This opens per !iteColBoo. */ }
 
 
-										<React.Fragment>{ /* What: Items Fragment Element. Why: The add button, the sort control, and every item row are true siblings with no shared wrapper of their own. How: This groups all 3 pieces without adding an extra DOM node. */ }
+										<React.Fragment>{ /* What: Items Fragment. Why: The add button, the sort control, and every item row are true siblings with no shared wrapper of their own. How: This groups all 3 pieces without adding an extra DOM node. */ }
 
 
 											{ tutProBoo ? ( // What: Tutorial Progress Check. Why: The add control must stay disabled (with an explanatory tip) while the Welcome Tour's own checklist is still in progress. How: This renders a disabled InfTipCom-wrapped control in that state, otherwise the real button.

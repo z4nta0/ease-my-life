@@ -361,7 +361,7 @@ function TheSecCom ( { actStoObj, staAppObj } : TscProTyp ) : React.JSX.Element 
 	return (
 
 
-		<React.Fragment>{ /* What: Theme Section Fragment Element. Why: The Light and Dark subsections are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
+		<React.Fragment>{ /* What: Theme Section Fragment. Why: The Light and Dark subsections are true siblings with no shared wrapper of their own. How: This groups both without adding an extra DOM node. */ }
 
 
 			<div
