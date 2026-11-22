@@ -336,7 +336,7 @@ function outCouFun ( outValStr : PclOutTyp, picLogArr : PclRowTyp[], hidPicSet :
  * relWheFun = Relative When Function
  *
  * @summary
- * Formats a completion timestamp as a short relative-reading date label,
+ * Formats a completion timestamp as a short weekday-and-date label,
  * such as "Mon, Jan 5". Today and Yesterday deliberately get no special
  * case of their own: an earlier version produced longer, differently
  * shaped strings for those two ("Today · 3:04 PM" / "Yesterday"), which
@@ -2586,7 +2586,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	}, [ picRowArr ] ); // What: Memo Dependency Array. Why: This only ever needs recomputing when the underlying pick rows themselves change. How: picRowArr is the sole source the tally loop above reads from.
 
 
-	const typSegArr = React.useMemo( () => { // What: Type Segment Array Memo. Why: The "By reminder type" card needs TYP_MET_ARR joined with each type's own live count. How: This tallies remRowArr's own type field, then maps TYP_MET_ARR to include each count. // Reminder type split + log list.
+	const typSegArr = React.useMemo( () => { // What: Type Segment Array Memo. Why: The "By reminder type" card needs TYP_MET_ARR joined with each type's own live count. How: This tallies remRowArr's own type field, then maps TYP_MET_ARR to include each count. // Reminder type split.
 
 
 		const couTalMap = new Map( TYP_MET_ARR.map( ( typCurObj ) => [ typCurObj.keyStr, 0 ] ) ); // What: Count Tally Map. Why: The tally needs one accumulator per real type value, keyed by the reminder rows' own saved type values. How: This starts every TYP_MET_ARR type at zero and is incremented by the loop below.
@@ -4266,7 +4266,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 										>{ /* What: Reminder Log Unordered Element. Why: This is the actual rendered breakdown list, remounting (and replaying its own fade) whenever the metric, sort, or page changes. How: This maps remIteArr to one list item per reminder row. */ }
 
 
-											{ remIteArr.map( ( remRowObj, rowIndNum ) => ( // What: Reminder Row Render. Why: Every row on the current page needs its own list item showing its name, type tag, and either a relative date or a raw count. How: This maps remIteArr to one list item, keyed by its own ideStr when in Recent mode (each row is a distinct event) or by its own index otherwise (each row is a distinct reminder).
+											{ remIteArr.map( ( remRowObj, rowIndNum ) => ( // What: Reminder Row Render. Why: Every row on the current page needs its own list item showing its name, type tag, and either a dated label or a raw count. How: This maps remIteArr to one list item, keyed by its own ideStr when in Recent mode (each row is a distinct event) or by its own index otherwise (each row is a distinct reminder).
 
 
 												<li
@@ -4278,12 +4278,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 													<span className={ cssModObj.logNamSpa }>{ remRowObj.namStr }</span>{ /* What: Log Name Span Element. Why: The row needs its own visible reminder name. How: This renders remRowObj.namStr. */ }
 
-													<span className={ cssModObj.logMetSpa }>{ /* What: Log Meta Span Element. Why: The row's own type tag and date/count value are grouped on the opposite side from the name. How: This wraps the type span and either a relative-date span or a raw-count span. */ }
+													<span className={ cssModObj.logMetSpa }>{ /* What: Log Meta Span Element. Why: The row's own type tag and date/count value are grouped on the opposite side from the name. How: This wraps the type span and either a date span or a raw-count span. */ }
 
 
 														<span className={` ${ cssModObj.kinTagSpa }   ${ remRowObj.typStr === 'recurring' ? cssModObj.kinTagSpaRecurring : '' } `}>{ remRowObj.typStr === 'once' ? 'one-time' : 'recurring' }</span>{ /* What: Kind Tag Span Element. Why: Every row needs its own small type label. How: This renders "one-time" or "recurring" based on remRowObj.typStr. */ }
 
-														{ remMetStr === 'recent' ? ( // What: Recent Value Check. Why: Recent rows are dated events, while the other pills show counts. How: This renders a relative date while remMetStr is 'recent', otherwise the count.
+														{ remMetStr === 'recent' ? ( // What: Recent Value Check. Why: Recent rows are dated events, while the other pills show counts. How: This renders a dated label while remMetStr is 'recent', otherwise the count.
 
 
 															<span className={ cssModObj.logWheSpa }>{ relWheFun( remRowObj.timStr ) }</span> // What: Log When Span Element. Why: A recent event shows when it happened. How: This formats timStr via relWheFun.
@@ -4386,7 +4386,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 								<ul className={ cssModObj.remLogUno }>{ /* What: Reminder Log Unordered Element. Why: This is the actual summary list, capped to the first 8 completions. How: This maps the first 8 entries of remLogArr to one list item per completion. */ }
 
 
-									{ remLogArr.slice( 0, 8 ).map( ( remRowObj ) => ( // What: Reminder Summary Row Render. Why: Every summarized completion needs its own compact row showing its name, type, and relative date. How: This maps up to 8 remLogArr entries to one list item per row.
+									{ remLogArr.slice( 0, 8 ).map( ( remRowObj ) => ( // What: Reminder Summary Row Render. Why: Every summarized completion needs its own compact row showing its name, type, and dated completion label. How: This maps up to 8 remLogArr entries to one list item per row.
 
 
 										<li
@@ -4398,12 +4398,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 											<span className={ cssModObj.logNamSpa }>{ remRowObj.name }</span>{ /* What: Log Name Span Element. Why: The row needs its own visible reminder name. How: This renders remRowObj.name. */ }
 
-											<span className={ cssModObj.logMetSpa }>{ /* What: Log Meta Span Element. Why: The row's own type tag and relative date are grouped on the opposite side from the name. How: This wraps the type span and the relative-date span. */ }
+											<span className={ cssModObj.logMetSpa }>{ /* What: Log Meta Span Element. Why: The row's own type tag and dated completion label are grouped on the opposite side from the name. How: This wraps the type span and the date span. */ }
 
 
 												<span className={` ${ cssModObj.kinTagSpa }   ${ remRowObj.type === 'recurring' ? cssModObj.kinTagSpaRecurring : '' } `}>{ remRowObj.type === 'once' ? 'one-time' : 'recurring' }</span>{ /* What: Kind Tag Span Element. Why: Every row needs its own small type label. How: This renders "one-time" or "recurring" based on remRowObj.type. */ }
 
-												<span className={ cssModObj.logWheSpa }>{ relWheFun( remRowObj.completedAt ) }</span>{ /* What: Log When Span Element. Why: Every row needs its own relative completion date. How: This renders relWheFun applied to remRowObj.completedAt. */ }
+												<span className={ cssModObj.logWheSpa }>{ relWheFun( remRowObj.completedAt ) }</span>{ /* What: Log When Span Element. Why: Every row needs its own dated completion label. How: This renders relWheFun applied to remRowObj.completedAt. */ }
 
 
 											</span>
