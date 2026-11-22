@@ -425,7 +425,7 @@ const forKeyFun = ( keyOneStr : string, keyTwoStr : string ) => keyOneStr.toLowe
 
 
 
-const forStrFun = ( rawValStr : unknown ) => `'${ String( rawValStr ).replace( /'/g, '\\\'' ) }'`; // What: Format String Function. Why: Every string in the generated file uses single quotes, per this repo's quote rule. How: This wraps the value in single quotes, escaping any inside it.
+const forStrFun = ( rawValStr : unknown ) => `'${ String( rawValStr ).replace( /'/g, "\\'" ) }'`; // What: Format String Function. Why: Every string in the generated file uses single quotes, per this repo's quote rule. How: This wraps the value in single quotes, escaping any inside it.
 
 
 
