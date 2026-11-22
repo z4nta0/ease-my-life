@@ -91,7 +91,7 @@ async function chePagFun ( curPagObj : Page ) : Promise< void > {
 		await curPagObj.waitForTimeout( 400 ); // What: Settle Wait. Why: Container queries and transitions finish after a resize. How: This waits a moment.
 
 
-		const axeResObj = await new AxeBuiCla( { page : curPagObj } ).include( '[data-element-name-hook~="setAccSec"]' ).include( '[data-element-name-hook~="resRowDiv"]' ).withTags( AXE_TAG_ARR ).analyze(); // What: Axe Result Object. Why: The scan decides the test, and covers only what signing in changes, since the main suite scans the rest of Settings, and a section half scrolled out of view reads to axe as a clipped, undersized target. How: This runs axe-core with the suite's tags on the Account section and the reset row.
+		const axeResObj = await new AxeBuiCla( { page : curPagObj } ).include( '[data-element-name-hook~="setAccSec"]' ).include( '[data-element-name-hook~="resRowDiv"]' ).withTags( AXE_TAG_ARR ).analyze(); // What: Axe Result Object. Why: The scan decides the test, and covers only what signing in changes, since the main suite scans the rest of Settings. How: This runs axe-core with the suite's tags on the Account section and the reset row.
 
 
 		expect( vioLinFun( axeResObj.violations ), `axe at ${ widValNum }px` ).toEqual( [] ); // What: Violation Assertion. Why: A screen passes only with none. How: This lists each by rule and target.

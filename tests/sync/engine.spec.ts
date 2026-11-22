@@ -23,18 +23,17 @@ import type { RawSavTyp } from '../../src/core/data-model.ts'; // What: Raw Save
  * engine.spec.ts = Engine Spec
  *
  * @summary
- * Checks the sync engine in Node, with no browser, against the fake cloud
- * copy in fake-backend.ts. The real backup has to split into documents that
- * fit Firestore's limit and join back with every field and log row kept,
- * each month's rows in their order (the logs aren't kept in date order, so
- * joining groups them by month, which nothing in the app depends on, and
- * which leaves every document's hash unchanged). On small states of its
- * own, each flow then checks one rule: a second sync with nothing changed
- * uploads nothing, a change uploads only its own document, a device syncing
- * for the first time adopts the account's data while keeping its own past
- * history, two devices that changed the same month merge it with the later
- * save winning today's rows, an upload that loses the race starts over, and
- * a cloud copy from a newer schema is left alone.
+ * Checks the sync engine in Node, with no browser, against the fake cloud copy
+ * in fake-backend.ts. The real backup has to split into documents that fit
+ * Firestore's limit and join back with every field and log row kept, each
+ * month's rows in their order (the logs aren't kept in date order, so joining
+ * groups them by month, which leaves every document's hash unchanged). On
+ * small states of its own, each flow then checks one rule: a second sync with
+ * nothing changed uploads nothing, a change uploads only its own document, a
+ * device syncing for the first time adopts the account's data while keeping
+ * its own past history, two devices that changed the same month merge it with
+ * the later save winning today's rows, an upload that loses the race starts
+ * over, and a cloud copy from a newer schema is left alone.
  *
  * Sections:
  *  - Constants

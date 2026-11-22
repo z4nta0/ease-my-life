@@ -57,7 +57,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The driver ste
 const CLI_SEL_STR = 'button, [role="button"], a[href], summary';                                                             // What: Clickable Selector String. Why: A click step's target is one of the page's clickable elements. How: This matches each kind.
 const COA_CAR_STR = '[data-element-name-hook~="coaCarDiv"]:not([aria-hidden="true"])';                                       // What: Coach Card String. Why: A hidden measuring copy shares the hook. How: This selects the visible card.
 const FEA_BUT_STR = '[data-element-name-hook~="appFeaSec"] [data-element-name-hook~="carCheBut"][aria-label^="Start the "]'; // What: Feature Button String. Why: Each unplayed App Features card offers Start. How: This selects those buttons.
-const INT_MOD_STR = '[data-element-name-hook~="intScrDiv"][role="dialog"]';                                                  // What: Intro Modal String. Why: Every tour opens from an intro modal. How: This selects it.
+const INT_MOD_STR = '[data-element-name-hook~="intScrDiv"][role="dialog"]';                                                  // What: Intro Modal String. Why: The Welcome tour and each launcher's tour open from an intro modal. How: This selects it.
 const LAU_BUT_STR = '[data-element-name-hook~="tutCarArt"] [data-element-name-hook~="carCheBut"][aria-label^="Start the "]'; // What: Launcher Button String. Why: Each unplayed checklist launcher offers Start. How: This selects those buttons.
 const TOD_TAB_STR = '[data-element-name-hook~="todTabDiv"]';                                                                 // What: Today Tab String. Why: Every launcher's tour returns to Today when it ends. How: This selects the Today tab's root.
 
@@ -74,8 +74,8 @@ const TOD_TAB_STR = '[data-element-name-hook~="todTabDiv"]';                    
  *
  * @summary
  * Starts the tour behind an intro modal by clicking its primary button, the
- * first in the dialog. Every tour opens on one, so the modal not opening
- * within fifteen seconds fails the test.
+ * first in the dialog. Each launcher's tour and the Welcome tour open on one,
+ * so the modal not opening within fifteen seconds fails the test.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

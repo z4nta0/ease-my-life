@@ -14,15 +14,15 @@ import type { Page } from '@playwright/test'; // What: Page. Why: Every watcher 
  *
  * @summary
  * Watches a page for the things a click can't report on its own. watErrFun
- * collects every uncaught page error and console error, React's warnings
- * included, so a suite can fail on any of them. rcdAniFun starts recording the
- * class tokens and attributes added to elements already in the page, and
- * seeAniFun asks whether one matching a name appeared since, which is how a
- * test confirms an animation played: most animations switch on a class or a
- * data attribute for a moment and then remove it, too quickly to catch by
- * looking. Module class names are hashed but keep their local name, so a class
- * is matched by the name inside it (proRinDiv--pulsing matches
- * _proRinDiv--pulsing_x1).
+ * collects every uncaught page error and console error, the ones React reports
+ * through console.error included, so a suite can fail on any of them.
+ * rcdAniFun starts recording the class tokens and attributes added to elements
+ * already in the page, and seeAniFun asks whether one matching a name appeared
+ * since, which is how a test confirms an animation played: most animations
+ * switch on a class or a data attribute for a moment and then remove it, too
+ * quickly to catch by looking. Module class names are hashed but keep their
+ * local name, so a class is matched by the name inside it (proRinDiv--pulsing
+ * matches _proRinDiv--pulsing_x1).
  *
  * Sections:
  *  - Helpers

@@ -59,7 +59,7 @@ const ENG_NAM_ARR = [ // What: Engine Name Array. Why: Every suite that drives a
 
 
 
-const SER_URL_STR = 'http://localhost:5190'; // What: Server URL String. Why: Every suite but security opens the app from the dev server. How: This is the address Playwright waits on and the baseURL of every project but the security ones.
+const SER_URL_STR = 'http://localhost:5190'; // What: Server URL String. Why: The browser suites other than security open the app from the dev server. How: This is the address Playwright waits on and the baseURL of every project but the security ones.
 
 
 

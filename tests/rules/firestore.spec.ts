@@ -30,10 +30,10 @@ import type { TokenOptions         } from '@firebase/rules-unit-testing'; // Wha
  * Checks firestore.rules in the local Firebase Emulator, which npm run
  * test:rules starts and stops around this suite. A paid account with a
  * verified email can create its manifest at revision 1, move it on one
- * revision at a time, and read and write its document versions. Anything
- * else is refused: a skipped or repeated revision, an unexpected field,
- * another account's copy, an unverified account, or nobody signed in. An
- * unpaid owner can still read and delete its own copy, but not write it.
+ * revision at a time, read the manifest, and write a document version.
+ * Anything else is refused: a skipped or repeated revision, an unexpected
+ * field, another account's copy, an unverified account, or nobody signed in.
+ * An unpaid owner can still read and delete its own copy, but not write it.
  *
  * Sections:
  *  - Constants
