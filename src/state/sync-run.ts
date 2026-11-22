@@ -122,6 +122,29 @@ const isaLinFun = ( locUrlStr : string ) => /[?&]oobCode=/.test( locUrlStr ) && 
 
 
 
+// #region reaKeyFun
+
+/**
+ * reaKeyFun = Read Key Function
+ *
+ * @summary
+ * Reads one localStorage key, treating blocked storage as an empty key
+ * instead of letting the read throw.
+ *
+ * @author z4nta0 <https://github.com/z4nta0>
+ *
+ * @param keyNamStr - Key Name String: The localStorage key to read.
+ *
+ * @returns The key's stored text, or null when it is unset or storage is
+ *          blocked.
+ *
+ * @example
+ * ```ts
+ * reaKeyFun(keyNamStr) // => '1'
+ * ```
+ *
+*/
+
 const reaKeyFun = ( keyNamStr : string ) => { // What: Read Key Function. Why: Blocked storage must read as nothing rather than throw. How: This reads a localStorage key, or null.
 
 
@@ -131,6 +154,8 @@ const reaKeyFun = ( keyNamStr : string ) => { // What: Read Key Function. Why: B
 
 
 };
+
+// #endregion reaKeyFun
 
 
 
@@ -303,7 +328,31 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 	// #region Account Watching
 
+	// #region loaFirFun
+
+	/**
+	 * loaFirFun = Load Firebase Function
+	 *
+	 * @summary
+	 * Imports the Firebase module the first time it is called and hands every
+	 * later call the same promise, so Firebase loads at most once.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param void - This function takes no parameters.
+	 *
+	 * @returns A promise that resolves with the Firebase module.
+	 *
+	 * @example
+	 * ```ts
+	 * loaFirFun() // => the Firebase module
+	 * ```
+	 *
+	*/
+
 	const loaFirFun = () => ( firModRef.current ??= import( '../platform/firebase.ts' ) ); // What: Load Firebase Function. Why: Firebase loads only for someone using an account. How: This imports it once, sharing the promise.
+
+	// #endregion loaFirFun
 
 
 
@@ -508,7 +557,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 		}
 
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: staWatFun and finLinFun are rebuilt on every render, so listing them would rerun this launch-only effect each render, reloading Firebase and finishing a sign-in link twice. How: The effect lists only synActBoo, and the first render's copies stay correct, since staWatFun keeps its watch flag in a ref and finLinFun is handed the link directly.
+	// eslint-disable-next-line react-hooks/exhaustive-deps -- What: Deliberate Dependency Omission. Why: staWatFun and finLinFun are rebuilt on every render, so listing them would rerun this launch-only effect on every render. How: The effect lists only synActBoo, and the first render's copies stay correct, since staWatFun keeps its watch flag in a ref and finLinFun is handed the link directly.
 	}, [ synActBoo ] ); // What: Effect Dependency Array. Why: This effect must re-run whenever syncing is switched on or off. How: synActBoo is false during the onboarding demo.
 
 	// #endregion Account Watching
@@ -1011,7 +1060,7 @@ function useSynRunFun ( actStoObj : ActStoTyp, staAppObj : StaAppTyp, synActBoo 
 
 
 			const cheResObj = await fetch( '/.netlify/functions/checkout', { headers : { 'Authorization' : `Bearer ${ ideTokStr }` }, method : 'POST' } ); // What: Checkout Response Object. Why: The function creates the checkout. How: This posts the token to it.
-			const cheBodObj = await cheResObj.json().catch( () => ( {} ) ) as { error? : string, url? : string };                                          // What: Checkout Body Object. Why: The reply is read as holding a url or an error. How: This parses it, or nothing when it isn't JSON. // What: Type Assertion Note. Why: The function always answers with url or error. How: The as types its reply.
+			const cheBodObj = await cheResObj.json().catch( () => ( {} ) ) as { error? : string, url? : string };                                          // What: Checkout Body Object. Why: The reply is read as holding a url or an error. How: This parses it, or nothing when it isn't JSON. // What: Type Assertion Note. Why: The reply is read as holding a url or an error. How: The as types that shape.
 
 
 

@@ -9,7 +9,7 @@ import { ONB_SPI_ARR } from '../../state/onboarding-seed-data.ts'; // What: Onbo
 
 import type { EntKinTyp } from '../../core/data-model.ts'; // What: Entry Kind Type. Why: A row's entry kind extends the saved kinds with a tutorial launcher. How: This types TodRowTyp's kind.
 import type { PicRcdTyp } from '../../core/data-model.ts'; // What: Picker Record Type. Why: Every row carries its picker or a stand-in for one. How: This types TodRowTyp's picRcdObj.
-import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: Grouping reads today's entries, the pickers, and the saved orders. How: This types groEntFun's staAppObj.
+import type { StaAppTyp } from '../../core/data-model.ts'; // What: State App Type. Why: Grouping reads the app state. How: This types groEntFun's staAppObj.
 import type { TodEntTyp } from '../../core/data-model.ts'; // What: Today Entry Type. Why: Every row carries an entry or a stand-in for one. How: This types TodRowTyp's entRcdObj.
 
 // #endregion Imports
@@ -83,6 +83,31 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 	const groBucMap = new Map< string, TodGroTyp >(); // What: Group Bucket Map. Why: Each row below lands in its own group's bucket, created the first time that group is seen. How: This is populated through bucArrFun by the loops below, keyed by group name.
 
 
+
+	// #region bucArrFun
+
+	/**
+	 * bucArrFun = Bucket Array Function
+	 *
+	 * @summary
+	 * Finds a group's bucket in groBucMap, creating an empty one the first
+	 * time that group is seen, and returns the bucket's row array so the
+	 * caller can push a row onto it.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param groNamStr - Group Name String: The group's name, the bucket's
+	 *                    key.
+	 *
+	 * @returns The group bucket's row array.
+	 *
+	 * @example
+	 * ```ts
+	 * bucArrFun('Other') // => the group's row array
+	 * ```
+	 *
+	*/
+
 	const bucArrFun = ( groNamStr : string ) => { // What: Bucket Array Function. Why: Every row below lands in its own group's bucket, which the first row seen for a group creates. How: This creates the group's bucket when it's missing, then returns its row array to push onto.
 
 
@@ -94,6 +119,8 @@ function groEntFun ( staAppObj : StaAppTyp ) : TodGroTyp[] {
 
 
 	};
+
+	// #endregion bucArrFun
 
 
 	for ( const curEntObj of staAppObj.today.entries ) { // What: Today Entry Bucket Loop. Why: Each real entry (pick, day-off, charging) lands in its own picker's group unless its picker is missing or hidden. How: This walks staAppObj.today.entries, resolving each one's own picker and group before pushing it into groBucMap.
