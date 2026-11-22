@@ -116,7 +116,7 @@ const NAV_HEL_OBJ : HelIteTyp = { // What: Nav Help Object. Why: Every page shar
 	selStr    : '[data-tab-button-key]',                                                                        // What: Selector String. Why: Every nav button shares one badge and one tip. How: finTarFun matches all five tab buttons, which HelOveCom unions into one highlight.
 	titStr    : 'Navigation',                                                                                   // What: Title String. Why: This is the tip's own heading text. How: HelTipCom renders it as the tip's title.
 
-	bodEle : ( // What: Body Element. Why: This is NAV_HEL_OBJ's own tip content, one column per tab. How: This maps NAV_TAB_ARR, rendering each tab's nav icon through IcoSvgCom.
+	bodEle : ( // What: Body Element. Why: This is NAV_HEL_OBJ's own tip content, one block per tab. How: This maps NAV_TAB_ARR, rendering each tab's nav icon through IcoSvgCom.
 
 
 		<>{ /* What: Nav Tip Fragment. Why: The tip body is several sibling blocks with no wrapper of its own. How: This groups one navIteDiv per NAV_TAB_ARR row. */ }
@@ -978,7 +978,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 
 			</svg>
 
-			{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Highlight Spot Map. Why: Alongside the mask's own dim-layer cutout, each target also gets a rendered help spot div, e.g. for its own visible border/glow styling. How: This maps recEntArr the same way the mask cutouts above do.
+			{ recEntArr.map( ( [ curIdeStr, curRecObj ] ) => { // What: Highlight Spot Map. Why: Alongside the mask's own dim-layer cutout, each target also gets a rendered help spot div, e.g. for its own visible border styling. How: This maps recEntArr the same way the mask cutouts above do.
 
 
 				const { padBotNum, padLefNum, padRigNum, padTopNum, radXcoNum, radYcoNum } = resBoxFun( curRecObj ); // What: Pad Bottom Number. Why: The spot must draw the same box as its mask cutout. How: This reads the bottom pad from resBoxFun. // What: Pad Left Number. Why: The spot grows by the same left pad. How: This reads it from resBoxFun. // What: Pad Right Number. Why: The spot grows by the same right pad. How: This reads it from resBoxFun. // What: Pad Top Number. Why: The spot grows by the same top pad. How: This reads it from resBoxFun. // What: Radius X-Coordinate Number. Why: The spot's corners match the cutout's horizontal radius. How: This reads it from resBoxFun. // What: Radius Y-Coordinate Number. Why: The spot's corners match the cutout's vertical radius. How: This reads it from resBoxFun.
@@ -1005,7 +1005,7 @@ function HelOveCom ( { actModBoo, helIteArr, onCloAllFun } : HocProTyp ) : React
 						className={ cssModObj.higSpoDiv }
 
 						style={ spoStyObj }
-					/> // What: Highlight Spot Div Element. Why: This is the actual visible highlight box drawn around a target, e.g. for its own border/glow styling. How: This is positioned and shaped by spoStyObj, keyed by curIdeStr for React's own list reconciliation.
+					/> // What: Highlight Spot Div Element. Why: This is the actual visible highlight box drawn around a target, e.g. for its own border styling. How: This is positioned and shaped by spoStyObj, keyed by curIdeStr for React's own list reconciliation.
 
 				);
 

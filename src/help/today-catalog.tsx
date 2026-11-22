@@ -692,7 +692,7 @@ const TOD_HEL_ARR : HelIteTyp[] = [ // What: Today Help Array. Why: This is the 
 
 	},
 
-	{ // What: Section Log Help Item. Why: This is the on-demand help tip for the Section Log element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Every OTHER group section (Chores, Food, ...) gets the same Log chip as Reminders, :not(remGroSec):not(pagTouSec) excludes Reminders itself (already covered above) and the Page Tours onboarding section.
+	{ // What: Section Log Help Item. Why: This is the on-demand help tip for the Section Log element. How: HelOveCom highlights this item's own selStr target and opens this tip from its badge. // Every OTHER group section (Chores, say) gets the same Log chip as Reminders, :not(remGroSec):not(pagTouSec) excludes Reminders itself (already covered above) and the Page Tours onboarding section.
 
 
 		bodEle : <>This opens a log of everything that has happened for this section today. Including what was auto-picked, skipped, manually selected, re-rolled, and completed. It will also show the new updated values, if applicable, once an item has been marked as completed.</>,
