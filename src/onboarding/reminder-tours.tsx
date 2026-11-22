@@ -214,7 +214,7 @@ const VAR_COP_OBJ : Record< string, { bodStr : string, icoStr : string, ideStr :
 		ideStr : 'tk_ob_meds',         // What: Identifier String. Why: This ties the 'once' varKeyStr to its own sample reminder. How: This is read back against state.tasks/ONB_TAS_ARR by buiAddFun's runFun below and against the checklist by cloTouFun.
 		titStr : 'One-Time Reminders', // What: Title String. Why: The intro modal needs a heading naming this varKeyStr. How: This is rendered as IntModCom's own titHeaStr prop.
 
-		bodStr : 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup precription or pickup dry cleaning. Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a one-time reminder is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
+		bodStr : 'One-time reminders are simple one off things that need to get done and will never show up again once they are marked as completed in your todo list. e.g. pickup prescription or pickup dry cleaning. Let’s create one of these now.' // What: Body String. Why: This varKeyStr's own second intro paragraph explains what a one-time reminder is. How: This is rendered as the second entry of IntModCom's own parEleArr prop.
 
 
 	},

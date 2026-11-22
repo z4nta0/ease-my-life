@@ -1194,7 +1194,7 @@
 /* #region rowAddBut */
 
 .rowAddSpa,
-.rowAddBut { /* What: Row Add Span And Button. Why: Adding a item is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below, and eases its hover color, and eases its press and focus ring. */
+.rowAddBut { /* What: Row Add Span And Button. Why: Adding an item is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below, and eases its hover color, and eases its press and focus ring. */
 
 
 	align-items    : center;
@@ -1235,7 +1235,7 @@
 
 
 }
-.rowAddSpa[data-tour-disabled-active] { /* What: Disabled Row Add Span. Why: While the tutorials run, adding a item is unavailable and should look it. How: This dims the control and drops the pointer cursor, keying off data-tour-disabled-active, which its info tip forwards. */
+.rowAddSpa[data-tour-disabled-active] { /* What: Disabled Row Add Span. Why: While the tutorials run, adding an item is unavailable and should look it. How: This dims the control and drops the pointer cursor, keying off data-tour-disabled-active, which its info tip forwards. */
 
 
 	cursor  : default;

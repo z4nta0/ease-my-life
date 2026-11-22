@@ -1299,9 +1299,9 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 						{ isaEdiBoo // What: Edit Mode Check. Why: Editing and creating need different intro text. How: This picks one of the two paragraphs below based on isaEdiBoo.
 
 
-							? <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Adjust its name, group, how it should pick and when it should run below.</React.Fragment> // What: Editing Intro Fragment. Why: An existing picker's own intro reads slightly differently since it's being adjusted rather than created for the first time. How: This renders while isaEdiBoo is true.
+							? <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that each choose one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Adjust its name, group, how it should pick and when it should run below.</React.Fragment> // What: Editing Intro Fragment. Why: An existing picker's own intro reads slightly differently since it's being adjusted rather than created for the first time. How: This renders while isaEdiBoo is true.
 
-							: <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that chooses one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Give it a name, attach a group, choose how it should pick and when it should run. You&rsquo;ll fill its list of items in the next step.</React.Fragment> // What: Create Intro Fragment. Why: A brand-new picker's own intro needs to set up the next Items step too. How: This renders while isaEdiBoo is false.
+							: <React.Fragment>Pickers are the heart of the Ease My Life app. They are small machines that each choose one item for you from a list, e.g. a chore to do, a meal to make, a way to wind down. Give it a name, attach a group, choose how it should pick and when it should run. You&rsquo;ll fill its list of items in the next step.</React.Fragment> // What: Create Intro Fragment. Why: A brand-new picker's own intro needs to set up the next Items step too. How: This renders while isaEdiBoo is false.
 
 
 						}
@@ -1557,7 +1557,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 
 									<p className={ cssModObj.forHelPar }>Conditionals can be attached to a picker that will determine whether a picker should be run on any given day during the auto generator phase for the Today page. Run eligibility can be determined using the same rules that the pickers use, e.g. Truly Random, Weighted, Dynamic Weighted, Ease Up and Ease Down.</p>{ /* What: Form Help Paragraph Element. Why: A first-time user needs to understand what a conditional even does. How: This renders a fixed explanatory sentence. */ }
 
-									<p className={ cssModObj.forHelPar }>Example: You have a Daily Chore picker that you attach a Weighted conditional to in order to determine whether a Day Off should should be triggered and therefore no chores should be chosen for that day.</p>{ /* What: Form Help Paragraph Element. Why: A concrete example lands faster than the abstract explanation above alone. How: This renders a fixed worked example sentence. */ }
+									<p className={ cssModObj.forHelPar }>Example: You have a Daily Chore picker that you attach a Weighted conditional to in order to determine whether a Day Off should be triggered and therefore no chores should be chosen for that day.</p>{ /* What: Form Help Paragraph Element. Why: A concrete example lands faster than the abstract explanation above alone. How: This renders a fixed worked example sentence. */ }
 
 
 								</div>
