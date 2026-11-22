@@ -427,7 +427,7 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
 
 
 
-	const depDonNum = depDonFun( curStaObj, nexEntArr, conIdeStr ); // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so every OTHER done dependent entry for this same conditional must be counted. How: This counts them through depDonFun.
+	const depDonNum = depDonFun( curStaObj, nexEntArr, conIdeStr ); // What: Dependent Done Number. Why: The charging edge below only fires on the FIRST dependent completion of the day, so the done dependent entries for this same conditional must be counted. How: This counts them through depDonFun.
 
 
 

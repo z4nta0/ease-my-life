@@ -113,7 +113,7 @@ const unhHisFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 	ONB_SPI_ARR.forEach( ( samIdeStr ) => actStoObj.updPicFun( samIdeStr, { hidden : false } ) ); // What: Unhide Sample Picker Call. Why: The Stats tour's own steps need every real sample picker visible for its own duration. How: This updates every ONB_SPI_ARR entry's own hidden field to false.
 
 
-	if ( !( staAppObj.pickLog || [] ).some( ( curRowObj ) => ONB_SPI_ARR.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: Only a genuinely virgin-install user (or a first run of this tour) is missing the precomputed sample history. How: This checks whether any existing pickLog row already belongs to a sample picker.
+	if ( !( staAppObj.pickLog || [] ).some( ( curRowObj ) => ONB_SPI_ARR.includes( curRowObj.pickerId ) ) ) { // What: Missing History Check. Why: The Stats page needs the sample pickers' precomputed history, which can be missing, such as when the Welcome Tour's import of it was cut short. How: This checks whether any existing pickLog row already belongs to a sample picker.
 
 
 		import( './onboarding-stats-data.ts' ).then( ( { ONB_STA_OBJ } ) => { // What: Stats Data Import. Why: The precomputed sample history template is large enough to warrant a lazy, on-demand import instead of a static one. How: This dynamically imports onboarding-stats-data.ts, then seeds its own ONB_STA_OBJ export.

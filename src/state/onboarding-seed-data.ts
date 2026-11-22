@@ -157,11 +157,11 @@ const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > 
 		items : [
 
 
-			{ easeMax : 4.1667, easeMin : 2.5,    id : 'it_ob_oven2',   name : 'Deep clean the oven',        value : 100, weight : 1 },
-			{ easeMax : 5.5556, easeMin : 3.7037, id : 'it_ob_dust2',   name : 'Dust the entire house',      value : 100, weight : 1 },
-			{ easeMax : 3.0303, easeMin : 2.2222, id : 'it_ob_fridge',  name : 'Clean out the fridge',       value : 100, weight : 1 },
-			{ easeMax : 2.5,    easeMin : 1.6667, id : 'it_ob_vacuum2', name : 'Vacuum under the furniture', value : 100, weight : 1 },
-			{ easeMax : 6.6667, easeMin : 4.3478, id : 'it_ob_mop',     name : 'Mop the floors',             value : 100, weight : 1 }
+			{ easeMax : 4.1667, easeMin : 2.5,    id : 'it_ob_oven2',   name : 'Deep clean the oven',        value : 100, weight : 1 }, // What: Deep Clean The Oven Item Entry. Why: This is one of the Monthly Chores picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 5.5556, easeMin : 3.7037, id : 'it_ob_dust2',   name : 'Dust the entire house',      value : 100, weight : 1 }, // What: Dust The Entire House Item Entry. Why: This is one of the Monthly Chores picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 3.0303, easeMin : 2.2222, id : 'it_ob_fridge',  name : 'Clean out the fridge',       value : 100, weight : 1 }, // What: Clean Out The Fridge Item Entry. Why: This is one of the Monthly Chores picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 2.5,    easeMin : 1.6667, id : 'it_ob_vacuum2', name : 'Vacuum under the furniture', value : 100, weight : 1 }, // What: Vacuum Under The Furniture Item Entry. Why: This is one of the Monthly Chores picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 6.6667, easeMin : 4.3478, id : 'it_ob_mop',     name : 'Mop the floors',             value : 100, weight : 1 }  // What: Mop The Floors Item Entry. Why: This is one of the Monthly Chores picker's items. How: Its fields follow the shape block above.
 
 
 		]
@@ -180,13 +180,13 @@ const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > 
 		items : [
 
 
-			{ id : 'it_ob_vanilla',    name : 'French Vanilla', weight : 1 },
-			{ id : 'it_ob_caramel',    name : 'Caramel',        weight : 3 },
-			{ id : 'it_ob_sweetcream', name : 'Sweet Cream',    weight : 2 },
-			{ id : 'it_ob_cinnamon',   name : 'Cinnamon',       weight : 1 },
-			{ id : 'it_ob_pumpkin',    name : 'Pumpkin Spice',  weight : 2 },
-			{ id : 'it_ob_hazelnut',   name : 'Hazelnut',       weight : 1 },
-			{ id : 'it_ob_mocha',      name : 'Mocha',          weight : 3 }
+			{ id : 'it_ob_vanilla',    name : 'French Vanilla', weight : 1 }, // What: French Vanilla Item Entry. Why: This is one of the Coffee Creamer picker's items. How: Its fields follow the shape block above.
+			{ id : 'it_ob_caramel',    name : 'Caramel',        weight : 3 }, // What: Caramel Item Entry. Why: This is one of the Coffee Creamer picker's items. How: Its fields follow the shape block above.
+			{ id : 'it_ob_sweetcream', name : 'Sweet Cream',    weight : 2 }, // What: Sweet Cream Item Entry. Why: This is one of the Coffee Creamer picker's items. How: Its fields follow the shape block above.
+			{ id : 'it_ob_cinnamon',   name : 'Cinnamon',       weight : 1 }, // What: Cinnamon Item Entry. Why: This is one of the Coffee Creamer picker's items. How: Its fields follow the shape block above.
+			{ id : 'it_ob_pumpkin',    name : 'Pumpkin Spice',  weight : 2 }, // What: Pumpkin Spice Item Entry. Why: This is one of the Coffee Creamer picker's items. How: Its fields follow the shape block above.
+			{ id : 'it_ob_hazelnut',   name : 'Hazelnut',       weight : 1 }, // What: Hazelnut Item Entry. Why: This is one of the Coffee Creamer picker's items. How: Its fields follow the shape block above.
+			{ id : 'it_ob_mocha',      name : 'Mocha',          weight : 3 }  // What: Mocha Item Entry. Why: This is one of the Coffee Creamer picker's items. How: Its fields follow the shape block above.
 
 
 		]
@@ -205,14 +205,14 @@ const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > 
 		items : [
 
 
-			{ easeMax : 14.2857, easeMin : 8.3333,  id : 'it_ob_spaghetti',    name : 'Spaghetti and meatballs', value : 100, weight : 1 },
-			{ easeMax : 10,      easeMin : 7.1429,  id : 'it_ob_meatloaf',     name : 'Meatloaf',                value : 100, weight : 1 },
-			{ easeMax : 16.6667, easeMin : 10,      id : 'it_ob_tacos',        name : 'Tacos',                   value : 100, weight : 1 },
-			{ easeMax : 20,      easeMin : 12.5,    id : 'it_ob_pizza',        name : 'Pizza',                   value : 100, weight : 1 },
-			{ easeMax : 11.1111, easeMin : 7.6923,  id : 'it_ob_steak',        name : 'Steak and potatoes',      value : 100, weight : 1 },
-			{ easeMax : 12.5,    easeMin : 9.0909,  id : 'it_ob_burger',       name : 'Burger and fries',        value : 100, weight : 1 },
-			{ easeMax : 14.2857, easeMin : 7.1429,  id : 'it_ob_lemonchicken', name : 'Lemon Chicken',           value : 100, weight : 1 },
-			{ easeMax : 16.6667, easeMin : 11.1111, id : 'it_ob_friedchicken', name : 'Fried chicken',           value : 100, weight : 1 }
+			{ easeMax : 14.2857, easeMin : 8.3333,  id : 'it_ob_spaghetti',    name : 'Spaghetti and meatballs', value : 100, weight : 1 }, // What: Spaghetti And Meatballs Item Entry. Why: This is one of the Dinner picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 10,      easeMin : 7.1429,  id : 'it_ob_meatloaf',     name : 'Meatloaf',                value : 100, weight : 1 }, // What: Meatloaf Item Entry. Why: This is one of the Dinner picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 16.6667, easeMin : 10,      id : 'it_ob_tacos',        name : 'Tacos',                   value : 100, weight : 1 }, // What: Tacos Item Entry. Why: This is one of the Dinner picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 20,      easeMin : 12.5,    id : 'it_ob_pizza',        name : 'Pizza',                   value : 100, weight : 1 }, // What: Pizza Item Entry. Why: This is one of the Dinner picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 11.1111, easeMin : 7.6923,  id : 'it_ob_steak',        name : 'Steak and potatoes',      value : 100, weight : 1 }, // What: Steak And Potatoes Item Entry. Why: This is one of the Dinner picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 12.5,    easeMin : 9.0909,  id : 'it_ob_burger',       name : 'Burger and fries',        value : 100, weight : 1 }, // What: Burger And Fries Item Entry. Why: This is one of the Dinner picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 14.2857, easeMin : 7.1429,  id : 'it_ob_lemonchicken', name : 'Lemon Chicken',           value : 100, weight : 1 }, // What: Lemon Chicken Item Entry. Why: This is one of the Dinner picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 16.6667, easeMin : 11.1111, id : 'it_ob_friedchicken', name : 'Fried chicken',           value : 100, weight : 1 }  // What: Fried Chicken Item Entry. Why: This is one of the Dinner picker's items. How: Its fields follow the shape block above.
 
 
 		]
@@ -231,11 +231,11 @@ const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > 
 		items : [
 
 
-			{ easeMax : 20,      easeMin : 14.2857, id : 'it_ob_chest',     name : 'Chest',     value : 100, weight : 1 },
-			{ easeMax : 16.6667, easeMin : 12.5,    id : 'it_ob_legs',      name : 'Legs',      value : 100, weight : 1 },
-			{ easeMax : 14.2857, easeMin : 11.1111, id : 'it_ob_shoulders', name : 'Shoulders', value : 100, weight : 1 },
-			{ easeMax : 25,      easeMin : 12.5,    id : 'it_ob_arms',      name : 'Arms',      value : 100, weight : 1 },
-			{ easeMax : 20,      easeMin : 12.5,    id : 'it_ob_core',      name : 'Core',      value : 100, weight : 1 }
+			{ easeMax : 20,      easeMin : 14.2857, id : 'it_ob_chest',     name : 'Chest',     value : 100, weight : 1 }, // What: Chest Item Entry. Why: This is one of the Workouts picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 16.6667, easeMin : 12.5,    id : 'it_ob_legs',      name : 'Legs',      value : 100, weight : 1 }, // What: Legs Item Entry. Why: This is one of the Workouts picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 14.2857, easeMin : 11.1111, id : 'it_ob_shoulders', name : 'Shoulders', value : 100, weight : 1 }, // What: Shoulders Item Entry. Why: This is one of the Workouts picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 25,      easeMin : 12.5,    id : 'it_ob_arms',      name : 'Arms',      value : 100, weight : 1 }, // What: Arms Item Entry. Why: This is one of the Workouts picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 20,      easeMin : 12.5,    id : 'it_ob_core',      name : 'Core',      value : 100, weight : 1 }  // What: Core Item Entry. Why: This is one of the Workouts picker's items. How: Its fields follow the shape block above.
 
 
 		]
@@ -254,10 +254,10 @@ const ONB_ESP_ARR : ( PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > 
 		items : [
 
 
-			{ easeMax : 20,      easeMin : 14.2857, id : 'it_ob_readbook',   name : 'Read a book',        value : 100, weight : 1 },
-			{ easeMax : 50,      easeMin : 20,      id : 'it_ob_bingewatch', name : 'Binge watch a show', value : 100, weight : 1 },
-			{ easeMax : 33.3333, easeMin : 16.6667, id : 'it_ob_watchmovie', name : 'Watch a movie',      value : 100, weight : 1 },
-			{ easeMax : 50,      easeMin : 25,      id : 'it_ob_youtube',    name : 'Browse YouTube',     value : 100, weight : 1 }
+			{ easeMax : 20,      easeMin : 14.2857, id : 'it_ob_readbook',   name : 'Read a book',        value : 100, weight : 1 }, // What: Read A Book Item Entry. Why: This is one of the Relax picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 50,      easeMin : 20,      id : 'it_ob_bingewatch', name : 'Binge watch a show', value : 100, weight : 1 }, // What: Binge Watch A Show Item Entry. Why: This is one of the Relax picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 33.3333, easeMin : 16.6667, id : 'it_ob_watchmovie', name : 'Watch a movie',      value : 100, weight : 1 }, // What: Watch A Movie Item Entry. Why: This is one of the Relax picker's items. How: Its fields follow the shape block above.
+			{ easeMax : 50,      easeMin : 25,      id : 'it_ob_youtube',    name : 'Browse YouTube',     value : 100, weight : 1 }  // What: Browse YouTube Item Entry. Why: This is one of the Relax picker's items. How: Its fields follow the shape block above.
 
 
 		]
@@ -358,12 +358,12 @@ const ONB_EXA_OBJ : PicForTyp & Required< Pick< PicForTyp, 'id' | 'items' > > = 
 	items : [
 
 
-		{ easeMax : 14,      easeMin : 7,       id : 'ob_it_laundry', name : 'Do the laundry',            value : 100, weight : 1 },
-		{ easeMax : 20,      easeMin : 12.5,    id : 'ob_it_bath',    name : 'Clean the bathrooms',       value : 100, weight : 1 },
-		{ easeMax : 12.5,    easeMin : 9.0909,  id : 'ob_it_dust',    name : 'Dust the main living area', value : 100, weight : 1 },
-		{ easeMax : 16.6667, easeMin : 11.1111, id : 'ob_it_vacuum',  name : 'Vacuum the floors',         value : 100, weight : 1 },
-		{ easeMax : 8.3333,  easeMin : 5.5556,  id : 'ob_it_shower',  name : 'Clean the shower',          value : 100, weight : 1 },
-		{ easeMax : 7.1429,  easeMin : 4.7619,  id : 'ob_it_oven',    name : 'Clean the oven',            value : 100, weight : 1 }
+		{ easeMax : 14,      easeMin : 7,       id : 'ob_it_laundry', name : 'Do the laundry',            value : 100, weight : 1 }, // What: Do The Laundry Item Entry. Why: This is one of the Daily Chores picker's items. How: Its fields follow the shape block above.
+		{ easeMax : 20,      easeMin : 12.5,    id : 'ob_it_bath',    name : 'Clean the bathrooms',       value : 100, weight : 1 }, // What: Clean The Bathrooms Item Entry. Why: This is one of the Daily Chores picker's items. How: Its fields follow the shape block above.
+		{ easeMax : 12.5,    easeMin : 9.0909,  id : 'ob_it_dust',    name : 'Dust the main living area', value : 100, weight : 1 }, // What: Dust The Main Living Area Item Entry. Why: This is one of the Daily Chores picker's items. How: Its fields follow the shape block above.
+		{ easeMax : 16.6667, easeMin : 11.1111, id : 'ob_it_vacuum',  name : 'Vacuum the floors',         value : 100, weight : 1 }, // What: Vacuum The Floors Item Entry. Why: This is one of the Daily Chores picker's items. How: Its fields follow the shape block above.
+		{ easeMax : 8.3333,  easeMin : 5.5556,  id : 'ob_it_shower',  name : 'Clean the shower',          value : 100, weight : 1 }, // What: Clean The Shower Item Entry. Why: This is one of the Daily Chores picker's items. How: Its fields follow the shape block above.
+		{ easeMax : 7.1429,  easeMin : 4.7619,  id : 'ob_it_oven',    name : 'Clean the oven',            value : 100, weight : 1 }  // What: Clean The Oven Item Entry. Why: This is one of the Daily Chores picker's items. How: Its fields follow the shape block above.
 
 
 	]

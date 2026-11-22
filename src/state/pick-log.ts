@@ -24,7 +24,7 @@ import type { StaAppTyp } from '../core/data-model.ts'; // What: State App Type.
  * by date/pickerId as needed. Each row is a single pick that landed on
  * the Today list:
  *   { id, eid, date, pickerId, itemId, itemName, pickerName, group,
- *     done, completedAt, source }
+ *     done, completedAt, source, outcome?, depletedEnd? }
  * date is the 'YYYY-MM-DD' the pick was placed on Today; eid links to a live
  * today.entries row (null once the day rolls); source is 'auto' (placed by the
  * Daily generator), 'manual' (sent from the Pickers tab), or 'reroll'.
