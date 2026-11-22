@@ -8,7 +8,7 @@ import { HOL_NAM_OBJ } from '../core/holidays.ts'; // What: Holidays Namespace O
 import { newIdeFun   } from './ids.ts';            // What: New Identifier Function. Why: An entry saved without an eid needs a unique one. How: This is called once per entry that needs one.
 import { norGroFun   } from '../core/pickers.ts';  // What: Normalize Group Function. Why: Every saved picker's group label is Title Cased on load. How: This is called from migStaFun without an existing-group list.
 import { norPicFun   } from '../core/pickers.ts';  // What: Normalize Picker Function. Why: Every saved picker's display name is tidied on load. How: This is called from migStaFun.
-import { TAS_NAM_OBJ } from '../core/tasks.ts';    // What: Tasks Namespace Object. Why: Saved reminders and reminder options are normalized by the reminders engine, not this file. How: This is called (isaStaFun/norOptFun) from migStaFun.
+import { TAS_NAM_OBJ } from '../core/tasks.ts';    // What: Tasks Namespace Object. Why: Stale one-time reminders are identified, and reminder options normalized, by the reminders engine rather than this file. How: This is called (isaStaFun/norOptFun) from migStaFun.
 
 
 import type { RawSavTyp } from '../core/data-model.ts'; // What: Raw Save Type. Why: migStaFun reads a save from any earlier version before it has a known shape. How: This types that save and every record read out of it.

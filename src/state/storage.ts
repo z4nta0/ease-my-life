@@ -329,7 +329,7 @@ async function reaDatFun () : Promise< RawSavTyp > {
 
 		...resStaObj, // What: Rest State Spread. Why: Every field but the pick log comes from the main store. How: This spreads resStaObj in first.
 
-		pickLog : picLogArr || [] // What: Pick Log. Why: The pick log lives in its own store and has to rejoin the state. How: This reattaches picLogArr, or an empty array for a state store written before this split ever existed.
+		pickLog : picLogArr || [] // What: Pick Log. Why: The pick log lives in its own store and has to rejoin the state. How: This reattaches picLogArr, or an empty array when the pick log store has no record yet.
 
 
 	};
@@ -382,7 +382,7 @@ async function wriDatFun ( appStaObj : StaAppTyp ) : Promise< void > {
 	delete copStaObj.__mirrorNoLog; // What: Mirror Marker Strip. Why: The marker only describes one warm-mirror copy whose pickLog was left out, so IndexedDB must never keep it, not even when that copy is migrated in after a wipe. How: This deletes it from the clone before the write below.
 	delete copStaObj.__logPartial;  // What: Partial Log Marker Strip. Why: The marker only describes a localStorage copy whose pick log may be incomplete, so IndexedDB must never keep it. How: This deletes it from the clone before the write below.
 
-	copStaObj.__savedAt = Date.now(); // What: Saved At Stamp. Why: iniStoFun compares this against the localStorage mirror's own stamp to boot from whichever copy was saved last. How: This stamps the clone with the current time in milliseconds.
+	copStaObj.__savedAt = Date.now(); // What: Saved At Stamp. Why: mirAdoFun compares this against the localStorage mirror's own stamp to boot from whichever copy was saved last. How: This stamps the clone with the current time in milliseconds.
 
 
 	await reqProFun( traStoFun( STA_STO_STR, 'readwrite' ).put( copStaObj, 'main' ) ); // What: State Store Put Call. Why: This is the actual write of the non-pickLog portion of state into its own object store. How: This awaits reqProFun wrapping a put(copStaObj, 'main') request against the state object store.
@@ -586,13 +586,13 @@ function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
 
 
 
-		const staDatObj = { // What: Stamped Data Object. Why: iniStoFun needs to know when this copy was saved, and whether its pick log is complete, to decide whether it should replace an older IndexedDB copy. How: This adds the save time, plus a partial-log marker on a full write whose pick log started from the warm mirror.
+		const staDatObj = { // What: Stamped Data Object. Why: mirAdoFun needs to know when this copy was saved, and whether its pick log is complete, to decide whether it should replace an older IndexedDB copy. How: This adds the save time, plus a partial-log marker on a full write whose pick log started from the warm mirror.
 
 
 			...payDatObj,                                                // What: Payload Data Spread. Why: Every field being written carries over unchanged. How: This spreads payDatObj before the markers below.
 			...( fulWriBoo && logSusBoo ? { __logPartial : true } : {} ), // What: Partial Log Marker Spread. Why: A localStorage session that booted from the warm mirror only holds the picks made since, so its pick log must never replace the full history in IndexedDB. How: This adds __logPartial to a full write while logSusBoo still holds.
 
-			__savedAt : Date.now() // What: Saved At. Why: iniStoFun compares this against IndexedDB's own stamp. How: This is the current time in milliseconds.
+			__savedAt : Date.now() // What: Saved At. Why: mirAdoFun compares this against IndexedDB's own stamp. How: This is the current time in milliseconds.
 
 
 		};
@@ -1325,7 +1325,7 @@ async function reaPerFun () : Promise< RawSavTyp > {
 async function datBytFun () : Promise< number | null > {
 
 
-	try { // What: Data Bytes Try. Why: reaPerFun and JSON.stringify can both throw, and either failure should resolve to null rather than reject the caller. How: This wraps the whole measure sequence below, falling back to null in its own catch.
+	try { // What: Data Bytes Try. Why: JSON.stringify can throw (a circular value), and that failure should resolve to null rather than reject the caller. How: This wraps the whole measure sequence below, falling back to null in its own catch.
 
 
 		const curStaObj = ( await reaPerFun() ) || cacStaObj; // What: Current State Object. Why: The freshest available state must be measured, preferring the authoritative persisted copy over the in-memory one. How: This awaits reaPerFun and falls back to cacStaObj only when that resolves to nothing.
