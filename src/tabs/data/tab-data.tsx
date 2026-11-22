@@ -289,7 +289,7 @@ function CatTogCom ( { colValBoo, disValBoo, kicTexStr, onClick, sumTexStr, touV
 			aria-expanded={ !colValBoo }
 
 			onClick={ onClick }
-		>{ /* What: Category Toggle Button Element. Why: A nested disclosure needs its own toggle. How: This calls onClick, which flips its collapsed state. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
+		>{ /* What: Category Toggle Button Element. Why: A nested disclosure needs its own toggle. How: This calls onClick when pressed and is disabled while disValBoo is true. Its data-element-name-hook is read by the tours, help mode, and the test suites. */ }
 
 
 			<span className={ cssModObj.togLabSpa }>{ /* What: Toggle Label Span Element. Why: The chevron and the kicker read together as one unit. How: This wraps both spans below. */ }
@@ -385,7 +385,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	const detPicBoo = ediTouBoo && [ 3, 5, 6 ].includes( touBusObj.touSteNum! ); // What: Disable-Edit-Tour Picker Boolean. Why: Steps 4/6/7 of the "edit your first item" tour all depend on this exact picker staying expanded as their own target. How: This guards the picker header's own collapse toggle during those 3 steps. // What: Non-Null Note. Why: The tour runner publishes its step before its id, so a matched tour id means the step is set. How: The ! tells TypeScript touSteNum is a number here.
 	const detConBoo = ediTouBoo && [ 5, 6 ].includes( touBusObj.touSteNum! );    // What: Disable-Edit-Tour Control Boolean. Why: Steps 6/7 would let the highlighted box balloon to include Controls, which those steps were never about. How: This guards the Controls header's own toggle during those 2 steps. // What: Non-Null Note. Why: The tour runner publishes its step before its id, so a matched tour id means the step is set. How: The ! tells TypeScript touSteNum is a number here.
 	const detIteBoo = ediTouBoo && [ 3, 5, 6 ].includes( touBusObj.touSteNum! ); // What: Disable-Edit-Tour Items Boolean. Why: Collapsing Items during steps 6/7 would hide the item rows/Add button those steps depend on. How: This guards the Items header's own toggle during all 3 steps. // What: Non-Null Note. Why: The tour runner publishes its step before its id, so a matched tour id means the step is set. How: The ! tells TypeScript touSteNum is a number here.
-	const detAddBoo = ediTouBoo && [ 5, 6 ].includes( touBusObj.touSteNum! );    // What: Disable-Edit-Tour Add Boolean. Why: Step 6's own body text says this button is disabled for the tutorial, and a brand-new item would shift every row's position out from under its "click any of these" framing. How: This guards the Add button during steps 6/7. // What: Non-Null Note. Why: The tour runner publishes its step before its id, so a matched tour id means the step is set. How: The ! tells TypeScript touSteNum is a number here.
+	const detAddBoo = ediTouBoo && [ 5, 6 ].includes( touBusObj.touSteNum! );    // What: Disable-Edit-Tour Add Boolean. Why: Step 6's own body text says this button is disabled for the tutorial, and a brand-new item would shift every row's position out from under its "click any of these" framing. How: This guards the Add button during those 2 steps. // What: Non-Null Note. Why: The tour runner publishes its step before its id, so a matched tour id means the step is set. How: The ! tells TypeScript touSteNum is a number here.
 
 	const tutProBoo = ONB_CHE_OBJ.tutProFun( staAppObj ); // What: Tutorial Progress Boolean. Why: Several add/edit controls must stay disabled until the Welcome Tour's own checklist finishes. How: This calls the shared ONB_CHE_OBJ helper against the whole app state.
 
@@ -579,7 +579,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 	 *
 	*/
 
-	const keeIteFun = () => { // What: Keep Item Function. Why: Saving, collapsing, or otherwise closing a Data tab row keeps its edits. How: This adds a new item to the store first, then commits the draft, skipping a draft already handled.
+	const keeIteFun = () => { // What: Keep Item Function. Why: Saving, collapsing, or otherwise closing a Data tab row keeps its edits. How: This adds a new item to its picker (the store, or the draft picker's local items) first, then commits the draft, skipping a draft already handled.
 
 
 		if ( !draIteObj || hanDraRef.current === draIteObj ) return; // What: Handled Draft Guard. Why: There's nothing to keep without a draft, or once this draft was already saved or cancelled. How: This bails out in either case.
@@ -2057,7 +2057,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 					const keeCloFun = ( iteIdeStr : string ) => { // What: Keep Close Function. Why: The row's own collapse chevron and IteEdiCom's own Save both mean "keep this, I'm done", so both need the exact same cleanup, kept in one place so neither can drift out of sync with the other. How: This keeps the open draft, then closes the row only if this item is still the open one.
 
 
-						keeIteFun(); // What: Keep Item Call. Why: The collapse chevron and Save both keep the row's edits. How: This commits the open draft, adding a brand-new item to the store first.
+						keeIteFun(); // What: Keep Item Call. Why: The collapse chevron and Save both keep the row's edits. How: This commits the open draft, adding a brand-new item to its picker (the store, or the draft picker's local items) first.
 
 						setOpeIteStr( ( opeCurStr ) => opeCurStr === iteIdeStr ? null : opeCurStr ); // What: Open Item Close Guard. Why: Only close if this item is STILL the open one (it might already have changed). How: This nulls opeIteStr only when it currently equals iteIdeStr.
 
@@ -2507,7 +2507,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 																	aria-label='Collapse'
 
 																	onClick={ () => keeCloFun( iteCurObj.id ) }
-																>{ /* What: Row Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same "deliberate close" handler IteEdiCom's own Save uses. It also carries chvDisBut, the shared disclosure chevron look. */ }
+																>{ /* What: Row Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same handler onSavEdiFun runs below. It also carries chvDisBut, the shared disclosure chevron look. */ }
 
 
 																	<IcoSvgCom
