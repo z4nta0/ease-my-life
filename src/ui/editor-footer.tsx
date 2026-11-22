@@ -18,9 +18,7 @@ import { useEscCanFun } from './escape-cancel.ts'; // What: Use Escape Cancel Fu
  * editor-footer.tsx = Editor Footer
  *
  * @summary
- * The Delete/Cancel/Save row that ends a reminder editor, shared by
- * Today's inline reminder editor and the Data tab's reminder manager so both
- * read and behave the same.
+ * The Delete/Cancel/Save row that ends a reminder editor.
  *
  * Sections:
  *  - Components
@@ -42,10 +40,10 @@ type EfcProTyp = { isaNewBoo? : boolean, onCanTasFun : () => void, onDelTasFun :
  * EdiFooCom = Editor Footer Component
  *
  * @summary
- * The shared Cancel/Save/Delete footer for a reminder's editor, used by both
- * Today and Data so the two match. Delete is confirm-gated inline, morphing
- * just this footer row while the schedule editor above stays intact. Cancel
- * and Save simply hand off to the caller, which drops or commits its draft.
+ * The Cancel/Save/Delete footer for a reminder's editor. Delete is
+ * confirm-gated inline, morphing just this footer row while the schedule
+ * editor above stays intact. Cancel and Save call the handlers the footer is
+ * given.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -97,7 +95,7 @@ function EdiFooCom ( { isaNewBoo, onCanTasFun, onDelTasFun, onDonTasFun } : EfcP
 				className={` ${ cssModObj.ediFooDiv }   ${ cssModObj.ediFooDivConfirm } `}
 
 				data-element-name-hook='ediFooDiv'
-			>{ /* What: Editor Footer Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions. Its data-element-name-hook is read by help mode. */ }
+			>{ /* What: Editor Footer Div Element. Why: This is the delete-confirm prompt's own root, replacing the plain footer row. How: This renders the confirm message and its own Cancel/Delete actions, its ediFooDivConfirm class centering them vertically. Its data-element-name-hook is read by help mode. */ }
 
 
 				<span className={ cssModObj.delMesSpa }>Delete this reminder?</span>{ /* What: Delete Message Span Element. Why: This asks the user to confirm before anything is actually removed. How: This renders the literal confirmation question. */ }

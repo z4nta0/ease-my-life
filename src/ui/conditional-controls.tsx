@@ -209,13 +209,13 @@ function BouRowCom ( { dayValNum, isaDowBoo, labTexStr, onSetValFun, subTexStr }
 			<div className={ cssModObj.ediLabDiv }>{ /* What: Editor Label Div Element. Why: The row's own title and live day-count summary need to sit together. How: This wraps the title span and the fading summary span below. */ }
 
 
-				<span className={ cssModObj.namRowSpa }><span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Editor Name Span Element. Why: This is the label text itself, styled apart from its own row wrapper. How: This renders labTexStr. */ }</span>{ /* What: Name Row Span Element. Why: This names the row's own control. How: This wraps the label text span. */ }
+				<span className={ cssModObj.namRowSpa }><span className={ cssModObj.ediNamSpa }>{ labTexStr }</span>{ /* What: Editor Name Span Element. Why: This is the label text itself, styled apart from its own row wrapper. How: This renders labTexStr. */ }</span>{ /* What: Name Row Span Element. Why: This names the row's own control. How: This wraps the label text span in an inline row. */ }
 
 				<span
 					key={ dayValNum }
 
 					className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-				>{ subTexStr }</span>{ /* What: Editor Sub Span Element. Why: The user needs a plain-English read of what this day count actually means for the current direction. How: This re-keys, and so re-fades, whenever dayValNum changes. */ }
+				>{ subTexStr }</span>{ /* What: Editor Sub Span Element. Why: The user needs a plain-English read of what this day count actually means for the current direction. How: This re-keys, and so re-fades, whenever dayValNum changes, its ediSubSpaFade class playing the fade on each remount. */ }
 
 
 			</div>
@@ -318,7 +318,7 @@ function FilRowCom ( { chrValNum, isaDowBoo, labTexStr, onFilActFun, thrValNum }
 					key={ chrValNum >= thrValNum ? 'full' : 'part' } // What: Charge State Key. Why: The summary should re-fade only when the charge reaches or leaves full, not on every value change. How: This keys on whether chrValNum has reached thrValNum.
 
 					className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-				>{ chrValNum >= thrValNum ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{ Math.round( chrValNum ) } charge</strong></> }</span>{ /* What: Editor Sub Span Element. Why: The user needs to see the current charge, or know it is already full, before deciding to fill it. How: This re-keys, and so re-fades, whenever the full/part state flips. */ }
+				>{ chrValNum >= thrValNum ? <>conditional is <strong>fully charged</strong></> : <>conditional at <strong>{ Math.round( chrValNum ) } charge</strong></> }</span>{ /* What: Editor Sub Span Element. Why: The user needs to see the current charge, or know it is already full, before deciding to fill it. How: This re-keys, and so re-fades, whenever the full/part state flips, its ediSubSpaFade class playing the fade on each remount. */ }
 
 
 			</div>
@@ -364,12 +364,10 @@ type CocProTyp = { conDraObj : Partial< ConRcdTyp >, hidNamBoo? : boolean, layVa
  *                          draft object this editor renders and patches;
  *                          owned by the caller, never mutated directly.
  * @param props.hidNamBoo - Hide Name Boolean: Whether to omit the name field
- *                          entirely, for a caller (the Data tab) that already
- *                          hosts its own inline name input elsewhere; defaults
- *                          to false.
- * @param props.layVarStr - Layout Variant String: 'card' (the Pickers
- *                          create-flow's own boxed layout) or 'inline' (the
- *                          Data tab's tighter layout), defaulting to 'card'.
+ *                          entirely; defaults to false.
+ * @param props.layVarStr - Layout Variant String: 'card' (a boxed layout) or
+ *                          'inline' (a tighter, full-bleed row layout),
+ *                          defaulting to 'card'.
  * @param props.namErrStr - Name Error String: An optional validation message
  *                          shown under the name field, such as a name
  *                          collision.
@@ -405,7 +403,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 	const isaDowBoo = curModStr === 'ease-down';                            // What: Is-A Down Boolean. Why: Ease-up and ease-down share most of their own settings block but differ in a few labels and directions. How: This is true only for the 'ease-down' mode key.
 	const useWeiBoo = curModStr === 'weighted' || curModStr === 'dynamic';  // What: Use Weight Boolean. Why: The weighted and dynamic modes share one Odds settings block, distinct from random and the ease modes. How: This is true only for those 2 mode keys.
 	const isaDynBoo = curModStr === 'dynamic';                              // What: Is-A Dynamic Boolean. Why: Only the dynamic mode also shows its own Boost row inside the shared Odds block. How: This is true only for the 'dynamic' mode key.
-	const isaInlBoo = layVarStr === 'inline';                               // What: Is-An Inline Boolean. Why: The Data tab's own inline editor variant needs a tighter layout than the Pickers create-flow's card variant. How: This is true only when the caller passed layVarStr='inline'.
+	const isaInlBoo = layVarStr === 'inline';                               // What: Is-An Inline Boolean. Why: The inline variant needs a tighter layout than the card variant. How: This is true only when the caller passed layVarStr='inline'.
 
 	// #endregion Mode Flags
 
@@ -550,7 +548,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 				className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivCardtext } `}
 
 				data-element-name-hook='forFieDiv'
-			>{ /* What: Form Field Div Element. Why: This groups the day-off replacement card text's own label, help text, and input as one field. How: This is always shown, unlike the name field, since every conditional needs a card text. Its data-element-name-hook is read by the tours and help mode. */ }
+			>{ /* What: Form Field Div Element. Why: This groups the day-off replacement card text's own label, help text, and input as one field. How: This is always shown, unlike the name field, since a conditional's day-off card shows this text, and its forFieDivCardtext modifier class lets the inline layout lay it out as a row. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 				<div
@@ -843,7 +841,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 										key={ ( conDraObj.value || 0 ) === 0 ? 'none' : 'boost' } // What: Boost State Key. Why: The summary should re-fade only when the boost starts or clears, not on every value change. How: This keys on whether any boost has accrued.
 
 										className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-									>{ ( conDraObj.value || 0 ) === 0 ? <><strong>no bonus</strong> to odds, will increase when not triggered</> : <><strong>+{ conDraObj.value }%</strong> to odds, resets when triggered</> }</span>{ /* What: Editor Sub Span Element. Why: The user needs to see whether a miss-boost has accrued yet, and what it is worth. How: This re-keys, and so re-fades, whenever the boost goes from zero to nonzero or back. */ }
+									>{ ( conDraObj.value || 0 ) === 0 ? <><strong>no bonus</strong> to odds, will increase when not triggered</> : <><strong>+{ conDraObj.value }%</strong> to odds, resets when triggered</> }</span>{ /* What: Editor Sub Span Element. Why: The user needs to see whether a miss-boost has accrued yet, and what it is worth. How: This re-keys, and so re-fades, whenever the boost goes from zero to nonzero or back, its ediSubSpaFade class playing the fade on each remount. */ }
 
 
 								</div>
@@ -968,13 +966,13 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 								key={ conDraObj.active !== false ? 'active' : 'inactive' } // What: Active State Key. Why: The title should re-fade only when the toggle flips. How: This keys on active, treating a missing value as active.
 
 								className={` ${ cssModObj.ediNamSpa }   ${ cssModObj.ediNamSpaFade } `}
-							>{ conDraObj.active !== false ? 'Active' : 'Inactive' }</span>{ /* What: Editor Name Span Element. Why: The row's own title should read Active or Inactive to match the current toggle state. How: This re-keys, and so re-fades, whenever conDraObj.active flips. */ }
+							>{ conDraObj.active !== false ? 'Active' : 'Inactive' }</span>{ /* What: Editor Name Span Element. Why: The row's own title should read Active or Inactive to match the current toggle state. How: This re-keys, and so re-fades, whenever conDraObj.active flips, its ediNamSpaFade class playing the fade on each remount. */ }
 
 							<span
 								key={ conDraObj.active !== false ? ( isaDowBoo ? 'on-down' : 'on' ) : 'off' } // What: Active Summary Key. Why: The summary text changes with both the toggle and the ease-down direction, so either change should re-fade it. How: This keys on active, splitting the active case by isaDowBoo.
 
 								className={` ${ cssModObj.ediSubSpa }   ${ cssModObj.ediSubSpaFade } `}
-							>{ conDraObj.active !== false ? ( isaDowBoo ? <>conditional <strong>is active</strong>, picker will not run until conditional fully discharges</> : <>conditional <strong>is active</strong>, if triggered picker will not run for one cycle</> ) : <>conditional is <strong>inactive</strong>, picker will always run</> }</span>{ /* What: Editor Sub Span Element. Why: The user needs a plain-English read of what the current toggle state actually does, which differs for ease-down. How: This re-keys, and so re-fades, whenever the active/direction combination changes. */ }
+							>{ conDraObj.active !== false ? ( isaDowBoo ? <>conditional <strong>is active</strong>, picker will not run until conditional fully discharges</> : <>conditional <strong>is active</strong>, if triggered picker will not run for one cycle</> ) : <>conditional is <strong>inactive</strong>, picker will always run</> }</span>{ /* What: Editor Sub Span Element. Why: The user needs a plain-English read of what the current toggle state actually does, which differs for ease-down. How: This re-keys, and so re-fades, whenever the active/direction combination changes, its ediSubSpaFade class playing the fade on each remount. */ }
 
 
 						</div>
