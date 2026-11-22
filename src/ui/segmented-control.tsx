@@ -224,7 +224,7 @@ function SegConCom< T extends string > ( { ariLabStr, desIdeStr, layVarStr, onCh
 			aria-describedby={ desIdeStr }
 			aria-label={ ariLabStr }
 			role='group'
-		>{ /* What: Segment Control Div Element. Why: This is SegConCom's own root element, holding the sliding thumb and its option buttons. How: This renders as a group landmark, its own aria-label/aria-describedby passed straight through from props, with the grid or snug modifier class its layVarStr picks. Its data-element-name-hook is read by the tours and the test suites. */ }
+		>{ /* What: Segment Control Div Element. Why: This is SegConCom's own root element, holding the sliding thumb and its option buttons. How: This renders as a role='group' element, its own aria-label/aria-describedby passed straight through from props, with the grid or snug modifier class its layVarStr picks. Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
 			<span
