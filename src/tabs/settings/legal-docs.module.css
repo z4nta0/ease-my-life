@@ -215,7 +215,7 @@
 
 }
 
-.panCloBut { /* What: Panel Close Button. Why: Closing should be a quiet but easy target. How: This styles a borderless square icon button in the muted color, and eases its hover tint and color, and eases its press and focus ring. */
+.panCloBut { /* What: Panel Close Button. Why: Closing should be a quiet but easy target. How: This styles a borderless square icon button in the muted color, and eases its hover tint and color, press, and focus ring. */
 
 
 	align-items     : center;

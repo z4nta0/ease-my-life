@@ -554,7 +554,7 @@
 
 /* #region modOptLab */
 
-.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a card with its radio beside its name and hints. How: This draws a rounded outlined card that fades between states, and eases its focus ring in, and eases its press and focus ring. */
+.modOptLab { /* What: Mode Option Label. Why: Each pick mode is a card with its radio beside its name and hints. How: This draws a rounded outlined card that fades between states, and eases its press and focus ring. */
 
 
 	align-items    : flex-start;
@@ -1081,7 +1081,7 @@
 
 }
 
-.dayPreBut { /* What: Day Preset Button. Why: Each preset reads as a quiet accent text button. How: This strips the button chrome down to small accent text, and eases its hover tint, and eases its press and focus ring. */
+.dayPreBut { /* What: Day Preset Button. Why: Each preset reads as a quiet accent text button. How: This strips the button chrome down to small accent text, and eases its hover tint, press, and focus ring. */
 
 
 	background    : none;

@@ -1349,7 +1349,7 @@
 
 
 }
-.aboLinAnc { /* What: About Link Anchor. Why: The link should read as a link. How: This colors it in the accent, and eases its hover color, and eases its press and focus ring. */
+.aboLinAnc { /* What: About Link Anchor. Why: The link should read as a link. How: This colors it in the accent, and eases its hover color, press, and focus ring. */
 
 
 	color      : var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */

@@ -598,7 +598,7 @@
 /* #region rowAddBut */
 
 .rowAddSpa,
-.rowAddBut { /* What: Row Add Span And Button. Why: Adding a reminder is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below, and eases its hover color, and eases its press and focus ring. */
+.rowAddBut { /* What: Row Add Span And Button. Why: Adding a reminder is a full-width row at the top of the list. How: This sets an uppercase mono label beside its plus icon, divided from the rows below, and eases its hover color, press, and focus ring. */
 
 
 	align-items    : center;
@@ -712,7 +712,7 @@
 /* #region lisRowBut */
 
 .lisRowDiv,
-.lisRowBut { /* What: List Row Div And Button. Why: A closed row is one button that opens its reminder. How: This strips the button chrome and lays the row's pieces out in a padded row, and eases its hover shade, and eases its press and focus ring. */
+.lisRowBut { /* What: List Row Div And Button. Why: A closed row is one button that opens its reminder. How: This strips the button chrome and lays the row's pieces out in a padded row, and eases its hover shade, press, and focus ring. */
 
 
 	-webkit-appearance : none;
