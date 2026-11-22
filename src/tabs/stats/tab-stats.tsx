@@ -3351,7 +3351,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 									>{ /* What: Card Surface Component. Why: Every headline number shares the same card chrome. How: This wraps the "last fired" date. Its data-element-name-hook is read by help mode. */ }
 
 
-										<div className={ cssModObj.staNumDiv }>{ conTotObj.lasStr ? conDayFun( conTotObj.lasStr ) : '—' }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large value, or a placeholder glyph when nothing has ever fired. How: This formats conTotObj.lasStr, or renders the em-dash placeholder glyph when it's null. */ }
+										<div className={ cssModObj.staNumDiv }>{ conTotObj.lasStr ? conDayFun( conTotObj.lasStr ) : '—' }</div>{ /* What: Stat Number Div Element. Why: The headline card needs its own large value, or a placeholder glyph when nothing fired in the active range. How: This formats conTotObj.lasStr, or renders the em-dash placeholder glyph when it's null. */ }
 
 										<div className={ cssModObj.staLabDiv }>last fired</div>{ /* What: Stat Label Div Element. Why: The headline number needs its own caption beneath it. How: This renders the literal words "last fired". */ }
 

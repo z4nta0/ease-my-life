@@ -58,7 +58,7 @@
 }
 
 .staKicDiv,
-.staKicSpa { /* What: Stats Kicker Div And Span. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
+.staKicSpa { /* What: Stats Kicker Div And Span. Why: A small eyebrow label names the page, card, or block it opens. How: This sets it in small uppercase muted mono type. */
 
 
 	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */

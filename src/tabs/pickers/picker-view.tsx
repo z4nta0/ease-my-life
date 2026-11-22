@@ -163,7 +163,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	 * @param runActFun - Run Action Function: What to do once the buttons have
-	 *                    left, e.g. rerActFun or senTodFun.
+	 *                    left, e.g. rerActFun.
 	 *
 	 * @returns This function does not return anything.
 	 *

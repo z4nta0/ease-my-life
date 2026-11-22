@@ -3311,8 +3311,8 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param touKinStr - Tour Kind String: Which kind of tour to start, e.g.
-	 *                    'picker' or 'pageTour'.
+	 * @param touKinStr - Tour Kind String: Which kind of tour to start,
+	 *                    'picker', 'pageTour', 'appFeature', or 'reminder'.
 	 * @param touIdeStr - Tour Identifier String: The id of the tour to start.
 	 *
 	 * @returns This function does not return anything.

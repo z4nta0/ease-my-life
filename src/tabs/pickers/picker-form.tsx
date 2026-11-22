@@ -2454,7 +2454,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 								kinValStr='ghost'
 
 								onClick={ bacSteFun }
-							>Back</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to return to Step 1 without losing their in-progress items. How: This calls bacSteFun. */ }
+							>Back</ButBasCom>{ /* What: Button Base Component. Why: The user needs a way to return to Step 1 without losing the items already added. How: This calls bacSteFun. */ }
 
 
 

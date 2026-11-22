@@ -519,11 +519,10 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 	 *
 	 * @summary
 	 * Idempotent teardown for the whole gesture, reachable from both a
-	 * successful drop and a cancel. Cancels the auto-scroll loop,
-	 * releases the pointer capture and every listener this gesture
-	 * added, restores every sibling's own inline style/class back to
-	 * its pre-drag state, and finally calls the caller's own onEndDraFun
-	 * hook.
+	 * successful drop and a cancel. Cancels the auto-scroll loop, releases the
+	 * pointer capture and every listener this gesture added, restores every
+	 * sibling's own inline style and drag attribute back to its pre-drag
+	 * state, and finally calls the caller's own onEndDraFun hook.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -586,7 +585,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 		// #region Style Restore
 
-		iteEleArr.forEach( ( iteCurEle ) => { // What: Sibling Restore Loop. Why: Every inline style/class the prep loop and appShiFun added must be fully reverted, or a sibling could be left visually stuck. How: This clears every property staDraFun's own setup wrote, on every sibling.
+		iteEleArr.forEach( ( iteCurEle ) => { // What: Sibling Restore Loop. Why: Every inline style and the drag attribute the prep loop and appShiFun added must be fully reverted, or a sibling could be left visually stuck. How: This clears every property staDraFun's own setup wrote, on every sibling.
 
 
 			iteCurEle.removeAttribute( 'data-item-drag-active' ); // What: Drag Active Attribute Remove. Why: Only the dragged element ever received this attribute, but removing it unconditionally here is harmless and keeps this loop uniform. How: This removes the attribute from every element.
@@ -643,7 +642,7 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 		const finTarNum = tarIndNum; // What: Final Target Number. Why: cleDraFun below doesn't touch tarIndNum, but capturing it first keeps this function's own intent explicit regardless. How: This reads the outer tarIndNum before any teardown runs.
 
-		cleDraFun(); // What: Cleanup Call. Why: Every listener/style/class this gesture added must be undone as soon as the pointer is released, whether or not the order actually changed. How: This runs the full teardown described in cleDraFun's own comment.
+		cleDraFun(); // What: Cleanup Call. Why: Every listener, inline style, and attribute this gesture added must be undone as soon as the pointer is released, whether or not the order actually changed. How: This runs the full teardown described in cleDraFun's own comment.
 
 
 		if ( finTarNum !== oriIndNum ) { // What: Order Changed Guard. Why: onDroOrdFun should only ever fire for a real reorder, never for a drag that snapped back to its own start. How: This gates the whole order-building block below on the index having actually moved.
