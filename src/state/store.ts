@@ -415,8 +415,7 @@ function madConFun ( newConObj : Partial< ConRcdTyp > | null | undefined ) : Con
  * hidden flag backfilled by migStaFun) don't count toward, or
  * block, the streak, same as if that picker didn't exist. Reminders
  * are checked against the last generation's own anchor date (not live
- * "now"), so this must always agree with whatever RemSecCom is
- * actually showing right now.
+ * "now").
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
@@ -444,7 +443,7 @@ function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr :
 	const hidPicSet = new Set( ( curStaObj.pickers || [] ).filter( ( curPicObj ) => curPicObj.hidden ).map( ( curPicObj ) => curPicObj.id ) ); // What: Hidden Picker Set. Why: The visible-entries filter below needs fast membership checks against every hidden picker's own id. How: This collects the id of every picker whose own hidden flag is true.
 	const visEntArr = ( entArgArr || [] ).filter( ( curEntObj ) => !curEntObj.pickerId || !hidPicSet.has( curEntObj.pickerId ) );              // What: Visible Entry Array. Why: An entry belonging to a hidden picker must not count toward, or block, the streak. How: This keeps every entry with no pickerId at all, or whose pickerId isn't in hidPicSet.
 
-	const curAncObj = TAS_NAM_OBJ.ancDatFun( curStaObj.today && curStaObj.today.generatedAt );                                // What: Current Anchor Object. Why: Reminder eligibility below must be pinned to the last generation's own day, matching whatever RemSecCom is actually showing right now. How: This calls TAS_NAM_OBJ.ancDatFun with today's own generatedAt.
+	const curAncObj = TAS_NAM_OBJ.ancDatFun( curStaObj.today && curStaObj.today.generatedAt );                                // What: Current Anchor Object. Why: Reminder eligibility below must be pinned to the last generation's own day, not live "now". How: This calls TAS_NAM_OBJ.ancDatFun with today's own generatedAt.
 	const visTasArr = TAS_NAM_OBJ.visTodFun( tasArgArr, curStaObj.reminderOpts, curStaObj.holidays, curAncObj );              // What: Visible Task Array. Why: Only a reminder actually shown today can participate in the streak at all. How: This calls TAS_NAM_OBJ.visTodFun with curAncObj as the anchor.
 	const stkTasArr = visTasArr.filter( ( curTasObj ) => TAS_NAM_OBJ.optForFun( curTasObj, curStaObj.reminderOpts ).streak ); // What: Streak Task Array. Why: Only a reminder whose own type has the streak switch on actually counts. How: This filters visTasArr to those TAS_NAM_OBJ.optForFun reports streak:true for.
 
@@ -494,7 +493,7 @@ function stkSynFun ( curStaObj : StaAppTyp, entArgArr : TodEntTyp[], tasArgArr :
 
 
 
-	return { stkClaBoo, stkValNum }; // What: Reconciled Streak Return. Why: The caller needs both the adjusted streak count and its own new claimed state. How: This bundles stkValNum/stkClaBoo together.
+	return { stkClaBoo, stkValNum }; // What: Reconciled Streak Return. Why: The adjusted streak count and its new claimed state must be handed back together. How: This bundles stkValNum/stkClaBoo together.
 
 
 }
@@ -679,16 +678,14 @@ function wriStaFun ( curStaObj : StaAppTyp ) : void {
  * unload/unmount. Returns [state, actions],
  * where actions is a useMemo'd object of state-transition functions;
  * every key of that object, and every top-level field of state itself,
- * is a real contract every tab reads by name and must never be renamed.
+ * is part of the app's state API and must never be renamed.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param optArgObj - Option Argument Object: Optional. { iniObj, perBoo }:
- *                    iniObj supplies a non-persisted starting state (used by
- *                    the onboarding demo) instead of loaStaFun(); perBoo:
- *                    false (used by the same demo) disables the idle-
- *                    save/flush effects entirely. Omitted entirely for every
- *                    normal, real-data caller.
+ *                    iniObj supplies a non-persisted starting state instead of
+ *                    loaStaFun(); perBoo: false disables the idle-save/flush
+ *                    effects entirely. Omitted for normal, persisted use.
  *
  * @returns [state, actions]: the current app state, and the memoized
  * object of state-transition functions that mutate it.
@@ -732,7 +729,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 	}, [] ); // What: Callback Dependency Array. Why: This callback closes over only the stable idlTimRef, so it never needs to be recreated. How: An empty array means canPenFun is created once and reused for the lifetime of this component.
 
 
-	React.useEffect( () => { // What: Debounced Save Effect. Why: Every app-state change must eventually be persisted, but not synchronously on the hot path of every single update. How: This cancels any previously-scheduled save, then schedules a fresh one during idle time (or a 200ms timeout fallback), capped at a 2s max wait.
+	React.useEffect( () => { // What: Debounced Save Effect. Why: Every app-state change must eventually be persisted, but not synchronously on the hot path of every single update. How: This cancels any previously-scheduled save, then schedules a fresh one during idle time (capped at a 2s max wait where requestIdleCallback exists), or after a 200ms timeout where it doesn't.
 
 
 		if ( !perActBoo ) return; // What: Persist-Disabled Guard. Why: The onboarding demo explicitly opts out of ever persisting at all. How: This returns immediately when perActBoo is false.
@@ -744,7 +741,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 		const schIdlFun = window.requestIdleCallback || ( ( schCalFun ) => setTimeout( schCalFun, 200 ) ); // What: Schedule Idle Function. Why: Not every browser supports requestIdleCallback, so a plain 200ms timeout is the fallback scheduler. How: This picks requestIdleCallback when available, else wraps setTimeout at a fixed 200ms delay.
 
-		idlTimRef.current = schIdlFun( () => { // What: Idle Save Schedule. Why: The scheduled callback must clear its own handle before saving, and save whatever the LATEST state is by the time it actually runs. How: This calls schIdlFun with a callback that clears idlTimRef.current then calls wriStaFun(latStaRef.current), capped by a 2000ms max wait.
+		idlTimRef.current = schIdlFun( () => { // What: Idle Save Schedule. Why: The scheduled callback must clear its own handle before saving, and save whatever the LATEST state is by the time it actually runs. How: This calls schIdlFun with a callback that clears idlTimRef.current then calls wriStaFun(latStaRef.current), capped by a 2000ms max wait where requestIdleCallback exists.
 
 
 			idlTimRef.current = null; // What: Idle Timeout Reference Clear. Why: This scheduled run is about to fire, so its own handle must no longer be treated as pending. How: This clears idlTimRef.current back to null.
@@ -800,7 +797,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-	const actStoObj = React.useMemo< ActStoTyp >( () => ( { // What: Action Store Object. Why: This is the entire mutation surface of the app's own state: a tab reads/calls these exact keys by name, so every key here is a real, load-bearing external contract. How: This builds a memoized object of state-transition functions, computed once (empty dependency array below).
+	const actStoObj = React.useMemo< ActStoTyp >( () => ( { // What: Action Store Object. Why: This is the entire mutation surface of the app's own state, so every key here is a public name. How: This builds a memoized object of state-transition functions, computed once (empty dependency array below).
 
 
 		// #region App Data
@@ -811,12 +808,11 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * impDatFun = Import Data Function
 		 *
 		 * @summary
-		 * Replaces the whole store from an imported JSON blob (Settings
-		 * tab's Data control's own Import). Runs through migStaFun() so an
-		 * older/partial export gets the same backfills a fresh load would.
-		 * An imported backup's own pickLog is authoritative even when
-		 * empty: it replaces ALL data, so stale local history must not
-		 * survive it.
+		 * Replaces the whole store from an imported JSON blob. Runs through
+		 * migStaFun() so an older/partial export gets the same backfills a
+		 * fresh load would. An imported backup's own pickLog is authoritative
+		 * even when empty: it replaces ALL data, so stale local history must
+		 * not survive it.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -878,12 +874,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * `latStaRef.current = appStaObj` line above) isn't guaranteed to
 		 * have committed yet by the time reload() below fires.
 		 *
-		 * The URL hash is cleared too: app.tsx's own initial active-tab
-		 * read consults location.hash for its #settings deep link, and a
-		 * reload alone would otherwise land right back on Settings for
-		 * anyone who'd arrived that way, the same "onboarding anchors only
-		 * exist on Today" problem the Settings button's own onNavTabFun
-		 * ('today') call exists to avoid.
+		 * The URL hash is cleared too, so a reload doesn't land back on a
+		 * #settings deep link.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1023,7 +1015,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { ...curStaObj, appearance : nexAppObj }; // What: Next State Return. Why: The caller needs appearance replaced on a fresh state. How: This spreads curStaObj with appearance replaced by nexAppObj.
+			return { ...curStaObj, appearance : nexAppObj }; // What: Next State Return. Why: The appearance change must land on a fresh state. How: This spreads curStaObj with appearance replaced by nexAppObj.
 
 
 		} ),
@@ -1110,7 +1102,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 			const savColObj = { ...cusColObj, derived : false }; // What: Saved Colors Object. Why: A directly-saved slot is by definition NOT auto-derived from its own counterpart. How: This spreads cusColObj with derived explicitly set false.
 
-			const nexAppObj = { // What: Next Appearance Object. Why: The caller needs this slot saved and immediately activated as the live theme. How: This spreads curStaObj's own appearance, writing savColObj under keyNamStr and setting theme to keyNamStr.
+			const nexAppObj = { // What: Next Appearance Object. Why: This slot must be saved and immediately activated as the live theme. How: This spreads curStaObj's own appearance, writing savColObj under keyNamStr and setting theme to keyNamStr.
 
 
 				...curStaObj.appearance, // What: Current Appearance Spread. Why: Every other appearance setting must carry over unchanged. How: This spreads curStaObj.appearance.
@@ -1146,7 +1138,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { ...curStaObj, appearance : nexAppObj }; // What: Next State Return. Why: The caller needs appearance replaced on a fresh state. How: This spreads curStaObj with appearance replaced by nexAppObj.
+			return { ...curStaObj, appearance : nexAppObj }; // What: Next State Return. Why: The appearance change must land on a fresh state. How: This spreads curStaObj with appearance replaced by nexAppObj.
 
 
 		} ),
@@ -1225,10 +1217,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * addConFun = Add Conditional Function
 		 *
 		 * @summary
-		 * Creates a brand-new conditional (a day-off gate) from the Data tab's
-		 * own authoring form and prepends it onto the conditionals list. Every
-		 * field the form leaves out gets its default, so a caller only needs
-		 * to pass what the user actually set.
+		 * Creates a brand-new conditional (a day-off gate) and prepends it
+		 * onto the conditionals list. Every field left out gets its default.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1244,7 +1234,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		addConFun : ( conArgObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Add Conditional Function. Why: This creates a brand-new conditional (a day-off gate) from the Data tab's own authoring form. How: This builds a full conditional object from conArgObj's own fields (defaulting every field not given) and prepends it onto conditionals.
+		addConFun : ( conArgObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Add Conditional Function. Why: This creates a brand-new conditional (a day-off gate). How: This builds a full conditional object from conArgObj's own fields (defaulting every field not given) and prepends it onto conditionals.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the conditionals override below.
@@ -1355,7 +1345,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		resConFun : () => { // What: Resolve Conditionals Function. Why: Phase A of Generate: rolls probability/dynamic modes and carries persisted active for ease modes, clearing the per-day charge guard, so the generator can gate pickers off fresh values in the same pass. How: This calls CON_NAM_OBJ.resDayFun, applies its own per-conditional patch, and returns the resolved array directly (not just via setAppStaObj).
 
 
-			let resConArr : ConRcdTyp[] | null = null; // What: Resolved Conditionals Array. Why: The caller needs the resolved array back directly, not only via the next render's own state. How: This starts null and is captured inside the setAppStaObj updater below.
+			let resConArr : ConRcdTyp[] | null = null; // What: Resolved Conditionals Array. Why: The resolved array must be handed back directly, not only through the next render's state. How: This starts null and is captured inside the setAppStaObj updater below.
 
 
 			setAppStaObj( ( curStaObj ) => { // What: State Update Call. Why: The per-day patches must be computed from, and merged into, the latest state rather than a stale closure copy. How: This runs an updater that resolves every conditional's own patch, captures the result in resConArr, and returns the patched state.
@@ -1368,14 +1358,14 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-				return { ...curStaObj, conditionals : nexConArr }; // What: Next State Return. Why: The caller needs conditionals replaced on a fresh state. How: This spreads curStaObj with conditionals replaced by nexConArr.
+				return { ...curStaObj, conditionals : nexConArr }; // What: Next State Return. Why: The conditionals must be replaced on a fresh state. How: This spreads curStaObj with conditionals replaced by nexConArr.
 
 
 			} );
 
 
 
-			return resConArr; // What: Resolved Conditionals Return. Why: The generator needs the resolved array synchronously, not just via the next render. How: This returns resConArr, captured above.
+			return resConArr; // What: Resolved Conditionals Return. Why: The resolved array is returned synchronously, not just through the next render. How: This returns resConArr, captured above.
 
 
 		},
@@ -1384,7 +1374,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		updConFun : ( conIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Conditional Function. Why: Callers need to patch one existing conditional's own fields in place, without touching any other. How: This merges patValObj onto the one conditional whose own id matches conIdeStr.
+		updConFun : ( conIdeStr, patValObj ) => setAppStaObj( ( curStaObj ) => ( { // What: Update Conditional Function. Why: One existing conditional's fields must be patched in place, without touching any other. How: This merges patValObj onto the one conditional whose own id matches conIdeStr.
 
 
 			...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1477,7 +1467,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs a fresh generatedAt timestamp plus the snapshot genLog written onto today. How: This spreads curStaObj.today with generatedAt/genLog replaced.
+			return { // What: Next State Return. Why: A fresh generatedAt timestamp and the snapshot genLog must be written onto today. How: This spreads curStaObj.today with generatedAt/genLog replaced.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1535,14 +1525,14 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-		togColFun : ( secIdeStr, defColBoo = false ) => setAppStaObj( ( curStaObj ) => { // What: Toggle Collapsed Function. Why: Persisted collapse state for the Data tab's own disclosures, uniform polarity everywhere (true means COLLAPSED, false means expanded); the main sections default collapsed via defColBoo so the first click expands rather than re-collapsing. How: This flips ui.controlsCollapsed[secIdeStr], falling back to defColBoo when it has no value yet.
+		togColFun : ( secIdeStr, defColBoo = false ) => setAppStaObj( ( curStaObj ) => { // What: Toggle Collapsed Function. Why: Persisted collapse state for the Data tab's own disclosures, uniform polarity everywhere (true means COLLAPSED, false means expanded); a section with no saved value starts from defColBoo. How: This flips ui.controlsCollapsed[secIdeStr], falling back to defColBoo when it has no value yet.
 
 
 			const curColObj = colMapFun( curStaObj );                                                    // What: Current Collapsed Object. Why: The flip below needs the live collapse-state map, or an empty fallback. How: This reads curStaObj's own ui.controlsCollapsed, defaulting to {}.
 			const curValBoo = curColObj[ secIdeStr ] === undefined ? defColBoo : curColObj[ secIdeStr ]; // What: Current Value Boolean. Why: A section with no saved value yet starts from its own caller-supplied default, not always false. How: This reads curColObj's own secIdeStr entry, falling back to defColBoo when it's undefined.
 
 
-			const nexColObj = { // What: Next Collapsed Object. Why: The caller needs exactly this one section's own collapse state flipped. How: This spreads curColObj, negating secIdeStr's own entry.
+			const nexColObj = { // What: Next Collapsed Object. Why: Exactly this one section's collapse state must flip. How: This spreads curColObj, negating secIdeStr's own entry.
 
 
 				...curColObj, // What: Current Collapsed Spread. Why: Every other section's own collapse state must carry over unchanged. How: This spreads curColObj before the flipped entry below.
@@ -1554,7 +1544,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs controlsCollapsed replaced on a fresh ui object. How: This spreads curStaObj's own ui with controlsCollapsed replaced by nexColObj.
+			return { // What: Next State Return. Why: controlsCollapsed must be replaced on a fresh ui object. How: This spreads curStaObj's own ui with controlsCollapsed replaced by nexColObj.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1661,7 +1651,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs pageToursName replaced on a fresh state. How: This spreads curStaObj's own onboarding with pageToursName replaced.
+			return { // What: Next State Return. Why: pageToursName must be replaced on a fresh state. How: This spreads curStaObj's own onboarding with pageToursName replaced.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1734,7 +1724,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs newHolObj appended to a fresh holidays object. How: This spreads curHolObj with custom replaced, newHolObj appended.
+			return { // What: Next State Return. Why: newHolObj must be appended to a fresh holidays object. How: This spreads curHolObj with custom replaced, newHolObj appended.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1766,7 +1756,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs the one matching custom holiday removed from a fresh holidays object. How: This spreads curHolObj with custom filtered.
+			return { // What: Next State Return. Why: The one matching custom holiday must be removed from a fresh holidays object. How: This spreads curHolObj with custom filtered.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1800,7 +1790,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs disabled replaced on a fresh holidays object. How: This spreads curHolObj with disabled replaced by nexDisArr.
+			return { // What: Next State Return. Why: disabled must be replaced on a fresh holidays object. How: This spreads curHolObj with disabled replaced by nexDisArr.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1952,7 +1942,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs tarIteObj moved to the end of the items array. How: This spreads curStaObj with items rebuilt as everything else, then tarIteObj last.
+			return { // What: Next State Return. Why: tarIteObj must move to the end of the items array. How: This spreads curStaObj with items rebuilt as everything else, then tarIteObj last.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -1973,10 +1963,9 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * renIteFun = Rename Item Function
 		 *
 		 * @summary
-		 * Commits an item rename (on blur, Enter or Save, never per
-		 * keystroke). The name is de-duplicated against the item's own
-		 * siblings in the same picker, so the saved name can differ from what
-		 * was typed, e.g. gaining a " (2)" suffix.
+		 * Commits an item rename. The name is de-duplicated against the item's
+		 * own siblings in the same picker, so the saved name can differ from
+		 * what was typed, e.g. gaining a " (2)" suffix.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -1992,7 +1981,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-		renIteFun : ( tarIdeStr, newNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Item Function. Why: Commit-time rename (blur/Enter/Save only, not every keystroke) with de-duplication, so 2 items in the same picker can't share a name. How: This resolves a unique name against the item's own sibling item names, then writes it onto the one matching item.
+		renIteFun : ( tarIdeStr, newNamStr ) => setAppStaObj( ( curStaObj ) => { // What: Rename Item Function. Why: A committed rename is de-duplicated so 2 items in the same picker can't share a name. How: This resolves a unique name against the item's own sibling item names, then writes it onto the one matching item.
 
 
 			const tarIteObj = curStaObj.items.find( ( iteFinObj ) => iteFinObj.id === tarIdeStr ); // What: Target Item Object And Guard. Why: The sibling filter below needs to know this item's own pickerId to scope the collision check correctly. How: This looks up tarIdeStr in curStaObj.items.
@@ -2003,7 +1992,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs the one matching item's own name replaced. How: This spreads curStaObj with items rebuilt, patching only the one matching item.
+			return { // What: Next State Return. Why: The one matching item's name must be replaced. How: This spreads curStaObj with items rebuilt, patching only the one matching item.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2067,6 +2056,35 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 			const curDayStr = isoDayFun(); // What: Current Day String. Why: Every vacationLog row below is stamped with today's own calendar day. How: This reads isoDayFun().
 
 
+
+			// #region abaStkFun
+
+			/**
+			 * abaStkFun = Abandon Streak Function
+			 *
+			 * @summary
+			 * Abandons the in-progress Ease Down streak of every listed item
+			 * that is some Ease Down picker's activeItemId: the picker's
+			 * pointer is nulled and the item recharges to its picker's
+			 * threshold, so an abandoned streak never counts toward Spent. Any
+			 * other item passes through untouched.
+			 *
+			 * @author z4nta0 <https://github.com/z4nta0>
+			 *
+			 * @param picArgArr - Picker Argument Array: {@link nexPicArr}
+			 * @param iteArgArr - Item Argument Array: {@link nexIteArr}
+			 * @param iteIdeArr - Item Identifier Array: The ids of the items
+			 *                    to check for an abandoned streak.
+			 *
+			 * @returns The patched { items, pickers }.
+			 *
+			 * @example
+			 * ```ts
+			 * abaStkFun(picArgArr, iteArgArr, iteIdeArr) // => patched arrays
+			 * ```
+			 *
+			*/
+
 			const abaStkFun = ( picArgArr : PicRcdTyp[], iteArgArr : IteRcdTyp[], iteIdeArr : string[] ) => { // What: Abandon Streak Function. Why: Both branches below (single item, whole picker) share this same abandon-in-progress-streak logic. How: This walks iteIdeArr, and for any item that's some ease-down picker's own activeItemId, nulls that pointer and recharges the item to full.
 
 
@@ -2094,10 +2112,12 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-				return { items : nexIteArr, pickers : nexPicArr }; // What: Abandon Result Return. Why: The caller needs both patched arrays back together. How: This bundles nexPicArr/nexIteArr.
+				return { items : nexIteArr, pickers : nexPicArr }; // What: Abandon Result Return. Why: Both patched arrays must come back together. How: This bundles nexPicArr/nexIteArr.
 
 
 			};
+
+			// #endregion abaStkFun
 
 
 			if ( tarKinStr === 'item' ) { // What: Single-Item Branch. Why: Toggling one item's own vacation flag is a narrower case than the whole-picker branch below. How: This flips tarIdeStr's own vacation flag, abandons its own in-progress streak if it just went inactive, and logs the transition.
@@ -2114,7 +2134,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-				return { // What: Single-Item Return. Why: The caller needs the patched arrays plus a fresh vacationLog row recording this exact transition. How: This spreads curStaObj with items/pickers replaced and appends one row to vacationLog.
+				return { // What: Single-Item Return. Why: The patched arrays and a fresh vacationLog row recording this exact transition must land together. How: This spreads curStaObj with items/pickers replaced and appends one row to vacationLog.
 
 
 					...curStaObj, // What: Current State Spread. Why: Every field this branch doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2144,7 +2164,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Whole-Picker Return. Why: The caller needs the patched arrays plus one fresh vacationLog row per actually-changed item. How: This spreads curStaObj with items/pickers replaced and appends chaIteArr's own rows to vacationLog.
+			return { // What: Whole-Picker Return. Why: The patched arrays and one fresh vacationLog row per actually-changed item must land together. How: This spreads curStaObj with items/pickers replaced and appends chaIteArr's own rows to vacationLog.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this branch doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2284,7 +2304,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs the tasks and the reconciled streak written onto a fresh state. How: This spreads curStaObj with streak, tasks, and today replaced.
+			return { // What: Next State Return. Why: The tasks and the reconciled streak must be written onto a fresh state. How: This spreads curStaObj with streak, tasks, and today replaced.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2347,7 +2367,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs the one matching task's own name replaced. How: This spreads curStaObj with tasks rebuilt, patching only the one matching task.
+			return { // What: Next State Return. Why: The one matching task's name must be replaced. How: This spreads curStaObj with tasks rebuilt, patching only the one matching task.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2371,7 +2391,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs just this one switch flipped, every other one untouched. How: This spreads norOptObj, overriding [tasTypStr]'s own sub-object with [optKeyStr] replaced by value.
+			return { // What: Next State Return. Why: Just this one switch must flip, every other one untouched. How: This spreads norOptObj, overriding [tasTypStr]'s own sub-object with [optKeyStr] replaced by value.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2400,16 +2420,15 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * skiTasFun = Skip Task Function
 		 *
 		 * @summary
-		 * Hides a reminder until its own next eligible day, which the caller
-		 * computes from the reminder's rules. It never marks the reminder done
-		 * or logs a completion, but it does append a skip row so Stats can
-		 * tally skips per reminder.
+		 * Hides a reminder until the given next eligible day. It never marks
+		 * the reminder done or logs a completion, but it does append a skip
+		 * row so Stats can tally skips per reminder.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param tarIdeStr - Target Identifier String: The reminder to skip.
 		 * @param untIsoStr - Until ISO String: The next eligible day, as
-		 *                    YYYY-MM-DD, computed by the caller.
+		 *                    YYYY-MM-DD.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -2445,7 +2464,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs skipUntil written on the matching task, and the skip row (if any) appended to reminderSkipLog. How: This spreads curStaObj with tasks/reminderSkipLog both replaced.
+			return { // What: Next State Return. Why: skipUntil must be written on the matching task, and the skip row (if any) appended to reminderSkipLog. How: This spreads curStaObj with tasks/reminderSkipLog both replaced.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -2977,7 +2996,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return picIdeStr; // What: Picker ID Return. Why: The caller needs the new or reused picker's own id back. How: This returns picIdeStr, resolved above.
+			return picIdeStr; // What: Picker ID Return. Why: The new or reused picker's own id is the action's result. How: This returns picIdeStr, resolved above.
 
 
 		},
@@ -3097,7 +3116,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs every owned item's own value raised (never lowered), and any in-progress ease-down item cleared. How: This spreads curStaObj with items/pickers replaced.
+			return { // What: Next State Return. Why: Every owned item's value must be raised (never lowered), and any in-progress ease-down item cleared. How: This spreads curStaObj with items/pickers replaced.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -3148,7 +3167,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs the one matching picker's own name replaced. How: This spreads curStaObj with pickers rebuilt, patching only the one matching picker.
+			return { // What: Next State Return. Why: The one matching picker's name must be replaced. How: This spreads curStaObj with pickers rebuilt, patching only the one matching picker.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -3283,13 +3302,13 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			const nexPiiArr = picArgObj.includeInDaily // What: Next Picker-Identifier Array. Why: picArgObj.includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list, same as addPicFun's own resolution. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
+			const nexPiiArr = picArgObj.includeInDaily // What: Next Picker-Identifier Array. Why: picArgObj.includeInDaily decides whether this picker joins or leaves the Daily generator's own membership list. How: This adds picIdeStr when it's included and it isn't already present, else removes it.
 				? ( curStaObj.daily.pickerIds.includes( picIdeStr ) ? curStaObj.daily.pickerIds : [ ...curStaObj.daily.pickerIds, picIdeStr ] ) // What: Include Branch. Why: The picker joins the Daily generator. How: This appends picIdeStr unless it's already listed.
 				: curStaObj.daily.pickerIds.filter( ( curPiiStr ) => curPiiStr !== picIdeStr );                                                 // What: Exclude Branch. Why: The picker leaves the Daily generator. How: This filters picIdeStr out.
 
 
 
-			return { // What: Next State Return. Why: The caller needs items/pickers/conditionals/daily all updated together. How: This spreads curStaObj, replacing each field with the values resolved above.
+			return { // What: Next State Return. Why: items, pickers, conditionals, and daily must all be updated together. How: This spreads curStaObj, replacing each field with the values resolved above.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -3557,7 +3576,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs the new entry, its own log row, and the reconciled streak written onto a fresh state. How: This spreads curStaObj with pickLog, streak, and today replaced.
+			return { // What: Next State Return. Why: The new entry, its own log row, and the reconciled streak must be written onto a fresh state. How: This spreads curStaObj with pickLog, streak, and today replaced.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
@@ -3689,7 +3708,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { ...curStaObj, pickLog : nexLogArr, tasks : nexTasArr, today : nexTodObj }; // What: Next State Return. Why: The caller needs today/pickLog/tasks all replaced on a fresh state. How: This spreads curStaObj with the 3 fields replaced.
+			return { ...curStaObj, pickLog : nexLogArr, tasks : nexTasArr, today : nexTodObj }; // What: Next State Return. Why: today, pickLog, and tasks must all be replaced on a fresh state. How: This spreads curStaObj with the 3 fields replaced.
 
 
 		} ),
@@ -3804,7 +3823,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 
 
 
-			return { // What: Next State Return. Why: The caller needs the entry re-pointed at iteIdeStr (not-done, not-skipped, freshly staged), plus the updated log. How: This spreads curStaObj with items/pickers/today.entries/pickLog all replaced.
+			return { // What: Next State Return. Why: The entry must be re-pointed at iteIdeStr (not-done, not-skipped, freshly staged), with the updated log. How: This spreads curStaObj with items/pickers/today.entries/pickLog all replaced.
 
 
 				...curStaObj, // What: Current State Spread. Why: Every field this action doesn't touch must carry over unchanged. How: This spreads curStaObj before the overrides below.
