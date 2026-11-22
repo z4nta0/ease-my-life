@@ -932,7 +932,7 @@
 
 
 }
-@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Progress Span. Why: On a phone the full width leaves too little room for the name. How: This applies only when the app is 640px wide or less. */
+@container appRooDiv ( max-width : 640px ) { /* What: Narrow Pool Progress Span. Why: In a narrow app the full width leaves too little room for the name. How: This applies only when the app is 640px wide or less. */
 
 
 	.pooProSpa { /* What: Narrower Pool Progress Span. Why: The name needs the room. How: This lowers the minimum by one rhythm step. */

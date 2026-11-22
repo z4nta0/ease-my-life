@@ -696,7 +696,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 	// #region Picker Details Edit
 
-	const [ ediOpeBoo, setEdiOpeBoo ] = React.useState( false ); // What: Editing Open Boolean And Setter. Why: Editing this picker's own Details reuses PicForCom's Details step, pre-filled from its current settings, in place of the normal run/pool view. How: This is NOT an early return: every hook in this component still needs to run every render regardless of ediOpeBoo, so the branch only happens at the very end, where this component actually returns its JSX.
+	const [ ediOpeBoo, setEdiOpeBoo ] = React.useState( false ); // What: Editing Open Boolean And Setter. Why: Editing this picker's own Details reuses PicForCom's Details step, pre-filled from its current settings, in place of the normal run/pool view. How: The branch that returns PicForCom sits after every hook call in this component, so every hook still runs each render whatever ediOpeBoo is.
 
 
 	const ediGroArr = React.useMemo( () => { // What: Edit Group Array. Why: This is the same distinct-groups memo TabPicCom itself computes, duplicated here rather than threaded down as a prop, since it's only needed while this one picker's own edit form is open. How: This walks staAppObj.pickers collecting each visible picker's own group name once, then alphabetizes them.
