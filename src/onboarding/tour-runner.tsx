@@ -481,13 +481,14 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  *
  * @summary
  * Renders the currently-running guided tour: a full-viewport dim with a single
- * spotlight cutout around the current step's target(s), plus a coach card
- * (title, body, Skip/Back/Next) positioned relative to it. Owns every mechanic
- * described in this file's own header comment (spotlight tracking, the
- * chrome clamp, the click-guard, the not-found watchdog, tab-sync, the mobile
- * rail auto-open, resume-on-reload persistence); a specific tour's own
- * content lives entirely in its steObjArr prop, authored by a caller such as
- * onboarding/welcome-tour.tsx or one of the mini-tour modules beside it.
+ * spotlight box around the current step's target(s), darkening the page around
+ * it, plus a coach card (title, body, Skip/Back/Next) positioned relative to
+ * it. Owns every mechanic described in this file's own header comment
+ * (spotlight tracking, the chrome clamp, the click-guard, the not-found
+ * watchdog, tab-sync, the mobile rail auto-open, resume-on-reload
+ * persistence); a specific tour's own content lives entirely in its steObjArr
+ * prop, authored by a caller such as onboarding/welcome-tour.tsx or one of the
+ * mini-tour modules beside it.
  *
  * Each step object in steObjArr carries these fields (every one optional
  * except bodEle, priStr, selStr, and titStr):
@@ -1815,11 +1816,11 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 * Clamps the drawn highlight rect so the spotlight stops short of
 		 * Today's own sticky chrome at the top or a bottom-placed tab bar,
 		 * both of which sit below this overlay and would otherwise show
-		 * through the spotlight's cutout as if they were part of the target.
-		 * Only the drawn rect is clamped, never the one briTarFun scrolls by.
-		 * A target that lives inside the tab bar, the group rail, or Today's
-		 * own header is returned unclamped, since clamping it against its own
-		 * container would squash the highlight.
+		 * through the spotlight's clear box as if they were part of the
+		 * target. Only the drawn rect is clamped, never the one briTarFun
+		 * scrolls by. A target that lives inside the tab bar, the group rail,
+		 * or Today's own header is returned unclamped, since clamping it
+		 * against its own container would squash the highlight.
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
@@ -2371,7 +2372,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	if ( !curSteObj ) { // What: No Step Render Guard. Why: A step index advanced past the end of a `steObjArr` array whose last entry is not priStr:'Done' yet (most likely mid-content-authoring) is caught by the position-tracking effect above, which already calls skiTouFun the moment it sees this, but that is a separate effect firing after this render commits, so this render still needs to not crash reading off a null curSteObj in the meantime. How: This returns the same one-frame dim-only fallback as the "target not found yet" case below.
+	if ( !curSteObj ) { // What: No Step Render Guard. Why: A step index advanced past the end of a `steObjArr` array whose last entry is not priStr:'Done' yet (most likely mid-content-authoring) is caught by the position-tracking effect above, which already calls skiTouFun the moment it sees this, but that is a separate effect firing after this render commits, so this render still needs to not crash reading off a null curSteObj in the meantime. How: This portals only the dim layer, like the 'target not found yet' case below but without its hidden measurer.
 
 
 		return porBodFun( // What: Dim Only Portal Return. Why: There is no step to show, so only the dim belongs on screen. How: This portals the dim-only overlay onto document.body.
@@ -2550,7 +2551,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 				}}
 
 				data-spot-drag-active={ draActBoo || undefined } // What: Spot Drag Active Attribute. Why: The spotlight drops its dimming shadow while a group or item is dragged, so the page underneath stays visible. How: This sets the presence-only attribute while draActBoo is true and removes it otherwise, since undefined leaves it off.
-			/>{ /* What: Tour Spotlight Div Element. Why: This is the actual cutout highlight drawn around the target. How: This pads curRecObj outward by spoPadNum on every side, disables any CSS transition since plaTarFun already moves it imperatively every frame, and marks its drag state with data-spot-drag-active and its pulse with a module class. */ }{ /* The highlight border itself stays during a drag (still marks the section being dragged); only its box-shadow, which is what dims the REST of the page (the touSpoDiv trick: a giant shadow darkens everything outside its own bounds), drops out, via the data-spot-drag-active override. Otherwise the darkened background would make it hard to see exactly where the group is landing. */ }
+			/>{ /* What: Tour Spotlight Div Element. Why: This is the actual highlight box drawn around the target. How: This pads curRecObj outward by spoPadNum on every side, disables any CSS transition since plaTarFun already moves it imperatively every frame, and marks its drag state with data-spot-drag-active and its pulse with a module class. */ }{ /* The highlight border itself stays during a drag (still marks the section being dragged); only its box-shadow, which is what dims the REST of the page (the touSpoDiv trick: a giant shadow darkens everything outside its own bounds), drops out, via the data-spot-drag-active override. Otherwise the darkened background would make it hard to see exactly where the group is landing. */ }
 
 
 

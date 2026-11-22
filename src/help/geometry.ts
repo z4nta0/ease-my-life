@@ -537,10 +537,10 @@ function claPadFun ( tarRecObj : EdgRecTyp, padHorNum : number, padVerNum : numb
 	return { // What: Surviving Pad Return. Why: The caller needs to know how much of the requested pad actually survived on each individual side. How: This compares tarRecObj's own unpadded edges against cliRecObj's own clipped edges, one side at a time.
 
 
-		padBotNum : cliRecObj.bottom - tarRecObj.bottom, // What: Pad Bottom Number. Why: The bottom side's own surviving pad is however much of the padded box's own bottom edge is still below the clipped rect's own bottom. How: This subtracts tarRecObj's own bottom from cliRecObj's own bottom.
-		padLefNum : tarRecObj.left - cliRecObj.left,     // What: Pad Left Number. Why: The left side's own surviving pad is however much of the padded box's own left edge is still left of the clipped rect's own left. How: This subtracts cliRecObj's own left from tarRecObj's own left.
-		padRigNum : cliRecObj.right - tarRecObj.right,   // What: Pad Right Number. Why: The right side's own surviving pad is however much of the padded box's own right edge is still right of the clipped rect's own right. How: This subtracts tarRecObj's own right from cliRecObj's own right.
-		padTopNum : tarRecObj.top - cliRecObj.top        // What: Pad Top Number. Why: The top side's own surviving pad is however much of the padded box's own top edge is still above the clipped rect's own top. How: This subtracts cliRecObj's own top from tarRecObj's own top.
+		padBotNum : cliRecObj.bottom - tarRecObj.bottom, // What: Pad Bottom Number. Why: The bottom side's own surviving pad is however far the clipped rect's own bottom still sits below tarRecObj's own bottom. How: This subtracts tarRecObj's own bottom from cliRecObj's own bottom.
+		padLefNum : tarRecObj.left - cliRecObj.left,     // What: Pad Left Number. Why: The left side's own surviving pad is however far the clipped rect's own left still sits left of tarRecObj's own left. How: This subtracts cliRecObj's own left from tarRecObj's own left.
+		padRigNum : cliRecObj.right - tarRecObj.right,   // What: Pad Right Number. Why: The right side's own surviving pad is however far the clipped rect's own right still sits right of tarRecObj's own right. How: This subtracts tarRecObj's own right from cliRecObj's own right.
+		padTopNum : tarRecObj.top - cliRecObj.top        // What: Pad Top Number. Why: The top side's own surviving pad is however far the clipped rect's own top still sits above tarRecObj's own top. How: This subtracts cliRecObj's own top from tarRecObj's own top.
 
 
 	};

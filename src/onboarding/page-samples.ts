@@ -254,7 +254,7 @@ const sedTasFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
 
 
 
-		actStoObj.addTasFun({ // What: Add Task Call. Why: This is the real, interactive disposable copy the Data tour's own Reminders step points at. How: This adds a task under copIdeStr, copying samTasObj's own name/repeat, and this weekday when it recurs weekly.
+		actStoObj.addTasFun({ // What: Add Task Call. Why: This is the real, interactive disposable copy the Data tour's own Reminders step points at. How: This adds a task under copIdeStr, copying samTasObj's own name and repeat, plus today's weekday when the sample repeats weekly.
 
 
 			id     : copIdeStr,        // What: ID Field. Why: This copy's own id must be copIdeStr, not the real sample's own id, so it can never collide with it. How: This uses the already-derived copIdeStr.

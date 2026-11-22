@@ -575,7 +575,7 @@ function WelTouCom ( { actIdeStr, actStoObj, selTabFun, staAppObj } : WtcProTyp 
 
 
 
-		if ( tarSteNum === 1 ) { // What: Generate Step Target Check. Why: Sample REMINDERS do not exist yet the very first time the Generate step shows, since its own runFun only adds them once its Next actually fires. How: This branch fully removes them instead of hiding them, since a hidden sample would keep the shared bus's own phase reading a tutorial checklist as still relevant here.
+		if ( tarSteNum === 1 ) { // What: Generate Step Target Check. Why: Sample REMINDERS do not exist yet the very first time the Generate step shows, since its own runFun only adds them once its Next actually fires. How: This branch fully removes them instead of hiding them, since a hidden sample would make tutProFun (onboarding-checklist.ts) report a tutorial still in progress.
 
 
 			ONB_TAS_ARR.forEach( ( curTasObj ) => actStoObj.delTasFun( curTasObj.id ) ); // What: Sample Task Remove Call. Why: Safe to fully delete, since the Generate step's own forward runFun re-adds them exactly as before the moment Next fires again. How: This removes every ONB_TAS_ARR entry's own id from state.tasks.

@@ -58,10 +58,10 @@ import type { TouSteTyp } from './tour-runner.tsx';     // What: Tour Step Type.
  *
  * @summary
  * The ordered catalog of every App Feature tutorial. Every property here is
- * read only by this file and the Today tab's launcher cards, none of it
- * persisted (the persisted map itself is keyed by ideStr's own string VALUE,
- * e.g. 'feat_manual_pick', not by this property's own name), so all 7 fields
- * follow the usual 6-character object-property convention.
+ * read by this file and the Today tab, none of it persisted (the persisted map
+ * itself is keyed by ideStr's own string VALUE, e.g. 'feat_manual_pick', not
+ * by this property's own name), so all 7 fields follow the usual 6-character
+ * object-property convention.
  *
  * Every entry below shares this exact shape, and none of the 8 entries
  * repeat these same fields' own boilerplate comments on their own lines
@@ -506,7 +506,7 @@ const buiTesFun = ( feaIdeStr : string, actStoObj : ActStoTyp, alrProBoo : boole
 
 						// #region Retry Guards
 
-						if ( ( !picIdeStr || heaButArr.length < 2 ) && tryCouNum++ < 20 ) { requestAnimationFrame( tryColFun ); return; } // What: Retry Guard. Why: The picker's own header/buttons may not have mounted on the very first frame checked. How: This re-schedules tryColFun a frame later, up to 20 tries, whenever picIdeStr or both buttons are still missing. // Re-polls a frame later whenever the expected DOM hasn't mounted yet and the try cap hasn't been hit. Left inline rather than extracted into named consts: tryCouNum++ is a side effect that must stay inside this short-circuited check, extracting it would change how often it increments.
+						if ( ( !picIdeStr || heaButArr.length < 2 ) && tryCouNum++ < 20 ) { requestAnimationFrame( tryColFun ); return; } // What: Retry Guard. Why: The picker's own header/buttons may not have mounted on the very first frame checked. How: This re-schedules tryColFun a frame later, up to 20 tries, whenever picIdeStr is missing or fewer than 2 header buttons have been found. // Re-polls a frame later whenever the expected DOM hasn't mounted yet and the try cap hasn't been hit. Left inline rather than extracted into named consts: tryCouNum++ is a side effect that must stay inside this short-circuited check, extracting it would change how often it increments.
 
 
 
