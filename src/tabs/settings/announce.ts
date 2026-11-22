@@ -88,7 +88,7 @@ let annStaFun : ( mesTexStr : string, mesOptObj? : { assBoo? : boolean } ) => vo
 
 	// #region Status Announcement
 
-	let annTimNum : number | undefined = undefined; // What: Announce Timeout Number. Why: A rapid-fire annStaFun() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on every call below.
+	let annTimNum : number | undefined = undefined; // What: Announce Timeout Number. Why: A rapid-fire annStaFun() call must debounce against the previous call's own pending timeout. How: This holds the current setTimeout id, cleared and reassigned on each call below that carries a message.
 
 
 	// #region annStaFun

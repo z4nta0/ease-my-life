@@ -383,7 +383,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 				{ parIteArr.map( ( parCurObj ) => ( // What: Particle Item Map. Why: One piece is needed per entry in parIteArr. How: This maps parIteArr to one confetti or sparkle piece per entry, keyed by its own ideStr.
 
 
-					parCurObj.kinStr === 'confetti' ? ( // What: Confetti Piece Branch. Why: A confetti particle renders as a falling piece instead of a sparkle. How: This renders the if branch, taken whenever parCurObj.kinStr is 'confetti'.
+					parCurObj.kinStr === 'confetti' ? ( // What: Confetti Piece Branch. Why: A confetti particle renders as a burst piece instead of a sparkle. How: This renders the if branch, taken whenever parCurObj.kinStr is 'confetti'.
 
 
 						<i
