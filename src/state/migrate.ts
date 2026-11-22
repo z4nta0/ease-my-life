@@ -109,7 +109,7 @@ function migStaFun ( curStaObj : RawSavTyp ) : StaAppTyp {
 
 		defDatObj.setHours( 7, 12, 0, 0 ); // What: Default Date Hours Pin. Why: The backfilled timestamp must read as "this morning" rather than the actual current moment. How: This pins defDatObj's own time to 7:12am.
 
-		curStaObj.today.generatedAt = defDatObj.toISOString(); // What: Generated-At Backfill. Why: today.generatedAt must exist for the footer/streak logic elsewhere to read. How: This stamps defDatObj's own ISO string onto curStaObj.today.generatedAt.
+		curStaObj.today.generatedAt = defDatObj.toISOString(); // What: Generated-At Backfill. Why: today.generatedAt must exist for the footer and the already-generated check to read. How: This stamps defDatObj's own ISO string onto curStaObj.today.generatedAt.
 
 
 	}
