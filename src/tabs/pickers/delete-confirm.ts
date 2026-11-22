@@ -17,8 +17,7 @@ import { redMotFun } from '../../utils/motion.ts'; // What: Reduced Motion Funct
  * delete-confirm.ts = Delete Confirm
  *
  * @summary
- * The inline delete confirmation a pool row shows on the Pickers tab, in a
- * picker's own pool and in the create form's pool alike: which row is asking
+ * The inline delete confirmation state for a pool row: which row is asking
  * to be deleted, which one is playing its leaving animation after Cancel,
  * and the Cancel handler that plays it.
  *

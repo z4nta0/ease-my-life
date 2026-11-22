@@ -219,7 +219,7 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	};
 
 
-	const lasNulFun = ( cmpOneAny : unknown, cmpTwoAny : unknown ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except both null cases return a fixed "goes last" result regardless of revSorBoo.
+	const lasNulFun = ( cmpOneAny : unknown, cmpTwoAny : unknown ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except a row with only one side N/A gets a fixed "goes last" result regardless of revSorBoo, and two N/A rows fall back to the name tie-break.
 
 
 		const nulOneBoo = cmpOneAny == null; // What: Null One Boolean. Why: The outcomes below all depend on which side (if any) is actually N/A. How: This checks cmpOneAny with a loose null comparison, matching undefined too.

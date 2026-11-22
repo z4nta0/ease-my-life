@@ -15,8 +15,8 @@ import React from 'react'; // What: React. Why: The watcher is a component built
  * @summary
  * A component that renders nothing and only reports when it unmounts, so
  * whatever removes it from the page runs its handler without that code
- * having to know it was there. The Data tab places one inside each open
- * editor row.
+ * having to know it was there. Whatever component renders it gets its
+ * handler run when it leaves the page.
  *
  * Sections:
  *  - Components
@@ -83,7 +83,7 @@ function UnmWatCom ( { onUnmWatFun } : UwcProTyp ) : null {
 
 // #region Exports
 
-export { UnmWatCom }; // What: Named Export. Why: A row commits its draft when it disappears through this watcher. How: This exports UnmWatCom by name.
+export { UnmWatCom }; // What: Named Export. Why: This is the one component this file offers. How: This exports UnmWatCom by name.
 
 // #endregion Exports
 
