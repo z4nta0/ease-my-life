@@ -447,13 +447,94 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 
 
 
+	// #region conRanFun
+
+	/**
+	 * conRanFun = Conditional Range Function
+	 *
+	 * @summary
+	 * Gives an ease-up or ease-down conditional's range in days, its threshold
+	 * divided by its easeMax (each falling back to the shared default),
+	 * rounded and never below 1, or null for every other mode so the Range
+	 * sort can put it last.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param conCurObj - Conditional Current Object: The conditional to read.
+	 *
+	 * @returns The range in days, or null when the mode has none.
+	 *
+	 * @example
+	 * ```ts
+	 * conRanFun(conCurObj) // => 7
+	 * ```
+	 *
+	*/
+
 	const conRanFun = ( conCurObj : ConRcdTyp ) => ( conCurObj.mode === 'ease-up' || conCurObj.mode === 'ease-down' ) // What: Conditional Range Function. Why: Ease-mode conditionals expose a sortable Range value, the same soonest/latest-band math their own editor uses, collapsed to its near end. How: This computes it only for ease-up/ease-down, null otherwise.
 		? Math.max( 1, Math.round( ( conCurObj.threshold ?? PIC_NAM_OBJ.THR_VAL_NUM ) / ( conCurObj.easeMax ?? PIC_NAM_OBJ.DEF_EAS_OBJ.easeMax ) ) ) // What: Ease Range Branch. Why: An ease-mode conditional's range is roughly how many days it takes to fully charge. How: This divides threshold by easeMax, never below 1.
 		: null; // What: No Range Branch. Why: Every other mode has no range to sort by. How: This returns null.
 
+	// #endregion conRanFun
+
+
+
+	// #region conOddFun
+
+	/**
+	 * conOddFun = Conditional Odds Function
+	 *
+	 * @summary
+	 * Gives a weighted or dynamic conditional's odds, falling back to the
+	 * shared default odds, or null for every other mode so the Odds sort can
+	 * put it last.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param conCurObj - Conditional Current Object: The conditional to read.
+	 *
+	 * @returns The odds, or null when the mode has none.
+	 *
+	 * @example
+	 * ```ts
+	 * conOddFun(conCurObj) // => 50
+	 * ```
+	 *
+	*/
 
 	const conOddFun = ( conCurObj : ConRcdTyp ) => ( conCurObj.mode === 'weighted' || conCurObj.mode === 'dynamic' ) ? ( conCurObj.oddsPct ?? CON_NAM_OBJ.DEF_ODD_NUM ) : null; // What: Conditional Odds Function. Why: Weighted/dynamic conditionals expose their real trigger-likelihood as Odds, not their own vestigial weight field. How: This reads conCurObj.oddsPct only for those 2 modes, null otherwise.
-	const conBooFun = ( conCurObj : ConRcdTyp ) => ( conCurObj.mode === 'dynamic' ) ? ( conCurObj.value ?? 0 ) : null;                                                          // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads conCurObj.value only for 'dynamic', null otherwise.
+
+	// #endregion conOddFun
+
+
+
+	// #region conBooFun
+
+	/**
+	 * conBooFun = Conditional Boost Function
+	 *
+	 * @summary
+	 * Gives a dynamic conditional's boost value, 0 when it has none, or null
+	 * for every other mode so the Boost sort can put it last.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param conCurObj - Conditional Current Object: The conditional to read.
+	 *
+	 * @returns The boost value, or null when the mode has none.
+	 *
+	 * @example
+	 * ```ts
+	 * conBooFun(conCurObj) // => 0
+	 * ```
+	 *
+	*/
+
+	const conBooFun = ( conCurObj : ConRcdTyp ) => ( conCurObj.mode === 'dynamic' ) ? ( conCurObj.value ?? 0 ) : null; // What: Conditional Boost Function. Why: Only a dynamic conditional has a meaningful boost value, the same value field ease modes reuse for charge. How: This reads conCurObj.value only for 'dynamic', null otherwise.
+
+	// #endregion conBooFun
+
+
 
 	const iteSorStr = staAppObj.ui?.dataSort?.conditionals || 'name-asc'; // What: Item Sort String. Why: This section's own list needs its own persisted sort choice. How: This reads staAppObj.ui.dataSort.conditionals, falling back to 'name-asc'.
 
@@ -1058,7 +1139,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 											aria-label='Collapse'
 
 											onClick={ keeCloFun }
-										>{ /* What: Row Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, the same "deliberate close" handler used elsewhere. */ }
+										>{ /* What: Row Chevron Button Element. Why: The chevron is its own real button (not a decoration) since the row itself can no longer be one while editing. How: This calls keeCloFun, which commits the draft unless its name is invalid. */ }
 
 
 											<span

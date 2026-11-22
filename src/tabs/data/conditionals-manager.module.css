@@ -6,17 +6,15 @@
  *
  * @summary
  * Styles for the Data tab's Conditionals section: its collapsible card and
- * header, the Add control, the empty message, each conditional's row (a
- * button while closed, a live name field while open), and ConEdiCom's editor
- * body with its delete confirm and Save/Cancel footer. Most of these classes
- * are shared with the Data tab's other sections, so their rules are copies of
- * the global ones, resolved where this section's own editor overrides used to
- * win on specificity, and they keep the same names in every section's module.
- * The Add control, the row, and the row's chevron each render as two
- * different tags, so each tag has its own class, sharing one rule. An open
- * chevron keys off data-chevron-open-active, an open row off
- * data-row-edit-active, the disabled Add control and an invalid name off the
- * aria-disabled and aria-invalid they already carry.
+ * header, the Add control, the empty message, each conditional's row (a button
+ * while closed, a live name field while open), and ConEdiCom's editor body
+ * with its delete confirm and Save/Cancel footer. Many of these classes are
+ * shared with the Data tab's other sections, each of which carries its own
+ * copy of the rule under the same class name. The Add control, the row, and
+ * the row's chevron each render as two different tags, so each tag has its own
+ * class, sharing one rule. An open chevron keys off data-chevron-open-active,
+ * an open row off data-row-edit-active, the disabled Add control and an
+ * invalid name off the aria-disabled and aria-invalid they already carry.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
