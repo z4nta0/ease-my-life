@@ -627,12 +627,12 @@ window.addEventListener( 'appinstalled', () => { // What: App Installed Listener
 
 // #region Exports
 
-const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why: This is the single public entry point to this file's install and persistence operations. How: This maps each of this file's own internal function/variable names directly onto matching external property names.
+const PWA_NAM_OBJ = { // What: Progressive Web App Namespace Object. Why: This is the single public entry point to this file's install and persistence operations. How: This maps each internal function or variable onto an external property of the same name, except subscribe, which keeps the conventional observer name for subAddFun.
 
 
 	askFirFun : askFirFun, // What: Ask First Function. Why: This exposes the first-picker persistence request. How: This exports askFirFun under its own matching name.
 	askInsFun : askInsFun, // What: Ask Install Function. Why: This exposes the native install prompt. How: This exports askInsFun under its own matching name.
-	askPerFun : askPerFun, // What: Ask Persist Function. Why: This exposes the forced persistence request. How: This exports askPerFun under its own matching name.
+	askPerFun : askPerFun, // What: Ask Persist Function. Why: This exposes the persistence request, which can be forced. How: This exports askPerFun under its own matching name.
 	canInsFun : canInsFun, // What: Can Install Function. Why: This exposes whether an install prompt is available. How: This exports canInsFun under its own matching name.
 	insStaFun : insStaFun, // What: Install State Function. Why: This exposes the install state. How: This exports insStaFun under its own matching name.
 	isaIosBoo : isaIosBoo, // What: Is-An iOS Boolean. Why: This exposes whether the device is an iOS one, read directly rather than called. How: This exports isaIosBoo under its own matching name.

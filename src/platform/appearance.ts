@@ -296,7 +296,7 @@ let __tinProObj : CanvasRenderingContext2D | null = null; // What: Tint Probe Ob
  * @param usrColObj - User Color Object: The user's own 3 chosen colors: { bg,
  *                    text, accent }. This is a separate, persisted contract
  *                    from the returned palette shape below, so its own
- *                    bg/text/ accent keys stay as-is rather than following the
+ *                    bg/text/accent keys stay as-is rather than following the
  *                    palette-shape renames.
  *
  * @returns A full 8-token palette object in the same shape as a
@@ -374,8 +374,8 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param appSetObj - Appearance Settings Object: The persisted appearance
- *                    settings object (theme, autoSystem, customLight,
- *                    customDark).
+ *                    settings object, of which this reads the theme,
+ *                    autoSystem, customLight, and customDark fields.
  * @param sysDarBoo - System Dark Boolean: Whether the OS currently prefers
  *                    dark mode.
  *
