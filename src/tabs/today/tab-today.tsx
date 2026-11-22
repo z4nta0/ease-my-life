@@ -3681,7 +3681,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				helIteArr={ TOD_HEL_ARR }
 
 				onCloAllFun={ helExiFun }
-			/>{ /* What: Help Overlay Component. Why: Today needs its own coach-mark overlay driven by TOD_HEL_ARR. How: This is rendered whenever helModBoo is true, closed via helExiFun. */ }
+			/>{ /* What: Help Overlay Component. Why: Today needs its own coach-mark overlay driven by TOD_HEL_ARR. How: This receives helModBoo as its active flag and helExiFun as its close handler. */ }
 
 
 
