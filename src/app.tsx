@@ -7,7 +7,7 @@ import cssModObj from './app.module.css'; // What: CSS Module Object. Why: This 
 import React     from 'react';            // What: React. Why: This is the UI library the entire file's components and hooks are built on. How: This is used directly (React.useState, for one) throughout, instead of importing individual named hooks.
 
 
-import { APP_NAM_OBJ  } from './platform/appearance.ts';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through this file's theme functions. How: This supplies the palette effect's theme resolution, palette lookup, and palette application.
+import { APP_NAM_OBJ  } from './platform/appearance.ts';         // What: Appearance Namespace Object. Why: The root component resolves and applies the active palette through the appearance module's theme functions. How: This supplies the palette effect's theme resolution, palette lookup, and palette application.
 import { BacFloCom    } from './ui/bg-flourish.tsx';             // What: Background Flourish Component. Why: The decorative background glyphs are rendered behind every non-Today tab. How: This is passed the shared maiInnDiv ref and the current tab id.
 import { durMilFun    } from './utils/rhythm.ts';                // What: Duration Millisecond Function. Why: Timers that wait on a CSS animation must end with it. How: This returns a duration step's length in milliseconds, matching the stylesheet's own --dur-* tokens.
 import { FeaTouCom    } from './onboarding/app-features.tsx';    // What: Feature Tour Component. Why: This drives the App Features tutorial overlay. How: This is rendered while actFeaStr holds a feature id, passed the shared state/actions and a close handler.
@@ -46,12 +46,10 @@ import { WelTouCom    } from './onboarding/welcome-tour.tsx';    // What: Welcom
  * plus whichever mini-tour overlay (FeaTouCom/PagTouCom/PicTouCom) is
  * currently running.
  *
- * TabBarCom is the shared nav bar rendered by AppRooCom, built from
- * TAB_OBJ_ARR's own fixed tab list; it owns the sliding active-tab indicator's
- * own measurement/animation, including the rail-placement-switch ghost-copy
- * transition documented in its own reference comments (see CLAUDE.md's own
- * worked examples throughout the Code formatting rules section, which use this
- * file as the reference implementation).
+ * TabBarCom is the shared nav bar AppRooCom renders, built from TAB_OBJ_ARR's
+ * fixed tab list. It owns the sliding active-tab indicator's measurement, and
+ * it can render as a decorative ghost copy of itself (tbcGhoBoo) for the
+ * placement-switch transition that AppRooCom stages.
  *
  * Sections:
  *  - Constants
