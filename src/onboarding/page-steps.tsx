@@ -46,14 +46,13 @@ import type { TouSteTyp } from './tour-runner.tsx'; // What: Tour Step Type. Why
  *
  * @summary
  * Target and description catalog for the Data page's OWN interior elements,
- * same shape/reasoning as STA_TAR_OBJ below. Also a first draft covering only
- * the "main sections" per instruction, likely to grow more steps later.
- * pgfObj/pfsObj are both disabled while their own step is up (tab-data.tsx's
- * own disGroBoo/disShoBoo, the same touIdeStr plus touSteNum gating pattern as
- * tab-picker.tsx), narrating what they do is the point, and changing
- * filGroStr/curScoStr mid-tour would otherwise leave a LATER step's own target
- * (rmsObj, which shows at scope 'all' or 'reminders') unable to find anything,
- * since nothing here resets it back afterward.
+ * same shape/reasoning as STA_TAR_OBJ below. pgfObj/pfsObj are both disabled
+ * while their own step is up (tab-data.tsx's own disGroBoo/disShoBoo, the same
+ * touIdeStr plus touSteNum gating pattern as tab-picker.tsx), narrating what
+ * they do is the point, and changing filGroStr/curScoStr mid-tour would
+ * otherwise leave a LATER step's own target (rmsObj, which shows at scope
+ * 'all' or 'reminders') unable to find anything, since nothing here resets it
+ * back afterward.
  *
  * 2 of these fields carry the exact same boilerplate What/Why/How
  * wherever they appear, so none of the entries below repeat it on
@@ -415,10 +414,8 @@ const SET_TAR_OBJ = { // What: Settings Target Object. Why: buiTesFun below spre
  * STA_TAR_OBJ = Stats Target Object
  *
  * @summary
- * Target and description catalog for the Stats page's OWN interior
- * elements, same shape/reasoning as PIC_TAR_OBJ above. A first draft
- * covering only the "main sections" per instruction, not every filter/
- * card gets its own step yet.
+ * Target and description catalog for the Stats page's OWN interior elements,
+ * same shape/reasoning as PIC_TAR_OBJ above.
  *
  * 2 of these fields carry the exact same boilerplate What/Why/How
  * wherever they appear, so none of the entries below repeat it on

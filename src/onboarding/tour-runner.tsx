@@ -33,11 +33,10 @@ import type { ReactNode } from 'react';               // What: React Node. Why: 
  * card (Step N of N, Skip/Back/Next). Shared by the Welcome Tour
  * (onboarding/welcome-tour.tsx) and the per-feature mini-tours built on it.
  * This file owns none of any specific tour's content or business logic, only
- * the mechanics: spotlight positioning, the chrome clamp, the click-guard, the
- * not-found watchdog, tab-sync, the mobile rail auto-open, resume-on-reload
- * persistence. This is NOT used by the on-demand help mode (see
- * help/mode.tsx): that is simultaneous multi-highlight with no dimming that
- * blocks clicks and no sequential coach, a genuinely different engine.
+ * the mechanics, such as spotlight positioning. This is NOT used by the
+ * on-demand help mode (see help/mode.tsx): that is simultaneous
+ * multi-highlight with no dimming that blocks clicks and no sequential coach,
+ * a genuinely different engine.
  *
  * Sections:
  *  - Types
@@ -483,12 +482,10 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  * Renders the currently-running guided tour: a full-viewport dim with a single
  * spotlight box around the current step's target(s), darkening the page around
  * it, plus a coach card (title, body, Skip/Back/Next) positioned relative to
- * it. Owns every mechanic described in this file's own header comment
- * (spotlight tracking, the chrome clamp, the click-guard, the not-found
- * watchdog, tab-sync, the mobile rail auto-open, resume-on-reload
- * persistence); a specific tour's own content lives entirely in its steObjArr
- * prop, authored by a caller such as onboarding/welcome-tour.tsx or one of the
- * mini-tour modules beside it.
+ * it. Owns the tour mechanics this file's own header comment describes, such
+ * as spotlight tracking; a specific tour's own content lives entirely in its
+ * steObjArr prop, authored by a caller such as onboarding/welcome-tour.tsx or
+ * one of the mini-tour modules beside it.
  *
  * Each step object in steObjArr carries these fields (every one optional
  * except bodEle, priStr, selStr, and titStr):
@@ -554,15 +551,15 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  *   also triggers the primary action (runFun, then advance) instead of a
  *   no-op.
  *
- * - `cliSelStr` (String): An optional override for what counts as "on target"
- *   for the click-guard/cirBoo logic specifically (the spotlight tracking,
- *   scroll-into-view, and advSelStr's own default still key off selStr). It
- *   defaults to selStr, and is only needed when a step highlights a BIGGER box
- *   than what it actually wants clicked, e.g. the whole picker stage plus
- *   actions area with multiple buttons in it, only one of which should count.
- *   Without this, any click landing anywhere inside selStr (a disabled sibling
- *   button included, since a disabled element with pointer-events:none passes
- *   its click through to whatever is underneath, typically the highlighted
+ * - `cliSelStr` (String): An optional override for what counts as "on
+ *   target" for the click-guard/cirBoo logic specifically (the spotlight
+ *   tracking and scroll-into-view still key off selStr). It defaults to
+ *   selStr, and is only needed when a step highlights a BIGGER box than what
+ *   it actually wants clicked, e.g. the whole picker stage plus actions area
+ *   with multiple buttons in it, only one of which should count. Without this,
+ *   any click landing anywhere inside selStr (a disabled sibling button
+ *   included, since a disabled element with pointer-events:none passes its
+ *   click through to whatever is underneath, typically the highlighted
  *   container itself) would satisfy cirBoo, which is almost never what a step
  *   author actually wants from a highlight wider than its real target.
  *
@@ -1090,7 +1087,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 			// #region Target Checks
 
-			if ( focEveObj.relatedTarget && ( focEveObj.relatedTarget as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has an ancestor carrying the coaCarDiv hook. // What: Type Assertion Note. Why: A focus move always involves an element in the page, while the event types its target as any EventTarget. How: The as Element lets it be read as one.
+			if ( focEveObj.relatedTarget && ( focEveObj.relatedTarget as Element ).closest( '[data-element-name-hook~="coaCarDiv"]' ) ) return; // What: Coach Move Exemption. Why: A focus move into the coach card is a legitimate, deliberate way to leave the target. How: This returns whenever the event's own relatedTarget has an ancestor carrying the coaCarDiv hook. // What: Type Assertion Note. Why: A focus move lands on an element in the page, while the event types its related target as any EventTarget. How: The as Element lets it be read as one.
 
 
 
