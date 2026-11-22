@@ -148,7 +148,7 @@ if ( !window.__escBound ) { // What: Escape Bound Guard. Why: The document-level
 
 		// #region Top Entry Cancel
 
-		keyDowObj.preventDefault(); // What: Default Prevention Call. Why: The browser's own Escape behavior (e.g. exiting fullscreen) shouldn't also fire alongside this cancel. How: This prevents the keydown event's default action.
+		keyDowObj.preventDefault(); // What: Default Prevention Call. Why: The keydown's default action shouldn't also run alongside this cancel. How: This prevents the keydown event's default action.
 
 		escStaArr[ escStaArr.length - 1 ].runFun(); // What: Top Entry Run Call. Why: Only the deepest (innermost, most-recently-registered) active editor should react. How: This invokes the runFun() of the last entry in escStaArr.
 

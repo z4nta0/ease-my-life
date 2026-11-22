@@ -890,7 +890,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 							subTexStr={ sooSubStr }
 
 							onSetValFun={ appSooFun }
-						/>{ /* What: Bound Row Component. Why: This is the row for the lower drift bound, labeled Shortest instead for ease-down. How: This renders the row's own label, subtitle, and day count stepper, committing its changes through appSooFun. */ }
+						/>{ /* What: Bound Row Component. Why: This is the row for the Soonest bound (Shortest for ease-down), shown in days. How: This renders the row's own label, subtitle, and day count stepper, committing its changes through appSooFun. */ }
 
 
 
@@ -901,7 +901,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 							subTexStr={ latSubStr }
 
 							onSetValFun={ appLatFun }
-						/>{ /* What: Bound Row Component. Why: This is the row for the upper drift bound, labeled Longest instead for ease-down. How: This renders the row's own label, subtitle, and day count stepper, committing its changes through appLatFun. */ }
+						/>{ /* What: Bound Row Component. Why: This is the row for the Latest bound (Longest for ease-down), shown in days. How: This renders the row's own label, subtitle, and day count stepper, committing its changes through appLatFun. */ }
 
 
 

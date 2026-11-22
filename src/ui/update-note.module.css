@@ -35,7 +35,7 @@
 
 /* #region updRowDiv */
 
-.updRowDiv { /* What: Update Row Div. Why: The note should be noticed without covering the tab bar in any placement. How: This draws a raised panel at the top of the tab, its message above its Reload button, centered at the tabs' width, and pops it in. */
+.updRowDiv { /* What: Update Row Div. Why: The note should be noticed without covering the tab bar in any placement. How: This draws a raised panel at the top of the tab, its message above its Reload button, centered and capped at a maximum width, and pops it in. */
 
 
 	align-items     : center;

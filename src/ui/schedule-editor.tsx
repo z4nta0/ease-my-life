@@ -1014,7 +1014,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 			notIdeStr={ schNotStr }
 			staAppObj={ staAppObj }
 			tasRcdObj={ tasRcdObj }
-		/> // What: Visibility Note Component. Why: This is the schedule-placement advisory, which only ever shows when a schedule-based cause applies. How: This passes kinValStr 'schedule' and schNotStr as its own note id.
+		/> // What: Visibility Note Component. Why: This is the schedule-placement advisory, which shows for a schedule-based cause or a never-showing configuration. How: This passes kinValStr 'schedule' and schNotStr as its own note id.
 
 
 	);

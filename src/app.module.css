@@ -892,7 +892,7 @@
 /* #endregion navTabBut */
 
 
-.raiHanBut { /* What: Rail Handle Button. Why: The drawer rail needs a visible pull tab riding its right edge, which only exists on a small screen. How: This draws a frosted tab centered on the rail's right edge, hidden until the narrow-screen query shows it. */
+.raiHanBut { /* What: Rail Handle Button. Why: The drawer rail needs a visible pull tab riding its right edge, which only exists on a small screen. How: This draws a frosted tab against the rail's right edge, vertically centered on it, hidden until the narrow-screen query shows it. */
 
 
 	-webkit-backdrop-filter : blur( calc( var( --ver-rhy-p01 ) * 1rem ) ) saturate( 150% ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */ /* What: WebKit Backdrop Filter. Why: This is the prefixed form of the backdrop filter. How: This blurs what's behind, the same as the standard backdrop-filter line below. */
