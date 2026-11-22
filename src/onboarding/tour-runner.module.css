@@ -6,11 +6,10 @@
  *
  * @summary
  * Styles for GuiTouCom, the guided tour's overlay: a full-screen layer that
- * sits above the app shell and help mode's own dim layer, the plain
- * dim shown before a target is found, the spotlight that darkens the page
- * around the current target with one huge box-shadow instead of a real
- * cut-out, and the coach card with its arrow, progress line, title, body, and
- * Skip/Back/Next row.
+ * sits above the app shell and help mode's own dim layer, the dims that darken
+ * the page, such as the spotlight that darkens it around the current target
+ * with one huge box-shadow instead of a real cut-out, and the coach card with
+ * its contents, such as its Skip/Back/Next row.
  *
  * The spotlight drops its dimming shadow while the user drags a group or item
  * so they can see where it lands, and pulses a white ring while a step waits

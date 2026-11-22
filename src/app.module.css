@@ -7,14 +7,14 @@
  * @summary
  * Styles for the app shell: AppRooCom's full-height root, which is also the
  * size container every @container query in the app measures (named appRooDiv,
- * after its class), the skip link that slides in on focus, the scrolling main
- * area, and TabBarCom's navigation bar in its three placements. At the bottom
- * it's a floating pill of tab buttons; at the side it's a rail with the Ease
- * My Life wordmark, which becomes an off-canvas drawer with a pull handle and
- * scrim on a narrow screen; at the top it's a bar with the wordmark and tabs
- * on one line. A single indicator pill slides behind the active tab. When the
- * placement changes, a ghost copy of the old bar exits toward its edge while
- * the real one enters from its new edge.
+ * after its class), and the shell's parts inside it, such as TabBarCom's
+ * navigation bar in its three placements. At the bottom it's a floating pill
+ * of tab buttons; at the side it's a rail with the Ease My Life wordmark,
+ * which becomes an off-canvas drawer with a pull handle and scrim on a narrow
+ * screen; at the top it's a bar with the wordmark and tabs on one line. A
+ * single indicator pill slides behind the active tab. When the placement
+ * changes, a ghost copy of the old bar exits toward its edge while the real
+ * one enters from its new edge.
  *
  * The main area reads data-tab-today-active, set while the Today tab shows,
  * since Today runs edge to edge.

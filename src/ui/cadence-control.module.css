@@ -6,9 +6,9 @@
  *
  * @summary
  * Styles for CadConCom, the "How often?" editor for a picker's cadence: the
- * cadence field with its label, help bubble, and live summary above the
- * segmented control, and, for a non-daily cadence, the anchor field that fades
- * in below it with its inline selects and clamp hints.
+ * cadence field above its segmented control and, for a non-daily cadence, the
+ * anchor field that fades in below it, each with its own parts, such as the
+ * cadence field's live summary.
  *
  * Its fields share their look with the reminder schedule editor and the app's
  * other forms, so their declarations are copied here, under the names those

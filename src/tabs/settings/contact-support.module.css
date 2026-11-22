@@ -6,10 +6,9 @@
  *
  * @summary
  * Styles for the Settings About section's "Having problems?" row and the
- * support form it opens: the row's name, description, and sent note beside
- * its button, then the form's labeled subject and message fields, the two
- * read-only diagnostic values, the off-screen honeypot, and the footer that
- * holds the validation note, the offline fallback, and the actions.
+ * support form it opens: the row's text beside its button, then the form's
+ * fields, such as the off-screen honeypot, and the footer that holds its notes
+ * and actions.
  *
  * The row and the text fields share their look with the rest of the Settings
  * tab and the app's other forms, through declarations copied here from those

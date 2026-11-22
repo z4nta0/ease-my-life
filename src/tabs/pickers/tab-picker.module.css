@@ -5,15 +5,13 @@
  * tab-picker.module.css = Tab Picker Module
  *
  * @summary
- * Styles for the Pickers tab's own frame: its root and header (kicker row,
- * brand mark, title, and intro), the Show filter row with its picker tab
- * strip, and the fading wrapper around whichever picker or form is showing.
- * The Group and Type rows draw their rails from the shared filter rail's own
- * module. A selected picker tab keys off data-tab-select-active, and the
- * disabled Add tab off the aria-disabled its info tip sets. The tab strip's
- * edge fades follow edge-fade.ts's data-scroll-start-active and
- * data-scroll-end-active, and the root reads --tab-tou-pad, which the body
- * sets while a tour runs.
+ * Styles for the Pickers tab's own frame, from its root and header to the
+ * fading wrapper around whichever picker or form is showing, such as the Show
+ * filter row with its picker tab strip. The Group and Type rows draw their
+ * rails from the shared filter rail's own module. Its states key off
+ * presence-only data attributes or the aria attributes its elements carry,
+ * such as a selected picker tab's data-tab-select-active, and the root reads
+ * --tab-tou-pad, which the body sets while a tour runs.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

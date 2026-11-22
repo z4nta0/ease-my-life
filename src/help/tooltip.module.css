@@ -6,10 +6,10 @@
  *
  * @summary
  * Styles for HelTipCom, the tip a help badge opens. It reuses the guided
- * tour's coach card look (surface, border, shadow, and the arrow pointing at
- * the target) for consistency, then fixes its own width and opts back into
- * pointer events under help mode's click-through overlay. The title and body
- * paragraphs sit inside it.
+ * tour's coach card look (such as the arrow pointing at the target) for
+ * consistency, then fixes its own width and opts back into pointer events
+ * under help mode's click-through overlay. The title and body paragraphs sit
+ * inside it.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

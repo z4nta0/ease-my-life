@@ -5,12 +5,12 @@
  * account-section.module.css = Account Section Module
  *
  * @summary
- * Styles for the Settings tab's Account section: its intro, its rows of
- * name, description, and control (an email or link field joining the text
- * where one is needed), the two first-sync choices, the failure note, and
- * the visually hidden status region. The rows and fields share their look
- * with the rest of the Settings tab and its support form, so their
- * declarations are copied here from those modules.
+ * Styles for the Settings tab's Account section: its rows of name,
+ * description, and control (an email or link field joining the text where one
+ * is needed), and the copy and choices around them, such as the two first-sync
+ * choices. The rows and fields share their look with the rest of the Settings
+ * tab and its support form, so their declarations are copied here from those
+ * modules.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

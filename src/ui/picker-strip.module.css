@@ -5,12 +5,11 @@
  * picker-strip.module.css = Picker Strip Module
  *
  * @summary
- * Styles for PicStrCom, the pick animation shown while a picker chooses: the
- * reel (a vertical strip of names sliding past a center line), the dissolve (a
- * single name cross-fading until it lands with a glow), and the spotlight (a
- * list whose highlight hops between rows). Each style marks its landed row or
- * name in the accent color once the cycle settles. The reel track's slide
- * duration is written inline per step from JS.
+ * Styles for PicStrCom, the pick animation shown while a picker chooses, in
+ * each of its styles, such as the reel, a vertical strip of names sliding past
+ * a center line. Each style marks its landed row or name in the accent color
+ * once the cycle settles. The reel track's slide duration is written inline
+ * per step from JS.
  *
  * Under reduced motion the JS skips the cycle and shows one calm settled name,
  * and these rules turn the remaining motion off. The Settings preview passes

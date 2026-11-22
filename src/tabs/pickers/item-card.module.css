@@ -6,10 +6,10 @@
  *
  * @summary
  * Styles for IteCarCom, the card a Pickers tab pool opens to add or edit an
- * item: the rounded card that springs in and folds away, the name row with
- * its underlined name field, and the flush slot holding the item editor. The
- * card plays its closing animation through its --closing modifier, and it
- * and the editor slot set the --ent-* properties the item editor reads.
+ * item: the rounded card that springs in and folds away and the rows inside
+ * it, such as the flush slot holding the item editor. The card plays its
+ * closing animation through its --closing modifier, and it and the editor slot
+ * set the --ent-* properties the item editor reads.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

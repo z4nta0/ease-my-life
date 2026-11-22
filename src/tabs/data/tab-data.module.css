@@ -5,19 +5,13 @@
  * tab-data.module.css = Data Tab Module
  *
  * @summary
- * Styles for the Data tab's own markup: the page header with its brand mark,
- * the Show filter row, the sort bar, the empty-filter message, each picker's
- * collapsible card (its header with mode, group, and vacation tags, the
- * Controls and Items toggles, the Add control, and each item's row above its
- * inline editor), and the dashed Create Picker button. The Group, Type, and
- * Conditionals rows draw their rails from the shared filter rail's own module.
- * A selected Show tab keys off data-tab-select-active, an open chevron off
- * data-chevron-open-active, an open row off data-row-edit-active, a
- * vacationing card or row off data-card-vacation-active or
- * data-row-vacation-active, the vacation toggle off its own aria-pressed, and
- * the disabled Add control off data-tour-disabled-active, which its info tip
- * forwards. The item editor reads the --ent-* and --edi-foo-* properties each
- * row's editor wrapper sets.
+ * Styles for the Data tab's own markup, from the page header to the dashed
+ * Create Picker button, such as each picker's collapsible card with each
+ * item's row above its inline editor. The rail filter rows, such as the Group
+ * row, draw their rails from the shared filter rail's own module. Its states
+ * key off presence-only data attributes or the aria attributes its elements
+ * carry, such as data-row-edit-active on an open row. The item editor reads
+ * the --ent-* and --edi-foo-* properties each row's editor wrapper sets.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

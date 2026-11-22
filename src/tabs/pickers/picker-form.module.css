@@ -6,17 +6,13 @@
  *
  * @summary
  * Styles for PicForCom, the two-step form that creates or edits a picker: its
- * header and step bar, the Details step (name, group chips, the pick mode
- * radio, the conditional toggle with its rail and new-conditional editor, and
- * the daily schedule with its days, holidays, and duplicates switches), and
- * the Items step (the item pool, its delete confirm, and the slot below it
- * holding the Add Item button), each ending in its own footer. The add-item
- * and edit-item cards in that slot are styled by the item card's own module.
- * The step, chip, mode, and conditional choices key off presence-only
- * data-*-active attributes, the conditional rail's fades off the scroll fade
- * attributes, a switch off its own aria-checked, and a blocked Delete tip off
- * its own aria-disabled. The pool row and confirm animations are this file's
- * own module classes.
+ * header and step bar, then each step's fields, such as the Details step's
+ * pick mode radio, each step ending in its own footer. The add-item and
+ * edit-item cards in the Items step's slot below its pool are styled by the
+ * item card's own module. Its choices key off presence-only data-*-active
+ * attributes, while its other states key off the scroll fade attributes or the
+ * aria attributes their elements carry, such as a switch's aria-checked. The
+ * pool row and confirm animations are this file's own module classes.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

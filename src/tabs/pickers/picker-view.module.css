@@ -5,20 +5,15 @@
  * picker-view.module.css = Picker View Module
  *
  * @summary
- * Styles for PicVieCom, the Pickers tab's view of one picker: its header and
- * hints, the run stage (idle count, the reel, the sent confirmation, or the
- * empty state) with the action buttons below it, the pool list of items with
- * their progress, weight, and Send, Edit, and Delete buttons, and the slot
- * below it holding the Add Item button. The add-item and edit-item cards in
- * that slot are styled by the item card's own module. The stage keeps one
- * fixed height across phases so the buttons under it never jump. A pool row
- * keys its inactive and ineligible looks off data-row-vacation-active and
- * data-row-ineligible-active, a tour-disabled action off
- * data-tour-disabled-active, the already-sent Send tip off
- * data-action-disabled-active, and the blocked Delete tip off its own
- * aria-disabled. The row and stage animations are this file's own module
- * classes. Pill spacing inside the header and pool rows goes through
- * PilTagCom's own --pil-* properties.
+ * Styles for PicVieCom, the Pickers tab's view of one picker, from its header
+ * to the slot below its pool list that holds the Add Item button, such as the
+ * run stage with the action buttons below it. The add-item and edit-item cards
+ * in that slot are styled by the item card's own module. The stage keeps one
+ * fixed height across phases so the buttons under it never jump. Its states
+ * key off presence-only data attributes or the aria attributes its elements
+ * carry, such as data-row-vacation-active on an inactive pool row. The row and
+ * stage animations are this file's own module classes. Pill spacing inside the
+ * header and pool rows goes through PilTagCom's own --pil-* properties.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

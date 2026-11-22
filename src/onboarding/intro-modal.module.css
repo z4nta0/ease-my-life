@@ -6,10 +6,10 @@
  *
  * @summary
  * Styles for IntModCom, the modal every onboarding tour opens with: a dimmed,
- * scrollable backdrop, the rising card inside it, and the card's icon, title,
- * paragraphs, topic chips, and action buttons. The backdrop centers the card
- * with flex auto-margins rather than center alignment, so a card taller than
- * a short screen scrolls instead of clipping at both ends.
+ * scrollable backdrop, the rising card inside it, and the card's contents,
+ * such as its action buttons. The backdrop centers the card with flex
+ * auto-margins rather than center alignment, so a card taller than a short
+ * screen scrolls instead of clipping at both ends.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

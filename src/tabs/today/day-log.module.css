@@ -7,15 +7,14 @@
  * @summary
  * Styles for the Day Log, the per-group "what did the generator do today"
  * audit panel: the Log chip in a group header, and the panel itself with its
- * header, icon key, and body. The body holds either the reminders table or,
+ * parts, such as its icon key. The body holds either the reminders table or,
  * for a picker group, a Conditionals block and one block per picker, each a
- * table of items with their value at generation, change, value after, and
- * status chips. The open chip keys off its own aria-pressed, a collapsed block
- * off its header's aria-expanded, and mode pills, boosts, and row statuses off
- * presence-only data attributes. The trend directions (up, down, flat), the
- * status icon tints, and the status pill kinds are modifier classes. Each
- * table cell carries its own column's alignment, and the narrower widths
- * re-grid the tables through container queries on the app.
+ * table of items with columns such as the value at generation. Its states key
+ * off the aria attributes its elements carry or presence-only data attributes,
+ * such as a collapsed block's header's aria-expanded, and its variants are
+ * modifier classes, such as the trend directions. Each table cell carries its
+ * own column's alignment, and the narrower widths re-grid the tables through
+ * container queries on the app.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

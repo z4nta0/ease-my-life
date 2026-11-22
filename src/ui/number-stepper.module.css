@@ -5,9 +5,9 @@
  * number-stepper.module.css = Number Stepper Module
  *
  * @summary
- * Styles for NumSteCom: the pill-shaped container, its round minus and plus
- * buttons, and the borderless text input between them, which drops the
- * field's own chrome so the number reads as plain text.
+ * Styles for NumSteCom: the pill-shaped container and the controls inside it,
+ * such as the borderless text input, which drops the field's own chrome so the
+ * number reads as plain text.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

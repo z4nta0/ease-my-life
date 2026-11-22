@@ -5,19 +5,15 @@
  * reminders-manager.module.css = Reminders Manager Module
  *
  * @summary
- * Styles for the Data tab's Reminders section: its collapsible card and
- * header, the Controls and Items toggles, the settings matrix of switches with
- * its footer, the Add control, the empty message, and each reminder's row (a
- * button while closed, a live name field while open) above its inline editor.
- * Most of these classes are shared with the Data tab's other sections, whose
- * modules carry their own copies under the same names. The Add control, the
- * row, and the row's chevron each render as two different tags, so each tag
- * has its own class, sharing one rule. An open chevron keys off
- * data-chevron-open-active, an open row off data-row-edit-active, a one-time
- * reminder's icon off data-reminder-once-active, a switch off its own
- * aria-pressed, and the disabled Add control off data-tour-disabled-active,
- * which its info tip forwards. The inline editor's footer reads the
- * --edi-foo-* properties this section sets.
+ * Styles for the Data tab's Reminders section: its collapsible card and the
+ * parts inside it, such as each reminder's row (a button while closed, a live
+ * name field while open) above its inline editor. Most of these classes are
+ * shared with the Data tab's other sections, whose modules carry their own
+ * copies under the same names. Some elements, such as the Add control, render
+ * as two different tags, so each tag has its own class, sharing one rule. Its
+ * states key off presence-only data attributes or the aria attributes its
+ * elements carry, such as data-row-edit-active on an open row. The inline
+ * editor's footer reads the --edi-foo-* properties this section sets.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

@@ -7,11 +7,9 @@
  * @summary
  * Styles for LoaCarCom and LoaReeCom, the placeholder card that stands in for
  * a picker's slot while a new list is generated. The card copies a real Today
- * card's layout (check spot, meta and name rows, actions strip) with the
- * check dashed and dimmed, never reacts to the pointer, and moves through
- * three states: pending (a slightly lighter card with faded text and waiting
- * dots), active (the reel cycling candidate names), and settled (the final
- * name landing in the accent color and easing to normal text).
+ * card's layout with the check dashed and dimmed, never reacts to the pointer,
+ * and moves through its states from pending to settled, such as the active
+ * reel cycling candidate names.
  *
  * The card's declarations are copied from the shared Today card classes the
  * real cards still use. Under reduced motion the reel's name animation and

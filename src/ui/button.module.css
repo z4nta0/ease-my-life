@@ -5,11 +5,11 @@
  * button.module.css = Button Module
  *
  * @summary
- * Styles for ButBasCom, the app's shared pill button: the base shape, the
- * pressed and disabled states, the small size, and the primary, ghost,
- * danger, and secondary kinds. A parent that needs a button to fit its row
- * differently sets the --but-* custom properties on itself (such as flex
- * sizing) instead of styling the button from outside.
+ * Styles for ButBasCom, the app's shared pill button: the base shape and the
+ * states, small size, and kinds built on it, such as the primary kind. A
+ * parent that needs a button to fit its row differently sets the --but-*
+ * custom properties on itself (such as flex sizing) instead of styling the
+ * button from outside.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

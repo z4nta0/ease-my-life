@@ -5,14 +5,12 @@
  * tab-settings.module.css = Settings Tab Module
  *
  * @summary
- * Styles for TabSetCom, the Settings tab: its header, the section rail (a
+ * Styles for TabSetCom, the Settings tab, from its header and section rail (a
  * sticky column on wide screens, a sticky scrolling pill bar with edge fades
- * on narrow ones), and the sections' rows, from the Appearance subsections and
- * switches to the storage panel's chips and the About block. Selected,
- * disabled, scrolled, result, and chip states key off data-*-active
- * attributes, and a switch off its own aria-pressed. Each data row hands the
- * segmented control and the button their no-shrink, no-wrap sizing through
- * custom properties.
+ * on narrow ones) to the sections' rows, such as the storage panel's chips.
+ * Its states key off presence-only data-*-active attributes, and a switch off
+ * its own aria-pressed. Each data row hands the segmented control and the
+ * button their no-shrink, no-wrap sizing through custom properties.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

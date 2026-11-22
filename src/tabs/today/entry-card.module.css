@@ -5,16 +5,13 @@
  * entry-card.module.css = Entry Card Module
  *
  * @summary
- * Styles for the Today tab's entry cards: the picker tutorial launcher, the
- * day-off card, the charging card, and the ordinary picked-item card, each a
- * grid of checkbox (or Edit Mode grip), body, and actions. A done card keys
- * off data-card-done-active, an editing card off data-card-edit-active, a
- * card in Edit Mode off data-card-reorder-active, a tutorial card that needs
- * attention off data-card-needed-active, and a disabled action off the
- * aria-disabled its info tip sets. The fresh checkbox ripple, the removal
- * collapse, the re-roll tumble, and the re-roll icon spin are this file's own
- * module classes, while the ripple celebration's exhale and a drag's lift key
- * off data-card-exhale-active and data-item-drag-active, set from other files.
+ * Styles for the Today tab's entry cards, such as the ordinary picked-item
+ * card, each a grid of checkbox (or Edit Mode grip), body, and actions. Its
+ * states key off presence-only data attributes or the aria attributes its
+ * elements carry, such as data-card-done-active on a done card. Its
+ * animations are this file's own module classes, such as the re-roll tumble,
+ * while the ripple celebration's exhale and a drag's lift key off
+ * data-card-exhale-active and data-item-drag-active, set from other files.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

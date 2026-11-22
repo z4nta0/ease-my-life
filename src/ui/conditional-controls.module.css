@@ -5,14 +5,13 @@
  * conditional-controls.module.css = Conditional Controls Module
  *
  * @summary
- * Styles for CodConCom, the conditional editor: the name and card-text fields,
- * the type radio with each mode's hint, and the setting rows under the
- * selected mode (an odds stepper, for one) and the Active switch. By default
- * it shows spaced fields with the radio in a bordered card; layVarStr='inline'
- * adds the conConDiv--inline modifier and lays every field out as a full-bleed
- * row with hairline dividers. The selected mode keys off
- * data-option-select-active, the Active switch off its own aria-checked, and
- * an invalid name off its own aria-invalid.
+ * Styles for CodConCom, the conditional editor: its fields, such as the type
+ * radio with each mode's hint, and the setting rows under the selected mode.
+ * By default it shows spaced fields with the radio in a bordered card;
+ * layVarStr='inline' adds the conConDiv--inline modifier and lays every field
+ * out as a full-bleed row with hairline dividers. Its states key off
+ * presence-only data attributes or the aria attributes its elements carry,
+ * such as the Active switch's aria-checked.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

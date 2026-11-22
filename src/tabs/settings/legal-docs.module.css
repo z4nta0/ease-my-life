@@ -5,11 +5,10 @@
  * legal-docs.module.css = Legal Docs Module
  *
  * @summary
- * Styles for the Settings legal modal: a dimmed backdrop that fades in and
- * out, the panel that rises into place with its title row and close button,
- * and the scrollable body the Privacy Policy or Terms of Service render into.
- * A modal suits this self-contained content since the user opens it on
- * purpose.
+ * Styles for the Settings legal modal: a dimmed backdrop that fades in and out
+ * and the panel that rises into place on it, holding the scrollable body the
+ * Privacy Policy or Terms of Service render into. A modal suits this
+ * self-contained content since the user opens it on purpose.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *

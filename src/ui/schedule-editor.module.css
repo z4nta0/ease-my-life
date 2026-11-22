@@ -7,9 +7,8 @@
  * @summary
  * Styles for SchEdiCom, the reminder schedule editor, and its VisNotCom
  * advisory: the Repeat field, the once and repeating detail fields with their
- * labels, summaries, inline number inputs and selects, the "counted from"
- * date that swaps between a link and a date input, and the hints and
- * visibility notes beneath them.
+ * parts, such as the "counted from" date that swaps between a link and a date
+ * input, and the notes beneath them.
  *
  * The editor has two layouts, chosen by its own layVarStr prop. Today's
  * stacked layout (.schEdiDiv--stacked) keeps each field's label above its
