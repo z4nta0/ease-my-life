@@ -358,7 +358,7 @@ type TodEntTyp = { // What: Today Entry Type. Why: Each card on Today is one ent
 
 	cardText?      : string;           // What: Card Text. Why: A day-off card shows its conditional's text. How: This is that text, day-off cards only.
 	condName?      : string;           // What: Conditional Name. Why: A day-off card names its conditional. How: This copies the name, day-off cards only.
-	conditionalId? : string | null;    // What: Conditional ID. Why: Completing a day-off card resets its conditional. How: This is its id, day-off cards only, or null when the generator gave none.
+	conditionalId? : string | null;    // What: Conditional ID. Why: Completing a day-off card can reset or discharge its conditional, depending on the conditional's mode. How: This is its id, day-off cards only, or null when the generator gave none.
 	done           : boolean;          // What: Done. Why: The card can be checked off. How: This is true once it is.
 	eid            : string;           // What: Entry Identifier. Why: Log rows and edits refer to an entry by it. How: This is its unique id.
 	group?         : string;           // What: Group. Why: A card without a picked item still sits in its picker's group. How: This copies the group, on charging and day-off cards.

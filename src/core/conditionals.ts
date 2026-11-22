@@ -251,9 +251,9 @@ function truOddFun ( conCurObj : ConRcdTyp ) : number {
  *                    resolve for the day, in no particular order; a missing or
  *                    empty array yields an empty patch.
  *
- * @returns A patch object keyed by conditional id, each value holding the
- *          fields (triggered, chargedToday) to apply to that conditional
- *          before today's picker gating runs.
+ * @returns A patch object keyed by conditional ID, each value holding
+ *          chargedToday, plus triggered for an active conditional, to apply to
+ *          that conditional before today's picker gating runs.
  * @see {@link patIdeObj}
  *
  * @example
@@ -529,7 +529,7 @@ function advValFun ( conCurObj : ConRcdTyp | null | undefined ) : Partial< ConRc
  * @param conCurObj - Conditional Current Object: The conditional whose own
  *                    day-off card was just completed.
  *
- * @returns A patch object with whichever of value/triggered/ chargeStep
+ * @returns A patch object with whichever of value/triggered/chargeStep
  *          actually changed, or null for a missing conCurObj or a
  *          probability-family mode.
  *

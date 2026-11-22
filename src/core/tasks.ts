@@ -930,7 +930,7 @@ function sumTasFun ( tasRcdObj : TasRcdTyp ) : string {
  *
  * @param void - This function takes no parameters.
  *
- * @returns The canonical default { once, recurring } participation- options
+ * @returns The canonical default { once, recurring } participation-options
  *          object.
  *
  * @example
@@ -1190,8 +1190,8 @@ function nexEliFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
  *                    defaulting to right now.
  *
  * @returns A { visBoo, cauStr, cauArr, holStr, cusBoo, nexObj } advisory
- *          object; see this function's own @summary above for what each field
- *          means.
+ *          object; see this function's own @summary above for what its causes
+ *          and nexObj mean.
  *
  * @example
  * ```ts
@@ -1246,7 +1246,7 @@ function todVisFun ( tasRcdObj : TasRcdTyp, remOptObj : RemOptTyp | null | undef
 
 
 
-	return { // What: Today Visibility Return. Why: The caller needs the full advisory shape described in this function's own @summary above. How: This builds one plain object from the values computed above.
+	return { // What: Today Visibility Return. Why: The caller needs the advisory object, its fields listed in this function's own @returns above. How: This builds one plain object from the values computed above.
 
 
 		cauArr : cauValArr,                                                                        // What: Cause Array. Why: A caller wording a fuller note (more than one cause can apply at once) needs the complete set. How: This is cauValArr, computed above.

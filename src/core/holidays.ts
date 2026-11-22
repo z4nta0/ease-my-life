@@ -129,7 +129,7 @@ const HOL_DEF_ARR : HolDefTyp[] = [ // What: Holiday Definition Array. Why: This
 
 
 
-const REG_DEF_OBJ : Record< string, { defArr : HolDefTyp[] } > = { US : { defArr : HOL_DEF_ARR } }; // What: Region Definition Object. Why: This is the country-keyed lookup every region-aware function below resolves against, shaped so more regions can be added later without touching any caller. How: This currently defines just one entry, US, holding HOL_DEF_ARR as its own rule table.
+const REG_DEF_OBJ : Record< string, { defArr : HolDefTyp[] } > = { US : { defArr : HOL_DEF_ARR } }; // What: Region Definition Object. Why: This is the country-keyed lookup cmpYeaFun resolves its region's rule table against, shaped so more regions can be added later without touching any caller. How: This currently defines just one entry, US, holding HOL_DEF_ARR as its own rule table.
 
 // #endregion Constants
 

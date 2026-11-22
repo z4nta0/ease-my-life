@@ -205,7 +205,9 @@ type CadNorTyp = Required< Pick< PicRcdTyp, 'anchorDay' | 'anchorDom' | 'anchorD
  *
  * @returns A full { cadence, anchorDow, anchorDom, anchorMonth, anchorDay,
  *          dateMode, nthOrdinal, nthWeekday } object, every field either taken
- *          from picLikObj or defaulted against the current date.
+ *          from picLikObj or defaulted: the anchors and nthWeekday to the
+ *          current date's own values, cadence to 'daily', dateMode to 'date',
+ *          and nthOrdinal to 1.
  *
  * @example
  * ```ts
