@@ -219,8 +219,7 @@ type NtcProTyp = { dowValNum : number, onPatPicFun : ( patPicObj : Partial< PicF
  *
  * @param props.dowValNum   - Day-Of-Week Value Number: The rule's weekday
  *                            index.
- * @param props.onPatPicFun - On Patch Picker Function: Called with a patch
- *                            naming the changed field.
+ * @param props.onPatPicFun - On Patch Picker Function: {@link patPicFun}
  * @param props.ordValNum   - Ordinal Value Number: The rule's occurrence.
  *
  * @returns The ordinal and weekday selects.

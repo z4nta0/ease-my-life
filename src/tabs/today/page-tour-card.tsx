@@ -53,14 +53,11 @@ type PrcProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, onPlaTutFun : ( t
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj   - Action Store Object: The shared app actions.
- * @param props.cheExiBoo   - Checklist Exiting Boolean: Whether the
- *                            checklist's own closing exit animation is
- *                            currently playing.
- * @param props.onPlaTutFun - On Play Tutorial Function: Starts this page tour.
- * @param props.onUncTutFun - On Uncheck Tutorial Function: Un-resolves this
- *                            page tour's own checklist entry.
- * @param props.staAppObj   - State App Object: The shared app state.
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
+ * @param props.cheExiBoo   - Checklist Exiting Boolean: {@link cheExiBoo}
+ * @param props.onPlaTutFun - On Play Tutorial Function: {@link staTouFun}
+ * @param props.onUncTutFun - On Uncheck Tutorial Function: {@link uncTutFun}
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  * @param props.touRcdObj   - Tour Record Object: The page-tour manifest entry
  *                            this card offers.
  *
