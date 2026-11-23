@@ -267,8 +267,7 @@ const VAR_COP_OBJ : Record< string, { bodStr : string, icoStr : string, ideStr :
  *
  * @param varKeyStr - Variant Key String: Which tour variant this step is for,
  *                    'once' or 'recurring'.
- * @param staAppObj - State App Object: The entire app's own persisted state,
- *                    searched for the live sample task.
+ * @param staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns A GuiTouCom step object for this tour's own steObjArr.
  *
@@ -350,8 +349,6 @@ const buiAddFun = ( varKeyStr : string, staAppObj : StaAppTyp ) : TouSteTyp => {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param repValStr - Repeat Value String: {@link draRepStr}
- *                    the live draft's own repeat kind, or nothing before
- *                    the draft has published one.
  *
  * @returns A GuiTouCom step object for this tour's own steObjArr.
  *
