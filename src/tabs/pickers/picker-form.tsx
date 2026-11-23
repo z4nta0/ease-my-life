@@ -7,7 +7,7 @@ import cssModObj from './picker-form.module.css'; // What: CSS Module Object. Wh
 import React     from 'react';                    // What: React. Why: PicForCom is built directly on React's own APIs. How: This is used directly (React.useCallback, for one) instead of importing individual named hooks.
 
 
-import { ButBasCom    } from '../../ui/button.tsx';               // What: Button Base Component. Why: The form's step, add, save and cancel actions need consistently-styled controls. How: This is rendered for each of those actions.
+import { ButBasCom    } from '../../ui/button.tsx';               // What: Button Base Component. Why: The form's footer and confirm actions need consistently-styled controls. How: This is rendered for each of those actions.
 import { CAD_NAM_OBJ  } from '../../core/cadence.ts';             // What: Cadence Namespace Object. Why: This is the namespace of pure functions this file uses to normalize and edit a picker's own cadence. How: This is called for its cadence helpers, such as norCadFun, throughout PicForCom.
 import { CadConCom    } from '../../ui/cadence-control.tsx';      // What: Cadence Control Component. Why: This is the shared editor for a picker's cadence settings. How: This is rendered inside PicForCom's daily-schedule block, wired to the local cadence state.
 import { CodConCom    } from '../../ui/conditional-controls.tsx'; // What: Conditional Control Component. Why: Attaching a brand-new inline conditional needs the same editor the Data tab uses. How: This is rendered inside PicForCom's conditional-attach block, wired to the local conDraObj state.

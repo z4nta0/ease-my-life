@@ -308,7 +308,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param draIteObj - Draft Item Object: The new-item draft being saved.
+	 * @param draIteObj - Draft Item Object: {@link newIteObj}
 	 *
 	 * @returns This function does not return anything.
 	 *
@@ -1362,7 +1362,7 @@ function PicVieCom ( { actStoObj, aniStyStr, picDatObj, staAppObj } : PvcProTyp 
 
 						<span className={ cssModObj.pooKicSpa }>Pool &middot; { eliIteArr.filter( ( iteCurObj ) => !todIdeSet.has( iteCurObj.id ) && PIC_NAM_OBJ.modEliFun( iteCurObj, picDatObj ) ).length } of { picIteArr.length } eligible</span>{ /* What: Pool Kicker Span Element. Why: The user needs a quick sense of how many of the pool's own items are actually pickable right now. How: This renders both the mode-eligible-and-not-on-Today count and the pool's own total size. */ }
 
-						{ ( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ) && ( // What: Drift Toggle Check. Why: Only a mode that actually tracks a drifting value has anything to show or hide here. How: This renders the Show/Hide drift link only for those modes.
+						{ ( picDatObj.mode !== 'random' && picDatObj.mode !== 'weighted' ) && ( // What: Drift Toggle Check. Why: Only a mode that actually tracks a drifting value has anything to show or hide here. How: This renders the "Show drift" or "Hide drift" toggle button only for those modes.
 
 
 							<button
