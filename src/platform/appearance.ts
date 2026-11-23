@@ -371,11 +371,8 @@ function resCusFun ( modKeyStr : string, usrColObj : Pick< CusPalTyp, 'accent' |
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appSetObj - Appearance Settings Object: The persisted appearance
- *                    settings object, of which this reads the theme,
- *                    autoSystem, customLight, and customDark fields.
- * @param sysDarBoo - System Dark Boolean: Whether the OS currently prefers
- *                    dark mode.
+ * @param appSetObj - Appearance Settings Object: {@link appCurObj}
+ * @param sysDarBoo - System Dark Boolean: {@link sysDarBoo}
  *
  * @returns The theme key that should actually be applied, e.g. 'ink' or
  *          'customDark'.
@@ -623,10 +620,7 @@ function synTinFun ( bacColStr : string ) : void {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param palResObj - Palette Resolved Object: The full 8-token palette object
- *                    to apply (bacStr, surStr, borStr, texStr, mutStr, accStr,
- *                    acsStr, warStr), either a PAL_SET_OBJ entry or a derived
- *                    custom palette from resCusFun.
+ * @param palResObj - Palette Resolved Object: {@link palResObj}
  *
  * @returns This function does not return anything.
  *

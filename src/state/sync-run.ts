@@ -220,8 +220,7 @@ function reaMetFun ( uidValStr : string ) : SynRcdTyp {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param conTesFun - Condition Test Function: True once the wait is over.
- * @param endTimNum - End Time Number: The deadline, in milliseconds since
- *                    the epoch.
+ * @param endTimNum - End Time Number: {@link endTimNum}
  *
  * @returns A promise that settles once the condition holds or the deadline
  *          passes, with no value.

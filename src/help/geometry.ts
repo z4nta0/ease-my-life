@@ -498,8 +498,7 @@ function cliChrFun ( tarRecObj : EdgRecTyp, chrIteArr : ChrIteTyp[], tarEleArr :
  *                    request on each side.
  * @param padVerNum - Padding Vertical Number: The vertical padding to
  *                    request on each side.
- * @param chrIteArr - Chrome Item Array: Every chrome item currently present
- *                    on the page; forwarded to cliChrFun.
+ * @param chrIteArr - Chrome Item Array: {@link chrIteArr}
  * @param tarEleArr - Target Element Array: The target's own matched
  *                    element(s); forwarded to cliChrFun.
  *
@@ -567,8 +566,7 @@ function claPadFun ( tarRecObj : EdgRecTyp, padHorNum : number, padVerNum : numb
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param chrRecObj - Chrome Rect Object: The chrome element's own bounding
- *                    rect.
+ * @param chrRecObj - Chrome Rect Object: {@link chrRecObj}
  *
  * @returns Whichever of 'top', 'bottom', 'left' or 'right' chrRecObj sits
  *          closest to.
@@ -621,7 +619,7 @@ function detEdgFun ( chrRecObj : EdgRecTyp ) : string {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param lefBadNum - Left Badge Number: The badge's left edge, in pixels.
- * @param topBadNum - Top Badge Number: The badge's top edge, in pixels.
+ * @param topBadNum - Top Badge Number: {@link topBadNum}
  *
  * @returns { bottom, height, left, top, width } for the badge's own
  *          fixed-position placement.

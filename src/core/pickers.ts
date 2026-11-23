@@ -471,8 +471,7 @@ function eliPooFun ( iteSouArr : IteRcdTyp[] ) : IteRcdTyp[] { return iteSouArr.
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param iteRcdObj - Item Record Object: The item to check.
- * @param picRcdObj - Picker Record Object: The item's own picker, or a
- *                    missing value to skip the mode check.
+ * @param picRcdObj - Picker Record Object: {@link actPicObj}
  *
  * @returns Whether the item is eligible under its picker's mode.
  *
@@ -655,8 +654,7 @@ const getSteFun = ( curIteObj : IteRcdTyp, thrValNum : number, falEasObj : Requi
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param itePooArr - Item Pool Array: The items the forced one is looked up
- *                    in.
+ * @param itePooArr - Item Pool Array: {@link itePooArr}
  * @param forIdeStr - Force Identifier String: The forced item's id, if any.
  *
  * @returns The forced item, or undefined.

@@ -185,10 +185,8 @@ type HtcProTyp = { tarRecObj : HelRecTyp, tipIteObj : HelIteTyp }; // What: Help
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.tarRecObj - Target Rect Object: The already-measured/
- *                          padded target rect this tip is anchored to.
- * @param props.tipIteObj - Tip Item Object: The catalog item this tip is
- *                          showing.
+ * @param props.tarRecObj - Target Rect Object: {@link opeRecObj}
+ * @param props.tipIteObj - Tip Item Object: {@link opeIteObj}
  *
  * @returns The tip's own positioned coach bubble.
  *

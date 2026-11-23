@@ -168,8 +168,7 @@ const entLooFun = ( appStaObj : StaAppTyp, iteIdeStr : string ) : { status : Che
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - App State Object: The full app state object, read for its
- *                    own onboarding.checklist map via entLooFun above.
+ * @param appStaObj - App State Object: {@link useAppStaFun}
  *
  * @returns The checklist's own summary counts, as a plain object.
  *

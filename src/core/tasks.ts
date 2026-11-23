@@ -708,8 +708,7 @@ function isaStaFun ( tasRcdObj : TasRcdTyp, cheDatObj : Date = new Date() ) : bo
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param dowSetArr - Day-Of-Week Set Array: The selected days of the week,
- *                    0 for Sunday through 6 for Saturday.
+ * @param dowSetArr - Day-Of-Week Set Array: {@link dowSetArr}
  *
  * @returns Whether the set holds exactly those two days.
  * @see {@link wkdSetBoo}

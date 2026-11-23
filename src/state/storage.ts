@@ -767,8 +767,7 @@ function logAutFun () : void { logSusBoo = false; } // What: Log Authoritative B
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param idbStaObj - IndexedDB State Object: The state read back from
- *                    IndexedDB.
+ * @param idbStaObj - IndexedDB State Object: {@link idbStaObj}
  * @param mirStaObj - Mirror State Object: The state read back from the
  *                    localStorage mirror, or null when there is none.
  *

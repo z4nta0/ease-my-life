@@ -509,8 +509,7 @@ function cotAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
  *
  * @param curStaObj - Current State Object: The current state, read (not
  *                    mutated) for its own items/pickers/pickLog.
- * @param curEntObj - Current Entry Object: The Today entry whose own pending
- *                    is being applied.
+ * @param curEntObj - Current Entry Object: {@link curEntObj}
  *
  * @returns { items, pickers, pickLog, revert } with pending applied, or the
  *          same items/pickers/pickLog and revert:null when curEntObj has no

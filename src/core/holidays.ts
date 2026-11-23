@@ -241,8 +241,7 @@ function nthDayFun ( yeaValNum : number, monOneNum : number, dayIndNum : number,
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param actDatObj - Actual Date Object: The holiday's own true, un-shifted
- *                    calendar date.
+ * @param actDatObj - Actual Date Object: {@link actDatObj}
  *
  * @returns The observed Date: actDatObj itself, unless it fell on a Saturday
  *          or Sunday, in which case the shifted weekday instead.

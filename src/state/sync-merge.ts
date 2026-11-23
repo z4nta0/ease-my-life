@@ -59,10 +59,8 @@ import type { RawSavTyp } from '../core/data-model.ts'; // What: Raw Save Type. 
  *                    core or pickLog-2026-10.
  * @param locDocObj - Local Document Object: This device's content, or
  *                    undefined when it has none.
- * @param rmtDocObj - Remote Document Object: The cloud's content, or
- *                    undefined when it has none.
- * @param locWinBoo - Local Winner Boolean: Whether this device saved last,
- *                    making its side the winner.
+ * @param rmtDocObj - Remote Document Object: {@link rmtDocObj}
+ * @param locWinBoo - Local Winner Boolean: {@link locWinBoo}
  * @param todDayStr - Today Day String: Today's local 'YYYY-MM-DD', the first
  *                    day whose rows come from the winner alone.
  *

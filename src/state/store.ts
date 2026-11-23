@@ -2338,7 +2338,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
 		 * @param tarIdeStr - Target Identifier String: The reminder to rename.
-		 * @param newNamStr - New Name String: The name as typed.
+		 * @param newNamStr - New Name String: {@link namTriStr}
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -3615,8 +3615,7 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param lisEntArr - List Entry Array: The entry descriptors to build
-		 *                    the list from.
+		 * @param lisEntArr - List Entry Array: {@link nexEntArr}
 		 * @param optArgObj - Option Argument Object: Optional flags;
 		 *                    resBoo starts the new period unclaimed.
 		 *
