@@ -64,9 +64,9 @@ type PscProTyp = { canIteArr : Pick< IteRcdTyp, 'id' | 'name' >[], forMotBoo? : 
  *                            reduced-motion skip, for the Settings preview's
  *                            own explicit Play press; defaults to undefined
  *                            (falsy).
- * @param props.onCycDonFun - On Cycle Done Function: Called once the cycle
- *                            settles on picIteObj; optional, since a caller
- *                            may not need to know when the cycle settles.
+ * @param props.onCycDonFun - On Cycle Done Function: {@link onAniDonFun};
+ *                            optional, since a caller may not need to know
+ *                            when the cycle settles.
  * @param props.picIteObj   - Picked Item Object: The already-decided outcome
  *                            the cycle animates toward, or null while nothing
  *                            has been chosen yet.

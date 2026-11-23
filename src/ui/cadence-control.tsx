@@ -446,8 +446,7 @@ type NecProTyp = { dowValNum : number, onPatChaFun : ( patValObj : CadFieTyp ) =
  *
  * @param props.dowValNum   - Day-Of-Week Value Number: The rule's weekday
  *                            index.
- * @param props.onPatChaFun - On Patch Change Function: Called with a patch
- *                            naming the changed field.
+ * @param props.onPatChaFun - On Patch Change Function: {@link setPatFun}
  * @param props.ordValNum   - Ordinal Value Number: The rule's occurrence.
  *
  * @returns The ordinal and weekday selects.
