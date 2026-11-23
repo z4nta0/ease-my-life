@@ -700,8 +700,7 @@ type VncProTyp = { kinValStr : string, notIdeStr : string, staAppObj : StaAppTyp
  * @param props.notIdeStr - Note Identifier String: The DOM ID to assign to
  *                          this note's own live region, so a control above it
  *                          can reference it via aria-describedby.
- * @param props.staAppObj - State App Object: The shared app state, read for
- *                          its own reminderOpts and holidays.
+ * @param props.staAppObj - State App Object: {@link useAppStaFun}
  * @param props.tasRcdObj - Task Record Object: The reminder/task record to
  *                          advise about.
  *
@@ -891,9 +890,7 @@ type SecProTyp = { aniExtBoo? : boolean, layVarStr : string, onPatTasFun : ( pat
  *                            row per field).
  * @param props.onPatTasFun - On Patch Task Function: Merges a changed field
  *                            or two into the caller's draft reminder.
- * @param props.staAppObj   - State App Object: The shared app state, passed
- *                            through to VisNotCom for its own visibility
- *                            computation.
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  * @param props.tasRcdObj   - Task Record Object: The caller's draft of the
  *                            reminder being edited.
  *

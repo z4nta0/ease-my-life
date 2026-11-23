@@ -323,8 +323,7 @@ function reaGenFun ( appStaObj : StaAppTyp ) : boolean { return othRmnFun( appSt
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param appStaObj - App State Object: The full app state object, read for its
- *                    own onboarding/pickers/tasks fields.
+ * @param appStaObj - App State Object: {@link useAppStaFun}
  *
  * @returns Whether tutorial-gated controls should currently stay disabled, as
  *          a boolean.
