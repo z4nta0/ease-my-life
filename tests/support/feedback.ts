@@ -605,8 +605,8 @@ function snaProFun ( froRcdArr : SnaRcdTyp[], tarRcdArr : SnaRcdTyp[], proNamArr
  * @summary
  * Joins every probed value of a snapshot into one string, so two looks are the
  * same only when every value of every element in them matches. The durations
- * are left out, since only the look is compared, and so are an undrawn
- * outline's color, offset, and width, which read as one mark.
+ * are left out, since only the look is compared, and an undrawn outline's
+ * color, offset, and width each read as one mark.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
