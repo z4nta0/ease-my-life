@@ -267,9 +267,9 @@ const updMapFun = ( updRowArr : PicUpdTyp[] ) : Map< string, PicUpdTyp > => { //
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param expUpdArr - Expected Update Array: The rows the rules call for.
- * @param actUpdArr - Actual Update Array: The rows the entry staged.
- * @param issAddFun - Issue Add Function: Reports each difference.
- * @param labTexStr - Label Text String: Names the pick in each report.
+ * @param actUpdArr - Actual Update Array: {@link actUpdArr}
+ * @param issAddFun - Issue Add Function: {@link issAddFun}
+ * @param labTexStr - Label Text String: {@link labTexStr}
  *
  * @returns This function does not return anything.
  *
@@ -342,12 +342,11 @@ const cmpUpdFun = ( expUpdArr : PicUpdTyp[], actUpdArr : PicUpdTyp[], issAddFun 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picRcdObj - Picker Record Object: The picker that picked.
+ * @param picRcdObj - Picker Record Object: {@link picRcdObj}
  * @param preIteArr - Previous Item Array: Every item before the day began.
- * @param curEntObj - Current Entry Object: The entry the picker produced,
- *                    or undefined when it produced none.
- * @param picNamSet - Pick Name Set: Lowercased names picked earlier today.
- * @param issAddFun - Issue Add Function: Reports each problem.
+ * @param curEntObj - Current Entry Object: {@link curEntObj}
+ * @param picNamSet - Pick Name Set: {@link picNamSet}
+ * @param issAddFun - Issue Add Function: {@link issAddFun}
  *
  * @returns This function does not return anything.
  *

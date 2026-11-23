@@ -117,8 +117,8 @@ const depCouFun = ( staAppObj : StaAppTyp, conIdeStr : string | null | undefined
  *
  * @param preStaObj - Previous State Object: The state just before the click.
  * @param aftStaObj - After State Object: The state just after the click.
- * @param curEntObj - Current Entry Object: The entry that was checked.
- * @param issAddFun - Issue Add Function: Reports an illegal roll.
+ * @param curEntObj - Current Entry Object: {@link preEntObj}
+ * @param issAddFun - Issue Add Function: {@link issAddFun}
  *
  * @returns The expected conditional, or null when none is touched.
  *
@@ -330,8 +330,8 @@ const jsoStrFun = ( valAny : unknown ) : string => JSON.stringify( valAny ); // 
  *
  * @param preStaObj - Previous State Object: The state just before the click.
  * @param aftStaObj - After State Object: The state just after the click.
- * @param tasIdeStr - Task Identifier String: The reminder checked off.
- * @param dayIsoStr - Day ISO String: The simulated day, as YYYY-MM-DD.
+ * @param tasIdeStr - Task Identifier String: {@link tasIdeStr}
+ * @param dayIsoStr - Day ISO String: {@link lasDayStr}
  *
  * @returns Every problem found.
  * @see {@link issMesArr}
@@ -413,8 +413,8 @@ const unsConFun = ( conRcdObj : ConRcdTyp ) : string => { // What: Unsnapshotted
  *
  * @param preStaObj - Previous State Object: The state just before the click.
  * @param aftStaObj - After State Object: The state just after the click.
- * @param entIdeStr - Entry Identifier String: The id of the entry checked off.
- * @param dayIsoStr - Day ISO String: The simulated day, as YYYY-MM-DD.
+ * @param entIdeStr - Entry Identifier String: {@link entIdeStr}
+ * @param dayIsoStr - Day ISO String: {@link lasDayStr}
  *
  * @returns Every problem found.
  * @see {@link issMesArr}
@@ -617,8 +617,8 @@ const cheDonFun = ( preStaObj : StaAppTyp, aftStaObj : StaAppTyp, entIdeStr : st
  *
  * @param preStaObj - Previous State Object: The state before the check-off.
  * @param undStaObj - Undo State Object: The state after unchecking.
- * @param entIdeStr - Entry Identifier String: The id of the entry toggled.
- * @param dayIsoStr - Day ISO String: The simulated day, as YYYY-MM-DD.
+ * @param entIdeStr - Entry Identifier String: {@link entIdeStr}
+ * @param dayIsoStr - Day ISO String: {@link lasDayStr}
  *
  * @returns Every problem found.
  * @see {@link issMesArr}

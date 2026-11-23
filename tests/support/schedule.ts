@@ -102,7 +102,7 @@ const eveNthFun = ( intValNum : number, uniCouNum : number ) : boolean => intVal
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param tasRcdObj - Task Record Object: The reminder to check.
- * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
+ * @param dayIsoStr - Day ISO String: {@link lasDayStr}
  *
  * @returns Whether the reminder is due that day.
  *
@@ -198,7 +198,7 @@ const remDueFun = ( tasRcdObj : TasRcdTyp, dayIsoStr : string ) : boolean => { /
  * @param tasRcdObj - Task Record Object: The reminder to check.
  * @param staAppObj - State App Object: The saved state, for its reminder
  *                    options and holidays.
- * @param dayIsoStr - Day ISO String: The date, as YYYY-MM-DD.
+ * @param dayIsoStr - Day ISO String: {@link lasDayStr}
  *
  * @returns Whether Today shows the reminder.
  * @see {@link visRemBoo}

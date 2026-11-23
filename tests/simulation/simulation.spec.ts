@@ -293,13 +293,12 @@ const visEntFun = ( staAppObj : StaAppTyp ) => staAppObj.today.entries.filter( (
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page running the app.
- * @param dayIsoStr - Day ISO String: The day to simulate.
+ * @param dayIsoStr - Day ISO String: {@link lasDayStr}
  * @param dayIndNum - Day Index Number: The day's position in the run.
- * @param preStaObj - Previous State Object: The state the day starts from,
- *                    or null on the warm-up day.
- * @param issMesArr - Issue Message Array: Collects every problem.
- * @param proRolMap - Probability Roll Map: Tallies probability rolls.
- * @param traDayArr - Trace Day Array: Collects each day's trace.
+ * @param preStaObj - Previous State Object: {@link preStaObj}
+ * @param issMesArr - Issue Message Array: {@link issMesArr}
+ * @param proRolMap - Probability Roll Map: {@link proRolMap}
+ * @param traDayArr - Trace Day Array: {@link traDayArr}
  *
  * @returns A promise that resolves with the state the day ended with.
  * @see {@link endStaObj}

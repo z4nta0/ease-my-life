@@ -75,8 +75,8 @@ type ExpStaTyp = { // What: Expected Stats Type. Why: The simulation compares ea
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - State App Object: The saved state as Stats sees it.
- * @param todIsoStr - Today ISO String: The simulated today, as YYYY-MM-DD.
+ * @param staAppObj - State App Object: {@link staStaObj}
+ * @param todIsoStr - Today ISO String: {@link lasDayStr}
  * @param ranDayNum - Range Day Number: The range in days, or null for All
  *                    Time.
  *

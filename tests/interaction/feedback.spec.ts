@@ -429,7 +429,7 @@ const TOG_TAR_ARR : TogTarTyp[] = [ // What: Toggle Target Array. Why: A switche
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param hanCurObj - Handle Current Object: The element to mark.
+ * @param hanCurObj - Handle Current Object: {@link togCurObj}
  * @param attNamStr - Attribute Name String: The attribute to set.
  * @param attValStr - Attribute Value String: Its value, or null to remove it.
  *

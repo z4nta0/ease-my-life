@@ -61,7 +61,7 @@ import type { Page } from '@playwright/test'; // What: Page. Why: The seeding in
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param curPagObj - Current Page Object: The page to install the seeding on.
- * @param sedValNum - Seed Value Number: The 32-bit seed for the generator.
+ * @param sedValNum - Seed Value Number: {@link SED_VAL_NUM}
  *
  * @returns A promise that settles once the script is registered, with no
  *          value.
