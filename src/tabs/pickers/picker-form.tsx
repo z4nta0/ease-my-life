@@ -1540,7 +1540,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivConditional } `}
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Form Field Div Conditional Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps conTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the tours and help mode. */ }
+						>{ /* What: Form Field Div Element. Why: The attach-a-conditional toggle and its own collapsible content form one field unit. How: This wraps conTogDiv and the ColDisCom below it, and its Conditional modifier caps the toggle text column's width. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<div
@@ -1707,7 +1707,7 @@ function PicForCom ( { conObjArr = [], exiGroArr, iniForObj, iniGroStr, isaEdiBo
 							className={` ${ cssModObj.forFieDiv }   ${ cssModObj.forFieDivDaily } `}
 
 							data-element-name-hook='forFieDiv'
-						>{ /* What: Form Field Div Daily Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps daiTogDiv and the ColDisCom below it. Its data-element-name-hook is read by the tours and help mode. */ }
+						>{ /* What: Form Field Div Element. Why: The daily-generator toggle and its own collapsible schedule content form one field unit. How: This wraps daiTogDiv and the ColDisCom below it, and its Daily modifier tightens the gap between them. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 							<TogRowCom

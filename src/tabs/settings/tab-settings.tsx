@@ -1468,7 +1468,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 			ref={ rooEleRef }
 
 			className={ cssModObj.tabPagDiv }
-		>{ /* What: Tab Page Div Element. Why: This is TabSetCom's own root element, giving the scroll-spy effect a handle to find its nearest appConMai ancestor. How: This wraps the header, the section rail plus right-hand pane, and the Legal modal. */ }
+		>{ /* What: Tab Page Div Element. Why: This is TabSetCom's own root element, giving the scroll-spy effect a handle to find its nearest appConMai ancestor. How: This wraps the help overlay, the header, the section rail plus right-hand pane, and the Legal modal. */ }
 
 
 			<HelOveCom
@@ -1715,7 +1715,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						className={ cssModObj.setAppSec }
 
 						data-element-name-hook='setAppSec'
-					>{ /* What: Settings Appearance Section Element. Why: This is the Appearance section's own root, registering itself for scroll-spy/jump-to. How: This wraps the system-preference row, the Theme cards, the 2 style pickers, and the tab-placement control. Its data-element-name-hook is read by the tours and help mode. */ }
+					>{ /* What: Settings Appearance Section Element. Why: This is the Appearance section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section header, the intro copy, the system-preference row, the Theme cards, the 2 style pickers, and the tab-placement control. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
