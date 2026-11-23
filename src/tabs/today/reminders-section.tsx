@@ -153,8 +153,7 @@ type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
- * @param props.cheDatObj   - Check Date Object: The generator-anchored date to
- *                            check done-ness against.
+ * @param props.cheDatObj   - Check Date Object: {@link ancDatObj}
  * @param props.draNamStr   - Draft Name String: The open editor's draft name,
  *                            shown in the name input instead of the real one,
  *                            or undefined when this card isn't being edited.
@@ -166,9 +165,7 @@ type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string
  * @param props.isaTutBoo   - Is-A Tutorial Boolean: Whether this instance is a
  *                            mini-tour launcher card for a still-hidden
  *                            sample, rather than a real due reminder.
- * @param props.jusCheStr   - Just Checked String: The id of whichever reminder
- *                            was just checked, driving the brief fresh
- *                            flourish; unrelated to isaTutBoo.
+ * @param props.jusCheStr   - Just Checked String: {@link jusCheStr}
  * @param props.onAniEndFun - On Animate End Function: Fires when this card's
  *                            own outer animation ends.
  * @param props.onEdiTasFun - On Edit Task Function: Opens/closes this card's
@@ -179,8 +176,7 @@ type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string
  *                            the open editor's draft.
  * @param props.onSkiTasFun - On Skip Task Function: Opens/closes this card's
  *                            own skip confirm.
- * @param props.onTogTasFun - On Toggle Task Function: Toggles this card's own
- *                            done state.
+ * @param props.onTogTasFun - On Toggle Task Function: {@link onTogDonFun}
  * @param props.onUncTutFun - On Uncheck Tutorial Function: Un-resolves this
  *                            sample's own mini-tour.
  * @param props.tasRcdObj   - Task Record Object: The reminder/task record this

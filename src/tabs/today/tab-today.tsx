@@ -4031,7 +4031,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								kinValStr='ghost'
 								sizValStr='sm'
 
-								onClick={ () => cloModFun( false ) }
+								onClick={ () => cloModFun( false ) } // What: On Click Function. Why: Cancel discards every drag made this session. How: This passes false as cmtEdiBoo, so cloModFun restores the order snapshot.
 							>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
@@ -4041,7 +4041,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								kinValStr='primary'
 								sizValStr='sm'
 
-								onClick={ () => cloModFun( true ) }
+								onClick={ () => cloModFun( true ) } // What: On Click Function. Why: Done keeps every drag made this session. How: This passes true as cmtEdiBoo, so cloModFun skips the revert and keeps the new order.
 							>Done</ButBasCom>{ /* What: Button Base Component. Why: This keeps every drag made during the current Edit Mode session. How: This calls cloModFun(true). */ }
 
 
@@ -4099,7 +4099,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 												data-rail-select-active={ actGroStr === '__reminders' || undefined } // What: Rail Select Active Attribute. Why: The group in view should stand out in the rail. How: This sets the presence-only attribute while this entry is the active group.
 
 												onClick={ () => jumGroFun( '__reminders' ) }
-											>{ /* What: Rail Group Button Element. Why: This is the actual clickable rail entry for the Reminders block. How: This scrolls to '__reminders' via jumGroFun on click. */ }
+											>{ /* What: Rail Group Button Element. Why: This is the actual clickable rail entry for the Reminders block. How: This scrolls to '__reminders' via jumGroFun on click, and also carries raiGroButReminders. */ }
 
 
 												<span className={ cssModObj.raiNamSpa }>Reminders</span>{ /* What: Rail Name Span Element. Why: The rail entry needs its own visible label. How: This renders the literal word "Reminders". */ }
@@ -4788,7 +4788,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								className={` ${ cssModObj.onbCarDiv }   ${ cssModObj.onbCarDivGenerate }   ${ cheExiBoo ? cssModObj.onbCarDivRemoving : '' }   ${ onbReaBoo ? cssModObj.onbCarDivPulsing : '' } `}
 
 								data-card-needed-active={ !onbReaBoo || undefined } // What: Card Needed Active Attribute. Why: A Generate card still waiting on its tutorials reads as unfinished. How: This sets the presence-only attribute while onbReaBoo is false.
-							>{ /* What: Onboarding Card Div Element. Why: This is the closing "Generate a real list" checklist card. How: This renders its own icon/heading/explanation plus either a working or a disabled Generate button, depending on onbReaBoo. Its removing modifier slides it away as the checklist concludes, and its pulsing modifier sends a ping out while it is ready. */ }
+							>{ /* What: Onboarding Card Div Element. Why: This is the closing "Generate a real list" checklist card. How: This renders its own icon/heading/explanation plus either a working or a disabled Generate button, depending on onbReaBoo. It also carries onbCarDivGenerate. Its removing modifier slides it away as the checklist concludes, and its pulsing modifier sends a ping out while it is ready. */ }
 
 
 								<div className={ cssModObj.onbIcoDiv }>{ /* What: Onboarding Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed check icon. */ }
@@ -4986,7 +4986,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 										kinValStr='ghost'
 
-										onClick={ () => cloModFun( false ) }
+										onClick={ () => cloModFun( false ) } // What: On Click Function. Why: Cancel discards every drag made this session. How: This passes false as cmtEdiBoo, so cloModFun restores the order snapshot.
 									>Cancel</ButBasCom>{ /* What: Button Base Component. Why: This discards every drag made during the current Edit Mode session. How: This calls cloModFun(false). Its data-element-name-hook is read by the tours and the test suites. */ }
 
 
@@ -4995,7 +4995,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 										icoNamStr='cheEle'
 										kinValStr='primary'
 
-										onClick={ () => cloModFun( true ) }
+										onClick={ () => cloModFun( true ) } // What: On Click Function. Why: Done keeps every drag made this session. How: This passes true as cmtEdiBoo, so cloModFun skips the revert and keeps the new order.
 									>Done</ButBasCom>{ /* What: Button Base Component. Why: This keeps every drag made during the current Edit Mode session. How: This calls cloModFun(true). */ }
 
 

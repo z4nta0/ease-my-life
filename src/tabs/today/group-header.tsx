@@ -52,10 +52,8 @@ type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.donCouNum   - Done Count Number: How many of this group's own
- *                            rows are done.
- * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is currently
- *                            on.
+ * @param props.donCouNum   - Done Count Number: {@link curDonNum}
+ * @param props.ediModBoo   - Edit Mode Boolean: {@link ediModBoo}
  * @param props.groNamStr   - Group Name String: The group's own current
  *                            display name.
  * @param props.logOpeBoo   - Log Open Boolean: Whether this group's own Day
@@ -66,8 +64,7 @@ type GhcProTyp = { donCouNum : number, ediModBoo : boolean, groNamStr : string, 
  *                            merge in merPenObj.
  * @param props.onConMerFun - On Confirm Merge Function: Confirms the pending
  *                            merge in merPenObj.
- * @param props.onGriDowFun - On Grip Down Function: Starts a group-reorder
- *                            drag from this header's own grip handle.
+ * @param props.onGriDowFun - On Grip Down Function: {@link groDraFun}
  * @param props.onRenGroFun - On Rename Group Function: Commits a typed rename
  *                            of this group.
  * @param props.onTogLogFun - On Toggle Log Function: Toggles this group's own
