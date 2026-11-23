@@ -585,7 +585,7 @@ function CodConCom ( { conDraObj, hidNamBoo = false, layVarStr = 'card', namErrS
 
 
 
-			<div className={ cssModObj.typGroDiv }>{ /* What: Type Group Div Element. Why: The mode radio and every per-mode settings block below need one shared wrapping element for layout. How: This wraps the mode fieldset and every ColDisCom-gated settings block that follows it. */ }
+			<div className={ cssModObj.typGroDiv }>{ /* What: Type Group Div Element. Why: The mode radio and every per-mode settings block below need one shared wrapping element for layout. How: This wraps, in order, the mode fieldset, the random mode's 50/50 note, the Odds block, and the ease-mode settings block, each of those three in its own ColDisCom, then the Active row. */ }
 
 
 				<fieldset

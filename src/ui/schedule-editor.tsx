@@ -268,7 +268,7 @@ function DatLinCom ( { desIdeStr, ediValBoo, isoValStr, labTexStr, minIsoStr, on
 					type='date'
 					value={ isoValStr }
 
-					onBlur={ () => onEdiSetFun( false ) }
+					onBlur={ () => onEdiSetFun( false ) } // What: On Blur Function. Why: Leaving the input ends editing. How: This passes false, so the plain date link shows again.
 					onChange={ ( chaEveObj ) => { if ( chaEveObj.target.value ) onChange( chaEveObj.target.value ); } } // What: Date Change Guard. Why: Clearing the native date input must not commit an empty date. How: This hands on only a non-empty value.
 					onKeyDown={ ( keyEveObj ) => { // What: Date Key Down Handler. Why: Enter/Escape both need to close the inline input, matching onBlur's own behavior. How: This checks for either key and, when matched, prevents the default action and closes the input.
 
@@ -301,7 +301,7 @@ function DatLinCom ( { desIdeStr, ediValBoo, isoValStr, labTexStr, minIsoStr, on
 
 						aria-describedby={ desIdeStr }
 
-						onClick={ () => onEdiSetFun( true ) }
+						onClick={ () => onEdiSetFun( true ) } // What: On Click Function. Why: Clicking the link starts editing. How: This passes true, so the inline date input shows in its place.
 					>{ labTexStr }</button>{ /* What: Date Link Button Element. Why: This is the plain-text entry point into editing the date. How: This shows labTexStr and opens the inline input when clicked. */ }.
 
 
