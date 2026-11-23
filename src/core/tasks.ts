@@ -188,7 +188,7 @@ const curIsoFun = () : string => isoDayFun( new Date() ); // What: Current ISO F
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param nthValNum - Nth Value Number: The task's own interval.
+ * @param nthValNum - Nth Value Number: {@link intCouNum}
  * @param uniCouNum - Unit Count Number: Whole weeks, months or years since
  *                    the anchor.
  *

@@ -311,10 +311,9 @@ function tdmResFun ( picCadObj : CadFieTyp, yeaValNum : number, monOneNum : numb
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - Picker Cadence Object: The picker whose cadence's
- *                    period is being resolved.
- * @param cheDatObj - Check Date Object: The date whose own period start
- *                    is wanted, defaulting to right now.
+ * @param picCadObj - Picker Cadence Object: {@link picRcdObj}
+ * @param cheDatObj - Check Date Object: {@link genNowObj};
+ *                    defaults to right now.
  *
  * @returns The Date (at midnight) that starts cheDatObj's own current period.
  * @see {@link midDatObj}
@@ -424,10 +423,9 @@ function perStaFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : Da
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - Picker Cadence Object: The picker whose current
- *                    period key is wanted.
- * @param cheDatObj - Check Date Object: The date to resolve the period
- *                    against, defaulting to right now.
+ * @param picCadObj - Picker Cadence Object: {@link picRcdObj}
+ * @param cheDatObj - Check Date Object: {@link genNowObj};
+ *                    defaults to right now.
  *
  * @returns The ISO date string of picCadObj's own current period start.
  *
@@ -459,11 +457,10 @@ function perKeyFun ( picCadObj : CadFieTyp, cheDatObj : Date = new Date() ) : st
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picCadObj - Picker Cadence Object: The picker whose current
- *                    period is being checked.
+ * @param picCadObj - Picker Cadence Object: {@link picRcdObj}
  * @param picLogArr - Pick Log Array: The full pick log to search.
- * @param cheDatObj - Check Date Object: The date to resolve the current
- *                    period against, defaulting to right now.
+ * @param cheDatObj - Check Date Object: {@link genNowObj};
+ *                    defaults to right now.
  *
  * @returns Whether picCadObj's own lastRunPeriod is the current period, or a
  *          done pick-log row for it exists dated on or after the current
