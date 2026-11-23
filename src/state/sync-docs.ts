@@ -224,8 +224,7 @@ function hasDocFun ( docAnyObj : RawSavTyp ) : string {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param docMapObj - Document Map Object: The documents, keyed by id, core
- *                    included.
+ * @param docMapObj - Document Map Object: {@link merDocObj}
  *
  * @returns The joined app state.
  * @see {@link joiStaObj}
@@ -280,7 +279,7 @@ function joiDocFun ( docMapObj : SynDocTyp ) : StaAppTyp {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - State App Object: The whole app state.
+ * @param staAppObj - State App Object: {@link begStaObj}
  *
  * @returns The documents, keyed by id.
  * @see {@link docMapObj}

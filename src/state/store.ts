@@ -1221,8 +1221,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param conArgObj - Conditional Argument Object: The authoring form's
-		 *                    fields; any field left out gets its default.
+		 * @param conArgObj - Conditional Argument Object: {@link finDraObj};
+		 *                    any field left out gets its default.
 		 *
 		 * @returns This function does not return anything.
 		 *
@@ -1687,8 +1687,8 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param props.day   - Day: The holiday's day of the month.
-		 * @param props.month - Month: The holiday's month, 1 through 12.
+		 * @param props.day   - Day: {@link dayValNum}
+		 * @param props.month - Month: {@link monValNum}
 		 * @param props.name  - Name: The holiday's display name.
 		 *
 		 * @returns This function does not return anything.

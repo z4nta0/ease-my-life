@@ -131,12 +131,11 @@ type SynResTyp = { merStaObj : StaAppTyp | null, pusNeeBoo : boolean, synMetObj 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param synBacObj - Sync Backend Object: The store holding the cloud copy.
- * @param locStaObj - Local State Object: This device's current state.
+ * @param synBacObj - Sync Backend Object: {@link synBacObj}
+ * @param locStaObj - Local State Object: {@link begStaObj}
  * @param locSavNum - Local Saved Number: When this device last saved its
  *                    state, in milliseconds.
- * @param synMetObj - Sync Meta Object: The hashes and revision of this
- *                    device's last sync, or null before its first.
+ * @param synMetObj - Sync Meta Object: {@link synMetObj}
  * @param todDayStr - Today Day String: Today's local 'YYYY-MM-DD', the first
  *                    day whose log rows follow the winning side alone.
  *
