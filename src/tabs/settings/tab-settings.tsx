@@ -2025,7 +2025,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						className={ cssModObj.setDaiSec }
 
 						data-element-name-hook='setDaiSec'
-					>{ /* What: Settings Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the generator's own settings CarSurCom. Its data-element-name-hook is read by the tours and help mode. */ }
+					>{ /* What: Settings Daily Section Element. Why: This is the Daily generator section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section header, the intro copy, and the generator's own settings CarSurCom. Its data-element-name-hook is read by the tours and help mode. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2252,7 +2252,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						className={ cssModObj.setHolSec }
 
 						data-element-name-hook='setHolSec'
-					>{ /* What: Settings Holidays Section Element. Why: This is the Holidays section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and HolEdiCom's own CarSurCom. Its data-element-name-hook is read by the tours. */ }
+					>{ /* What: Settings Holidays Section Element. Why: This is the Holidays section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section header, the intro copy, and HolEdiCom's own CarSurCom. Its data-element-name-hook is read by the tours. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2288,7 +2288,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						className={ cssModObj.setDatSec }
 
 						data-element-name-hook='setDatSec'
-					>{ /* What: Settings Data Section Element. Why: This is the Data control section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the whole storage/export/import/reset CarSurCom. Its data-element-name-hook is read by the tours. */ }
+					>{ /* What: Settings Data Section Element. Why: This is the Data control section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section header, the intro copy, and the whole storage/export/import/reset CarSurCom. Its data-element-name-hook is read by the tours. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -2884,7 +2884,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						className={ cssModObj.setAboSec }
 
 						data-element-name-hook='setAboSec'
-					>{ /* What: Settings About Section Element. Why: This is the About section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy plus 4 Cards: the app identity, the Buy Me a Coffee row, the replay-tour row, and ConSupCom. Its data-element-name-hook is read by the tours. */ }
+					>{ /* What: Settings About Section Element. Why: This is the About section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section header and the intro copy, plus 4 Cards: the app identity, the Buy Me a Coffee row, the replay-tour row, and ConSupCom. Its data-element-name-hook is read by the tours. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
@@ -3050,7 +3050,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 						style={{ minHeight : legMinNum }}
 
 						data-element-name-hook='setLegSec'
-					>{ /* What: Settings Legal Section Element. Why: This is the Legal section's own root, registering itself for scroll-spy/jump-to. How: This wraps the intro copy and the Privacy Policy/Terms of Service rows. Its data-element-name-hook is read by the tours. */ }
+					>{ /* What: Settings Legal Section Element. Why: This is the Legal section's own root, registering itself for scroll-spy/jump-to. How: This wraps the section header, the intro copy, and the Privacy Policy/Terms of Service rows. Its data-element-name-hook is read by the tours. */ }
 
 
 						<div className={ cssModObj.secHeaDiv }>{ /* What: Section Header Div Element. Why: Every section names itself with this same small heading style. How: This wraps the section's own kicker span below. */ }
