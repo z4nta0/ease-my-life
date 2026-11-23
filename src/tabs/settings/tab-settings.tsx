@@ -328,8 +328,7 @@ type TecProTyp = { accSynObj : AccSynTyp, actStoObj : ActStoTyp, onNavHomFun? : 
  * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onNavHomFun - On Navigate Home Function: Navigates back to the
  *                            Today tab.
- * @param props.onNavTabFun - On Navigate Tab Function: Navigates to an
- *                            arbitrary tab by id.
+ * @param props.onNavTabFun - On Navigate Tab Function: {@link selTabFun}
  * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns The tab's own header, the section rail, and every section's content

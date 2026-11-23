@@ -120,12 +120,11 @@ type LocProTyp = { ariSubStr : string, ediModBoo : boolean, entRcdObj : TodRowTy
  *
  * @param props.ariSubStr   - ARIA Subject String: What the check button
  *                            marks complete, in its accessible name.
- * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is on.
+ * @param props.ediModBoo   - Edit Mode Boolean: {@link ediModBoo}
  * @param props.entRcdObj   - Entry Record Object: The row's own entry.
  * @param props.onGriDowFun - On Grip Down Function: Called with the grip's
  *                            pointer down.
- * @param props.onTogDonFun - On Toggle Done Function: Called with the entry
- *                            when the check button is pressed.
+ * @param props.onTogDonFun - On Toggle Done Function: {@link hanCheFun}
  *
  * @returns The grip or the check button.
  *
@@ -249,8 +248,7 @@ type SbcProTyp = { entIdeStr : string, onSkiEntFun : ( entIdeStr : string ) => v
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.entIdeStr   - Entry Identifier String: The row's own eid.
- * @param props.onSkiEntFun - On Skip Entry Function: Called with the eid
- *                            when the button is pressed.
+ * @param props.onSkiEntFun - On Skip Entry Function: {@link hanSkiFun}
  *
  * @returns The skip button.
  *
@@ -320,15 +318,12 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj   - Action Store Object: The shared app actions.
- * @param props.cheExiBoo   - Checklist Exiting Boolean: Whether the
- *                            checklist's own closing exit animation is
- *                            currently playing (tutorial rows only).
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
+ * @param props.cheExiBoo   - Checklist Exiting Boolean: {@link cheExiBoo}
  * @param props.draNamStr   - Draft Name String: The open editor's draft name,
  *                            shown in the name input instead of the real one,
  *                            or undefined when this row isn't being edited.
- * @param props.ediModBoo   - Edit Mode Boolean: Whether Edit Mode is currently
- *                            on.
+ * @param props.ediModBoo   - Edit Mode Boolean: {@link ediModBoo}
  * @param props.entRcdObj   - Entry Record Object: The entry (or synthetic
  *                            tutorial/day-off/charging row) this card renders.
  * @param props.isaEdiBoo   - Is-An Editing Boolean: Whether this row's own
@@ -337,28 +332,22 @@ type EccProTyp = { actStoObj : ActStoTyp, cheExiBoo : boolean, draNamStr? : stri
  *                            removal animation.
  * @param props.isaRolBoo   - Is-A Rolling Boolean: Whether this row is mid-
  *                            reroll animation.
- * @param props.jusCheStr   - Just Checked String: The eid of whichever entry
- *                            was just checked, for the brief "fresh" cue.
+ * @param props.jusCheStr   - Just Checked String: {@link jusCheStr}
  * @param props.onGriDowFun - On Grip Down Function: Starts a within-group drag
  *                            from this row's own grip handle.
- * @param props.onPlaTutFun - On Play Tutorial Function: Starts this row's own
- *                            mini-tour (tutorial rows only).
+ * @param props.onPlaTutFun - On Play Tutorial Function: {@link staTouFun}
  * @param props.onRenIteFun - On Rename Item Function: Writes a typed name
  *                            into the open editor's draft.
- * @param props.onRerEntFun - On Reroll Entry Function: Re-rolls this row to a
- *                            different item.
- * @param props.onSkiEntFun - On Skip Entry Function: Skips (removes) this row
- *                            entirely.
- * @param props.onTogDonFun - On Toggle Done Function: Toggles this row's own
- *                            done state.
+ * @param props.onRerEntFun - On Reroll Entry Function: {@link hanRerFun}
+ * @param props.onSkiEntFun - On Skip Entry Function: {@link hanSkiFun}
+ * @param props.onTogDonFun - On Toggle Done Function: {@link hanCheFun}
  * @param props.onTogEdiFun - On Toggle Editor Function: Toggles this row's own
  *                            inline editor.
- * @param props.onUncTutFun - On Uncheck Tutorial Function: Un-resolves this
- *                            row's own mini-tour (tutorial rows only).
+ * @param props.onUncTutFun - On Uncheck Tutorial Function: {@link uncTutFun}
  * @param props.picRcdObj   - Picker Record Object: The entry's own resolved
  *                            picker (or a picker-shaped stand-in for a day-off
  *                            row).
- * @param props.staAppObj   - State App Object: The shared app state.
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns Exactly one of the tutorial/day-off/charging/real-pick article
  *          elements, chosen by entRcdObj.kind, or null when the row's own item

@@ -84,8 +84,7 @@ type PvcProTyp = { actStoObj : ActStoTyp, aniStyStr : string, picDatObj : PicRcd
  * @param props.aniStyStr - Animation Style String: Which PicStrCom animation
  *                          style to play: 'reel', 'spotlight', or
  *                          'dissolve'.
- * @param props.picDatObj - Picker Data Object: The currently-selected
- *                          picker record this view renders.
+ * @param props.picDatObj - Picker Data Object: {@link actPicObj}
  * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns Either the picker's own edit form (PicForCom, while ediOpeBoo is

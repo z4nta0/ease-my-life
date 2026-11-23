@@ -43,8 +43,7 @@ type PbcProTyp = { curValNum : number, maxValNum? : number, tonValStr? : 'accent
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.curValNum - Current Value Number: How far along the progress
- *                          is.
+ * @param props.curValNum - Current Value Number: {@link reaValNum}
  * @param props.maxValNum - Maximum Value Number: The value that means full,
  *                          defaulting to 1.
  * @param props.tonValStr - Tone Value String: The color modifier, defaulting

@@ -78,12 +78,10 @@ type IdcProTyp = { draTasObj : TasRcdTyp, onCloEdiFun : () => void, onDelTasFun 
  *                            without saving, dropping the draft.
  * @param props.onDelTasFun - On Delete Task Function: Deletes the underlying
  *                            reminder outright.
- * @param props.onPatTasFun - On Patch Task Function: Merges a changed field
- *                            or two into the draft.
+ * @param props.onPatTasFun - On Patch Task Function: {@link patDraFun}
  * @param props.onSavTasFun - On Save Task Function: Commits the draft onto the
  *                            real reminder and closes this editor.
- * @param props.staAppObj   - State App Object: The shared app state, passed
- *                            through to {@link SchEdiCom}.
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns The inline editor's own schedule editor plus its footer.
  *
@@ -154,8 +152,7 @@ type RccProTyp = { actStoObj : ActStoTyp, cheDatObj? : Date, draNamStr? : string
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj   - Action Store Object: The actions bag; only its
- *                            own setCarFun is used, and only while isaTutBoo.
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.cheDatObj   - Check Date Object: The generator-anchored date to
  *                            check done-ness against.
  * @param props.draNamStr   - Draft Name String: The open editor's draft name,
@@ -643,37 +640,24 @@ type RscProTyp = { actEdiStr : string | null, actStoObj : ActStoTyp, ariTasSet :
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actEdiStr    - Active Editor String: The tab-wide "which editor
- *                             is open" slot, shared with the picker item
- *                             editor.
- * @param props.actStoObj    - Action Store Object: The shared app actions that
- *                             mutate props.staAppObj.
- * @param props.ariTasSet    - Arriving Task Set: IDs currently playing a
- *                             cross-day arrival animation.
- * @param props.cheExiBoo    - Checklist Exiting Boolean: Whether the
- *                             onboarding checklist itself is mid-exit
- *                             animation.
- * @param props.ediModBoo    - Edit Mode Boolean: Whether Today's own Edit Mode
- *                             is on.
- * @param props.leaTasSet    - Leaving Task Set: IDs currently playing a cross-
- *                             day purge exit animation.
+ * @param props.actEdiStr    - Active Editor String: {@link actEdiStr}
+ * @param props.actStoObj    - Action Store Object: {@link useAppStaFun}
+ * @param props.ariTasSet    - Arriving Task Set: {@link ariTasSet}
+ * @param props.cheExiBoo    - Checklist Exiting Boolean: {@link cheExiBoo}
+ * @param props.ediModBoo    - Edit Mode Boolean: {@link ediModBoo}
+ * @param props.leaTasSet    - Leaving Task Set: {@link leaTasSet}
  * @param props.logOpeBoo    - Log Open Boolean: Whether the Reminders day-log
  *                             panel is currently open.
- * @param props.onGriDowFun  - On Grip Down Function: Starts dragging this
- *                             whole section to reorder it among other groups.
- * @param props.onPlaTutFun  - On Play Tutorial Function: Starts a sample
- *                             reminder's own mini-tour.
+ * @param props.onGriDowFun  - On Grip Down Function: {@link groDraFun}
+ * @param props.onPlaTutFun  - On Play Tutorial Function: {@link staTouFun}
  * @param props.onTogLogFun  - On Toggle Log Function: Toggles the day-log
  *                             panel above.
- * @param props.onUncTutFun  - On Uncheck Tutorial Function: Un-resolves a
- *                             sample reminder's own mini-tour.
+ * @param props.onUncTutFun  - On Uncheck Tutorial Function: {@link uncTutFun}
  * @param props.secRefFun    - Section Reference Function: A ref callback
  *                             registering this section's own DOM node by group
  *                             key.
- * @param props.setActEdiStr - Set Active Editor String: Updates
- *                             props.actEdiStr.
- * @param props.staAppObj    - State App Object: The entire app's own persisted
- *                             state.
+ * @param props.setActEdiStr - Set Active Editor String: {@link setActEdiStr}
+ * @param props.staAppObj    - State App Object: {@link useAppStaFun}
  *
  * @returns The full Reminders section: its header, optional day-log panel, and
  *          its list of tutorial cards, quick-add form, and real reminder

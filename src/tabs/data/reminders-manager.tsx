@@ -378,11 +378,10 @@ type OmcProTyp = { actStoObj : ActStoTyp, onCloConFun : () => void, remOptObj : 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj   - Action Store Object: The shared actions bag.
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onCloConFun - On Close Control Function: Collapses this
  *                            Controls body, called by both Cancel and Save.
- * @param props.remOptObj   - Reminder Option Object: The live { once,
- *                            recurring } participation options object.
+ * @param props.remOptObj   - Reminder Option Object: {@link norOptObj}
  *
  * @returns The full participation matrix: its head row, one row per
  *          REM_MAT_ARR entry, and its own Cancel/Save foot.
@@ -650,8 +649,7 @@ type RicProTyp = { isaOncBoo : boolean }; // What: Row-Icon-Component Props Type
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.isaOncBoo - Is-A Once Boolean: Whether the reminder is
- *                          one-time.
+ * @param props.isaOncBoo - Is-A Once Boolean: {@link isaOncBoo}
  *
  * @returns The row's icon span.
  *
@@ -710,10 +708,8 @@ type RmcProTyp = { actStoObj : ActStoTyp, staAppObj : StaAppTyp }; // What: Remi
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj - Action Store Object: The shared app actions that
- *                          mutate props.staAppObj.
- * @param props.staAppObj - State App Object: The entire app's own persisted
- *                          state.
+ * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
+ * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns The Reminders category: its header, the Controls disclosure
  *          (OptMatCom), and the Items disclosure (one row per reminder,

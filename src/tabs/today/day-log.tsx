@@ -144,8 +144,7 @@ function conSubFun ( conRcdObj : ConRcdTyp ) : string {
  * @param picLogArr - Pick Log Array: The full state.pickLog array to scan.
  * @param picIdeStr - Picker Identifier String: Which picker's own rows to
  *                    keep.
- * @param dayKeyStr - Day Key String: Which day's own rows to keep, as a
- *                    "YYYY-MM-DD" key from {@link isoDayFun}.
+ * @param dayKeyStr - Day Key String: {@link dayKeyStr}
  *
  * @returns A Map from itemId to its own { anyBoo, autBoo, donBoo, pusBoo,
  *          rolBoo, skiBoo } flags.
@@ -229,10 +228,8 @@ function dayFlaFun ( picLogArr : PclRowTyp[], picIdeStr : string, dayKeyStr : st
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param dueDatObj - Due Date Object: The next occurrence Date, or
- *                    null/undefined when there is none upcoming at all.
- * @param dayKeyStr - Day Key String: Today's own "YYYY-MM-DD" key, used as the
- *                    reference point dueDatObj is measured against.
+ * @param dueDatObj - Due Date Object: {@link nexDatObj}
+ * @param dayKeyStr - Day Key String: {@link dayKeyStr}
  *
  * @returns A short due-date label string.
  *
@@ -588,9 +585,8 @@ type NmcProTyp = { modLabStr : string, neuModBoo : boolean, picNamStr : string }
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.modLabStr - Mode Label String: The picker mode's label.
- * @param props.neuModBoo - Neutral Mode Boolean: Whether the pill reads
- *                          neutral.
+ * @param props.modLabStr - Mode Label String: {@link modLabStr}
+ * @param props.neuModBoo - Neutral Mode Boolean: {@link neuModBoo}
  * @param props.picNamStr - Picker Name String: The picker's own name.
  *
  * @returns The name and mode span.
@@ -651,9 +647,7 @@ type ShcProTyp = { iteFlaObj : IteFlaTyp | undefined }; // What: Status-Chip-Com
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.iteFlaObj - Item Flags Object: This item's own flags object
- *                          from {@link dayFlaFun}, or undefined when the item
- *                          has no pick-log rows today at all.
+ * @param props.iteFlaObj - Item Flags Object: {@link iteFlaObj}
  *
  * @returns This item's own run of status icon chips, or a placeholder span
  *          when there is nothing to show.
@@ -1004,9 +998,8 @@ type CncProTyp = { picGroArr : PicRcdTyp[], staAppObj : StaAppTyp }; // What: Co
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.picGroArr - Picker Group Array: The current group's own
- *                          non-hidden pickers, in saved order.
- * @param props.staAppObj - State App Object: The whole app state object.
+ * @param props.picGroArr - Picker Group Array: {@link sorPicArr}
+ * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns This group's own conditionals section, or null once it has none.
  *
@@ -1203,13 +1196,12 @@ type PlcProTyp = { dayKeyStr : string, isaSupBoo : boolean, picRcdObj : PicRcdTy
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.dayKeyStr - Day Key String: Today's own "YYYY-MM-DD" key, from
- *                          {@link isoDayFun}.
+ * @param props.dayKeyStr - Day Key String: {@link dayKeyStr}
  * @param props.isaSupBoo - Is-A Suppressed Boolean: Whether picRcdObj is
  *                          suppressed today by a triggered conditional.
  * @param props.picRcdObj - Picker Record Object: The picker this block
  *                          renders.
- * @param props.staAppObj - State App Object: The whole app state object.
+ * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns This picker's own block, either a static rested row or its full
  *          collapsible item table.
@@ -1504,7 +1496,7 @@ type GlcProTyp = { groNamStr : string, onCloLogFun : () => void, staAppObj : Sta
  * @param props.groNamStr   - Group Name String: Which group this panel covers.
  * @param props.onCloLogFun - On Close Log Function: Called when the panel's
  *                            own close button is pressed.
- * @param props.staAppObj   - State App Object: The whole app state object.
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns This group's own full log panel.
  *
@@ -1846,7 +1838,7 @@ type RlcProTyp = { onCloLogFun : () => void, staAppObj : StaAppTyp }; // What: R
  *
  * @param props.onCloLogFun - On Close Log Function: Called when the panel's
  *                            own close button is pressed.
- * @param props.staAppObj   - State App Object: The whole app state object.
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns This panel's own full reminders log.
  *

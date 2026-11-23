@@ -265,14 +265,11 @@ function couLevFun ( donCouNum : number ) : number {
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param outValStr - Outcome Value String: The outcome to count.
- * @param picLogArr - Pick Log Array: The raw pick log.
- * @param hidPicSet - Hidden Picker Set: The ids of hidden pickers.
- * @param scoValStr - Scope Value String: The active scope, 'all' or a picker
- *                    id.
- * @param cutIsoStr - Cutoff ISO String: The range's first day, or null for
- *                    all time.
- * @param isaRemBoo - Is-A Reminder Boolean: Whether the Reminders scope is
- *                    active.
+ * @param picLogArr - Pick Log Array: {@link picLogArr}
+ * @param hidPicSet - Hidden Picker Set: {@link hidPicSet}
+ * @param scoValStr - Scope Value String: {@link scoValStr}
+ * @param cutIsoStr - Cutoff ISO String: {@link cutIsoStr}
+ * @param isaRemBoo - Is-A Reminder Boolean: {@link isaRemBoo}
  *
  * @returns A map of item id to its count of rows with that outcome.
  * @see {@link outCouMap}
@@ -645,10 +642,9 @@ type PncProTyp = { alwShoBoo? : boolean, curPagNum : number, onChange : ( nexPag
  * @param props.alwShoBoo - Always Show Boolean: Forces the pager to render
  *                          even when everything fits on one page; defaults to
  *                          false.
- * @param props.curPagNum - Current Page Number: The current, 0-indexed page.
- * @param props.onChange  - On Change: Called with the next 0-indexed page on
- *                          an arrow tap; the exact standard name, left as-is.
- * @param props.pagSizNum - Page Size Number: How many items one page holds.
+ * @param props.curPagNum - Current Page Number: {@link remSafNum}
+ * @param props.onChange  - On Change: {@link setRemIndNum}
+ * @param props.pagSizNum - Page Size Number: {@link REM_SIZ_NUM}
  * @param props.totIteNum - Total Item Number: The full, unpaged item count.
  * @param props.uniWorStr - Unit Word String: Unit word shown after the
  *                          total; defaults to 'items'.
@@ -858,8 +854,7 @@ type TtcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onNavHomFun - On Navigate Home Function: Navigates back to the
  *                            Today tab.
- * @param props.onNavTabFun - On Navigate Tab Function: Navigates to an
- *                            arbitrary tab by id.
+ * @param props.onNavTabFun - On Navigate Tab Function: {@link selTabFun}
  * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns The Stats tab's own root element, including its header, filter

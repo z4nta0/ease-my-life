@@ -312,22 +312,15 @@ type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : Con
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
- * @param props.allGroArr   - All Group Array: Every existing group name, used
- *                            to populate the Group selector.
+ * @param props.allGroArr   - All Group Array: {@link exiGroArr}
  * @param props.conIteArr   - Conditional Item Array: Every existing
  *                            conditional, used to populate the attach-a-
  *                            conditional rail; defaults to an empty array.
- * @param props.hasNewBoo   - Has New Boolean: Whether a brand-new item's
- *                            editor is still open, unsaved.
- * @param props.incDaiBoo   - Included Daily Boolean: Whether this picker is
- *                            currently a member of the daily generator, the
- *                            draft's starting membership.
- * @param props.isaNewBoo   - Is-A New Boolean: Whether this is a brand-new,
- *                            not-yet-saved draft picker.
- * @param props.iteSecBoo   - Item Section Boolean: Whether the draft's own
- *                            Items section has been revealed yet.
- * @param props.onCanNewFun - On Cancel New Function: Discards a brand-new
- *                            draft picker.
+ * @param props.hasNewBoo   - Has New Boolean: {@link ownNewBoo}
+ * @param props.incDaiBoo   - Included Daily Boolean: {@link incDaiBoo}
+ * @param props.isaNewBoo   - Is-A New Boolean: {@link isaDraBoo}
+ * @param props.iteSecBoo   - Item Section Boolean: {@link draIteBoo}
+ * @param props.onCanNewFun - On Cancel New Function: {@link canNewFun}
  * @param props.onColConFun - On Collapse Controls Function: Collapses this
  *                            picker's own Controls disclosure.
  * @param props.onOpeSecFun - On Open Section Function: Reveals the draft's own
@@ -338,12 +331,9 @@ type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : Con
  *                            in place of the default actStoObj.delPicFun call,
  *                            when the caller wants to animate the removal
  *                            itself.
- * @param props.onSavNewFun - On Save New Function: Creates a brand-new draft
- *                            picker from the draft and whether a Fill all is
- *                            pending.
- * @param props.picDatObj   - Picker Data Object: The picker record this
- *                            Controls body edits.
- * @param props.picIteArr   - Picker Item Array: This picker's own items.
+ * @param props.onSavNewFun - On Save New Function: {@link savNewFun}
+ * @param props.picDatObj   - Picker Data Object: {@link picCurObj}
+ * @param props.picIteArr   - Picker Item Array: {@link picIteArr}
  *
  * @returns This picker's own Controls body: its groups of settings, the
  *          footer, and the unmount watcher.

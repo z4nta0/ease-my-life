@@ -58,9 +58,7 @@ type LrcProTyp = { canIteArr : NonNullable< GenSloTyp[ 'canArr' ] > }; // What: 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.canIteArr - Candidate Item Array: The candidate pool this
- *                          picker's own slot is drawing from, cycled purely
- *                          for visual effect.
+ * @param props.canIteArr - Candidate Item Array: {@link canIteArr}
  *
  * @returns The currently-shown candidate's own name, in a span keyed by its
  *          own index so each tick replays a fade.

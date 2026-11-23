@@ -159,15 +159,10 @@ type TocProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onNavHomFun - On Navigate Home Function: Returns to the Today
  *                            tab (used by the brand mark).
- * @param props.onNavTabFun - On Navigate Tab Function: Switches to a
- *                            different tab by id.
- * @param props.onStaFeaFun - On Start Feature Function: Starts an App
- *                            Features tutorial at the app level.
- * @param props.onStaPagFun - On Start Page Function: Starts an "Explore the
- *                            page" tour at the app level.
- * @param props.onStaPicFun - On Start Picker Function: Starts a sample-picker
- *                            mini-tour at the app level (some steps navigate
- *                            away from Today).
+ * @param props.onNavTabFun - On Navigate Tab Function: {@link selTabFun}
+ * @param props.onStaFeaFun - On Start Feature Function: {@link setActFeaStr}
+ * @param props.onStaPagFun - On Start Page Function: {@link setActPagStr}
+ * @param props.onStaPicFun - On Start Picker Function: {@link setActPicStr}
  * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  * @param props.synBefFun   - Sync Before Function: {@link useSynRunFun}'s
  *                            wait for the account's copy before a new day's
@@ -2179,8 +2174,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
 	 * @param poiEveObj - Pointer Event Object: The grip's pointerdown event.
-	 * @param curGroObj - Current Group Object: The group the dragged card
-	 *                    belongs to.
+	 * @param curGroObj - Current Group Object: {@link curGroObj}
 	 *
 	 * @returns This function does not return anything.
 	 *

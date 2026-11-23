@@ -143,8 +143,7 @@ type TpcProTyp = { actStoObj : ActStoTyp, aniStyStr : string, onNavHomFun? : () 
  *                            animation style PicVieCom should play.
  * @param props.onNavHomFun - On Navigate Home Function: Navigates back to
  *                            the Today tab.
- * @param props.onNavTabFun - On Navigate Tab Function: Switches to an
- *                            arbitrary tab by id.
+ * @param props.onNavTabFun - On Navigate Tab Function: {@link selTabFun}
  * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns The whole Pickers page: its header, filter rows, the Show tab row,

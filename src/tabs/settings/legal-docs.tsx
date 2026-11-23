@@ -63,8 +63,7 @@ type LmcProTyp = { legDocStr : 'privacy' | 'terms' | null, onCloModFun : () => v
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.legDocStr   - Legal Document String: Which document to show, or
- *                            null to render nothing.
+ * @param props.legDocStr   - Legal Document String: {@link legDocStr}
  * @param props.onCloModFun - On Close Modal Function: Called once the close
  *                            animation (or the instant reduced-motion path)
  *                            finishes.

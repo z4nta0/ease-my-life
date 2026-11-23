@@ -143,18 +143,12 @@ type CecProTyp = { actStoObj : ActStoTyp, conDraObj : Partial< ConRcdTyp >, curC
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.actStoObj    - Action Store Object: {@link useAppStaFun}
- * @param props.conDraObj    - Conditional Draft Object: The in-progress, not-
- *                             yet-committed field values for this conditional.
+ * @param props.conDraObj    - Conditional Draft Object: {@link conDraObj}
  * @param props.curConObj    - Current Conditional Object: The conditional
  *                             record this row belongs to.
- * @param props.isaNewBoo    - Is-A New Boolean: Whether this conditional is a
- *                             brand-new, not-yet-saved draft.
- * @param props.namErrStr    - Name Error String: The current validation
- *                             message for the draft's own name, or null when
- *                             it's valid.
- * @param props.onCloEdiFun  - On Close Editor Function: Closes this row
- *                             without discarding an existing conditional's
- *                             edits.
+ * @param props.isaNewBoo    - Is-A New Boolean: {@link isaPenBoo}
+ * @param props.namErrStr    - Name Error String: {@link namErrStr}
+ * @param props.onCloEdiFun  - On Close Editor Function: {@link cloEdiFun}
  * @param props.onDelConFun  - On Delete Conditional Function: Deletes this
  *                             existing conditional.
  * @param props.onDisDraFun  - On Discard Draft Function: Discards a brand-new
@@ -162,11 +156,9 @@ type CecProTyp = { actStoObj : ActStoTyp, conDraObj : Partial< ConRcdTyp >, curC
  * @param props.onSavNewFun  - On Save New Function: Commits a brand-new
  *                             conditional, when set; undefined for an existing
  *                             one.
- * @param props.setConDraObj - Set Conditional Draft Object: Replaces the in-
- *                             progress draft object.
- * @param props.tidNamStr    - Tidied Name String: The draft's own name,
- *                             already normalized to the app's tidy-casing
- *                             rule.
+ * @param props.setConDraObj - Set Conditional Draft Object:
+ *                             {@link setConDraObj}
+ * @param props.tidNamStr    - Tidied Name String: {@link tidNamStr}
  *
  * @returns This conditional's own editor body: any name error, the shared
  *          CodConCom fields, and the footer.
@@ -736,8 +728,7 @@ function ConManCom ( { actStoObj, staAppObj } : CmcProTyp ) : React.JSX.Element 
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
-	 * @param finNamStr - Final Name String: The tidied name the conditional is
-	 *                    saved under.
+	 * @param finNamStr - Final Name String: {@link tidNamStr}
 	 *
 	 * @returns This function does not return anything.
 	 *

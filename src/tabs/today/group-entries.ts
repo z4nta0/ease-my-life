@@ -61,9 +61,7 @@ type TodGroTyp = { entArr : TodRowTyp[], namStr : string };                     
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - State App Object: The shared app state, read for
- *                    today.entries, pickers, groupOrder, pickerOrder, and
- *                    onboarding.
+ * @param staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns An array of { entArr, namStr } group objects, in display
  *          order, each already internally sorted.

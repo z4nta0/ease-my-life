@@ -55,14 +55,12 @@ type AfcProTyp = { actStoObj : ActStoTyp, feaRcdObj : { ideStr : string, labStr 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj   - Action Store Object: The shared app actions.
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.feaRcdObj   - Feature Record Object: The App Features manifest
  *                            entry this card offers.
- * @param props.onPlaTutFun - On Play Tutorial Function: Starts this App
- *                            Feature's own tutorial.
- * @param props.onUncFeaFun - On Uncheck Feature Function: Un-resolves this
- *                            App Feature.
- * @param props.staAppObj   - State App Object: The shared app state.
+ * @param props.onPlaTutFun - On Play Tutorial Function: {@link staTouFun}
+ * @param props.onUncFeaFun - On Uncheck Feature Function: {@link uncFeaFun}
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns This card's own article element.
  *
