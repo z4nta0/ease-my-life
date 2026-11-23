@@ -649,8 +649,7 @@ const buiAddFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Add Fu
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picIdeStr - Picker Identifier String: The sample picker's own id,
- *                    keying PIC_SAM_OBJ and PIC_COP_OBJ.
+ * @param picIdeStr - Picker Identifier String: {@link actPicStr}
  *
  * @returns A GuiTouCom step object for this sample picker's own steObjArr.
  *
@@ -706,8 +705,7 @@ const buiLatFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Latest
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picIdeStr - Picker Identifier String: The sample picker's own id,
- *                    keying PIC_SAM_OBJ and PIC_COP_OBJ.
+ * @param picIdeStr - Picker Identifier String: {@link actPicStr}
  *
  * @returns A GuiTouCom step object for this sample picker's own steObjArr.
  *
@@ -751,8 +749,7 @@ const buiModFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Mode F
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picIdeStr - Picker Identifier String: The sample picker's own id,
- *                    keying PIC_SAM_OBJ and PIC_COP_OBJ.
+ * @param picIdeStr - Picker Identifier String: {@link actPicStr}
  *
  * @returns A GuiTouCom step object for this sample picker's own steObjArr.
  *
@@ -812,11 +809,8 @@ const buiNamFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Name F
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picIdeStr - Picker Identifier String: The sample picker's own id,
- *                    keying PIC_SAM_OBJ and PIC_COP_OBJ.
- * @param staAppObj - State App Object: The entire app's own persisted state,
- *                    searched for a picker an earlier run of this tour already
- *                    created.
+ * @param picIdeStr - Picker Identifier String: {@link actPicStr}
+ * @param staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns A GuiTouCom step object for this sample picker's own steObjArr.
  *
@@ -887,8 +881,7 @@ const buiNewFun = ( picIdeStr : string, staAppObj : StaAppTyp ) : TouSteTyp => (
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picIdeStr - Picker Identifier String: The sample picker's own id,
- *                    keying PIC_SAM_OBJ and PIC_COP_OBJ.
+ * @param picIdeStr - Picker Identifier String: {@link actPicStr}
  *
  * @returns A GuiTouCom step object for this sample picker's own steObjArr.
  *
@@ -945,18 +938,13 @@ type PucProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () =
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actIdeStr   - Active Identifier String: The app's own currently
- *                            active tab id.
- * @param props.actStoObj   - Action Store Object: The shared app actions that
- *                            mutate props.staAppObj.
+ * @param props.actIdeStr   - Active Identifier String: {@link actIdeStr}
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onCloTouFun - On Close Tour Function: Clears app.tsx's own
  *                            actPicStr, ending this mount.
- * @param props.picIdeStr   - Picker Identifier String: The sample picker's own
- *                            id, keying both PIC_SAM_OBJ and PIC_COP_OBJ.
- * @param props.selTabFun   - Select Tab Function: Switches the app's own
- *                            active tab.
- * @param props.staAppObj   - State App Object: The entire app's own persisted
- *                            state.
+ * @param props.picIdeStr   - Picker Identifier String: {@link actPicStr}
+ * @param props.selTabFun   - Select Tab Function: {@link selTabFun}
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running guided
  *          tour (touPhaStr 'tour'), depending on this picker's own phase.

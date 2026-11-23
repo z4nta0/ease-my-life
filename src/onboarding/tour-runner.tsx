@@ -396,7 +396,7 @@ const coaLayFun = ( curRecObj : { height : number, left : number, top : number }
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param curSteObj - Current Step Object: The step being shown.
+ * @param curSteObj - Current Step Object: {@link curSteObj}
  *
  * @returns The spotlight padding in pixels.
  *
@@ -2016,8 +2016,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 		 *
 		 * @author z4nta0 <https://github.com/z4nta0>
 		 *
-		 * @param curEleArr - Current Element Array: The elements finTarFun
-		 *                    matched for the current step.
+		 * @param curEleArr - Current Element Array: {@link curEleArr}
 		 *
 		 * @returns This function does not return anything.
 		 *

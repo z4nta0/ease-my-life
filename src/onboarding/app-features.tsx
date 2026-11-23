@@ -308,7 +308,7 @@ const TIP_STE_OBJ = { // What: Tip Step Object. Why: FeaTipCom's own GuiTouCom n
  *
  * @param feaIdeStr - Feature Identifier String: The feature id to check for a
  *                    blocked reason.
- * @param staAppObj - State App Object: The entire app's own persisted state.
+ * @param staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns A user-facing reason string whenever this feature is blocked,
  *          otherwise null.
@@ -905,8 +905,7 @@ type FtcProTyp = { actStoObj : ActStoTyp }; // What: Feature-Tip-Component Props
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj - Action Store Object: The actions that mutate
- *                          the app's own persisted state.
+ * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns A GuiTouCom running the single solo step described above.
  *
@@ -966,19 +965,13 @@ type FocProTyp = { actIdeStr : string, actStoObj : ActStoTyp, feaIdeStr : string
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actIdeStr   - Active Identifier String: The app's own currently
- *                            active tab id.
- * @param props.actStoObj   - Action Store Object: The actions that mutate
- *                            props.staAppObj.
- * @param props.feaIdeStr   - Feature Identifier String: This feature's own id
- *                            (e.g. 'feat_manual_pick'), keying APP_FEA_ARR and
- *                            buiTesFun.
+ * @param props.actIdeStr   - Active Identifier String: {@link actIdeStr}
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
+ * @param props.feaIdeStr   - Feature Identifier String: {@link actFeaStr}
  * @param props.onCloTouFun - On Close Tour Function: Clears app.tsx's own
  *                            actFeaStr, ending this mount.
- * @param props.selTabFun   - Select Tab Function: Switches the app's own
- *                            active tab.
- * @param props.staAppObj   - State App Object: The entire app's own
- *                            persisted state.
+ * @param props.selTabFun   - Select Tab Function: {@link selTabFun}
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running guided
  *          tour (touPhaStr 'tour'), depending on this feature's own phase.

@@ -181,14 +181,10 @@ type WtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, selTabFun : ( tabI
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actIdeStr - Active Identifier String: The app's own
- *                          currently active tab id.
- * @param props.actStoObj - Action Store Object: The shared app actions
- *                          that mutate props.staAppObj.
- * @param props.selTabFun - Select Tab Function: Switches the app's own
- *                          active tab.
- * @param props.staAppObj - State App Object: The entire app's own
- *                          persisted state.
+ * @param props.actIdeStr - Active Identifier String: {@link actIdeStr}
+ * @param props.actStoObj - Action Store Object: {@link useAppStaFun}
+ * @param props.selTabFun - Select Tab Function: {@link selTabFun}
+ * @param props.staAppObj - State App Object: {@link useAppStaFun}
  *
  * @returns Either null (phase 'off'), the intro modal (phase 'welcome'), or
  *          the running guided tour (phase 'tour'), depending on onbPhaStr.

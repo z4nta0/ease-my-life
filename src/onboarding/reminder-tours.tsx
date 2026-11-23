@@ -465,15 +465,13 @@ type RtcProTyp = { actStoObj : ActStoTyp, onCloForFun : () => void, onCloTouFun 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actStoObj   - Action Store Object: The shared app actions
- *                            that mutate props.staAppObj.
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onCloForFun - On Close Form Function: Closes the real
  *                            add-reminder form on Today, like its own
  *                            Cancel button would.
  * @param props.onCloTouFun - On Close Tour Function: Clears tab-today.tsx's
  *                            own minTouObj, ending this mount.
- * @param props.staAppObj   - State App Object: The entire app's own
- *                            persisted state.
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  * @param props.varKeyStr   - Variant Key String: Which sample reminder this
  *                            mounts for, 'once' or 'recurring'.
  *
