@@ -188,19 +188,13 @@ type PocProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onCloTouFun : () =
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.actIdeStr   - Active Identifier String: The app's own currently
- *                            active tab id.
- * @param props.actStoObj   - Action Store Object: The shared app actions that
- *                            mutate props.staAppObj.
+ * @param props.actIdeStr   - Active Identifier String: {@link actIdeStr}
+ * @param props.actStoObj   - Action Store Object: {@link useAppStaFun}
  * @param props.onCloTouFun - On Close Tour Function: Clears app.tsx's own
  *                            actPagStr, ending this mount.
- * @param props.pagIdeStr   - Page Identifier String: This page tour's own
- *                            checklist id (e.g. 'explore_today'), keying
- *                            PAG_COP_OBJ and buiTesFun.
- * @param props.selTabFun   - Select Tab Function: Switches the app's own
- *                            active tab.
- * @param props.staAppObj   - State App Object: The entire app's own
- *                            persisted state.
+ * @param props.pagIdeStr   - Page Identifier String: {@link actPagStr}
+ * @param props.selTabFun   - Select Tab Function: {@link selTabFun}
+ * @param props.staAppObj   - State App Object: {@link useAppStaFun}
  *
  * @returns Either the intro modal (touPhaStr 'intro') or the running guided
  *          tour (touPhaStr 'tour'), depending on this page's own phase.

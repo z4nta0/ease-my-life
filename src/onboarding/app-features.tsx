@@ -360,13 +360,9 @@ function bloReaFun ( feaIdeStr : string, staAppObj : StaAppTyp ) : string | null
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param feaIdeStr - Feature Identifier String: This feature's own id, e.g.
- *                    'feat_edit_item'.
- * @param actStoObj - Action Store Object: The shared app actions object,
- *                    called directly by feat_edit_item's own steps.
- * @param alrProBoo - Already Protected Boolean: Whether this browser already
- *                    persists storage, which drops feat_protect_data's own
- *                    first step.
+ * @param feaIdeStr - Feature Identifier String: {@link actFeaStr}
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
+ * @param alrProBoo - Already Protected Boolean: {@link alrProBoo}
  *
  * @returns This feature's own steps beyond Step 1, as GuiTouCom step objects,
  *          or an empty array for any other feature id.

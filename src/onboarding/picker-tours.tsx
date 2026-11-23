@@ -585,8 +585,7 @@ const WEI_STE_OBJ = { // What: Weight Step Object. Why: This step highlights the
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param picIdeStr - Picker Identifier String: The sample picker's own id,
- *                    keying PIC_SAM_OBJ and PIC_COP_OBJ.
+ * @param picIdeStr - Picker Identifier String: {@link actPicStr}
  *
  * @returns A GuiTouCom step object for this sample picker's own steObjArr.
  *

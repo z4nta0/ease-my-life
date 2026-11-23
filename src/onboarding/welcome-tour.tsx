@@ -118,9 +118,8 @@ const BRA_ICO_ELE = ( // What: Brand Icon Element. Why: The intro modal's own ic
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - State App Object: The entire app's own persisted state,
- *                    checked so the sample reminders are never seeded twice.
- * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param staAppObj - State App Object: {@link useAppStaFun}
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  * @param hidTasBoo - Hidden Tasks Boolean: Whether the seeded reminders start
  *                    hidden.
  *

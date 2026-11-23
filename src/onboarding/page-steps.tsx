@@ -827,10 +827,8 @@ const forNamFun = ( actStoObj : ActStoTyp ) : void => { // What: Force Name Func
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param pagIdeStr - Page Identifier String: This page tour's own checklist
- *                    id, e.g. 'explore_today'.
- * @param actStoObj - Action Store Object: The shared app actions object,
- *                    called directly by the Today tour's own last step.
+ * @param pagIdeStr - Page Identifier String: {@link actPagStr}
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns This page tour's own steps beyond Step 1, as GuiTouCom step
  *          objects, or an empty array for any other page id.

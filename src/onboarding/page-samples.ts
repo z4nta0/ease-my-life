@@ -83,7 +83,7 @@ const picCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Picker
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns This function does not return anything.
  *
@@ -122,9 +122,8 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Picker Fu
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - State App Object: The entire app's own persisted state,
- *                    checked so nothing already seeded is seeded twice.
- * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param staAppObj - State App Object: {@link useAppStaFun}
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns This function does not return anything.
  *
@@ -190,7 +189,7 @@ const tasCopFun = ( samIdeStr : string ) => `pt_${ samIdeStr }`; // What: Task C
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns This function does not return anything.
  *
@@ -228,9 +227,8 @@ const cleTasFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Task Func
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - State App Object: The entire app's own persisted state,
- *                    checked so nothing already seeded is seeded twice.
- * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param staAppObj - State App Object: {@link useAppStaFun}
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns This function does not return anything.
  *
