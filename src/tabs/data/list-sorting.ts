@@ -56,16 +56,16 @@ type SorRowTyp = { actBoo? : boolean | null, booNum? : number | null, couNum? : 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param sorLisArr  - Sort List Array: The list, already sorted by the
- *                     caller's own live sort key.
- * @param opeIdeStr  - Open Identifier String: The currently-open row's own id,
- *                     or null/undefined when nothing is open.
- * @param newIdeStr  - New Identifier String: The id of a row that was just
- *                     created (pins to the top instead of freezing at its live
- *                     index).
- * @param froRowRef  - Frozen Row Reference: A ref, owned by the caller, that
- *                     persists the frozen { ideStr, indNum } record across
- *                     renders.
+ * @param sorLisArr - Sort List Array: The list, already sorted by the
+ *                    caller's own live sort key.
+ * @param opeIdeStr - Open Identifier String: The currently-open row's own id,
+ *                    or null/undefined when nothing is open.
+ * @param newIdeStr - New Identifier String: The id of a row that was just
+ *                    created (pins to the top instead of freezing at its live
+ *                    index).
+ * @param froRowRef - Frozen Row Reference: A ref, owned by the caller, that
+ *                    persists the frozen { ideStr, indNum } record across
+ *                    renders.
  *
  * @returns sorLisArr unmodified when nothing is open or the open row isn't in
  *          this list, otherwise the same rows with the open one reinserted at

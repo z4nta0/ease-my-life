@@ -32,9 +32,9 @@
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param namRawStr  - Name Raw String: The candidate name to make unique.
- * @param sibNamArr  - Sibling Name Array: The sibling names already in use in
- *                     this scope.
+ * @param namRawStr - Name Raw String: The candidate name to make unique.
+ * @param sibNamArr - Sibling Name Array: The sibling names already in use in
+ *                    this scope.
  *
  * @returns The unique name: namRawStr trimmed if it doesn't collide, otherwise
  *          namRawStr (or its already-numbered base) with the next free " (N)"

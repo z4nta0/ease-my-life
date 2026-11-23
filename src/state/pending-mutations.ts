@@ -187,7 +187,7 @@ function depDonFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], conIdeStr :
  *                    completions.
  * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
  * @param nowDonBoo - Now Done Boolean: Whether togEntObj is now done (true)
- *                     or was just un-done (false).
+ *                    or was just un-done (false).
  *
  * @returns The updated conditionalLog array, or the same reference when
  *          nothing about it actually changes.
@@ -346,7 +346,7 @@ function cdlAplFun ( curStaObj : StaAppTyp, nexEntArr : TodEntTyp[], togEntObj :
  *                    completions.
  * @param togEntObj - Toggle Entry Object: The entry that was just toggled.
  * @param nowDonBoo - Now Done Boolean: Whether togEntObj is now done (true)
- *                     or was just un-done (false).
+ *                    or was just un-done (false).
  *
  * @returns The updated conditionals array, or the same reference when nothing
  *          about it actually changes.
