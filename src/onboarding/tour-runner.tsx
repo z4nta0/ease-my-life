@@ -761,7 +761,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	React.useEffect( () => { // What: Resume Persist Effect. Why: A reload should be able to resume this tour from wherever it left off; the caller is responsible for reading state.onboarding.activeTour back out as resSteNum on mount, and for only ever mounting one GuiTouCom at a time. How: This only actually persists a step marked resBoo (default true, see that field's own doc comment above), so a reload always resumes at the latest SAFE step rather than a step whose target only exists because of an earlier, un-persisted side effect.
+	React.useEffect( () => { // What: Resume Persist Effect. Why: A reload should be able to resume this tour from wherever it left off; this effect writes the checkpoint that resSteNum later restores, and expects a single mounted tour. How: This only actually persists a step marked resBoo (default true, see that field's own doc comment above), so a reload always resumes at the latest SAFE step rather than a step whose target only exists because of an earlier, un-persisted side effect.
 
 
 		if ( steObjArr[ curSteNum ] && steObjArr[ curSteNum ].resBoo === false ) return; // What: Non-Resumable Guard. Why: Landing on a non-resBoo step, forward or back, must leave the last persisted checkpoint alone. How: This bails out before writing anything whenever the current step explicitly opts out.
@@ -842,7 +842,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	const priActRef = React.useRef( () => {} ); // What: Primary Action Reference. Why: Same lazy-ref pattern as curSteRef: priActFun below closes over curSteNum/curSteObj/finTouFun, all of which change every render, but the click-guard effect below is only ever set up once. How: This starts as a no-op and is overwritten with the latest priActFun at the end of every render.
+	const priActRef = React.useRef( () => {} ); // What: Primary Action Reference. Why: Same lazy-ref pattern as curSteRef: priActFun below closes over curSteNum/curSteObj/finTouFun, all of which change every render, but the click-guard effect below is only ever set up once. How: This starts as a no-op and is overwritten with the latest priActFun on every render.
 	const supGuaRef = React.useRef( false );    // What: Suppress Guard Reference. Why: This lets bacSteFun's/skiTouFun's own side effects click through the guard below, e.g. a picker mini-tour's onBacTouFun simulating a click on the create-form's own "Details" step tab to undo a later step's "Add Items" click. How: That synthetic click is not the step's own target (curSteRef still points at the step being left, since onBacTouFun runs before the step index actually changes), so without this the guard would block onBacTouFun from doing anything at all; the exact clicks meant to fix the page up before navigating back are the ones most likely to look like "not the current target" to it.
 
 	// #endregion Step And Action Refs

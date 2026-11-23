@@ -1093,7 +1093,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 				titHeaStr={ feaRcdObj.titStr }
 
 				onBegTouFun={ () => setTouPhaStr( 'tour' ) }
-				onSkiTouFun={ () => cloTouFun( 'cancelled' ) }
+				onSkiTouFun={ () => cloTouFun( 'cancelled' ) } // What: On Skip Tour Function. Why: Skipping from the intro modal marks this feature's card cancelled without starting the tour. How: This calls cloTouFun with 'cancelled'.
 			/> // What: Intro Modal Component. Why: This is this feature's own opening screen, shown before any spotlight step ever does. How: This is passed this feature's own icon/title/paragraphs/pills and the onBegTouFun/onSkiTouFun handlers above.
 
 
@@ -1176,7 +1176,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 					}
 
-					else if ( tarSteNum === 4 ) { // What: Items Re-Collapse Check. Why: Back from Picker Items to Items Section must re-collapse Items, undoing that step's own real click that expanded it. How: This looks up the Items header via a direct action call, since a native click would silently no-op on its own disabled attribute at this exact instant.
+					else if ( tarSteNum === 4 ) { // What: Items Re-Collapse Check. Why: Back from Picker Items to Items Section must re-collapse Items, undoing that step's own real click that expanded it. How: This collapses Items through a direct action call, since a native click would silently no-op on its own disabled attribute at this exact instant.
 
 
 						const catSecEle = document.querySelector< HTMLElement >( '[data-element-name-hook~="datLisDiv"] > [data-element-name-hook~="datCatSec"]:has([data-element-name-hook~="catHeaBut"][aria-expanded="true"])' ); // What: Category Section Element. Why: The picker's own id and Items header both live on its enclosing datCatSec section. How: This looks up the one currently-expanded picker's own section.
@@ -1222,7 +1222,7 @@ function FeaTouCom ( { actIdeStr, actStoObj, feaIdeStr, onCloTouFun, selTabFun, 
 
 
 			} }
-			onFinTouFun={ () => cloTouFun( 'finished' ) }
+			onFinTouFun={ () => cloTouFun( 'finished' ) } // What: On Finish Tour Function. Why: Finishing the last step marks this feature's card done. How: This calls cloTouFun with 'finished'.
 			onSkiTouFun={ () => { // What: On Skip Tour Function. Why: Help mode's own on/off flag is local React state inside TabTodCom, unreachable from here, only reachable via the highlights tour's own 2nd step cirBoo target (.helTogBut). How: This clicks the real, currently-on help-highlight toggle when feaIdeStr is 'feat_highlights', mirroring exactly how finishing normally turns it back off.
 
 

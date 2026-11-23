@@ -204,7 +204,7 @@ const REP_STE_OBJ = { // What: Repeat Step Object. Why: The recurring tour's own
 
 
 
-const VAR_COP_OBJ : Record< string, { bodStr : string, icoStr : string, ideStr : string, titStr : string } > = { // What: Variant Copy Object. Why: Each tour varKeyStr needs its own sample task id, icon, title, and second intro paragraph. How: This is looked up by varKeyStr ('once'/'recurring') everywhere a step or the intro modal needs varKeyStr-specific copy.
+const VAR_COP_OBJ : Record< string, { bodStr : string, icoStr : string, ideStr : string, titStr : string } > = { // What: Variant Copy Object. Why: Each tour varKeyStr needs its own sample task id, icon, title, and second intro paragraph. How: This is looked up by varKeyStr ('once'/'recurring') where a step or the intro modal needs this variant's sample id, icon, title, or second paragraph.
 
 
 	once : { // What: Once Entry. Why: This is the copy content descriptor for the one-time reminder tour variant. How: This is looked up in VAR_COP_OBJ by the real 'once' varKeyStr.

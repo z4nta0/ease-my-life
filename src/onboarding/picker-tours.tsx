@@ -696,10 +696,10 @@ const buiLatFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Latest
  * isaEasBoo/useWeiBoo/isaDynBoo checks below).
  *
  * catBoo exists since a single mode option (label + description) can be tall
- * enough on its own to rival a short mobile viewport's whole height; the ease
- * modes' own 2-paragraph descriptions are the longest of the 5. Not every
- * sample's own selected mode is long enough to actually need this, but there
- * is no real cost to always requesting it (see the flag's own doc comment in
+ * enough on its own to rival a short mobile viewport's whole height; the
+ * longer modes' 2-paragraph descriptions run tall. Not every sample's own
+ * selected mode is long enough to actually need this, but there is no real
+ * cost to always requesting it (see the flag's own doc comment in
  * onboarding/tour-runner.tsx), so it is set unconditionally here rather than
  * only for the samples currently known to need it.
  *
@@ -720,7 +720,7 @@ const buiModFun = ( picIdeStr : string ) : TouSteTyp => ({ // What: Build Mode F
 
 
 	bacBoo : true,                   // What: Back Boolean. Why: The user should always be able to return to the previous, Group step. How: GuiTouCom shows its own Back button whenever this is true.
-	catBoo : true,                   // What: Coach-At-Top Boolean. Why: The ease modes' own 2-paragraph descriptions can be tall enough to rival a short mobile viewport's whole height. How: GuiTouCom skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
+	catBoo : true,                   // What: Coach-At-Top Boolean. Why: A mode option's own 2-paragraph description can be tall enough to rival a short mobile viewport's whole height. How: GuiTouCom skips its own reserve-space math for this step and gives it a precise initial scroll target instead.
 	priStr : 'Next',                 // What: Primary String. Why: This step's own coach card needs a label for its main action button. How: GuiTouCom renders this as the button's own visible text.
 	resBoo : false,                  // What: Resumable Boolean. Why: This step's own target only exists because Step 2's own click already opened the form, which a reload does not survive. How: GuiTouCom's own resume-persist effect never checkpoints a step whose resBoo is false.
 	selStr : `[data-element-name-hook~="picFieDiv"] [data-element-name-hook~="modOptLab"][data-mode-option-key="${ PIC_SAM_OBJ[ picIdeStr ].mode }"]`, // What: Selector String. Why: This step highlights only this sample's own mode option, never the whole list. How: GuiTouCom spotlights whatever this selector matches.
