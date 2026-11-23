@@ -34,7 +34,7 @@ import { SED_NAM_OBJ } from './seed.ts';                 // What: Seed Namespace
 import { spuDroFun   } from './pending-mutations.ts';    // What: Stale-Pending-Updates Drop Function. Why: A direct item edit must not be overwritten by a sibling entry's stale pending row. How: This is called by updIteFun.
 import { STG_NAM_OBJ } from './storage.ts';              // What: Storage Namespace Object. Why: This is the actual persistence engine this file's own load/save/flush wrappers delegate to. How: This is called by the load, write, and flush wrappers below and by the import and wipe actions.
 import { TAS_NAM_OBJ } from '../core/tasks.ts';          // What: Tasks Namespace Object. Why: The reminders engine's own scheduling/eligibility/normalization logic lives here, not in this file. How: This is called throughout stkSynFun and the task actions below.
-import { uniNamFun   } from '../utils/format.ts';        // What: Unique Name Function. Why: Two entries in the same scope can't share a name the user can't tell apart. How: This is called whenever an item, reminder, or picker is added or renamed.
+import { uniNamFun   } from '../utils/format.ts';        // What: Unique Name Function. Why: Two entries in the same scope can't share a name the user can't tell apart. How: This is called whenever a reminder or picker is added, or an item, reminder, or picker is renamed.
 
 
 import type { CheStaTyp } from '../core/data-model.ts'; // What: Checklist Status Type. Why: Checklist and App Features cards resolve to a status. How: This types setCarFun's and setFeaFun's resolution.
@@ -1700,8 +1700,6 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 *
 		*/
 
-
-
 		addHolFun : ( { day : dayValNum, month : monValNum, name : holNamStr } ) => setAppStaObj( ( curStaObj ) => { // What: Add Holiday Function. Why: A user's own hand-entered holiday needs its own fresh id before it can be appended. How: This appends a new row to holidays.custom.
 
 
@@ -2264,8 +2262,6 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * ```
 		 *
 		*/
-
-
 
 		addTasFun : ( tasArgObj ) => setAppStaObj( ( curStaObj ) => { // What: Add Task Function. Why: Hidden reminders are excluded from the sibling-name check, the same policy as addPicFun's own uniNamFun call, so a hidden reminder never forces a suffix onto a new one. How: This builds a default task via TAS_NAM_OBJ.defTasFun, resolves tasArgObj.replaceId, de-duplicates its own name, then replaces or prepends it.
 
@@ -3403,8 +3399,6 @@ function useAppStaFun ( optArgObj? : { iniObj? : object, perBoo? : boolean } ) :
 		 * ```
 		 *
 		*/
-
-
 
 		reoGroFun : ( ordGroArr ) => setAppStaObj( ( curStaObj ) => ( { // What: Reorder Groups Function. Why: The saved group display order must change to the given one. How: This copies ordGroArr onto groupOrder.
 
