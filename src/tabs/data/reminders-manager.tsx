@@ -41,7 +41,7 @@ import type { TasRcdTyp } from '../../core/data-model.ts'; // What: Task Record 
  * @summary
  * The Data tab's own Reminders section: RemManCom lists the visible reminders
  * as a collapsible, sortable row (ITE_SOR_ARR holds its sort options) whose
- * body is the shared schedule editor, with an add form above the list.
+ * body is the shared schedule editor, with an add button above the list.
  * OptMatCom is the section's own Controls body, the participation matrix of
  * global reminder settings (one row per REM_MAT_ARR entry, whose
  * sub-explanations paiSubFun builds), with its own Cancel/Save.

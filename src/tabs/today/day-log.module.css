@@ -1283,7 +1283,7 @@
 
 
 }
-@container appRooDiv ( max-width : 500px ) { /* What: Very Narrow Status Pill Span Untriggered. Why: At 500px and below "Not Triggered" on one line is wider than the status column and spills over the After value. How: This applies only when the app is 500px wide or less. */
+@container appRooDiv ( max-width : 500px ) { /* What: Very Narrow Status Pill Span Untriggered. Why: At 500px and below "Not triggered" on one line is wider than the status column and spills over the After value. How: This applies only when the app is 500px wide or less. */
 
 
 	.staPilSpa--untriggered { /* What: Wrapped Status Pill Span Untriggered. Why: The whole status should stay readable inside its column. How: This wraps the text onto two centered lines and lets the pill grow to fit, never shorter than its one-line height. */
