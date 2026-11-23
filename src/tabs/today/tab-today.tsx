@@ -4672,7 +4672,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 																		} }
-																	/>{ /* What: Entry Editor Component. Why: This is the actual shared item editor. How: This is passed this row's draft (or its item while closing), its picker, this picker's own live item count, and its cancel/delete/patch/save handlers. */ }
+																	/>{ /* What: Entry Editor Component. Why: This is the actual shared item editor. How: This is passed this row's draft (or its item while closing), its picker, every item, this picker's own live item count, and its cancel/delete/patch/save handlers. */ }
 
 
 																</div>
@@ -4788,7 +4788,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 								className={` ${ cssModObj.onbCarDiv }   ${ cssModObj.onbCarDivGenerate }   ${ cheExiBoo ? cssModObj.onbCarDivRemoving : '' }   ${ onbReaBoo ? cssModObj.onbCarDivPulsing : '' } `}
 
 								data-card-needed-active={ !onbReaBoo || undefined } // What: Card Needed Active Attribute. Why: A Generate card still waiting on its tutorials reads as unfinished. How: This sets the presence-only attribute while onbReaBoo is false.
-							>{ /* What: Onboarding Card Div Element. Why: This is the closing "Generate a real list" checklist card. How: This renders its own icon/heading/explanation plus either a working or a disabled Generate button, depending on onbReaBoo. Its removing modifier slides it away once the list is made, and its pulsing modifier sends a ping out while it is ready. */ }
+							>{ /* What: Onboarding Card Div Element. Why: This is the closing "Generate a real list" checklist card. How: This renders its own icon/heading/explanation plus either a working or a disabled Generate button, depending on onbReaBoo. Its removing modifier slides it away as the checklist concludes, and its pulsing modifier sends a ping out while it is ready. */ }
 
 
 								<div className={ cssModObj.onbIcoDiv }>{ /* What: Onboarding Icon Div Element. Why: Every onboarding create-style card shares this same icon slot. How: This wraps a fixed check icon. */ }

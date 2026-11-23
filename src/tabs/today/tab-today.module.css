@@ -1892,7 +1892,7 @@
 
 
 }
-.onbCarDiv.onbCarDiv--removing { /* What: Onboarding Card Div Removing. Why: The Generate card slides away once the real list is made. How: This plays the shared card slide-out. */
+.onbCarDiv.onbCarDiv--removing { /* What: Onboarding Card Div Removing. Why: The Generate card slides away as the checklist concludes after Generate is chosen. How: This plays the shared card slide-out. */
 
 
 	animation : global( cardRemoveSlideOut ) var( --dur-ani-p03 ) var( --mot-acc-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Accelerate Easing = cubic-bezier( .4, 0, 1, 1 ) */ /* What: Global cardRemoveSlideOut Keyframes. Why: The cardRemoveSlideOut keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */

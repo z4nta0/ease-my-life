@@ -417,7 +417,7 @@
 /* #region bloHeaBut */
 
 .bloHeaBut,
-.bloHeaDiv { /* What: Block Header Button And Div. Why: Each picker block's header, a button that opens and closes it or a div that only titles it, lays the chevron, name, and summary out in columns. How: This strips the button chrome and lays them out on a three-column grid. */
+.bloHeaDiv { /* What: Block Header Button And Div. Why: Each picker block's header, a button that opens and closes it or a div that only titles it, lays its name and summary out in columns, with the chevron in the button's first column. How: This strips the button chrome and lays them out on a three-column grid. */
 
 
 	align-items           : center;
