@@ -59,7 +59,7 @@ type StoRepTyp = { bytNum : number | null, engStr : string, mirBoo : boolean, mi
 
 const ACC_SIG_STR = 'easemylife.signedin';         // What: Account Signed-In String. Why: The app loads Firebase only for a device that has signed in, so it needs to know that before loading it. How: This is the localStorage key that records it.
 const BOO_DEA_NUM = 3500;                          // What: Boot Deadline Number. Why: A slow IndexedDB must never hold up the app's first paint, and the whole session must then run on localStorage rather than switch engines midway. How: iniStoFun gives up on IndexedDB this many milliseconds after boot starts.
-const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly in a row. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
+const BOO_KEY_STR = 'easemylife.idbboots';         // What: Boots Key String. Why: This is the localStorage key counting how many times IDB has booted cleanly. How: This is read and incremented inside iniStoFun to decide when the migration snapshot and dead pre-IDB generations can be safely swept.
 const DAT_NAM_STR = 'easemylife';                  // What: Database Name String. Why: This is the fixed IndexedDB database name every browser profile opens under. How: This is passed as the first argument to indexedDB.open inside opeDatFun.
 const DAT_VER_NUM = 1;                             // What: Database Version Number. Why: This is the fixed IndexedDB schema version, structural only, tracking which object stores exist rather than their contents. How: This is passed as the second argument to indexedDB.open inside opeDatFun.
 const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in idbBooFun before the first migration and removed in iniStoFun once IndexedDB has booted cleanly SNA_KEE_NUM times.
@@ -100,13 +100,13 @@ const SIG_EMA_STR = 'easemylife.signinemail';  // What: Sign-In Email String. Wh
  * migration, not to live forever. A permanent plaintext copy of
  * everything would survive "Delete all data" and break the promise that
  * data stays on this device unless the account syncs it, so it is dropped
- * once IDB has proven itself over this many clean boots in a row.
+ * once IDB has proven itself over this many clean boots.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
 */
 
-const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clean IDB boots in a row are required before the migration snapshot and every dead pre-IDB localStorage generation get swept. How: This is compared against BOO_KEY_STR's own stored count inside iniStoFun.
+const SNA_KEE_NUM = 3; // What: Snapshot Keep Number. Why: This is how many clean IDB boots are required before the migration snapshot and every dead pre-IDB localStorage generation get swept. How: This is compared against BOO_KEY_STR's own stored count inside iniStoFun.
 
 
 
@@ -971,7 +971,7 @@ async function idbBooFun () : Promise< RawSavTyp > {
  * runs on one engine: a late IndexedDB boot is abandoned instead of taking
  * over after the app has already mounted from the mirror. Also retires the
  * migration snapshot and sweeps dead pre-IDB localStorage generations once
- * IDB has booted cleanly SNA_KEE_NUM times in a row. This is awaited in
+ * IDB has booted cleanly SNA_KEE_NUM times. This is awaited in
  * main.tsx before React ever mounts, which is what lets store.ts's own
  * loaStaFun() stay synchronous, and it always settles within BOO_DEA_NUM.
  *
@@ -1058,7 +1058,7 @@ async function iniStoFun () : Promise< RawSavTyp > {
 		try { // What: Boot Count Try. Why: Reading and writing the boot counter can itself throw (a blocked origin), and that must not abort boot. How: This wraps the counting and sweeping sequence below, silently giving up in its own catch.
 
 
-			const booCouNum = ( parseInt( localStorage.getItem( BOO_KEY_STR ) ?? '', 10 ) || 0 ) + 1; // What: Boot Count Number. Why: This is how many clean IDB boots in a row have now happened, one more than whatever was already recorded. How: This parses the existing BOO_KEY_STR value (0 if missing or unparseable) and adds 1.
+			const booCouNum = ( parseInt( localStorage.getItem( BOO_KEY_STR ) ?? '', 10 ) || 0 ) + 1; // What: Boot Count Number. Why: This is how many clean IDB boots have now happened, one more than whatever was already recorded. How: This parses the existing BOO_KEY_STR value (0 if missing or unparseable) and adds 1.
 
 			localStorage.setItem( BOO_KEY_STR, String( booCouNum ) ); // What: Boot Count Set Call. Why: The freshly-incremented count must actually be persisted for the next boot to read. How: This writes booCouNum back under BOO_KEY_STR as a string.
 
