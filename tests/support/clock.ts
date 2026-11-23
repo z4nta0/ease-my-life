@@ -143,9 +143,9 @@ const locTimFun = ( dayIsoStr : string, houValNum : number, minValNum : number =
  *
  * @summary
  * Installs Playwright's fake clock on a page, set to the given Chicago date
- * and hour, before the app loads. It has to come before the first
- * navigation, since the fake replaces Date and the timers as the page
- * starts. Time then flows normally from that moment.
+ * and hour, before the app loads. It comes before the first navigation, as
+ * Playwright's docs advise, so the page starts with the fake Date and timers
+ * in place. Time then flows normally from that moment.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
