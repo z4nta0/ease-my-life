@@ -571,7 +571,7 @@ function BreBarCom ( { 'data-element-name-hook' : hooNamStr, empMesStr, kicTexSt
  * HeaLegCom = Heat Legend Component
  *
  * @summary
- * Renders the small "less ... more" heat-scale legend shown beside every
+ * Renders the small "less ... more" heat-scale legend shown beside the
  * heatmap, made up of one static swatch per heat level (0 through 4).
  *
  * @author z4nta0 <https://github.com/z4nta0>
@@ -1371,7 +1371,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 		const allTypBoo = typFilStr === 'all';                                           // What: All Type Boolean. Why: Past the sentinel guard above, the All, Conditionals, and Reminders tabs only appear in the Show row while the Type filter is on All. How: This checks typFilStr for 'all'.
 		const defFilBoo = staGroStr === 'all' && allTypBoo;                              // What: Default Filter Boolean. Why: The All tab only appears while both filters are on All, and that's also when the fallback should land on All. How: This checks staGroStr alongside allTypBoo.
 		const allScoBoo = scoValStr === 'all' && defFilBoo;                              // What: All Scope Boolean. Why: The All scope is only valid while its tab is in the Show row. How: This checks scoValStr for 'all' while defFilBoo holds.
-		const conScoBoo = scoValStr === 'conditionals' && allTypBoo && hasConBoo;        // What: Conditional Scope Boolean. Why: The Conditionals scope is only valid while its tab is in the Show row. How: This checks scoValStr for 'conditionals' while the Type filter is on All and conditionals exist.
+		const conScoBoo = scoValStr === 'conditionals' && allTypBoo && hasConBoo;        // What: Conditional Scope Boolean. Why: The Conditionals scope is only valid while its tab is in the Show row. How: This checks scoValStr for 'conditionals' while the Type filter is on All and a conditional or its logged history exists.
 		const picScoBoo = visPicArr.some( ( picCurObj ) => picCurObj.id === scoValStr ); // What: Picker Scope Boolean. Why: A picker scope is only valid while that picker is still in view. How: This checks visPicArr for scoValStr's id.
 		const remScoBoo = scoValStr === 'reminders' && allTypBoo && remEnaBoo;           // What: Reminder Scope Boolean. Why: The Reminders scope is only valid while its tab is in the Show row. How: This checks scoValStr for 'reminders' while the Type filter is on All and a reminder type is enabled.
 
@@ -2976,7 +2976,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 								}) ),
 
-								...( hasConBoo ? [ { // What: Conditionals Entry Array. Why: The Conditionals sentinel pill only belongs in the list at all once at least one conditional exists. How: This is a one-entry array (or empty) spread into the combined list below.
+								...( hasConBoo ? [ { // What: Conditionals Entry Array. Why: The Conditionals sentinel pill only belongs in the list at all once a conditional or its logged history exists. How: This is a one-entry array (or empty) spread into the combined list below.
 
 
 									couNum : conDefArr.length,             // What: Count Number. Why: The pill shows how many conditionals exist. How: This reads conDefArr's own length.
@@ -3084,7 +3084,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 							{ [ // What: Scope Tab Entry Array. Why: The Show row's own tabs combine the Conditionals/Reminders sentinels with every visible picker. How: This spreads all three sources into one array, sorted and rendered by the chain below. // Everything after "All", Conditionals, Reminders, and every visible picker, sorts together alphabetically by its own displayed name, rather than Conditionals/ Reminders being pinned right after All. typFilStr 'conditionals'/'reminders' (set by their own Type-rail pill) narrows this down to just that one card, same as any real group/type narrows to its own pickers.
 
 
-								...( ( typFilStr === 'all' || typFilStr === 'conditionals' ) && hasConBoo // What: Conditionals Tab Entry Array. Why: The Conditionals scope tab only belongs in the list while it's reachable from the current Type filter and at least one conditional exists. How: This is a one-entry array (or empty) spread into the combined list below.
+								...( ( typFilStr === 'all' || typFilStr === 'conditionals' ) && hasConBoo // What: Conditionals Tab Entry Array. Why: The Conditionals scope tab only belongs in the list while it's reachable from the current Type filter and a conditional or its logged history exists. How: This is a one-entry array (or empty) spread into the combined list below.
 									? [ { cliFun : () => setScoValStr( 'conditionals' ), keyStr : 'conditionals', labStr : 'Gates', namStr : 'Conditionals', selBoo : isaConBoo } ] // What: Conditionals Tab Branch. Why: The sentinel tab is reachable here. How: This supplies a one-entry array for the Conditionals scope.
 									: [] ), // What: No Conditionals Branch. Why: The sentinel tab is unreachable here. How: This supplies an empty array.
 
@@ -3898,7 +3898,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 												const ratValNum = dayCurObj.donNum / Math.max( 1, dayCurObj.totNum ); // What: Ratio Value Number. Why: The bucketing below needs a plain 0-1 fraction to compare against thresholds. How: This divides dayCurObj.donNum by dayCurObj.totNum, floored at 1 to avoid a divide-by-zero.
 
-												levValNum = dayCurObj.totNum === 0 ? 0 : ratValNum >= 1 ? 4 : ratValNum >= 0.66 ? 3 : ratValNum >= 0.33 ? 2 : ratValNum > 0 ? 1 : 0; // What: Ratio Bucket Assignment. Why: The 5 heat levels correspond to specific completion-ratio bands. How: This buckets ratValNum into one of those 5 thresholds, with a zero-total day always at level 0.
+												levValNum = dayCurObj.totNum === 0 ? 0 : ratValNum >= 1 ? 4 : ratValNum >= 0.66 ? 3 : ratValNum >= 0.33 ? 2 : ratValNum > 0 ? 1 : 0; // What: Ratio Bucket Assignment. Why: The 5 heat levels correspond to specific completion-ratio bands. How: This buckets ratValNum into one of those 5 levels, with a zero-total day always at level 0.
 
 
 											}
@@ -4051,7 +4051,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-					{ scoValStr === 'all' && hasConBoo && ( // What: Conditionals Summary Visibility Check. Why: This compact summary only belongs on the combined All view, and only while at least one conditional exists. How: This renders it only while both conditions hold.
+					{ scoValStr === 'all' && hasConBoo && ( // What: Conditionals Summary Visibility Check. Why: This compact summary only belongs on the combined All view, and only while a conditional or its logged history exists. How: This renders it only while both conditions hold.
 
 
 						<CarSurCom
