@@ -833,7 +833,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	}, [] ); // What: Effect Dependency Array. Why: This effect only ever needs to subscribe once, on mount. How: An empty array means it never re-subscribes; NOT_NAM_OBJ itself is a stable module-level import.
 
 
-	const onRunChaFun = ( newTimStr : string ) => { // What: On Run Change Function. Why: Changing the run-time is the one deliberate gesture this section asks notification permission from. How: This saves the new run time, then (if supported) calls askOncFun, which prompts only until the user has answered.
+	const onRunChaFun = ( newTimStr : string ) => { // What: On Run Change Function. Why: Changing the run-time is a deliberate gesture this section can ask notification permission from. How: This saves the new run time, then (if supported) calls askOncFun, which prompts only until the user has answered.
 
 
 		actStoObj.daiTimFun( newTimStr ); // What: Run Time Save Call. Why: This is the actual persisted setting the Daily generator reads to know when to run. How: This calls actStoObj.daiTimFun with newTimStr.
@@ -1050,7 +1050,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 	const hasPclBoo = ( staAppObj.pickLog || [] ).length > 0;        // What: Has Pick-Log Boolean. Why: Any pick history is data that Export and Reset can act on. How: This checks staAppObj.pickLog for at least 1 entry, treating a missing array as empty.
 	const hasCdlBoo = ( staAppObj.conditionalLog || [] ).length > 0; // What: Has Conditional-Log Boolean. Why: Any conditional history is data that Export and Reset can act on. How: This checks staAppObj.conditionalLog for at least 1 entry, treating a missing array as empty.
 
-	const hasDatBoo = hasPicBoo || hasIteBoo || hasConBoo || hasTasBoo || hasPclBoo || hasCdlBoo; // What: Has Data Boolean. Why: Both the Export and Reset rows need to know whether there is actually anything to export/reset at all. How: This is true whenever any one of the 6 collections above is non-empty. // Something to reset? True if the user has created any pickers, items, conditionals, or reminders, or accrued any pick/completion history; groups exist only through pickers, so hasPicBoo covers them.
+	const hasDatBoo = hasPicBoo || hasIteBoo || hasConBoo || hasTasBoo || hasPclBoo || hasCdlBoo; // What: Has Data Boolean. Why: Both the Export and Reset rows need to know whether there is actually anything to export/reset at all. How: This is true whenever any one of the 6 collections above is non-empty. // Something to reset? True if the user has created any pickers, items, conditionals, or reminders, or accrued any pick or conditional history; groups exist only through pickers, so hasPicBoo covers them.
 
 	// #endregion Data Control State
 
@@ -2041,7 +2041,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-						<CarSurCom>{ /* What: Card Surface Component. Why: The auto-run toggle, its run-time row, and the notify-me row all share one bordered container. How: This wraps all 3 rows below. */ }
+						<CarSurCom>{ /* What: Card Surface Component. Why: The auto-run toggle, its run-time row, and the notify-me row share one bordered container. How: This wraps the auto-run row and the run-time row, plus the notify-me row while it shows. */ }
 
 
 							<div

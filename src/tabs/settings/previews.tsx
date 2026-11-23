@@ -150,11 +150,11 @@ type CpcProTyp = { repTokNum : number, styKeyStr : string }; // What: Celebratio
  * CelPreCom = Celebration Preview Component
  *
  * @summary
- * Renders a dedicated preview box, sized like the Today cards area, that
- * plays the real ripple/confetti/sparkle celebration effect over a small
- * set of mock done-cards. Bumping the repTokNum prop replays the effect;
- * the effect always plays at full motion, since an explicit Play press
- * is itself the user's own consent to see it, even under a system
+ * Renders a dedicated preview box, standing in for the Today cards area,
+ * that plays the real ripple/confetti/sparkle celebration effect over a
+ * small set of mock done-cards. Bumping the repTokNum prop replays the
+ * effect; the effect always plays at full motion, since an explicit Play
+ * press is itself the user's own consent to see it, even under a system
  * reduced-motion preference.
  *
  * @author z4nta0 <https://github.com/z4nta0>
