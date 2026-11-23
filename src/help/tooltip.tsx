@@ -65,8 +65,7 @@ import type { HelRecTyp } from './geometry.ts';     // What: Help Rect Type. Why
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param tarRecObj - Target Rect Object: The target rect the tip is being
- *                    placed relative to.
+ * @param tarRecObj - Target Rect Object: {@link opeRecObj}
  * @param tipWidNum - Tip Width Number: The tip's own real, already-measured
  *                    width.
  * @param tipHeiNum - Tip Height Number: The tip's own real, already-measured

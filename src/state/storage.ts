@@ -935,7 +935,7 @@ async function idbBooFun () : Promise< RawSavTyp > {
 
 	// #region Mirror Adoption
 
-	const adoStaObj = mirAdoFun( idbStaObj, reaLocFun() ); // What: Adopted State Object. Why: A newer localStorage copy must win over IndexedDB's. How: This calls mirAdoFun with the mirror, null when IndexedDB's copy should be kept.
+	const adoStaObj = mirAdoFun( idbStaObj, reaLocFun() ); // What: Adopted State Object. Why: A newer localStorage copy must win over IndexedDB's. How: This calls mirAdoFun with IndexedDB's state and the mirror reaLocFun reads, getting null back when IndexedDB's copy should be kept.
 
 
 	if ( !adoStaObj ) return idbStaObj; // What: Keep IndexedDB Guard. Why: IndexedDB's copy is the newest. How: This resolves it.

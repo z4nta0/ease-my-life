@@ -338,8 +338,7 @@ type IrcProTyp = { ariLabStr : string, desIdeStr : string, maxValStr : string, o
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.ariLabStr - ARIA Label String: The input's accessible name.
- * @param props.desIdeStr - Describe Identifier String: The id of the note
- *                          describing the input.
+ * @param props.desIdeStr - Describe Identifier String: {@link schNotStr}
  * @param props.maxValStr - Maximum Value String: The largest interval the
  *                          input offers.
  * @param props.onChange  - On Change: Called with the interval, at least 1.
@@ -504,8 +503,7 @@ type MecProTyp = { desIdeStr : string, onChange : ( monValNum : number ) => void
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.desIdeStr - Describe Identifier String: The id of the note
- *                          describing the select.
+ * @param props.desIdeStr - Describe Identifier String: {@link schNotStr}
  * @param props.onChange  - On Change: Called with the chosen month's 1-indexed
  *                          number.
  * @param props.value     - Value: The reminder's own month, read as January
@@ -578,8 +576,7 @@ type NlcProTyp = { desIdeStr : string, dowValNum : number, onPatTasFun : ( patVa
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.desIdeStr   - Describe Identifier String: The id of the note
- *                            describing both selects.
+ * @param props.desIdeStr   - Describe Identifier String: {@link schNotStr}
  * @param props.dowValNum   - Day-Of-Week Value Number: The reminder's own
  *                            nthWeekday.
  * @param props.onPatTasFun - On Patch Task Function: Called with a patch

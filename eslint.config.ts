@@ -50,7 +50,7 @@ const ESL_CON_ARR = [ // What: ESLint Config Array. Why: ESLint reads its flat c
 
 	{ ignores : [ 'dev-dist/**', 'dist/**', 'netlify/functions/**', 'tests/output/**' ] }, // What: Ignores Object. Why: The build output, the bundled Netlify Functions, the PWA plugin's dev service worker, and the test suites' reports are generated, not hand-written, so their lint results mean nothing. How: This global ignores entry skips all four folders for every config below; one glob each, since braces break ESLint's matching here.
 
-	...tyeEslObj.configs.recommended, // What: Recommended Configs Spread. Why: typescript-eslint's recommended rules catch TypeScript mistakes the compiler allows, such as an any or an unused variable. How: This spreads its recommended configs in, which apply to every file ESLint lints and switch off the core rules TypeScript already covers.
+	...tyeEslObj.configs.recommended, // What: Recommended Configs Spread. Why: typescript-eslint's recommended rules catch TypeScript mistakes the compiler allows, such as an any or an unused variable. How: This spreads its recommended configs in, which switch off the core rules TypeScript already covers for TypeScript files and turn on its own recommended rules.
 
 	{ // What: Rule Overrides Object. Why: Two recommended rules flag patterns the app uses on purpose. How: This re-sets both rules with an option that allows those patterns.
 
