@@ -651,14 +651,15 @@ function wriLocFun ( appStaObj : StaAppTyp, fulWriBoo : boolean ) : boolean {
  * @summary
  * The state iniStoFun loaded before React mounted, handed back
  * synchronously so store.ts's own loaStaFun never has to await. It is
- * null until iniStoFun has run, and after that it is the same object
- * reference, not a copy.
+ * null until iniStoFun has run, and after that it is the loaded state's own
+ * object reference, not a copy, or still null on a fresh install.
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param void - This function takes no parameters.
  *
- * @returns The loaded state object, or null before iniStoFun has run.
+ * @returns The loaded state object, or null before iniStoFun has run or on a
+ *          fresh install.
  * @see {@link cacStaObj}
  *
  * @example

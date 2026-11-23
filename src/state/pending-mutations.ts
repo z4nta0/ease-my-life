@@ -552,7 +552,7 @@ function enpAplFun ( curStaObj : StaAppTyp, curEntObj : TodEntTyp ) : EnpResTyp 
 
 
 
-	const revIteArr = curStaObj.items.filter( ( curIteObj ) => touIdeSet.has( curIteObj.id ) ).map( ( curIteObj ) => ( // What: Revert Item Array. Why: An exact undo later needs each touched item's own pre-apply snapshot. How: This filters to just the touched items and copies their own value/weight/picks/lastPicked/chargeStep.
+	const revIteArr = curStaObj.items.filter( ( curIteObj ) => touIdeSet.has( curIteObj.id ) ).map( ( curIteObj ) => ( // What: Revert Item Array. Why: An exact undo later needs each touched item's own pre-apply snapshot. How: This filters to just the touched items and copies their own id, value, weight, picks, lastPicked, and chargeStep.
 
 
 		{ chargeStep : curIteObj.chargeStep, id : curIteObj.id, lastPicked : curIteObj.lastPicked, picks : curIteObj.picks, value : curIteObj.value, weight : curIteObj.weight } // What: Item Snapshot Object. Why: The revert needs each touched field exactly as it was. How: This copies the item's own id, value, weight, picks, lastPicked and chargeStep.
