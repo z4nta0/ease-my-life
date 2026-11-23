@@ -201,7 +201,7 @@ const buiPicFun = () : Partial< PicRcdTyp >[] => ONB_ASP_ARR.map( ( curPicObj ) 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param todDatObj - Today Date Object: Today at midnight.
+ * @param todDatObj - Today Date Object: {@link todDatObj}
  *
  * @returns The completed and skipped reminder rows, as
  *          { remLogArr, remSkiArr }.
@@ -314,7 +314,7 @@ const isoIndFun = ( isoDayStr : string ) => { // What: ISO Index Function. Why: 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param hisRowArr - History Row Array: The simulator's pick-log rows.
+ * @param hisRowArr - History Row Array: {@link hisRowArr}
  * @param todIndNum - Today Index Number: Today's day index, from isoIndFun.
  *
  * @returns One portable row per history row.
@@ -540,8 +540,7 @@ const forArrFun = ( rowRcdArr : Record< string, unknown >[], traTexStr : string,
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param outDatObj - Output Data Object: The three logs to write, as
- *                    { pickLog, reminderLog, reminderSkipLog }.
+ * @param outDatObj - Output Data Object: {@link outDatObj}
  *
  * @returns The generated file's full source text.
  *

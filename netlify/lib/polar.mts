@@ -144,9 +144,9 @@ function ordUidFun ( ordCurObj : PolOrdTyp ) : string | null {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param bodTexStr - Body Text String: The request body, exactly as received.
+ * @param bodTexStr - Body Text String: {@link bodTexStr}
  * @param reqHeaObj - Request Headers Object: The request's headers.
- * @param webSecStr - Webhook Secret String: The endpoint's signing secret.
+ * @param webSecStr - Webhook Secret String: {@link webSecStr}
  * @param nowSecNum - Now Seconds Number: The current time in seconds,
  *                    defaulting to the clock.
  *
