@@ -194,6 +194,34 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 	const namSorFun = () => rowOneObj.namStr.localeCompare( rowTwoObj.namStr ); // What: Name Sort Function. Why: The tie-breaks and the unrecognized-field fallback all need the same plain A-Z name comparison. How: This calls String.localeCompare between the two rows' own name fields.
 
 
+
+	// #region dirNulFun
+
+	/**
+	 * dirNulFun = Direction Null Function
+	 *
+	 * @summary
+	 * This compares two values of a field that can be genuinely missing. A
+	 * missing value sorts to the top ascending and the bottom descending, and
+	 * two missing values fall back to the name tie-break. When both values are
+	 * real, it returns null instead, so the caller goes on to its own field
+	 * comparison.
+	 *
+	 * @author z4nta0 <https://github.com/z4nta0>
+	 *
+	 * @param cmpOneAny - Compare One Any: The left-hand row's value.
+	 * @param cmpTwoAny - Compare Two Any: The right-hand row's value.
+	 *
+	 * @returns A comparison result when either value is missing, or null when
+	 *          both values are real.
+	 *
+	 * @example
+	 * ```ts
+	 * dirNulFun(rowOneObj.groStr, rowTwoObj.groStr) // => -1 | 0 | 1 | null
+	 * ```
+	 *
+	*/
+
 	const dirNulFun = ( cmpOneAny : unknown, cmpTwoAny : unknown ) => { // What: Direction Null Function. Why: A field that's genuinely missing (not merely irrelevant) should sort to whichever end the current direction implies, rather than being forced into a fake value. How: This returns a real comparison result when either side is null/undefined, or null to mean both sides are real values and the caller does the actual field comparison.
 
 
@@ -217,6 +245,9 @@ function sorEntFun ( rowOneObj : SorRowTyp, rowTwoObj : SorRowTyp, sorKeyStr : s
 
 
 	};
+
+	// #endregion dirNulFun
+
 
 
 	const lasNulFun = ( cmpOneAny : unknown, cmpTwoAny : unknown ) => { // What: Last Null Function. Why: A field that's irrelevant to a row (not missing, just N/A for its own mode) should always sort last in EITHER direction, unlike a genuinely missing value. How: This is the same idea as dirNulFun, except a row with only one side N/A gets a fixed "goes last" result regardless of revSorBoo, and two N/A rows fall back to the name tie-break.

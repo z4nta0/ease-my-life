@@ -298,13 +298,13 @@ type PccProTyp = { actStoObj : ActStoTyp, allGroArr : string[], conIteArr? : Con
  * PicConCom = Picker Controls Component
  *
  * @summary
- * A picker's own "how it picks / when it runs / item controls" body,
- * rendered only while the Controls disclosure is open. Every field edits a
- * local draft of the picker, plus any pending Fill all, so nothing reaches the
- * picker until Controls is saved or closed: Cancel drops the draft, while
+ * A picker's own "how it picks / when it runs / item controls" body, rendered
+ * only while the Controls disclosure is open. Every field edits a local draft
+ * of the picker, plus any pending Fill all, so nothing reaches the picker
+ * until Controls is saved or closed: Cancel and Delete drop the draft, while
  * Save, or Controls closing any other way (collapsing, a tab switch), commits
- * it through savEdiFun, the Pickers tab's own edit save, which also resets
- * the items when the type changes. A brand-new draft picker (started by
+ * it through savEdiFun, the Pickers tab's own edit save, which also resets the
+ * items when the type changes. A brand-new draft picker (started by
  * TabDatCom's own "Create Picker" button) swaps the normal Delete/Cancel/Save
  * footer for a no-Delete Cancel/Add-Items-then-Save one, mirrors each change
  * up through onPatNewFun, and hands its draft to onSavNewFun to create.

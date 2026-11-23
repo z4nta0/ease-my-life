@@ -1787,7 +1787,7 @@ function TabDatCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TdcPro
 
 
 								cliFun : () => selScoFun( picCurObj.id ),                  // What: Click Function. Why: Clicking the box selects this picker's scope. How: This calls selScoFun with the picker's id.
-								ideStr : picCurObj.id,                                     // What: Identifier String. Why: The tour and help mode find a picker's box by its data-picker-row-identifier. How: This is the picker's id.
+								ideStr : picCurObj.id,                                     // What: Identifier String. Why: The tour finds a picker's box by its data-picker-row-identifier. How: This is the picker's id.
 								keyStr : picCurObj.id,                                     // What: Key String. Why: React needs a stable key per box. How: This is the picker's id.
 								labStr : SED_NAM_OBJ.MOD_DEF_OBJ[ picCurObj.mode ].labStr, // What: Label String. Why: The box's second line names the picker's mode. How: This reads the mode's label.
 								namStr : picCurObj.name,                                   // What: Name String. Why: The box shows the picker's name. How: This reads picCurObj.name.
