@@ -1345,10 +1345,10 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 
 
-	React.useEffect( () => { // What: Conditional Scope Guard Effect. Why: Deleting every conditional while the Conditionals scope is active would otherwise leave the page showing a now-unreachable scope. How: This falls back to 'all' whenever scoValStr is 'conditionals' but hasConBoo has gone false. // The Conditionals counterpart of the Reminder Scope Guard Effect above, run before the Scope Repair Effect so the repair's own fallback still has the final say.
+	React.useEffect( () => { // What: Conditional Scope Guard Effect. Why: Losing every conditional and its logged history while the Conditionals scope is active would otherwise leave the page showing a now-unreachable scope. How: This falls back to 'all' whenever scoValStr is 'conditionals' but hasConBoo has gone false. // The Conditionals counterpart of the Reminder Scope Guard Effect above, run before the Scope Repair Effect so the repair's own fallback still has the final say.
 
 
-		if ( scoValStr === 'conditionals' && !hasConBoo ) setScoValStr( 'all' ); // What: Conditional Scope Fallback. Why: An empty Conditionals scope must not strand the view. How: This resets scoValStr to 'all' whenever no conditional remains but that scope is still selected.
+		if ( scoValStr === 'conditionals' && !hasConBoo ) setScoValStr( 'all' ); // What: Conditional Scope Fallback. Why: An empty Conditionals scope must not strand the view. How: This resets scoValStr to 'all' whenever no conditional or logged history remains but that scope is still selected.
 
 
 	}, [ scoValStr, hasConBoo ] ); // What: Effect Dependency Array. Why: This only ever needs re-checking when the active scope or the has-conditionals flag changes. How: scoValStr is what's being validated, hasConBoo is what it's validated against.
