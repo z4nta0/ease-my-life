@@ -536,9 +536,7 @@ type CccProTyp = { onChange : ( patValObj : CadFieTyp ) => void, value : CadFieT
  * @param props.onChange - On Change: Called with a patch object whenever any
  *                         cadence field changes; the caller owns how the patch
  *                         gets merged into its own storage.
- * @param props.value    - Value: The picker's own persisted cadence value (or
- *                         an in-progress draft), normalized on every render
- *                         via CAD_NAM_OBJ.norCadFun.
+ * @param props.value    - Value: {@link cadCurObj}
  *
  * @returns The full cadence editor: the cadence picker plus, for every mode
  *          but daily, the matching anchor subsection inside an animated

@@ -229,8 +229,7 @@ type DlcProTyp = { desIdeStr : string, ediValBoo : boolean, isoValStr : string, 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.desIdeStr   - Describe Identifier String: The id of the note
- *                            describing the link.
+ * @param props.desIdeStr   - Describe Identifier String: {@link schNotStr}
  * @param props.ediValBoo   - Edit Value Boolean: Whether the input shows.
  * @param props.isoValStr   - ISO Value String: The date, as an ISO day.
  * @param props.labTexStr   - Label Text String: The link's formatted date.
@@ -412,11 +411,10 @@ type FfcProTyp = { ancHinEle : React.ReactNode, ariLabStr : string, desIdeStr : 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param props.ancHinEle - Anchor Hint Element: The counted-from hint.
+ * @param props.ancHinEle - Anchor Hint Element: {@link ancHinEle}
  * @param props.ariLabStr - ARIA Label String: The interval input's
  *                          accessible name.
- * @param props.desIdeStr - Describe Identifier String: The id of the note
- *                          describing the input.
+ * @param props.desIdeStr - Describe Identifier String: {@link schNotStr}
  * @param props.intValNum - Interval Value Number: The reminder's own
  *                          interval.
  * @param props.maxValStr - Maximum Value String: The largest interval the

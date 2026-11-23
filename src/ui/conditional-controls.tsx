@@ -174,8 +174,7 @@ type BocProTyp = { dayValNum : number, isaDowBoo : boolean, labTexStr : string, 
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.dayValNum   - Day Value Number: The bound's day count.
- * @param props.isaDowBoo   - Is-A Down Boolean: Whether the conditional
- *                            eases down.
+ * @param props.isaDowBoo   - Is-A Down Boolean: {@link isaDowBoo}
  * @param props.labTexStr   - Label Text String: The row's own label, also
  *                            the stepper's accessible name.
  * @param props.onSetValFun - On Set Value Function: Called with the new day
@@ -282,8 +281,7 @@ type FrcProTyp = { chrValNum : number, isaDowBoo : boolean, labTexStr : string, 
  *                            the button's text.
  * @param props.onFilActFun - On Fill Action Function: Called when the button
  *                            is pressed.
- * @param props.thrValNum   - Threshold Value Number: The charge that counts
- *                            as full.
+ * @param props.thrValNum   - Threshold Value Number: {@link thrValNum}
  *
  * @returns The full-charge row.
  *

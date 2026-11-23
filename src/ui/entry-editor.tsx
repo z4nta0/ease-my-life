@@ -151,8 +151,7 @@ type ErcProTyp = { dayValNum : number, isaDowBoo : boolean, iteNamStr : string, 
  * @author z4nta0 <https://github.com/z4nta0>
  *
  * @param props.dayValNum   - Day Value Number: The bound's day count.
- * @param props.isaDowBoo   - Is-A Down Boolean: Whether the picker eases
- *                            down.
+ * @param props.isaDowBoo   - Is-A Down Boolean: {@link isaDowBoo}
  * @param props.iteNamStr   - Item Name String: The item's name, for the
  *                            stepper's accessible name.
  * @param props.labTexStr   - Label Text String: The row's own heading.
@@ -160,7 +159,7 @@ type ErcProTyp = { dayValNum : number, isaDowBoo : boolean, iteNamStr : string, 
  *                            stepper allows.
  * @param props.onSetValFun - On Set Value Function: Called with the new day
  *                            count.
- * @param props.picModStr   - Picker Mode String: The picker's own mode.
+ * @param props.picModStr   - Picker Mode String: {@link picModStr}
  * @param props.subTexEle   - Sub Text Element: The row's own subtitle.
  * @param props.uniWorStr   - Unit Word String: The unit word for the day
  *                            count.

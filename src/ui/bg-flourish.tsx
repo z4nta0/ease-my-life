@@ -160,7 +160,7 @@ const floCacMap = new Map< string, FloSidTyp >(); // What: Flourish Cache Map. W
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param bloGriArr - Blocked Grid Array: The 2D excluded-cells grid to mutate.
+ * @param bloGriArr - Blocked Grid Array: {@link bloGriArr}
  * @param rowIndNum - Row Index Number: The row of the placed glyph's own
  *                    top-left cell.
  * @param colIndNum - Column Index Number: The column of the placed glyph's own
@@ -422,8 +422,8 @@ function shuArrFun< T > ( souEleArr : T[] ) : T[] {
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param colCouNum - Column Count Number: How many columns the grid has.
- * @param rowCouNum - Row Count Number: How many rows the grid has.
+ * @param colCouNum - Column Count Number: {@link colCouNum}
+ * @param rowCouNum - Row Count Number: {@link rowCouNum}
  *
  * @returns An array of { colIndNum, isaBigBoo, rowIndNum } placements, one per
  *          glyph.
@@ -513,10 +513,8 @@ function plaGriFun ( colCouNum : number, rowCouNum : number ) : { colIndNum : nu
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param gutWidNum - Gutter Width Number: The gutter's own measured width, in
- *                    pixels.
- * @param conHeiNum - Content Height Number: The tab's own measured content
- *                    height, in pixels.
+ * @param gutWidNum - Gutter Width Number: {@link gutWidNum}
+ * @param conHeiNum - Content Height Number: {@link conHeiNum}
  *
  * @returns An array of styled glyph items ready to render, or an empty array
  *          when the gutter is too narrow to bother decorating at all.
