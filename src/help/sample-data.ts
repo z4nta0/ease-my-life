@@ -220,7 +220,7 @@ const TAS_SAM_ARR : ( TasArgTyp & { id : string } )[] = [ // What: Task Sample A
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns This function does not return anything.
  *
@@ -260,7 +260,7 @@ const helIdeFun = ( rawIdeStr : string ) => `hlp_${ rawIdeStr }`; // What: Help 
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns This function does not return anything.
  *
@@ -303,9 +303,8 @@ const clePicFun = ( actStoObj : ActStoTyp ) : void => { // What: Clear Pickers F
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - State App Object: The entire app's own persisted state,
- *                    checked so nothing already seeded is added twice.
- * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param staAppObj - State App Object: {@link useAppStaFun}
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns This function does not return anything.
  *
@@ -381,9 +380,8 @@ const sedPicFun = ( staAppObj : StaAppTyp, actStoObj : ActStoTyp ) : void => { /
  *
  * @author z4nta0 <https://github.com/z4nta0>
  *
- * @param staAppObj - State App Object: The entire app's own persisted state,
- *                    checked so nothing already seeded is added twice.
- * @param actStoObj - Action Store Object: The shared app actions object.
+ * @param staAppObj - State App Object: {@link useAppStaFun}
+ * @param actStoObj - Action Store Object: {@link useAppStaFun}
  *
  * @returns This function does not return anything.
  *
