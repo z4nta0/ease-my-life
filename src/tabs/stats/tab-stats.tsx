@@ -363,7 +363,7 @@ function relWheFun ( wheIsoStr : string ) : string {
 
 
 
-	return wheDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } ); // What: Short Label Return. Why: Every row in the Reminders log/breakdown lists needs one compact, consistently-shaped date label. How: This formats wheDatObj as "weekday, month day" using the locale formatter.
+	return wheDatObj.toLocaleDateString( 'en-US', { day : 'numeric', month : 'short', weekday : 'short' } ); // What: Short Label Return. Why: The Reminders breakdown's Recent rows and the Reminders summary's rows each need one compact, consistently-shaped date label. How: This formats wheDatObj as "weekday, month day" using the locale formatter.
 
 
 }
@@ -847,8 +847,9 @@ type TtcProTyp = { actStoObj : ActStoTyp, onNavHomFun? : () => void, onNavTabFun
  * .reminderLog, .reminderSkipLog, .vacationLog) rather than from any dedicated
  * stats storage of its own, so the Show and Range rows narrow every card below
  * them (the heatmap, for one) from the same logs, while the Group and Type
- * rows only choose which pickers, Conditionals, and Reminders tabs the Show
- * row offers. Reminders and Conditionals each get their own dedicated scope
+ * rows choose which pickers the Show row offers, and the Type row's
+ * Conditionals and Reminders pills also switch the whole scope to that
+ * dashboard. Reminders and Conditionals each get their own dedicated scope
  * that swaps the whole dashboard over to their own shaped metrics instead of a
  * picker's.
  *
@@ -2350,12 +2351,12 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	 * cadDisFun = Cadence Display Function
 	 *
 	 * @summary
-	 * Formats a raw day-count metric for the value column, returning its
-	 * number and unit word. A daily picker shows daiDayNum unchanged, with a
-	 * singular or plural day word. A cadenced picker always shows one forced
-	 * decimal, so eligible and calendar values line up, and in calendar mode
-	 * its raw day count is first divided by perDayNum to turn it into periods,
-	 * while in eligible mode it is already a period count.
+	 * Formats a raw day count for the Frequency and Spent value columns,
+	 * returning its number and unit word. A daily picker shows daiDayNum
+	 * unchanged, with a singular or plural day word. A cadenced picker always
+	 * shows one forced decimal, so eligible and calendar values line up, and
+	 * in calendar mode its raw day count is first divided by perDayNum to turn
+	 * it into periods, while in eligible mode it is already a period count.
 	 *
 	 * @author z4nta0 <https://github.com/z4nta0>
 	 *
@@ -2376,7 +2377,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 	 *
 	*/
 
-	const cadDisFun = ( rawDayNum : number, uniModStr : string, daiDayNum : number ) => { // What: Cadence Display Function. Why: Every day-count metric's own value column needs this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through.
+	const cadDisFun = ( rawDayNum : number, uniModStr : string, daiDayNum : number ) => { // What: Cadence Display Function. Why: The Frequency and Spent value columns need this same conversion, so it's centralized once instead of repeated per metric. How: This converts rawDayNum into cadence periods for a cadenced picker, otherwise passing daiDayNum straight through.
 
 
 		if ( !isaCadBoo ) return { // What: Daily Return. Why: A daily picker's value needs no period conversion. How: This returns daiDayNum as-is, with a simple singular/plural "day"/"days" word.
