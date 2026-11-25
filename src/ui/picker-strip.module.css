@@ -175,7 +175,7 @@
 .picDisDiv--settled .disNamSpa { /* What: Dissolve Name Span In Picker Dissolve Div Settled. Why: The final pick should land with a small bounce in the accent color. How: This colors it and plays the settle animation. */
 
 
-	animation : disNamSpaLandPopIn var( --dur-ani-p04 ) var( --mot-ove-eas ); /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
+	animation : disNamSpaLandPopIn var( --dur-ani-p04 ) var( --mot-ove-eas ); /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Landed Name Duration Note. Why: The name landing marks the picked item, which is a deliberate moment, so it runs longer than an ordinary result. How: This keeps the p04 duration step instead of the shorter result steps. */
 	color     : var( --acc-mai-col );                                         /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 
 
@@ -253,7 +253,7 @@
 .disGloDiv { /* What: Dissolve Glow Div. Why: A soft halo marks the moment the pick lands. How: This draws a faint accent radial glow behind the name that grows in. */
 
 
-	animation      : disGloDivLandBloom var( --dur-ani-p04 ) var( --mot-dec-eas );     /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation      : disGloDivLandBloom var( --dur-ani-p04 ) var( --mot-dec-eas );     /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Landed Glow Duration Note. Why: The glow marks the landed pick, which is a deliberate moment, so it runs longer than an ordinary result. How: This keeps the p04 duration step instead of the shorter result steps. */
 	background     : radial-gradient( circle, var( --acc-tin-col ), transparent 70% ); /* Accent Tint Color = oklch( 0.95 0.025 250 ) */
 	border-radius  : 50%;
 	height         : 60%;

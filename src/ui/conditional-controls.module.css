@@ -315,10 +315,10 @@
 
 
 	--col-inn-del : var( --dur-tra-m03 );              /* Duration Transition Base Minus 3 ~= 67.9ms */
-	--col-inn-dur : var( --dur-tra-p06 );              /* Duration Transition Base Plus 6 ~= 853.0ms */
+	--col-inn-dur : var( --dur-tra-p03 );              /* Duration Transition Base Plus 3 ~= 366.9ms */
 	--col-inn-eas : var( --mot-dec-eas );              /* Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	--col-inn-off : calc( var( --spa-ver-m02 ) * -1 ); /* Spacing Vertical Base Minus 2 ~= -8.304px */
-	--col-row-dur : var( --dur-tra-p06 );              /* Duration Transition Base Plus 6 ~= 853.0ms */
+	--col-row-dur : var( --dur-tra-p03 );              /* Duration Transition Base Plus 3 ~= 366.9ms */
 
 	align-items    : flex-start;
 	border-bottom  : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
@@ -659,7 +659,7 @@
 .ediSubSpa--fade { /* What: Editor Name Span Fade And Editor Sub Span Fade. Why: A label or explanation that changes with its value fades in each time it does. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }

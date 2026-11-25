@@ -274,7 +274,7 @@
 
 
 	align-items     : center;
-	animation       : senCheDivOpenPopIn var( --dur-ani-p04 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation       : senCheDivOpenPopIn var( --dur-ani-p04 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Sent Check Duration Note. Why: The check landing marks a send, which is a deliberate moment, so it runs longer than an ordinary result. How: This keeps the p04 duration step instead of the shorter result steps. */
 	background      : var( --acc-mai-col );                                         /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius   : 50%;
 	color           : var( --bac-pag-col );                                         /* Background Page Color = oklch( 0.985 0.003 240 ) */
@@ -513,7 +513,7 @@
 .senLabSpa--fade { /* What: Send Label Span Fade. Why: The label fades in each time its text changes. How: This plays the shared fade whenever its keyed span remounts. */
 
 
-	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 
 
 }
@@ -698,7 +698,7 @@
 .pooRowDiv--insert { /* What: Pool Row Div Insert. Why: A just-saved item glides into place at the bottom of the pool. How: This plays the insert, cleared by the row's own animationend handler. */
 
 
-	animation : pooRowDivInsertFadeIn var( --dur-ani-p05 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
+	animation : pooRowDivInsertFadeIn var( --dur-ani-p02 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 
 
 }

@@ -287,7 +287,7 @@
 
 	display            : grid;
 	grid-template-rows : 0fr;
-	transition         : grid-template-rows var( --dur-tra-p06 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Layout Grow And Collapse. Why: The rows below have to move as the hint opens and closes, which a transform can't make them do. How: This eases the grid row between zero and the hint's own height. */
+	transition         : grid-template-rows var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */ /* What: Layout Grow And Collapse. Why: The rows below have to move as the hint opens and closes, which a transform can't make them do. How: This eases the grid row between zero and the hint's own height. */
 
 
 }
@@ -321,8 +321,8 @@
 	min-height : 0;
 	opacity    : 0;
 	overflow   : hidden;
-	transform  : translateY( calc( var( --spa-ver-m02 ) * -1 ) );                                                                                                  /* Spacing Vertical Base Minus 2 ~= -8.304px */
-	transition : opacity var( --dur-tra-p06 ) var( --mot-sta-eas ) var( --dur-tra-m03 ), transform var( --dur-tra-p06 ) var( --mot-dec-eas ) var( --dur-tra-m03 ); /* Duration Transition Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease, Duration Transition Base Minus 3 ~= 67.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	transform  : translateY( calc( var( --spa-ver-m02 ) * -1 ) ); /* Spacing Vertical Base Minus 2 ~= -8.304px */
+	transition : opacity var( --dur-tra-p03 ) var( --mot-sta-eas ) var( --dur-tra-m03 ), transform var( --dur-tra-p03 ) var( --mot-dec-eas ) var( --dur-tra-m03 ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease, Duration Transition Base Minus 3 ~= 67.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }

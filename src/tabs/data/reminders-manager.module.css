@@ -417,7 +417,7 @@
 .matSubSpa { /* What: Matrix Sub Span. Why: The line under each setting explains what the current switches do, fading in each time it changes. How: This sets it small and muted and plays the shared fade whenever its keyed span remounts. */
 
 
-	animation   : global( subtitleChangeFadeIn ) var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global( subtitleChangeFadeIn ) var( --dur-ani-p02 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */ /* What: Global subtitleChangeFadeIn Keyframes. Why: The subtitleChangeFadeIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	color       : var( --tex-mut-col );                                                     /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	font-size   : var( --fon-siz-bas );                                                     /* Font Size Base = 11px */
 	line-height : var( --ver-rhy-bas );                                                     /* Vertical Rhythm Base ~= 1.325 */
