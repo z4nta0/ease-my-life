@@ -178,7 +178,7 @@
 	flex-wrap       : wrap;
 	gap             : var( --spa-ver-m02 ) var( --spa-hor-m02 );   /* Spacing Vertical Base Minus 2 ~= 8.304px, Spacing Horizontal Base Minus 2 ~= 8.304px */
 	justify-content : center;
-	margin          : var( --spa-ver-p01 ) 0 var( --spa-ver-m05 ); /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Vertical Base Minus 5 ~= 3.571px */
+	margin          : var( --spa-ver-p01 ) 0 var( --spa-ver-m05 ); /* Spacing Vertical Base Plus 1 ~= 19.304px, Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }

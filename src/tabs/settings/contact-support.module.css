@@ -40,7 +40,7 @@
 .supTrgDiv:first-child { /* What: Support Trigger Div First. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
 
 
-	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -48,7 +48,7 @@
 
 
 	border-bottom  : 0;
-	padding-bottom : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding-bottom : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -264,7 +264,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	gap            : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }

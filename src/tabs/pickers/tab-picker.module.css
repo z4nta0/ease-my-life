@@ -121,11 +121,11 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
-	width              : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	width              : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 }

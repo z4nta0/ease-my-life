@@ -79,7 +79,7 @@
 	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight    : 500;
 	letter-spacing : -0.025em;
-	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -166,7 +166,7 @@
 	align-items    : center;
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	gap            : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 	text-align     : center;
 
 
@@ -585,7 +585,7 @@
 	display        : inline-flex;
 	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	gap            : var( --spa-hor-m04 ); /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	gap            : var( --spa-hor-m04 ); /* Spacing Horizontal Base Minus 4 ~= 4.732px */
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 	transition     : color var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Duration Transition Base ~= 157.8ms */
@@ -839,9 +839,9 @@
 .pooNamDiv { /* What: Pool Name Div. Why: The name and its status pill share the row's flexible column, which must be allowed to shrink or a long word pushes the buttons off the row on a narrow phone. How: This lines them up in a row that can shrink, and sizes the pill to a fixed, centered width so the pills line up in one column. */
 
 
-	--pil-tag-fle : 0 0 calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	--pil-tag-fle : 0 0 calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 	--pil-tag-jus : center;
-	--pil-tag-wid : calc( var( --ver-rhy-p06 ) * 1rem );     /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	--pil-tag-wid : calc( var( --ver-rhy-p06 ) * 1rem );     /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 	align-items : center;
 	display     : flex;
@@ -858,7 +858,7 @@
 	.pooNamDiv { /* What: Wrapped Pool Name Div. Why: Once wrapped, the pill has nothing to line up with, and its text should sit flush under the name. How: This wraps the row, lets the pill size to its text from the left, and pulls it left by its own side padding to cancel it. */
 
 
-		--pil-lef-mar : calc( var( --spa-hor-m03 ) * -1 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+		--pil-lef-mar : calc( var( --spa-hor-m03 ) * -1 ); /* Spacing Horizontal Base Minus 3 ~= -6.268px */
 		--pil-tag-fle : 0 0 auto;
 		--pil-tag-jus : flex-start;
 		--pil-tag-wid : auto;
@@ -938,7 +938,7 @@
 	.pooProSpa { /* What: Narrower Pool Progress Span. Why: The name needs the room. How: This lowers the minimum by one rhythm step. */
 
 
-		min-width : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+		min-width : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 	}
@@ -1042,7 +1042,7 @@
 
 	animation      : global( targetTourPulse ) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Standard Easing = ease */ /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col );                              /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
-	outline-offset : calc( var( --bor-wid-lar ) * -1 );                                            /* Border Width Large ~= 2.035px */
+	outline-offset : calc( var( --bor-wid-lar ) * -1 );                                            /* Border Width Large ~= -2.035px */
 
 
 }

@@ -53,7 +53,7 @@
 
 	border-bottom : 0;
 	border-right  : 0;
-	top           : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= 14.572px */
+	top           : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= -7.286px */
 
 
 }
@@ -62,7 +62,7 @@
 
 	border-left : 0;
 	border-top  : 0;
-	bottom      : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= 14.572px */
+	bottom      : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= -7.286px */
 
 
 }
@@ -86,7 +86,7 @@
 
 	font-size   : var( --fon-siz-p01 );     /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 600;
-	margin      : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
+	margin      : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.732px */
 
 
 }

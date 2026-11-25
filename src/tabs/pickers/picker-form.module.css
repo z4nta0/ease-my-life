@@ -66,7 +66,7 @@
 	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight    : 500;
 	letter-spacing : -0.025em;
-	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -83,7 +83,7 @@
 	align-items : center;
 	display     : flex;
 	gap         : var( --spa-hor-m01 );                        /* Spacing Horizontal Base Minus 1 = 11px */
-	margin      : var( --spa-ver-m07 ) 0 var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Vertical Base Minus 5 ~= 3.571px */
+	margin      : var( --spa-ver-m07 ) 0 var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -322,7 +322,7 @@
 .forFieDiv--daily { /* What: Form Field Div Daily. Why: The toggle and its schedule sit closer together than other fields' pieces. How: This tightens the gap. */
 
 
-	gap : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	gap : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -463,7 +463,7 @@
 	display       : inline-flex;
 	font-size     : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight   : 500;
-	gap           : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	gap           : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.732px */
 	height        : calc( var( --ver-rhy-p03 ) * 1rem );             /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	padding       : 0 var( --spa-hor-bas );                          /* Spacing Horizontal Base ~= 14.572px */
 	transition    : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
@@ -542,7 +542,7 @@
 
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	gap            : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -561,7 +561,7 @@
 	display        : flex;
 	gap            : var( --spa-hor-m01 );                            /* Spacing Horizontal Base Minus 1 = 11px */
 	outline        : 0 solid var( --acc-mai-col );                    /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	outline-offset : var( --bor-wid-xla );                            /* Border Width Extra Large ~= 3.571px */
+	outline-offset : var( --bor-wid-xla );                            /* Border Width Extra Large ~= 3.572px */
 	padding        : var( --spa-ver-m01 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 1 = 11px, Spacing Horizontal Base Minus 1 = 11px */
 	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
@@ -1086,7 +1086,7 @@
 	color         : var( --acc-mai-col );                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	cursor        : pointer;
 	font-size     : var( --fon-siz-bas );                      /* Font Size Base = 11px */
-	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 3 ~= 6.268px */
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m03 ); /* Spacing Vertical Base Minus 5 ~= 3.572px, Spacing Horizontal Base Minus 3 ~= 6.268px */
 	transition    : background var( --dur-tra-m01 ) var( --mot-sta-eas ), opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Duration Transition Base ~= 157.8ms */
 
 

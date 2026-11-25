@@ -33,7 +33,7 @@
 	border-radius : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
 	color         : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	font-size     : var( --fon-siz-bas );                            /* Font Size Base = 11px */
-	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 2 ~= 8.304px */
+	padding       : var( --spa-ver-m05 ) var( --spa-hor-m02 );       /* Spacing Vertical Base Minus 5 ~= 3.572px, Spacing Horizontal Base Minus 2 ~= 8.304px */
 	transition    : color var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 

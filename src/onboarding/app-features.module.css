@@ -19,7 +19,7 @@
 
 
 	align-items     : center;
-	border          : var( --bor-wid-xla ) solid currentColor; /* Border Width Extra Large ~= 3.571px */
+	border          : var( --bor-wid-xla ) solid currentColor; /* Border Width Extra Large ~= 3.572px */
 	border-radius   : 50%;
 	display         : flex;
 	font-size       : var( --fon-siz-p03 );                    /* Font Size Base Plus 3 ~= 25.572px */

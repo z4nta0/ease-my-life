@@ -181,7 +181,7 @@
 	.fieRowDiv { /* What: Tight Field Row Div. Why: The three selects need just enough room to fit. How: This shaves the gap down. */
 
 
-		gap : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+		gap : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.572px */
 
 
 	}

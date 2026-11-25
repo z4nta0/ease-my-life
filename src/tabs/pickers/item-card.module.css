@@ -81,7 +81,7 @@
 
 
 		opacity   : 0;
-		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 3 ~= -6.268px */
 
 
 	}
@@ -96,7 +96,7 @@
 
 
 		opacity   : 0;
-		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ) scale( .98 ); /* Spacing Vertical Base Minus 2 ~= -8.304px */
 
 
 	}

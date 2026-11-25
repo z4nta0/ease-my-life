@@ -70,7 +70,7 @@
 	display        : flex;
 	height         : calc( var( --ver-rhy-p05 ) * 1rem );    /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	outline        : 0 solid var( --acc-mai-col );           /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	outline-offset : var( --bor-wid-xla );                   /* Border Width Extra Large ~= 3.571px */
+	outline-offset : var( --bor-wid-xla );                   /* Border Width Extra Large ~= 3.572px */
 	overflow       : hidden;
 	position       : relative;
 	transition     : border-color var( --dur-tra-p02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
@@ -308,7 +308,7 @@
 
 	background     : rgba( 255, 255, 255, .55 );
 	border         : 0;
-	border-radius  : var( --rad-bor-xsm );                                                                                  /* Radius Border Extra Small ~= 3.571px */
+	border-radius  : var( --rad-bor-xsm );                                                                                  /* Radius Border Extra Small ~= 3.572px */
 	bottom         : var( --spa-ver-m03 );                                                                                  /* Spacing Vertical Base Minus 3 ~= 6.268px */
 	color          : rgba( 0, 0, 0, .5 );
 	font-family    : var( --fon-fam-sec );                                                                                  /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
@@ -317,7 +317,7 @@
 	letter-spacing : 0.05em;
 	max-width      : calc( 100% - var( --spa-hor-p01 ) );                                                                   /* Spacing Horizontal Base Plus 1 ~= 19.304px */
 	outline        : none;
-	padding        : var( --spa-ver-m09 ) var( --spa-hor-m05 );                                                             /* Spacing Vertical Base Minus 9 ~= 1.160px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	padding        : var( --spa-ver-m09 ) var( --spa-hor-m05 );                                                             /* Spacing Vertical Base Minus 9 ~= 1.160px, Spacing Horizontal Base Minus 5 ~= 3.572px */
 	position       : absolute;
 	text-transform : uppercase;
 	transition     : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */

@@ -57,7 +57,7 @@
 .accPasFor:first-child { /* What: Settings Rows First. Why: The top row shouldn't add extra space under its card's edge. How: This trims its top padding. */
 
 
-	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -68,7 +68,7 @@
 
 
 	border-bottom  : 0;
-	padding-bottom : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding-bottom : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -164,10 +164,10 @@
 .gooLinAnc { /* What: Google Link Anchor. Why: The reCAPTCHA notice links Google's own privacy policy and terms, and a text link should answer hover, press, and focus. How: This sets each link in the accent color with a hidden ring, and eases its hover color, press dim, and focus ring. */
 
 
-	border-radius  : var( --rad-bor-xsm );         /* Radius Border Extra Small ~= 3.571px */
+	border-radius  : var( --rad-bor-xsm );         /* Radius Border Extra Small ~= 3.572px */
 	color          : var( --acc-mai-col );         /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	outline        : 0 solid var( --acc-mai-col ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	outline-offset : var( --bor-wid-xla );         /* Border Width Extra Large ~= 3.571px */
+	outline-offset : var( --bor-wid-xla );         /* Border Width Extra Large ~= 3.572px */
 	transition     : color var( --dur-tra-bas ) var( --mot-sta-eas ), opacity var( --dur-tra-bas ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 
 

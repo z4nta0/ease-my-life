@@ -422,7 +422,7 @@
 	display         : flex;
 	gap             : var( --spa-hor-m02 );                                                      /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	justify-content : var( --ent-foo-jus, space-between );                                       /* Entry Footer Justify, set by its parent, falling back to space-between */ /* What: Footer Alignment. Why: Without Delete, Cancel and Save sit alone on the right. How: A parent sets this to flex-end, falling back to space-between. */
-	margin          : 0 calc( var( --spa-hor-bas ) * -1 );                                       /* Spacing Horizontal Base ~= 14.572px */
+	margin          : 0 calc( var( --spa-hor-bas ) * -1 );                                       /* Spacing Horizontal Base ~= -14.572px */
 	padding         : var( --spa-ver-bas ) var( --spa-hor-bas ) 0;                               /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 
 

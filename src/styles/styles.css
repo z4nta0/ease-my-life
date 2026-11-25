@@ -128,7 +128,7 @@
 	--bor-wid-sma : calc( var( --ver-rhy-m12 ) * 1rem ); /* What: Border Width Small ~= 0.499px. Why: This is the border width for the hairline most borders use. How: This multiplies the m12 rhythm step by 1rem, which browsers snap to whole pixels. */
 	--bor-wid-bas : calc( var( --ver-rhy-m09 ) * 1rem ); /* What: Border Width Base ~= 1.160px. Why: This is the border width for stronger borders and controls. How: This multiplies the m09 rhythm step by 1rem, which browsers snap to whole pixels. */
 	--bor-wid-lar : calc( var( --ver-rhy-m07 ) * 1rem ); /* What: Border Width Large ~= 2.035px. Why: This is the border width for focus outlines and spotlight borders. How: This multiplies the m07 rhythm step by 1rem, which browsers snap to whole pixels. */
-	--bor-wid-xla : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Border Width Extra Large ~= 3.571px. Why: This is the border width for the heaviest ring. How: This multiplies the m05 rhythm step by 1rem, which browsers snap to whole pixels. */
+	--bor-wid-xla : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Border Width Extra Large ~= 3.572px. Why: This is the border width for the heaviest ring. How: This multiplies the m05 rhythm step by 1rem, which browsers snap to whole pixels. */
 
 	/* #endregion Border Width Tokens */
 
@@ -321,7 +321,7 @@
 
 	/* #region Radius Tokens */
 
-	--rad-bor-xsm : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Radius Border Extra Small ~= 3.571px. Why: The smallest pieces, such as a swatch, get the subtlest rounding. How: This multiplies the m05 rhythm step by 1rem. */
+	--rad-bor-xsm : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Radius Border Extra Small ~= 3.572px. Why: The smallest pieces, such as a swatch, get the subtlest rounding. How: This multiplies the m05 rhythm step by 1rem. */
 	--rad-bor-sma : calc( var( --ver-rhy-m02 ) * 1rem ); /* What: Radius Border Small ~= 8.304px. Why: Small controls, such as an input, share one small corner. How: This multiplies the m02 rhythm step by 1rem. */
 	--rad-bor-med : calc( var( --ver-rhy-m01 ) * 1rem ); /* What: Radius Border Medium = 11px. Why: Medium blocks, such as a row, share one corner. How: This multiplies the m01 rhythm step by 1rem. */
 	--rad-bor-lar : calc( var( --ver-rhy-bas ) * 1rem ); /* What: Radius Border Large ~= 14.572px. Why: Large surfaces, such as a card, share one larger corner. How: This multiplies the bas rhythm step by 1rem. */
@@ -334,11 +334,11 @@
 	/* #region Spacing Tokens */
 
 	--spa-hor-m09 : calc( var( --ver-rhy-m09 ) * 1rem ); /* What: Spacing Horizontal Base Minus 9 ~= 1.160px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m09 rhythm step by 1rem. */
-	--spa-hor-m08 : calc( var( --ver-rhy-m08 ) * 1rem ); /* What: Spacing Horizontal Base Minus 8 ~= 1.537px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m08 rhythm step by 1rem. */
+	--spa-hor-m08 : calc( var( --ver-rhy-m08 ) * 1rem ); /* What: Spacing Horizontal Base Minus 8 ~= 1.536px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m08 rhythm step by 1rem. */
 	--spa-hor-m07 : calc( var( --ver-rhy-m07 ) * 1rem ); /* What: Spacing Horizontal Base Minus 7 ~= 2.035px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m07 rhythm step by 1rem. */
 	--spa-hor-m06 : calc( var( --ver-rhy-m06 ) * 1rem ); /* What: Spacing Horizontal Base Minus 6 ~= 2.696px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m06 rhythm step by 1rem. */
-	--spa-hor-m05 : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Spacing Horizontal Base Minus 5 ~= 3.571px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m05 rhythm step by 1rem. */
-	--spa-hor-m04 : calc( var( --ver-rhy-m04 ) * 1rem ); /* What: Spacing Horizontal Base Minus 4 ~= 4.731px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m04 rhythm step by 1rem. */
+	--spa-hor-m05 : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Spacing Horizontal Base Minus 5 ~= 3.572px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m05 rhythm step by 1rem. */
+	--spa-hor-m04 : calc( var( --ver-rhy-m04 ) * 1rem ); /* What: Spacing Horizontal Base Minus 4 ~= 4.732px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m04 rhythm step by 1rem. */
 	--spa-hor-m03 : calc( var( --ver-rhy-m03 ) * 1rem ); /* What: Spacing Horizontal Base Minus 3 ~= 6.268px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m03 rhythm step by 1rem. */
 	--spa-hor-m02 : calc( var( --ver-rhy-m02 ) * 1rem ); /* What: Spacing Horizontal Base Minus 2 ~= 8.304px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m02 rhythm step by 1rem. */
 	--spa-hor-m01 : calc( var( --ver-rhy-m01 ) * 1rem ); /* What: Spacing Horizontal Base Minus 1 = 11px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the m01 rhythm step by 1rem. */
@@ -348,16 +348,16 @@
 	--spa-hor-p03 : calc( var( --ver-rhy-p03 ) * 1rem ); /* What: Spacing Horizontal Base Plus 3 ~= 33.876px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the p03 rhythm step by 1rem. */
 	--spa-hor-p04 : calc( var( --ver-rhy-p04 ) * 1rem ); /* What: Spacing Horizontal Base Plus 4 ~= 44.876px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the p04 rhythm step by 1rem. */
 	--spa-hor-p05 : calc( var( --ver-rhy-p05 ) * 1rem ); /* What: Spacing Horizontal Base Plus 5 ~= 59.447px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the p05 rhythm step by 1rem. */
-	--spa-hor-p06 : calc( var( --ver-rhy-p06 ) * 1rem ); /* What: Spacing Horizontal Base Plus 6 ~= 78.750px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the p06 rhythm step by 1rem. */
+	--spa-hor-p06 : calc( var( --ver-rhy-p06 ) * 1rem ); /* What: Spacing Horizontal Base Plus 6 ~= 78.751px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the p06 rhythm step by 1rem. */
 	--spa-hor-p07 : calc( var( --ver-rhy-p07 ) * 1rem ); /* What: Spacing Horizontal Base Plus 7 ~= 104.323px. Why: Horizontal margins and padding share the vertical rhythm's steps in this project. How: This multiplies the p07 rhythm step by 1rem. */
 
 
 	--spa-ver-m09 : calc( var( --ver-rhy-m09 ) * 1rem ); /* What: Spacing Vertical Base Minus 9 ~= 1.160px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m09 rhythm step by 1rem. */
-	--spa-ver-m08 : calc( var( --ver-rhy-m08 ) * 1rem ); /* What: Spacing Vertical Base Minus 8 ~= 1.537px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m08 rhythm step by 1rem. */
+	--spa-ver-m08 : calc( var( --ver-rhy-m08 ) * 1rem ); /* What: Spacing Vertical Base Minus 8 ~= 1.536px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m08 rhythm step by 1rem. */
 	--spa-ver-m07 : calc( var( --ver-rhy-m07 ) * 1rem ); /* What: Spacing Vertical Base Minus 7 ~= 2.035px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m07 rhythm step by 1rem. */
 	--spa-ver-m06 : calc( var( --ver-rhy-m06 ) * 1rem ); /* What: Spacing Vertical Base Minus 6 ~= 2.696px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m06 rhythm step by 1rem. */
-	--spa-ver-m05 : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Spacing Vertical Base Minus 5 ~= 3.571px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m05 rhythm step by 1rem. */
-	--spa-ver-m04 : calc( var( --ver-rhy-m04 ) * 1rem ); /* What: Spacing Vertical Base Minus 4 ~= 4.731px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m04 rhythm step by 1rem. */
+	--spa-ver-m05 : calc( var( --ver-rhy-m05 ) * 1rem ); /* What: Spacing Vertical Base Minus 5 ~= 3.572px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m05 rhythm step by 1rem. */
+	--spa-ver-m04 : calc( var( --ver-rhy-m04 ) * 1rem ); /* What: Spacing Vertical Base Minus 4 ~= 4.732px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m04 rhythm step by 1rem. */
 	--spa-ver-m03 : calc( var( --ver-rhy-m03 ) * 1rem ); /* What: Spacing Vertical Base Minus 3 ~= 6.268px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m03 rhythm step by 1rem. */
 	--spa-ver-m02 : calc( var( --ver-rhy-m02 ) * 1rem ); /* What: Spacing Vertical Base Minus 2 ~= 8.304px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m02 rhythm step by 1rem. */
 	--spa-ver-m01 : calc( var( --ver-rhy-m01 ) * 1rem ); /* What: Spacing Vertical Base Minus 1 = 11px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the m01 rhythm step by 1rem. */
@@ -367,7 +367,7 @@
 	--spa-ver-p03 : calc( var( --ver-rhy-p03 ) * 1rem ); /* What: Spacing Vertical Base Plus 3 ~= 33.876px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p03 rhythm step by 1rem. */
 	--spa-ver-p04 : calc( var( --ver-rhy-p04 ) * 1rem ); /* What: Spacing Vertical Base Plus 4 ~= 44.876px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p04 rhythm step by 1rem. */
 	--spa-ver-p05 : calc( var( --ver-rhy-p05 ) * 1rem ); /* What: Spacing Vertical Base Plus 5 ~= 59.447px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p05 rhythm step by 1rem. */
-	--spa-ver-p06 : calc( var( --ver-rhy-p06 ) * 1rem ); /* What: Spacing Vertical Base Plus 6 ~= 78.750px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p06 rhythm step by 1rem. */
+	--spa-ver-p06 : calc( var( --ver-rhy-p06 ) * 1rem ); /* What: Spacing Vertical Base Plus 6 ~= 78.751px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p06 rhythm step by 1rem. */
 	--spa-ver-p07 : calc( var( --ver-rhy-p07 ) * 1rem ); /* What: Spacing Vertical Base Plus 7 ~= 104.323px. Why: Vertical margins, padding, and row gaps share the vertical rhythm. How: This multiplies the p07 rhythm step by 1rem. */
 
 	/* #endregion Spacing Tokens */
@@ -497,7 +497,7 @@ textarea,
 
 
 	outline        : 0 solid var( --acc-mai-col );                                                                                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */ /* What: Zero Width Outline. Why: A zero width stays invisible, even in forced colors mode, until something is focused. How: The focused rule below grows it. */
-	outline-offset : var( --bor-wid-xla );                                                                                              /* Border Width Extra Large ~= 3.571px */
+	outline-offset : var( --bor-wid-xla );                                                                                              /* Border Width Extra Large ~= 3.572px */
 	transition     : outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 
 
@@ -781,7 +781,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 		opacity        : 0;
 		padding-bottom : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
 		padding-top    : var( --spa-ver-bas );                            /* Spacing Vertical Base ~= 14.572px */
-		transform      : translateX( calc( var( --spa-hor-p01 ) * -1 ) ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+		transform      : translateX( calc( var( --spa-hor-p01 ) * -1 ) ); /* Spacing Horizontal Base Plus 1 ~= -19.304px */
 
 
 	}
@@ -796,7 +796,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 		opacity             : 0;
 		padding-bottom      : 0;
 		padding-top         : 0;
-		transform           : translateX( calc( var( --spa-hor-p01 ) * -1 ) ); /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+		transform           : translateX( calc( var( --spa-hor-p01 ) * -1 ) ); /* Spacing Horizontal Base Plus 1 ~= -19.304px */
 
 
 	}
@@ -1066,7 +1066,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ); /* Spacing Vertical Base Minus 2 ~= -8.304px */
 
 
 	}
@@ -1137,7 +1137,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 
 		opacity   : 0;
-		transform : translateX( calc( var( --spa-hor-m01 ) * -1 ) ); /* Spacing Horizontal Base Minus 1 = 11px */
+		transform : translateX( calc( var( --spa-hor-m01 ) * -1 ) ); /* Spacing Horizontal Base Minus 1 = -11px */
 
 
 	}

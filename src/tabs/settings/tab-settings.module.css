@@ -119,11 +119,11 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
-	width              : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	width              : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 }
@@ -427,7 +427,7 @@
 .raiKicDiv { /* What: Rail Kicker Div. Why: The rail's heading lines up with its buttons. How: This insets it like a button. */
 
 
-	padding : 0 var( --spa-hor-m01 ) var( --spa-ver-m05 ); /* Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding : 0 var( --spa-hor-m01 ) var( --spa-ver-m05 ); /* Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -761,7 +761,7 @@
 .terRowDiv:first-child { /* What: Settings Rows First. Why: The top row shouldn't add extra space under its section's heading. How: This trims its top padding. */
 
 
-	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding-top : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -780,7 +780,7 @@
 
 
 	border-bottom  : 0;
-	padding-bottom : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding-bottom : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -952,7 +952,7 @@
 	display        : inline-flex;
 	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
-	gap            : var( --spa-hor-m05 );                            /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	gap            : var( --spa-hor-m05 );                            /* Spacing Horizontal Base Minus 5 ~= 3.572px */
 	height         : calc( var( --ver-rhy-p01 ) * 1rem );             /* Vertical Rhythm Base Plus 1 ~= 19.304px */
 	letter-spacing : 0.01em;
 	padding        : 0 var( --spa-hor-m02 );                          /* Spacing Horizontal Base Minus 2 ~= 8.304px */
@@ -1249,7 +1249,7 @@
 	flex           : 0 0 auto;
 	font-size      : var( --fon-siz-p01 );                            /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
-	gap            : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	gap            : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.732px */
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	letter-spacing : -0.005em;
 	padding        : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */

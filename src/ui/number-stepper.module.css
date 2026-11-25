@@ -25,7 +25,7 @@
 	border        : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : 999px;
 	display       : inline-flex;
-	gap           : var( --spa-hor-m05 );                            /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	gap           : var( --spa-hor-m05 );                            /* Spacing Horizontal Base Minus 5 ~= 3.572px */
 	padding       : var( --spa-ver-m06 ) var( --spa-hor-m06 );       /* Spacing Vertical Base Minus 6 ~= 2.696px, Spacing Horizontal Base Minus 6 ~= 2.696px */
 
 
@@ -112,7 +112,7 @@
 
 
 	background    : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
-	border-radius : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.571px */
+	border-radius : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.572px */
 
 
 }

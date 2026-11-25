@@ -311,7 +311,7 @@
 	35% {
 
 
-		filter    : drop-shadow( 0 0 calc( var( --ver-rhy-m04 ) * 1rem ) var( --acc-sec-col ) ); /* Vertical Rhythm Base Minus 4 ~= 4.731px, Accent Secondary Color = oklch( 0.62 0.13 50 ) */
+		filter    : drop-shadow( 0 0 calc( var( --ver-rhy-m04 ) * 1rem ) var( --acc-sec-col ) ); /* Vertical Rhythm Base Minus 4 ~= 4.732px, Accent Secondary Color = oklch( 0.62 0.13 50 ) */
 		transform : scale( 1.4 ) rotate( -6deg );
 
 
@@ -441,7 +441,7 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
@@ -697,10 +697,10 @@
 
 
 	flex        : 0 0 auto;
-	height      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	height      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 	margin-left : auto;
 	position    : relative;
-	width       : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	width       : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 }
@@ -956,7 +956,7 @@
 
 	background     : radial-gradient( circle, var( --acc-mai-col ), transparent 65% );    /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius  : 50%;
-	inset          : calc( var( --spa-ver-m05 ) * -1 ) calc( var( --spa-hor-m05 ) * -1 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	inset          : calc( var( --spa-ver-m05 ) * -1 ) calc( var( --spa-hor-m05 ) * -1 ); /* Spacing Vertical Base Minus 5 ~= -3.572px, Spacing Horizontal Base Minus 5 ~= -3.572px */
 	opacity        : 0;
 	pointer-events : none;
 	position       : absolute;
@@ -1213,7 +1213,7 @@
 
 
 		opacity   : 0;
-		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= -6.268px */
 
 
 	}
@@ -1253,7 +1253,7 @@
 		opacity        : 0;
 		padding-bottom : 0;                                               /* What: Layout Collapse. Why: The list below has to slide up into the banner's place as it leaves, which a transform can't make it do. How: This shrinks the banner's own box so the gap closes as it fades. */
 		padding-top    : 0;                                               /* What: Layout Collapse. Why: The list below has to slide up into the banner's place as it leaves, which a transform can't make it do. How: This shrinks the banner's own box so the gap closes as it fades. */
-		transform      : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+		transform      : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= -6.268px */
 
 
 	}
@@ -1372,7 +1372,7 @@
 		border-bottom           : var( --bor-wid-sma ) solid var( --bor-mai-col );              /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 		flex-direction          : row;
 		gap                     : var( --spa-hor-m03 );                                         /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-		margin                  : 0 calc( var( --spa-hor-p01 ) * -1 );                          /* Spacing Horizontal Base Plus 1 ~= 19.304px */
+		margin                  : 0 calc( var( --spa-hor-p01 ) * -1 );                          /* Spacing Horizontal Base Plus 1 ~= -19.304px */
 		mask-image              : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 33.876px, Fade Right Offset ~= 33.876px */
 		max-height              : none;
 		overflow-x              : auto;
@@ -1408,7 +1408,7 @@
 
 
 	line-height : var( --ver-rhy-p01 );                        /* Vertical Rhythm Base Plus 1 ~= 1.755 */
-	padding     : 0 var( --spa-hor-m01 ) var( --spa-ver-m05 ); /* Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Minus 5 ~= 3.571px */
+	padding     : 0 var( --spa-hor-m01 ) var( --spa-ver-m05 ); /* Spacing Horizontal Base Minus 1 = 11px, Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -1722,7 +1722,7 @@
 
 	animation     : global( confettiCelebrateBurst ) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global confettiCelebrateBurst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background    : var( --acc-mai-col );                                                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	border-radius : var( --rad-bor-xsm );                                                            /* Radius Border Extra Small ~= 3.571px */
+	border-radius : var( --rad-bor-xsm );                                                            /* Radius Border Extra Small ~= 3.572px */
 	height        : calc( var( --ver-rhy-bas ) * 1rem );                                             /* Vertical Rhythm Base ~= 14.572px */
 	left          : 50%;
 	opacity       : 0;
@@ -1960,7 +1960,7 @@
 	40% {
 
 
-		box-shadow : 0 0 0 calc( var( --ver-rhy-p01 ) * 1rem / 2 ) oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-004-rec ) ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
+		box-shadow : 0 0 0 calc( var( --ver-rhy-p01 ) * 1rem / 2 ) oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-004-rec ) ); /* Vertical Rhythm Base Plus 1 ~= 9.652px, Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
 
 
 	}
@@ -2096,7 +2096,7 @@
 	border-radius : 999px;
 	color         : var( --bac-pag-col );                /* Background Page Color = oklch( 0.985 0.003 240 ) */
 	font-size     : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
-	gap           : var( --spa-hor-m04 );                /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	gap           : var( --spa-hor-m04 );                /* Spacing Horizontal Base Minus 4 ~= 4.732px */
 	height        : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	padding       : 0 var( --spa-hor-m01 );              /* Spacing Horizontal Base Minus 1 = 11px */
 
@@ -2178,7 +2178,7 @@
 	color          : var( --tex-mut-col );   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m05 );   /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	gap            : var( --spa-ver-m05 );   /* Spacing Vertical Base Minus 5 ~= 3.572px */
 	padding        : var( --spa-ver-m01 ) 0; /* Spacing Vertical Base Minus 1 = 11px */
 
 

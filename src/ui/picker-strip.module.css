@@ -314,7 +314,7 @@
 	display        : flex;
 	flex-direction : column;
 	gap            : var( --spa-ver-m07 );                     /* Spacing Vertical Base Minus 7 ~= 2.035px */
-	max-height     : calc( var( --ver-rhy-p03 ) * 1rem * 10 ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Spotlight Cap. Why: The list shows about ten rows before clipping. How: This caps it at ten row heights, so the gaps between rows leave a little under ten rows visible. */
+	max-height     : calc( var( --ver-rhy-p03 ) * 1rem * 10 ); /* Vertical Rhythm Base Plus 3 ~= 338.756px */ /* What: Spotlight Cap. Why: The list shows about ten rows before clipping. How: This caps it at ten row heights, so the gaps between rows leave a little under ten rows visible. */
 	max-width      : calc( var( --ver-rhy-p12 ) * 1rem );      /* Vertical Rhythm Base Plus 12 ~= 425.596px */
 	overflow       : hidden;
 	width          : 100%;
@@ -327,7 +327,7 @@
 	.picSpoDiv { /* What: Squeezed Picker Spotlight Div. Why: The list should fit a short screen. How: This lowers its maximum height. */
 
 
-		max-height : calc( var( --ver-rhy-p03 ) * 1rem * 5.5 ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */ /* What: Short Spotlight Cap. Why: A short screen shows about five rows. How: This caps the list at five and a half spotlight rows. */
+		max-height : calc( var( --ver-rhy-p03 ) * 1rem * 5.5 ); /* Vertical Rhythm Base Plus 3 ~= 186.316px */ /* What: Short Spotlight Cap. Why: A short screen shows about five rows. How: This caps the list at five and a half spotlight rows. */
 
 
 	}

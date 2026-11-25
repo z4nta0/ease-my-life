@@ -20,7 +20,7 @@
 
 	cursor         : help;
 	outline        : 0 solid var( --acc-mai-col );                                                                                      /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	outline-offset : var( --bor-wid-xla );                                                                                              /* Border Width Extra Large ~= 3.571px */
+	outline-offset : var( --bor-wid-xla );                                                                                              /* Border Width Extra Large ~= 3.572px */
 	transition     : outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease */
 
 
@@ -28,7 +28,7 @@
 .infTrgSpa:focus-visible { /* What: Focused Info Trigger Span. Why: A keyboard user needs to see which trigger has focus. How: This draws the accent outline around it. */
 
 
-	border-radius  : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.571px */
+	border-radius  : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.572px */
 	outline-offset : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
 	outline-width  : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
 

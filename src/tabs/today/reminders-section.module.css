@@ -106,7 +106,7 @@
 	display         : inline-flex;
 	height          : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	justify-content : center;
-	margin-left     : calc( var( --spa-hor-m05 ) * -1 );   /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	margin-left     : calc( var( --spa-hor-m05 ) * -1 );   /* Spacing Horizontal Base Minus 5 ~= -3.572px */
 	touch-action    : none;                                /* What: Pointer-Owned Gesture. Why: The drag controller needs the pointer moves, which the browser would otherwise take for scrolling. How: This turns off the browser's own touch handling on the grip. */
 	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
@@ -168,7 +168,7 @@
 	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size            : var( --fon-siz-bas ); /* Font Size Base = 11px */
 	font-variant-numeric : tabular-nums;
-	gap                  : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	gap                  : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.572px */
 	letter-spacing       : 0.02em;
 
 
@@ -215,7 +215,7 @@
 
 
 	display : flex;
-	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.572px */
 
 
 }
@@ -224,8 +224,8 @@
 
 
 	background    : var( --bor-mai-col );                                 /* Border Main Color = oklch( 0.91 0.005 240 ) */
-	border-radius : var( --rad-bor-xsm );                                 /* Radius Border Extra Small ~= 3.571px */
-	height        : calc( var( --ver-rhy-m05 ) * 1rem );                  /* Vertical Rhythm Base Minus 5 ~= 3.571px */
+	border-radius : var( --rad-bor-xsm );                                 /* Radius Border Extra Small ~= 3.572px */
+	height        : calc( var( --ver-rhy-m05 ) * 1rem );                  /* Vertical Rhythm Base Minus 5 ~= 3.572px */
 	overflow      : hidden;
 	position      : relative;
 	transition    : background var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
@@ -450,7 +450,7 @@
 
 
 		opacity   : 0;
-		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+		transform : translateY( calc( var( --spa-ver-m03 ) * -1 ) ); /* Spacing Vertical Base Minus 3 ~= -6.268px */
 
 
 	}
@@ -468,7 +468,7 @@
 	animation   : global( editorOpenFadeIn ) var( --dur-ani-bas ) var( --mot-sta-eas ); /* Duration Animation Base ~= 157.8ms, Motion Standard Easing = ease */ /* What: Global editorOpenFadeIn Keyframes. Why: The editorOpenFadeIn keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	display     : flex;
 	gap         : var( --spa-hor-m02 );                                                 /* Spacing Horizontal Base Minus 2 ~= 8.304px */
-	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ) var( --spa-ver-m02 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 7 ~= 2.035px, Spacing Vertical Base Minus 2 ~= 8.304px */
+	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ) var( --spa-ver-m02 );       /* Spacing Vertical Base Minus 5 ~= 3.572px, Spacing Horizontal Base Minus 7 ~= 2.035px, Spacing Vertical Base Minus 2 ~= 8.304px */
 
 
 }
@@ -554,7 +554,7 @@
 	background    : var( --bac-sun-col );                                                 /* Background Sunken Color = oklch( 0.969 0.004 240 ) */
 	border        : var( --bor-wid-sma ) solid var( --bor-mai-col );                      /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius : var( --rad-bor-med );                                                 /* Radius Border Medium = 11px */
-	margin        : 0 0 var( --spa-ver-m05 );                                             /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	margin        : 0 0 var( --spa-ver-m05 );                                             /* Spacing Vertical Base Minus 5 ~= 3.572px */
 	padding       : var( --spa-ver-bas ) 0;                                               /* Spacing Vertical Base ~= 14.572px */
 
 
@@ -745,7 +745,7 @@
 
 
 		opacity   : 0;
-		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+		transform : translateY( calc( var( --spa-ver-m02 ) * -1 ) ); /* Spacing Vertical Base Minus 2 ~= -8.304px */
 
 
 	}
@@ -812,7 +812,7 @@
 		opacity        : 0;
 		padding-bottom : 0;                                               /* What: Layout Collapse. Why: The cards below have to slide up into the leaving card's place, which a transform can't make them do. How: This shrinks the card's own box so the list closes the gap as it fades. */
 		padding-top    : 0;                                               /* What: Layout Collapse. Why: The cards below have to slide up into the leaving card's place, which a transform can't make them do. How: This shrinks the card's own box so the list closes the gap as it fades. */
-		transform      : translateY( calc( var( --spa-ver-m01 ) * -1 ) ); /* Spacing Vertical Base Minus 1 = 11px */
+		transform      : translateY( calc( var( --spa-ver-m01 ) * -1 ) ); /* Spacing Vertical Base Minus 1 = -11px */
 
 
 	}
@@ -852,8 +852,8 @@
 .carCheBut:focus-visible { /* What: Focused Card Check Button. Why: A keyboard user needs a legible ring even on the filled done box. How: This draws an accent outline separated from the box by a background-colored gap. */
 
 
-	box-shadow     : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ) */
-	outline-offset : calc( var( --ver-rhy-m05 ) * 1rem );                            /* Vertical Rhythm Base Minus 5 ~= 3.571px */
+	box-shadow     : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.572px, Background Page Color = oklch( 0.985 0.003 240 ) */
+	outline-offset : calc( var( --ver-rhy-m05 ) * 1rem );                            /* Vertical Rhythm Base Minus 5 ~= 3.572px */
 	outline-width  : var( --bor-wid-lar );                                           /* Border Width Large ~= 2.035px */
 
 
@@ -861,7 +861,7 @@
 .todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Card Check Button In Done Today Card Article. Why: On the filled box the check mark's edge should stay distinct from the ring's gap. How: This adds a thin background-colored inset line. */
 
 
-	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ), Vertical Rhythm Base Minus 8 ~= 1.537px */
+	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.572px, Background Page Color = oklch( 0.985 0.003 240 ), Vertical Rhythm Base Minus 8 ~= 1.536px */
 
 
 }
@@ -907,7 +907,7 @@
 
 	border         : var( --bor-wid-bas ) solid var( --acc-mai-col ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius  : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	inset          : calc( var( --bor-wid-bas ) * -1 );               /* Border Width Base ~= 1.160px */
+	inset          : calc( var( --bor-wid-bas ) * -1 );               /* Border Width Base ~= -1.160px */
 	opacity        : 0;
 	pointer-events : none;
 	position       : absolute;
@@ -1113,7 +1113,7 @@
 
 
 	display : flex;
-	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.572px */
 
 
 }
@@ -1181,7 +1181,7 @@
 	flex-wrap       : wrap;
 	gap             : var( --spa-ver-bas ) var( --spa-hor-bas );                            /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 	justify-content : space-between;
-	margin          : calc( var( --spa-ver-m05 ) * -1 ) 0 var( --spa-ver-m05 );             /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	margin          : calc( var( --spa-ver-m05 ) * -1 ) 0 var( --spa-ver-m05 );             /* Spacing Vertical Base Minus 5 ~= -3.572px */
 	padding         : var( --spa-ver-bas ) var( --spa-hor-bas );                            /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 
 

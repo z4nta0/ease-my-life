@@ -30,7 +30,7 @@
 .inlIcoSvg { /* What: Inline Icon SVG. Why: Even centered on the line, the glyph reads slightly low against the text beside it. How: This nudges the icon up inside its centered box, where a negative m04 vertical spacing step lifts it a few pixels. */
 
 
-	margin-top : calc( var( --spa-ver-m04 ) * -1 ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
+	margin-top : calc( var( --spa-ver-m04 ) * -1 ); /* Spacing Vertical Base Minus 4 ~= -4.732px */
 
 
 }

@@ -25,7 +25,7 @@
 	background    : var( --bor-fil-col );                /* Border Fill Color = oklch( 0.93 0.005 240 ) */
 	border-radius : 999px;
 	flex          : 1;
-	height        : calc( var( --ver-rhy-m05 ) * 1rem ); /* Vertical Rhythm Base Minus 5 ~= 3.571px */
+	height        : calc( var( --ver-rhy-m05 ) * 1rem ); /* Vertical Rhythm Base Minus 5 ~= 3.572px */
 	min-width     : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	overflow      : hidden;
 

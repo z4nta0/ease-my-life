@@ -281,7 +281,7 @@
 
 
 	display : flex;
-	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.572px */
 
 
 }

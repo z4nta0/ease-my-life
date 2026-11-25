@@ -34,11 +34,11 @@
 	display         : inline-flex;
 	flex            : var( --seg-con-fle, 0 1 auto );                  /* Segment Control Flex, set by its parent, falling back to 0 1 auto */ /* What: Segment Control Flex. Why: A control in a tight row, like a Settings row, must keep its size. How: A parent sets --seg-con-fle, falling back to the normal flex sizing. */
 	flex-wrap       : var( --seg-wra-fle, wrap );                      /* Segment Wrap Flex, set by its parent, falling back to wrap */ /* What: Segment Wrap Flex. Why: A control in a Settings row must stay on one line. How: A parent sets --seg-wra-fle, falling back to wrapping. */
-	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	gap             : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.572px, Spacing Horizontal Base Minus 5 ~= 3.572px */
 	justify-content : space-between;
 	margin-bottom   : var( --seg-bot-mar, 0 );                         /* Segment Bottom Margin, set by its parent, falling back to 0 */ /* What: Segment Bottom Margin. Why: A control may need room below it. How: A parent sets --seg-bot-mar, falling back to none. */
 	max-width       : var( --seg-max-wid, none );                      /* Segment Max Width, set by its parent, falling back to none */ /* What: Segment Maximum Width. Why: A control in a narrow row must not outgrow it. How: A parent sets --seg-max-wid, falling back to no limit. */
-	padding         : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	padding         : var( --spa-ver-m05 ) var( --spa-hor-m05 );       /* Spacing Vertical Base Minus 5 ~= 3.572px, Spacing Horizontal Base Minus 5 ~= 3.572px */
 	position        : relative;
 
 
@@ -48,7 +48,7 @@
 
 	display               : grid;
 	flex-basis            : var( --seg-gri-fle, auto );                                                     /* Segment Grid Flex, set by its parent, falling back to auto */ /* What: Segment Grid Flex. Why: A grid control may need its own full-width line. How: A parent sets --seg-gri-fle, falling back to auto. */
-	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	grid-template-columns : repeat( auto-fit, minmax( calc( var( --ver-rhy-p06 ) * 1rem ), max-content ) ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 	justify-content       : space-between;
 
 

@@ -119,11 +119,11 @@
 	display            : block;
 	flex               : 0 0 auto;
 	font               : inherit;
-	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	height             : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 	padding            : 0;
 	text-decoration    : none;
 	transition         : transform var( --dur-tra-p01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms */
-	width              : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	width              : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 }
@@ -693,7 +693,7 @@
 
 
 	--pil-tag-ali : flex-start;           /* What: Pill Tag Align. Why: The column would otherwise stretch the pill to full width. How: PilTagCom reads this for its own align-self. */
-	--pil-top-mar : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.571px */ /* What: Pill Top Margin. Why: The pill sits a little below the name. How: PilTagCom reads this for its own top margin. */
+	--pil-top-mar : var( --spa-ver-m05 ); /* Spacing Vertical Base Minus 5 ~= 3.572px */ /* What: Pill Top Margin. Why: The pill sits a little below the name. How: PilTagCom reads this for its own top margin. */
 
 	display        : flex;
 	flex-direction : column;
@@ -874,7 +874,7 @@
 .barSegSpa + .barSegSpa { /* What: Bar Segment Span Following. Why: Neighboring segments need a hairline between them. How: This draws a surface-colored line on its left. */
 
 
-	box-shadow : calc( var( --bor-wid-bas ) * -1 ) 0 0 var( --bac-sur-col ); /* Border Width Base ~= 1.160px, Background Surface Color = oklch( 0.975 0.004 240 ) */
+	box-shadow : calc( var( --bor-wid-bas ) * -1 ) 0 0 var( --bac-sur-col ); /* Border Width Base ~= -1.160px, Background Surface Color = oklch( 0.975 0.004 240 ) */
 
 
 }
@@ -931,7 +931,7 @@
 .legDotSpa { /* What: Legend Dot Span. Why: Each row shows its segment's color. How: This draws a small rounded square that never shrinks. */
 
 
-	border-radius : var( --rad-bor-xsm );                /* Radius Border Extra Small ~= 3.571px */
+	border-radius : var( --rad-bor-xsm );                /* Radius Border Extra Small ~= 3.572px */
 	flex-shrink   : 0;
 	height        : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
 	width         : calc( var( --ver-rhy-m01 ) * 1rem ); /* Vertical Rhythm Base Minus 1 = 11px */
@@ -1002,7 +1002,7 @@
 	display        : flex;
 	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	gap            : var( --spa-hor-m04 ); /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	gap            : var( --spa-hor-m04 ); /* Spacing Horizontal Base Minus 4 ~= 4.732px */
 	letter-spacing : 0.04em;
 	text-transform : uppercase;
 
@@ -1112,7 +1112,7 @@
 
 
 	display               : grid;
-	gap                   : var( --spa-ver-m05 ) var( --spa-hor-m05 );                               /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 5 ~= 3.571px */
+	gap                   : var( --spa-ver-m05 ) var( --spa-hor-m05 );                               /* Spacing Vertical Base Minus 5 ~= 3.572px, Spacing Horizontal Base Minus 5 ~= 3.572px */
 	grid-template-columns : repeat( auto-fill, minmax( calc( var( --ver-rhy-p03 ) * 1rem ), 1fr ) ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 
 
@@ -1175,7 +1175,7 @@
 
 
 		opacity   : 0;
-		transform : translateX( calc( var( --spa-hor-bas ) * -1 ) ); /* Spacing Horizontal Base ~= 14.572px */
+		transform : translateX( calc( var( --spa-hor-bas ) * -1 ) ); /* Spacing Horizontal Base ~= -14.572px */
 
 
 	}
@@ -1198,7 +1198,7 @@
 
 	aspect-ratio  : 1;
 	background    : var( --bor-fil-col ); /* Border Fill Color = oklch( 0.93 0.005 240 ) */
-	border-radius : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.571px */
+	border-radius : var( --rad-bor-xsm ); /* Radius Border Extra Small ~= 3.572px */
 	display       : block;
 	transition    : transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Motion Standard Easing = ease */
 
@@ -1513,7 +1513,7 @@
 	font-size            : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
 	font-variant-numeric : tabular-nums;
 	font-weight          : 600;
-	margin-right         : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	margin-right         : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.572px */
 
 
 }
@@ -1532,7 +1532,7 @@
 	display        : flex;
 	flex-direction : column;
 	list-style     : none;
-	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.571px */
+	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.572px */
 	padding        : 0;
 
 
@@ -1587,7 +1587,7 @@
 
 
 	text-align : center;
-	width      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	width      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 }
@@ -1659,7 +1659,7 @@
 	flex           : 0 0 auto;
 	font-family    : var( --fon-fam-sec );                                                                                    /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas );                                                                                    /* Font Size Base = 11px */
-	gap            : var( --spa-hor-m04 );                                                                                    /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	gap            : var( --spa-hor-m04 );                                                                                    /* Spacing Horizontal Base Minus 4 ~= 4.732px */
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );                                                                     /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	letter-spacing : 0.04em;
 	padding        : 0 var( --spa-hor-m01 );                                                                                  /* Spacing Horizontal Base Minus 1 = 11px */
@@ -1708,7 +1708,7 @@
 	display            : flex;
 	flex-wrap          : nowrap;
 	gap                : var( --spa-hor-m03 ); /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	margin             : var( --spa-ver-m01 ) 0 var( --spa-ver-m05 );                                                                                       /* Spacing Vertical Base Minus 1 = 11px, Spacing Vertical Base Minus 5 ~= 3.571px */
+	margin             : var( --spa-ver-m01 ) 0 var( --spa-ver-m05 );                                                                                       /* Spacing Vertical Base Minus 1 = 11px, Spacing Vertical Base Minus 5 ~= 3.572px */
 	mask-image         : linear-gradient( to right, transparent 0, #000 var( --fad-lef-off ), #000 calc( 100% - var( --fad-rig-off ) ), transparent 100% ); /* Fade Left Offset ~= 25.572px, Fade Right Offset ~= 25.572px */
 	min-width          : 0;
 	overflow-x         : auto;
@@ -1751,7 +1751,7 @@
 	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
 	font-weight    : 500;
 	letter-spacing : -0.01em;
-	padding        : var( --spa-ver-m04 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 4 ~= 4.731px, Spacing Horizontal Base Minus 1 = 11px */
+	padding        : var( --spa-ver-m04 ) var( --spa-hor-m01 );       /* Spacing Vertical Base Minus 4 ~= 4.732px, Spacing Horizontal Base Minus 1 = 11px */
 	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 
 
@@ -1877,7 +1877,7 @@
 	from {
 
 
-		transform : translateY( var( --spa-ver-m04 ) ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
+		transform : translateY( var( --spa-ver-m04 ) ); /* Spacing Vertical Base Minus 4 ~= 4.732px */
 
 
 	}
@@ -2203,7 +2203,7 @@
 
 	flex       : 0 0 auto;
 	text-align : center;
-	width      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	width      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 }
@@ -2287,7 +2287,7 @@
 
 
 	text-align : center;
-	width      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	width      : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 }
@@ -2301,7 +2301,7 @@
 	letter-spacing : 0.02em;
 	text-align     : right;
 	white-space    : nowrap;
-	width          : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.750px */
+	width          : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 }

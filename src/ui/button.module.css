@@ -69,7 +69,7 @@
 
 	border-radius : 999px;
 	font-size     : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
-	gap           : var( --spa-hor-m04 );                /* Spacing Horizontal Base Minus 4 ~= 4.731px */
+	gap           : var( --spa-hor-m04 );                /* Spacing Horizontal Base Minus 4 ~= 4.732px */
 	height        : calc( var( --ver-rhy-p02 ) * 1rem ); /* Vertical Rhythm Base Plus 2 ~= 25.572px */
 	padding       : 0 var( --spa-hor-m01 );              /* Spacing Horizontal Base Minus 1 = 11px */
 

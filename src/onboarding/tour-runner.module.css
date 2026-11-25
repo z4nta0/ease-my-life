@@ -155,7 +155,7 @@
 
 	border-bottom : 0;
 	border-right  : 0;
-	top           : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= 14.572px */
+	top           : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= -7.286px */
 
 
 }
@@ -164,7 +164,7 @@
 
 	border-left : 0;
 	border-top  : 0;
-	bottom      : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= 14.572px */
+	bottom      : calc( var( --ver-rhy-bas ) * 1rem / -2 ); /* Vertical Rhythm Base ~= -7.286px */
 
 
 }
@@ -190,7 +190,7 @@
 	font-family    : var( --fon-fam-sec );     /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas );     /* Font Size Base = 11px */
 	letter-spacing : 0.05em;
-	margin         : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
+	margin         : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.732px */
 
 
 }
@@ -200,7 +200,7 @@
 
 	font-size   : var( --fon-siz-p01 );     /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight : 600;
-	margin      : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.731px */
+	margin      : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.732px */
 
 
 }
@@ -254,7 +254,7 @@
 	cursor      : pointer;
 	font-family : inherit;
 	font-size   : var( --fon-siz-bas );                      /* Font Size Base = 11px */
-	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 7 ~= 2.035px */
+	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ); /* Spacing Vertical Base Minus 5 ~= 3.572px, Spacing Horizontal Base Minus 7 ~= 2.035px */
 
 
 }
@@ -269,7 +269,7 @@
 	font-family : inherit;
 	font-size   : var( --fon-siz-bas );                      /* Font Size Base = 11px */
 	font-weight : 500;
-	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ); /* Spacing Vertical Base Minus 5 ~= 3.571px, Spacing Horizontal Base Minus 7 ~= 2.035px */
+	padding     : var( --spa-ver-m05 ) var( --spa-hor-m07 ); /* Spacing Vertical Base Minus 5 ~= 3.572px, Spacing Horizontal Base Minus 7 ~= 2.035px */
 
 
 }

@@ -137,8 +137,8 @@
 .carCheSpa:focus-visible { /* What: Focused Card Check Button And Span. Why: A keyboard user needs a visible ring that still reads on the filled done state. How: This draws an accent ring separated from the box by a background-colored gap. */
 
 
-	box-shadow     : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ) */
-	outline-offset : calc( var( --ver-rhy-m05 ) * 1rem );                            /* Vertical Rhythm Base Minus 5 ~= 3.571px */
+	box-shadow     : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.572px, Background Page Color = oklch( 0.985 0.003 240 ) */
+	outline-offset : calc( var( --ver-rhy-m05 ) * 1rem );                            /* Vertical Rhythm Base Minus 5 ~= 3.572px */
 	outline-width  : var( --bor-wid-lar );                                           /* Border Width Large ~= 2.035px */
 
 
@@ -146,7 +146,7 @@
 .todCarArt[data-card-done-active] .carCheBut:focus-visible { /* What: Focused Card Check Button In Done Today Card Article. Why: On the filled box, the ring's gap and the checkmark's edge both need to stay distinct. How: This keeps the gap and adds a thin background-colored inset line just inside the box's edge. */
 
 
-	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.571px, Background Page Color = oklch( 0.985 0.003 240 ), Vertical Rhythm Base Minus 8 ~= 1.537px */
+	box-shadow : 0 0 0 calc( var( --ver-rhy-m05 ) * 1rem ) var( --bac-pag-col ), inset 0 0 0 calc( var( --ver-rhy-m08 ) * 1rem ) var( --bac-pag-col ); /* Vertical Rhythm Base Minus 5 ~= 3.572px, Background Page Color = oklch( 0.985 0.003 240 ), Vertical Rhythm Base Minus 8 ~= 1.536px */
 
 
 }
@@ -209,7 +209,7 @@
 
 	border         : var( --bor-wid-bas ) solid var( --acc-mai-col ); /* Border Width Base ~= 1.160px, Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius  : var( --rad-bor-sma );                            /* Radius Border Small ~= 8.304px */
-	inset          : calc( var( --bor-wid-bas ) * -1 );               /* Border Width Base ~= 1.160px */
+	inset          : calc( var( --bor-wid-bas ) * -1 );               /* Border Width Base ~= -1.160px */
 	opacity        : 0;
 	pointer-events : none;
 	position       : absolute;
@@ -330,7 +330,7 @@
 
 
 	display : flex;
-	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.571px */
+	gap     : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.572px */
 
 
 }
