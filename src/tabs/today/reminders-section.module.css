@@ -423,8 +423,14 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reminder Add Div And Reminder Add Div Closing. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.remAddDiv,
-	.remAddDiv.remAddDiv--closing { /* What: Still Reminder Add Div And Reminder Add Div Closing. Why: The form should appear and close at once. How: This shortens its fades to .01ms instead of turning them off. */
+	.remAddDiv { /* What: Still Reminder Add Div. Why: The form should appear at once, and nothing waits on the open fade's end. How: This turns its open fade off. */
+
+
+		animation : none;
+
+
+	}
+	.remAddDiv.remAddDiv--closing { /* What: Still Reminder Add Div Closing. Why: The form should close at once, and its both fill holds the end state at opacity 0 while the close timer runs, which turning the animation off would lose. How: This shortens its fade to .01ms instead of turning it off. */
 
 
 		animation-duration : .01ms;
