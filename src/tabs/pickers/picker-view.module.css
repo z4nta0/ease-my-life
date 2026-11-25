@@ -1040,7 +1040,7 @@
 .pooSenBut--tour { /* What: Pool Send Button Tour. Why: App Features' manual-pick tour points at the Send to Today button inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
 
 
-	animation      : global( targetTourPulse ) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Standard Easing = ease */ /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global( targetTourPulse ) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1,983.0ms, Motion Standard Easing = ease */ /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col );                              /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
 	outline-offset : calc( var( --bor-wid-lar ) * -1 );                                            /* Border Width Large ~= -2.035px */
 

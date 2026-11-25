@@ -981,7 +981,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			} );
 
-			const celTotNum = carEleLis.length * durMilFun( 'm03' ) + durMilFun( 'p07' ); // What: Celebration Total Number. Why: The cleanup below must wait for the LONGEST-running piece of the celebration, whichever style is active. How: This adds the cascade's own total stagger to the card exhale's own p07 duration step. // Duration Base Minus 3 ~= 67.9ms, Duration Base Plus 7 ~= 1130.0ms
+			const celTotNum = carEleLis.length * durMilFun( 'm03' ) + durMilFun( 'p07' ); // What: Celebration Total Number. Why: The cleanup below must wait for the LONGEST-running piece of the celebration, whichever style is active. How: This adds the cascade's own total stagger to the card exhale's own p07 duration step. // Duration Base Minus 3 ~= 67.9ms, Duration Base Plus 7 ~= 1,130.0ms
 
 
 			const celEndTim = setTimeout( () => { // What: Celebration End Timeout. Why: Every celebration effect (ring class, per-card exhale, particles) must clean itself up once its own animation has actually finished. How: This runs after the longer of a fixed floor or celTotNum, clearing every piece of state/CSS this branch set.
@@ -1004,7 +1004,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 				setCelRecObj( null ); // What: Overlay Rect Clear. Why: The portal overlay should unmount once the particles are gone. How: This resets celRecObj to null.
 
 
-			}, Math.max( durMilFun( 'p09' ), celTotNum + 100 ) ); // What: Celebration End Delay. Why: Cleanup waits for the longest celebration effect to finish. How: This waits the total cascade time plus a margin, at least the p09 duration step that outlasts every particle and the ring's own ripple. // Duration Base Plus 9 ~= 1983.0ms
+			}, Math.max( durMilFun( 'p09' ), celTotNum + 100 ) ); // What: Celebration End Delay. Why: Cleanup waits for the longest celebration effect to finish. How: This waits the total cascade time plus a margin, at least the p09 duration step that outlasts every particle and the ring's own ripple. // Duration Base Plus 9 ~= 1,983.0ms
 
 			// #endregion Celebration Fire Sequence
 
@@ -3556,7 +3556,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 
 			const redMotBoo = redMotFun();                          // What: Reduced Motion Boolean. Why: Every timing below needs to collapse almost to nothing for a user who prefers reduced motion. How: This checks redMotFun once, reused for both delay numbers below.
-			const celDelNum = redMotBoo ? 200 : durMilFun( 'p09' ); // What: Celebration Delay Number. Why: The exit animation must wait for the celebration to actually finish playing first. How: This is a short reduced-motion beat or the p09 duration step that outlasts the whole celebration. // Duration Base Plus 9 ~= 1983.0ms
+			const celDelNum = redMotBoo ? 200 : durMilFun( 'p09' ); // What: Celebration Delay Number. Why: The exit animation must wait for the celebration to actually finish playing first. How: This is a short reduced-motion beat or the p09 duration step that outlasts the whole celebration. // Duration Base Plus 9 ~= 1,983.0ms
 			const exiDelNum = redMotBoo ? 0 : durMilFun( 'p03' );   // What: Exit Delay Number. Why: The checklist's own conclusion must wait for the card-exit animation to finish too. How: This is 0 under reduced motion or the exit animation's own p03 duration step. // Duration Base Plus 3 ~= 366.9ms
 
 			const celTimNum = setTimeout( () => setCheExiBoo( true ), celDelNum ); // What: Celebrate Timeout Number. Why: The exit animation should only start once the celebration has had its own moment first. How: This flips cheExiBoo true after celDelNum.

@@ -228,7 +228,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 			};
 
 
-			ripCleTim = setTimeout( ripCleFun, carEleArr.length * durMilFun( 'm03' ) + durMilFun( 'p07' ) ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed. // Duration Base Minus 3 ~= 67.9ms, Duration Base Plus 7 ~= 1130.0ms
+			ripCleTim = setTimeout( ripCleFun, carEleArr.length * durMilFun( 'm03' ) + durMilFun( 'p07' ) ); // What: Ripple Cleanup Schedule. Why: The cleanup must wait until every staggered card has actually finished its own exhale animation. How: This schedules ripCleFun to run once the last card's own delay plus its animation duration has elapsed. // Duration Base Minus 3 ~= 67.9ms, Duration Base Plus 7 ~= 1,130.0ms
 
 
 		}
@@ -283,7 +283,7 @@ function CelPreCom ( { repTokNum, styKeyStr } : CpcProTyp ) : React.JSX.Element 
 
 
 
-		const parCleTim = setTimeout( () => setParIteArr( [] ), durMilFun( 'p09' ) ); // What: Particle Cleanup Timeout. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty after the p09 duration step, which outlasts every particle's own p06 animation plus its random delay. // Duration Base Plus 9 ~= 1983.0ms
+		const parCleTim = setTimeout( () => setParIteArr( [] ), durMilFun( 'p09' ) ); // What: Particle Cleanup Timeout. Why: A rolled batch of particles must not linger onscreen forever once its own fly-out/glint animation has finished. How: This schedules parIteArr back to empty after the p09 duration step, which outlasts every particle's own p06 animation plus its random delay. // Duration Base Plus 9 ~= 1,983.0ms
 
 
 

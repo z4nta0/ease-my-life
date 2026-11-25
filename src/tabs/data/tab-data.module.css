@@ -675,7 +675,7 @@
 .catTogBut--tour { /* What: Data Category Section Tour And Category Toggle Button Tour. Why: The Edit Item tour points at the specific card or toggle it wants clicked inside its bigger spotlight. How: This draws an accent outline, inset so it never shifts layout, that fades in and out. */
 
 
-	animation      : global( targetTourPulse ) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Standard Easing = ease */ /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation      : global( targetTourPulse ) var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1,983.0ms, Motion Standard Easing = ease */ /* What: Global targetTourPulse Keyframes. Why: The targetTourPulse keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	outline        : var( --bor-wid-lar ) solid var( --acc-mai-col );                              /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
 	outline-offset : calc( var( --bor-wid-lar ) * -1 );                                            /* Border Width Large ~= -2.035px */
 
@@ -1288,7 +1288,7 @@
 .lisIteDiv--tour { /* What: List Item Div Tour. Why: The Edit Item tour points at specific rows, and touching rows can't each draw an outline without doubling it where they meet. How: This swaps the outline for side and bottom borders that fade like the outline would, so adjacent targets share one line. */
 
 
-	animation     : lisIteDivTourBorderFade var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Standard Easing = ease */
+	animation     : lisIteDivTourBorderFade var( --dur-ani-p09 ) var( --mot-sta-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1,983.0ms, Motion Standard Easing = ease */
 	border-bottom : var( --bor-wid-lar ) solid var( --acc-mai-col );                            /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-left   : var( --bor-wid-lar ) solid var( --acc-mai-col );                            /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-right  : var( --bor-wid-lar ) solid var( --acc-mai-col );                            /* Border Width Large ~= 2.035px, Accent Main Color = oklch( 0.5 0.14 250 ) */

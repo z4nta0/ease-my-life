@@ -845,7 +845,7 @@
 .proRinDiv.proRinDiv--celebrating .rinNumSpa { /* What: Ring Number Span In Progress Ring Div Celebrating. Why: Completing the day gives the count a bigger flash. How: This plays a larger springy scale and accent flash. */
 
 
-	animation : rinNumSpaCompleteBounce var( --dur-ani-p08 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 8 ~= 1497.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : rinNumSpaCompleteBounce var( --dur-ani-p08 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 8 ~= 1,497.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
 
 
 }
@@ -974,7 +974,7 @@
 .proRinDiv.proRinDiv--celebrating .rinGloIta { /* What: Ring Glow Italic In Progress Ring Div Celebrating. Why: Completing the day blooms a bigger glow. How: This plays a longer, wider glow bloom. */
 
 
-	animation : rinGloItaCompleteFade var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation : rinGloItaCompleteFade var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1,497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -1073,7 +1073,7 @@
 .proRinDiv.proRinDiv--celebrating .rinRipIta { /* What: Ring Ripple Italic In Progress Ring Div Celebrating. Why: The ripple marks the moment the ring fills. How: This plays the ripple once over the p08 step, matching the ring's other completion animations. */
 
 
-	animation : rinRipItaCompleteRipple var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation : rinRipItaCompleteRipple var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1,497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -1923,7 +1923,7 @@
 .onbCarDiv--pulsing::after { /* What: Onboarding Card Div Pulsing Ping. Why: The ping expands from the card's edge outward onto the page, where it reads against the background. How: This draws a matching click-through layer that plays an expanding accent ring. */
 
 
-	animation      : onbCarDivPulsePing var( --dur-ani-p09 ) var( --mot-dec-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1983.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation      : onbCarDivPulsePing var( --dur-ani-p09 ) var( --mot-dec-eas ) infinite; /* Duration Animation Base Plus 9 ~= 1,983.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	border-radius  : inherit;
 	content        : '';
 	inset          : 0;
