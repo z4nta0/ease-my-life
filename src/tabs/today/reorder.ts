@@ -1,6 +1,16 @@
 
 
 
+// #region Imports
+
+import { durMilFun } from '../../utils/rhythm.ts'; // What: Duration Millisecond Function. Why: Timers and inline transitions that wait on a CSS step must match the stylesheet's own --dur-* tokens. How: This returns a duration step's length in milliseconds.
+import { motEasFun } from '../../utils/motion.ts'; // What: Motion Easing Function. Why: An inline transition's curve should match the stylesheet. How: This reads a --mot-*-eas token as a CSS easing string.
+import { redMotFun } from '../../utils/motion.ts'; // What: Reduced Motion Function. Why: A user who prefers reduced motion should see siblings shift at once. How: This is checked when the shift transition is built.
+
+// #endregion Imports
+
+
+
 /**
  * reorder.ts = Reorder
  *
@@ -35,15 +45,18 @@
 
 // #region Constants
 
-const EDG_SPE_NUM = 14;                                             // What: Edge Speed Number. Why: This is how many px the scroll container moves per animation frame once auto-scroll is active. How: This is multiplied by the current scroll direction and added to the scroll container's own scrollTop inside edgLooFun.
-const EDG_THR_NUM = 64;                                             // What: Edge Threshold Number. Why: This is how close, in px, the pointer must sit to the scroll container's own top/bottom edge before auto-scroll kicks in. How: This is compared against the pointer's clientY relative to the scroll container's own rect inside onMovPoiFun.
-const SHI_EAS_STR = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1)'; // What: Shift Ease String. Why: This is the shared CSS transition every non-dragged sibling uses while shifting out of the way. How: This is written onto each sibling's own inline style.transition inside the prep forEach below.
+const EDG_SPE_NUM = 14; // What: Edge Speed Number. Why: This is how many px the scroll container moves per animation frame once auto-scroll is active. How: This is multiplied by the current scroll direction and added to the scroll container's own scrollTop inside edgLooFun.
+const EDG_THR_NUM = 64; // What: Edge Threshold Number. Why: This is how close, in px, the pointer must sit to the scroll container's own top/bottom edge before auto-scroll kicks in. How: This is compared against the pointer's clientY relative to the scroll container's own rect inside onMovPoiFun.
 
 // #endregion Constants
 
 
 
 // #region Helpers
+
+const shiEasFun = () : string => redMotFun() ? 'none' : `transform ${ durMilFun( 'p01' ) }ms ${ motEasFun( 'dec' ) }`; // What: Shift Ease Function. Why: This is the shared CSS transition every non-dragged sibling uses while shifting out of the way, and under reduced motion it is none so the shift still applies but at once. How: This returns a transform transition reading the p01 duration step and the decelerating curve, or none. // Duration Base Plus 1 ~= 209.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 )
+
+
 
 type DraConTyp = { conLisEle : HTMLElement, griIcoEle? : HTMLElement | null, hanDraEle : HTMLElement, iteSelStr : string, onDroOrdFun : ( newOrdArr : number[] ) => void, onEndDraFun? : () => void, onStaDraFun? : () => void, scrConEle? : HTMLElement | null }; // What: Drag Configuration Type. Why: A caller hands the gesture its list, its dragged element, and its callbacks. How: This types staDraFun's draConObj, with the grip, scroll container, and lifecycle hooks optional.
 
@@ -211,16 +224,16 @@ function staDraFun ( dowEveObj : Pick< PointerEvent, 'button' | 'clientY' | 'poi
 
 			iteCurEle.setAttribute( 'data-item-drag-active', '' ); // What: Drag Active Attribute Set. Why: This is the hook the dragged element's own stylesheet uses to visually lift it, whichever module it belongs to. How: This adds the presence-only attribute to the dragged element only.
 			iteCurEle.style.transition = 'none';                   // What: Transition Disable. Why: The dragged element is translated directly by the pointer every frame and must never animate that, unlike its siblings. How: This clears any transition on the dragged element specifically.
-			iteCurEle.style.zIndex = '13';                         // What: Z Index Raise. Why: The dragged element must render above every sibling it passes over while floating. How: This raises its stacking order via an inline z-index.
+			iteCurEle.style.zIndex = '13';                         // What: Z Index Raise. Why: The dragged element must render above every sibling it passes over while floating. How: This raises its stacking order via an inline z-index. 13 lifts the dragged card over the sticky pill row at 11 and the sticky header at 12, and keeps it under the Edit Mode banner at 14.
 			iteCurEle.style.position = 'relative';                 // What: Position Relative. Why: The z-index raise above only takes effect on a positioned element. How: This gives the dragged element a relative position context.
 
 
 		}
 
-		else { // What: Sibling Transition Setup. Why: Every non-dragged sibling needs the shared shift transition so its later transform change animates smoothly. How: This writes SHI_EAS_STR onto every sibling except the dragged one.
+		else { // What: Sibling Transition Setup. Why: Every non-dragged sibling needs the shared shift transition so its later transform change animates smoothly. How: This writes the shiEasFun transition onto every sibling except the dragged one.
 
 
-			iteCurEle.style.transition = SHI_EAS_STR; // What: Shift Transition Write. Why: This is what makes a sibling's later translateY change animate instead of jumping. How: This writes the shared SHI_EAS_STR constant onto the sibling's own inline style.
+			iteCurEle.style.transition = shiEasFun(); // What: Shift Transition Write. Why: This is what makes a sibling's later translateY change animate instead of jumping. How: This writes the shared shiEasFun transition onto the sibling's own inline style.
 
 
 		}
