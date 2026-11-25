@@ -163,7 +163,7 @@ function IteCarCom ( { ediKeyStr, iteCloBoo, iteDatObj, namInpRef, namValStr, on
 
 			</div>
 
-			<div className={ cssModObj.iteEdiDiv }>{ /* What: Item Edit Div Element. Why: EntEdiCom's own weight/ease/vacation controls need their own slot below the name row. How: This wraps a single EntEdiCom instance. */ }
+			<div className={ cssModObj.iteEdiDiv }>{ /* What: Item Edit Div Element. Why: The shared item editor's own controls need their own slot below the name row. How: This wraps a single EntEdiCom instance. */ }
 
 
 				<EntEdiCom

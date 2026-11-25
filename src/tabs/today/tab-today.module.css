@@ -1568,7 +1568,7 @@
 
 /* #region raiCouSpa */
 
-.raiCouSpa { /* What: Rail Count Span. Why: The done and total counts read as a quiet mono cluster, while still meeting text contrast. How: This sets them on one baseline in small tabular mono type, in the button's own muted color rather than faded. */
+.raiCouSpa { /* What: Rail Count Span. Why: The done and total counts read as a quiet mono cluster, while still meeting text contrast. How: This sets them on one baseline in small tabular mono type, in the button's own current color rather than faded. */
 
 
 	align-items          : baseline;

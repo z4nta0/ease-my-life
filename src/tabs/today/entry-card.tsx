@@ -28,8 +28,8 @@ import type { TodRowTyp } from './group-entries.ts';       // What: Today Row Ty
  * @summary
  * One row in the Today list: a real picked item, a mini-tour launcher card, a
  * day-off card, or a charging card, chosen by the entry's kind. It carries the
- * row's done toggle, Re-roll and Skip actions, Edit Mode grip and inline item
- * editor.
+ * row's done toggle, Re-roll and Skip actions, Edit Mode grip, and an Edit
+ * toggle with its inline name field.
  *
  * Sections:
  *  - Components

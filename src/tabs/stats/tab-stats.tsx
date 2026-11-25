@@ -2460,7 +2460,7 @@ function TabStaCom ( { actStoObj, onNavHomFun, onNavTabFun, staAppObj } : TtcPro
 
 	// #region Suffix Helpers
 
-	const weiSufFun = React.useCallback( ( iteCurObj : Partial< IteRcdTyp > | undefined ) => { // What: Weight Suffix Function. Why: A weighted/dynamic picker's own items need their configured weight shown alongside the Count metric. How: This returns null unless useWeiBoo is true, otherwise a "weight N" string. // Name suffixes, scoped to the metric being shown: - Count -> weight suffix (weighted / dynamic) - Freq/Spent -> range suffix (ease modes), days from the drift band (soonest = 100/easeMax, latest = 100/easeMin) - Auto/Hand Picked/Re-Rolled Away/Skipped -> no suffix ("{name} {count}")
+	const weiSufFun = React.useCallback( ( iteCurObj : Partial< IteRcdTyp > | undefined ) => { // What: Weight Suffix Function. Why: A weighted/dynamic picker's own items need their configured weight shown alongside the Count metric. How: This returns null unless useWeiBoo is true, otherwise a "weight N" string. // Name suffixes, scoped to the metric being shown: - Count -> weight suffix (weighted / dynamic) - Freq/Spent -> range suffix (ease modes), days from the drift band (soonest = 100/easeMax, latest = 100/easeMin) - Last Picked/Auto/Hand Picked/Re-Rolled Away/Skipped -> no suffix ("{name} {count}")
 
 
 		if ( !iteCurObj || !useWeiBoo ) return null; // What: Weight Mode Guard. Why: Only a weighted or dynamic picker's items carry a weight worth showing. How: This returns null for every other mode, or a missing item.

@@ -2586,7 +2586,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 			else if ( picRcdObj.mode === 'ease-up' && picResObj.updArr && picResObj.updArr.length ) { // What: Empty Ease-Up Branch. Why: An ease-up picker with nothing charged to threshold still needs a "charging" card so the day's own drift (picResObj.updArr) is applied only once the user checks it, consistent with done-gating; without this the drift would be dropped and the picker could never climb to eligibility. How: This collects a charging card plus its own animation slot.
 
 
-				empEasArr.push({ // What: Charging Card Push. Why: This is the actual pending-commit record for this charging card. How: This bundles picIdeStr, its own group, the staged drift updates, and an optional period key.
+				empEasArr.push({ // What: Charging Card Push. Why: This is the actual pending-commit record for this charging card. How: This bundles picIdeStr, its own group, the charging kind, the staged drift updates, and an optional period key.
 
 
 					group    : picRcdObj.group || 'Other',     // What: Group. Why: The card sits in its picker's own group. How: This passes that group, falling back to Other.
