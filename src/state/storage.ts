@@ -65,6 +65,8 @@ const DAT_VER_NUM = 1;                             // What: Database Version Num
 const MIG_SNA_STR = 'easemylife.snapshot.pre-idb'; // What: Migration Snapshot String. Why: This is the bounded-lifetime rollback copy taken right before the very first IDB migration attempt. How: This is written once in idbBooFun before the first migration and removed in iniStoFun once IndexedDB has booted cleanly SNA_KEE_NUM times.
 const MIR_KEY_STR = 'easemylife.v2';               // What: Mirror Key String. Why: This is the legacy live localStorage key that also doubles as the warm mirror's own key, read by the fallback paths. How: This is the localStorage key the warm mirror is written under, and it is exported by name at the end of the file.
 const MIR_TIM_STR = 'easemylife.mirrorat';         // What: Mirror Time String. Why: Mirror freshness must survive a reload, not just live in memory, since the Settings storage panel reports it on a cold load before any tab-hide has happened this session. How: This is the localStorage key that holds the mirror's last write time as an ISO string.
+const NOT_ASK_STR = 'easemylife.notifyasked';      // What: Notify Asked String. Why: A notification permission already asked for once must not be asked for again, so the flag has to outlive the boot sweep. How: This is the localStorage key notify.ts reads and writes, kept by the sweep.
+const NOT_DAY_STR = 'easemylife.notifiedday';      // What: Notified Day String. Why: The once-per-day notification must not repeat after a reload or a sweep. How: This is the localStorage key notify.ts uses to record the last local day it notified on, kept by the sweep.
 
 
 
@@ -115,7 +117,7 @@ const SYN_MET_STR = 'easemylife.syncmeta'; // What: Sync Meta String. Why: Each 
 
 
 
-const LIV_KEY_ARR = [ ACC_SIG_STR, BOO_KEY_STR, MIR_KEY_STR, MIR_TIM_STR, PER_ASK_STR, SIG_EMA_STR, SYN_MET_STR ]; // What: Live Key Array. Why: The boot sweep deletes every owned localStorage key from a dead generation, so every key still in use has to be named here or it's deleted too (the persistence prompt's key once was, so the app asked again). How: The sweep keeps every key in this list.
+const LIV_KEY_ARR = [ ACC_SIG_STR, BOO_KEY_STR, MIR_KEY_STR, MIR_TIM_STR, NOT_ASK_STR, NOT_DAY_STR, PER_ASK_STR, SIG_EMA_STR, SYN_MET_STR ]; // What: Live Key Array. Why: The boot sweep deletes every owned localStorage key from a dead generation, so every key still in use has to be named here or it's deleted too (the persistence prompt's key and the notification keys once were, so the app asked again and notified twice a day). How: The sweep keeps every key in this list.
 
 // #endregion Constants
 
@@ -1508,6 +1510,8 @@ const STG_NAM_OBJ = { // What: Storage Namespace Object. Why: This is this file'
 	fluSynFun   : fluSynFun,   // What: Flush Sync Function. Why: This mirrors the state synchronously, for a page hide where an async save could be lost. How: This exports fluSynFun under its own matching name.
 	iniStoFun   : iniStoFun,   // What: Init Storage Function. Why: This loads the persisted state, before React mounts. How: This exports iniStoFun under its own matching name.
 	logAutFun   : logAutFun,   // What: Log Authoritative Function. Why: This marks the next save's pickLog as authoritative after an import or a reset. How: This exports logAutFun under its own matching name.
+	NOT_ASK_STR : NOT_ASK_STR, // What: Notify Asked String. Why: Whether notification permission was asked for is recorded under this key, which the boot sweep keeps. How: This exports NOT_ASK_STR under its own matching name.
+	NOT_DAY_STR : NOT_DAY_STR, // What: Notified Day String. Why: The last day a notification fired is recorded under this key, which the boot sweep keeps. How: This exports NOT_DAY_STR under its own matching name.
 	PER_ASK_STR : PER_ASK_STR, // What: Persist Ask String. Why: The persistence prompt is recorded under this key, which the boot sweep keeps. How: This exports PER_ASK_STR under its own matching name.
 	reaPerFun   : reaPerFun,   // What: Read Persisted Function. Why: This reads the persisted state fresh, so an export never inherits a truncated in-memory pickLog. How: This exports reaPerFun under its own matching name.
 	reqPerFun   : reqPerFun,   // What: Request Persist Function. Why: This requests eviction-exempt storage. How: This exports reqPerFun under its own matching name.

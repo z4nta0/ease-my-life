@@ -371,6 +371,10 @@ Added 2026-10-20. None of this is secret: the security is in
   - `idbboots`: the count of clean IndexedDB boots, which gates the sweep.
   - `snapshot.pre-idb`: a rollback copy from the first IndexedDB migration,
     retired after a few clean boots.
+  - `notifyasked`: whether the app already asked for notification
+    permission.
+  - `notifiedday`: the last local day a notification fired, so it fires
+    once a day.
   - `persistasked`: whether the app already asked for persistent storage.
   - `signedin`: `1` once this device has signed in, so Firebase loads at
     launch.

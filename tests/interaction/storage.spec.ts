@@ -377,6 +377,36 @@ test( 'the persistence prompt key survives the boot sweep of old storage', async
 
 
 
+test( 'the notification keys survive the boot sweep of old storage', async ( { page : curPagObj } ) => { // What: Notification Key Survival Test. Why: The sweep of dead storage keys used to delete the keys recording that notification permission was asked for and which day last notified, so the app asked again and notified again. How: This sets both keys and a dead one, relaunches past the sweep's boot count, and checks which remain.
+
+
+	await curPagObj.evaluate( () => { // What: Key Seed Call. Why: The sweep runs once enough clean boots have passed, and needs a dead key to prove it ran. How: This sets both notification keys, a dead pre-IndexedDB copy, and a boot count past the threshold.
+
+
+		localStorage.setItem( 'easemylife.idbboots', '5' );             // What: Boot Count Seed. Why: The sweep only runs after three clean boots. How: This starts the count past them.
+		localStorage.setItem( 'easemylife.notifyasked', '1' );          // What: Asked Key Seed. Why: This is one key that must survive. How: This marks notification permission as asked.
+		localStorage.setItem( 'easemylife.notifiedday', '2026-11-21' ); // What: Day Key Seed. Why: This is the other key that must survive. How: This records a last-notified day.
+		localStorage.setItem( 'easemylife.v1', '{}' );                  // What: Dead Key Seed. Why: The sweep has to be seen removing something. How: This writes an old generation's key.
+
+
+	} );
+
+
+
+	await relAppFun( curPagObj, null ); // What: Healthy Relaunch Call. Why: The sweep runs on a clean IndexedDB boot. How: This relaunches with no fault.
+
+
+
+	const keyValArr = await curPagObj.evaluate( () => [ localStorage.getItem( 'easemylife.notifyasked' ), localStorage.getItem( 'easemylife.notifiedday' ), localStorage.getItem( 'easemylife.v1' ) ] ); // What: Key Value Array. Why: All three keys are checked after the sweep. How: This reads both notification keys and the dead key.
+
+
+
+	expect( keyValArr ).toEqual( [ '1', '2026-11-21', null ] ); // What: Sweep Assertion. Why: The sweep must remove the dead key and keep both notification keys. How: This expects both kept and the dead key gone.
+
+
+} );
+
+
 // #endregion Module Init
 
 

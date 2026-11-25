@@ -3,7 +3,8 @@
 
 // #region Imports
 
-import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Function. Why: Permission changes reach this module's own subscribers. How: This makes the subscriber set once, in Module State.
+import { STG_NAM_OBJ } from '../state/storage.ts';     // What: Storage Namespace Object. Why: The once-asked and once-per-day keys live in storage.ts, where the boot sweep's kept-key list names them. How: This reads those two keys from the namespace object.
+import { subMakFun   } from '../utils/subscribers.ts'; // What: Subscriber Make Function. Why: Permission changes reach this module's own subscribers. How: This makes the subscriber set once, in Module State.
 
 // #endregion Imports
 
@@ -28,7 +29,6 @@ import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Fu
  *
  * Sections:
  *  - Types
- *  - Constants
  *  - Module State
  *  - Helpers
  *  - Exports
@@ -44,15 +44,6 @@ import { subMakFun } from '../utils/subscribers.ts'; // What: Subscriber Make Fu
 type PerStaTyp = NotificationPermission | 'unsupported'; // What: Permission State Type. Why: Callers show the browser's notification permission, or that the browser has no Notification API at all. How: This is the browser's own permission value plus 'unsupported'.
 
 // #endregion Types
-
-
-
-// #region Constants
-
-const ASK_KEY_STR = 'easemylife.notifyasked'; // What: Ask Key String. Why: This is the localStorage key that tracks whether permission has already been requested once. How: This is read by askCheFun and written by askOncFun/reqPerFun below.
-const DAY_KEY_STR = 'easemylife.notifiedday'; // What: Day Key String. Why: This is the localStorage key that tracks the last local day this module already notified on. How: This is read/written by stoGetFun/stoSetFun inside genNotFun's own once-per-day guard below.
-
-// #endregion Constants
 
 
 
@@ -130,7 +121,7 @@ const locDayFun = ( dayDatObj : Date ) => `${ dayDatObj.getFullYear() }-${ padZe
 
 // #region Permission Requests
 
-const askCheFun = () => !!stoGetFun( ASK_KEY_STR );                // What: Ask Check Function. Why: askOncFun below must not prompt again once a prompt has been answered. How: This reports whether the one-time "asked" flag has already been written.
+const askCheFun = () => !!stoGetFun( STG_NAM_OBJ.NOT_ASK_STR );    // What: Ask Check Function. Why: askOncFun below must not prompt again once a prompt has been answered. How: This reports whether the one-time "asked" flag has already been written.
 const notSupFun = () => typeof window.Notification === 'function'; // What: Notification Support Function. Why: Every other function below needs to know whether the browser has the Notification API at all before doing anything else with it. How: This checks that window.Notification exists and is itself a function.
 
 
@@ -214,7 +205,7 @@ async function askOncFun () : Promise< PerStaTyp > {
 
 
 
-	if ( perResStr !== 'default' ) stoSetFun( ASK_KEY_STR, '1' ); // What: Ask Flag Write Guard. Why: The one-time "asked" flag must only be burned once the user has actually answered the prompt; a dismissal leaves the permission at 'default' and should still be askable later. How: This writes the flag only when perResStr resolved to something other than 'default'.
+	if ( perResStr !== 'default' ) stoSetFun( STG_NAM_OBJ.NOT_ASK_STR, '1' ); // What: Ask Flag Write Guard. Why: The one-time "asked" flag must only be burned once the user has actually answered the prompt; a dismissal leaves the permission at 'default' and should still be askable later. How: This writes the flag only when perResStr resolved to something other than 'default'.
 
 
 
@@ -263,7 +254,7 @@ async function reqPerFun () : Promise< PerStaTyp > {
 
 
 
-	stoSetFun( ASK_KEY_STR, '1' ); // What: Ask Flag Write. Why: Re-asking is an explicit request, the same signal askOncFun's own one-time flag exists to capture. How: This writes the flag unconditionally, so askOncFun never prompts on its own afterwards.
+	stoSetFun( STG_NAM_OBJ.NOT_ASK_STR, '1' ); // What: Ask Flag Write. Why: Re-asking is an explicit request, the same signal askOncFun's own one-time flag exists to capture. How: This writes the flag unconditionally, so askOncFun never prompts on its own afterwards.
 
 
 
@@ -349,11 +340,11 @@ async function genNotFun () : Promise< boolean > {
 	const curDayStr = locDayFun( new Date() ); // What: Current Day String. Why: The once-per-day guard below needs today's own local-day string to compare against. How: This calls locDayFun with a freshly-constructed Date for right now.
 
 
-	if ( stoGetFun( DAY_KEY_STR ) === curDayStr ) return false; // What: Already Notified Guard. Why: This local day must not notify more than once, even across a page reload. How: This compares the persisted last-notified day against curDayStr and returns early on a match.
+	if ( stoGetFun( STG_NAM_OBJ.NOT_DAY_STR ) === curDayStr ) return false; // What: Already Notified Guard. Why: This local day must not notify more than once, even across a page reload. How: This compares the persisted last-notified day against curDayStr and returns early on a match.
 
 
 
-	stoSetFun( DAY_KEY_STR, curDayStr ); // What: Day Claim Write. Why: The day must be claimed before the async work below, so two near-simultaneous calls can't both get past the guard above. How: This writes curDayStr as the new last-notified day immediately, ahead of any await.
+	stoSetFun( STG_NAM_OBJ.NOT_DAY_STR, curDayStr ); // What: Day Claim Write. Why: The day must be claimed before the async work below, so two near-simultaneous calls can't both get past the guard above. How: This writes curDayStr as the new last-notified day immediately, ahead of any await.
 
 	// #endregion Daily Claim
 
@@ -448,7 +439,7 @@ async function genNotFun () : Promise< boolean > {
 		console.warn( errCatObj ); // What: Error Warning Call. Why: A real failure here should stay visible to anyone debugging. How: This logs the caught error as a console warning.
 
 
-		if ( stoGetFun( DAY_KEY_STR ) === curDayStr ) stoSetFun( DAY_KEY_STR, '' ); // What: Day Release Guard. Why: Both notification paths having failed means a later attempt should still be allowed to notify for this same day. How: This clears the claimed day back out, but only if nothing else has already claimed a different one since.
+		if ( stoGetFun( STG_NAM_OBJ.NOT_DAY_STR ) === curDayStr ) stoSetFun( STG_NAM_OBJ.NOT_DAY_STR, '' ); // What: Day Release Guard. Why: Both notification paths having failed means a later attempt should still be allowed to notify for this same day. How: This clears the claimed day back out, but only if nothing else has already claimed a different one since.
 
 
 
