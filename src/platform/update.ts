@@ -279,7 +279,7 @@ const UPD_NAM_OBJ = { // What: Update Namespace Object. Why: This gathers the up
 
 
 
-export { UPD_NAM_OBJ }; // What: Named Export. Why: The one object carries every update operation. How: This exports UPD_NAM_OBJ by name.
+export { UPD_NAM_OBJ }; // What: Named Export. Why: The one object carries the update operations this file offers. How: This exports UPD_NAM_OBJ by name.
 
 // #endregion Exports
 

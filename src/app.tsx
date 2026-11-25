@@ -755,7 +755,7 @@ function AppRooCom () : React.JSX.Element {
 					aria-hidden='true'
 
 					onClick={ () => setRaiOpeBoo( false ) }
-				/> // What: Rail Scrim Div Element. Why: A tap on the dimmed area outside an open rail drawer should close it. How: This renders a full-screen overlay that closes the rail when clicked, hidden from screen readers since it's purely a visual/interaction affordance.
+				/> // What: Rail Scrim Div Element. Why: A tap on the dimmed area outside an open rail drawer should close it. How: This renders a full-screen overlay that closes the rail when clicked, drawn only in the side placement when the app is 720px wide or less, and hidden from screen readers since it's purely a visual/interaction affordance.
 
 
 			) }
