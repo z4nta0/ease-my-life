@@ -882,7 +882,7 @@ function shaRadFun ( tarDomEle : HTMLElement, padWidNum : number, padHeiNum : nu
 
 
 
-	if ( pixValNum >= 24 ) return defRadFun(); // What: Pill Cap Guard. Why: A "pill" source radius renders visibly faceted through the SVG mask's own radXcoNum/radYcoNum math at extreme values, confirmed against plain CSS border-radius. How: This caps anything at or past 24px down to the app's own default radius instead.
+	if ( pixValNum >= rhyPixFun( 'p02' ) ) return defRadFun(); // What: Pill Cap Guard. Why: A "pill" source radius renders visibly faceted through the SVG mask's own radXcoNum/radYcoNum math at extreme values, confirmed against plain CSS border-radius, and the cap sits one step above the radius scale's largest so it follows the root font size. How: This caps anything at or past the p02 rhythm step down to the app's own default radius instead. // Vertical Rhythm Base Plus 2 ~= 25.572px
 
 
 

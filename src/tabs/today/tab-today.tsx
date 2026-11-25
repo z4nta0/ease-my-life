@@ -1661,7 +1661,7 @@ function TabTodCom ( { actStoObj, onNavHomFun, onNavTabFun, onStaFeaFun, onStaPa
 
 			const tabCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="todTabDiv"]' ); // What: Tab Current Element. Why: The sticky offset custom property lives on the tab's own root. How: This walks up from maiScrRef.current to its nearest todTabDiv hook ancestor.
 			const stiHeiNum = stiHeiFun( tabCurEle );                                                // What: Sticky Height Number. Why: This is the exact offset the sticky-offset effect above publishes. How: This reads the --sti-top-hei custom property, falling back to the p09 rhythm step.
-			const biaLinNum = stiHeiNum + 20;                                                        // What: Bias Line Number. Why: A small extra margin beyond the raw sticky offset reads as more natural than snapping exactly at the pixel boundary. How: This adds a fixed 20px to stiHeiNum.
+			const biaLinNum = stiHeiNum + rhyPixFun( 'p01' );                                        // What: Bias Line Number. Why: A small extra margin beyond the raw sticky offset reads as more natural than snapping exactly at the pixel boundary. How: This adds the p01 rhythm step to stiHeiNum. // Vertical Rhythm Base Plus 1 ~= 19.304px
 			const scrCurEle = maiScrRef.current?.closest( '[data-element-name-hook~="appConMai"]' ); // What: Scroller Current Element. Why: The bottomed-out check below needs the real scroll container, not the window, whenever one exists. How: This walks up from maiScrRef.current to its nearest appConMai hook ancestor.
 
 

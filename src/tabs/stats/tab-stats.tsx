@@ -116,7 +116,7 @@ const SOU_MET_ARR = [ // What: Source Meta Array. Why: This defines how each Tod
 
 
 	{ colStr : 'var(--acc-mai-col)',                                             keyStr : 'auto',   labStr : 'Auto Generated' }, // What: Auto Source Object. Why: Auto-generated picks come from the Daily generator. How: This colors them with the plain accent. // Accent Main Color = oklch( 0.5 0.14 250 )
-	{ colStr : 'oklch(from var(--acc-mai-col) calc(l + 0.22) calc(c - 0.05) h)', keyStr : 'reroll', labStr : 'Re-Rolled'      }, // What: Reroll Source Object. Why: A re-rolled pick replaced an earlier one on Today. How: This colors it with a lighter, softer accent. // Accent Main Color = oklch( 0.5 0.14 250 )
+	{ colStr : 'oklch(from var(--acc-mai-col) calc(l + 0.22) calc(c - 0.05) h)', keyStr : 'reroll', labStr : 'Re-Rolled'      }, // What: Reroll Source Object. Why: A re-rolled pick replaced an earlier one on Today. How: This colors it with a lighter, softer accent. // Accent Main Color = oklch( 0.5 0.14 250 ), lightened by 0.22 and desaturated by 0.05
 	{ colStr : 'var(--acc-sec-col)',                                             keyStr : 'manual', labStr : 'Hand Picked'    }  // What: Manual Source Object. Why: A hand-picked item was chosen with Pick One on the Pickers page. How: This colors it with the warm tone. // Accent Secondary Color = oklch( 0.62 0.13 50 )
 
 

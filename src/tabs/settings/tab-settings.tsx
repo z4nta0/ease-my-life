@@ -523,7 +523,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 
 
 
-			const basLinNum = ( scrConEle ? scrConEle.getBoundingClientRect().top : 0 ) + stiOffFun() + 8; // What: Base Line Number. Why: A section only counts as "reached" once its own top has scrolled up past this line. How: This adds the sticky offset plus an 8px margin to the scroll container's own top (or 0 for the window case).
+			const basLinNum = ( scrConEle ? scrConEle.getBoundingClientRect().top : 0 ) + stiOffFun() + rhyPixFun( 'm02' ); // What: Base Line Number. Why: A section only counts as "reached" once its own top has scrolled up past this line. How: This adds the sticky offset plus an m02 rhythm step of margin to the scroll container's own top (or 0 for the window case). // Vertical Rhythm Base Minus 2 ~= 8.304px
 
 
 			let besIdeStr = secEntArr[ 0 ][ 0 ]; // What: Best Identifier String. Why: Some section must always end up active, defaulting to the very first one. How: This starts at the first entry's own id and is overwritten below as later, already-reached sections are found.
