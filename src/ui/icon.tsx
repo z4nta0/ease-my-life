@@ -54,7 +54,7 @@ type IscProTyp = { className? : string, icoNamStr : string, sizSteStr? : string 
  *
 */
 
-const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : React.JSX.Element => { // What: Icon SVG Component. Why: The app's buttons, rows, and controls need small recognizable glyphs. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step.
+const IcoSvgCom = ( { className, icoNamStr, sizSteStr = 'p01' } : IscProTyp ) : React.JSX.Element => { // What: Icon SVG Component. Why: The app's buttons, rows, and controls need small recognizable glyphs. How: This looks up icoNamStr in icoPatObj and renders the matching SVG shape at the sizSteStr rhythm step. // Vertical Rhythm Base Plus 1 ~= 19.304px
 
 
 	const icoPatObj : Record< string, React.JSX.Element > = { // What: Icon Path Object. Why: This is the lookup table mapping every icon name to its own inline SVG shape markup. How: This is indexed below by the icoNamStr prop to pick which shape the rendered svg actually draws.
