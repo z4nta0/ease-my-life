@@ -9,7 +9,7 @@
  * sticky column on wide screens, a sticky scrolling pill bar with edge fades
  * on narrow ones) to the sections' rows, such as the storage panel's chips.
  * Its states key off presence-only data-*-active attributes, and a switch off
- * its own aria-pressed. Each data row hands the segmented control and the
+ * its own aria-pressed. Each settings row hands the segmented control and the
  * button their no-shrink, no-wrap sizing through custom properties.
  *
  * @author z4nta0 <https://github.com/z4nta0>

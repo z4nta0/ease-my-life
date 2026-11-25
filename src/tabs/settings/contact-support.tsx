@@ -549,7 +549,7 @@ function ConSupCom () : React.JSX.Element {
 						className={ cssModObj.supForDiv }
 
 						data-element-name-hook='supForDiv'
-					>{ /* What: Support Form Div Element. Why: This is the form's own root, giving opeForFun a stable element to measure and scroll to. How: This wraps the subject/message fields, the diagnostic fields, the honeypot, and the form's own footer buttons. Its data-element-name-hook is read by help mode and the update check. */ }
+					>{ /* What: Support Form Div Element. Why: This is the form's own root, giving opeForFun a stable element to measure and scroll to. How: This wraps the subject/message fields, the diagnostic fields, the honeypot, and the form's footer, which holds the notes and the action buttons. Its data-element-name-hook is read by help mode and the update check. */ }
 
 
 						<label className={ cssModObj.supFieLab }>{ /* What: Support Field Label Element. Why: The subject input needs its own labeled field wrapper, matching the message field below. How: This wraps the visible field label and the subject input itself. */ }

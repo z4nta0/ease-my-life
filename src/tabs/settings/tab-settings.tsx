@@ -1528,7 +1528,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 							viewBox='8 8 528 528'
 
 							aria-hidden='true'
-						>{ /* What: Brand Mark SVG Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a grid, a rounded-square badge outline, and a clipped glyph path. */ }
+						>{ /* What: Brand Mark SVG Element. Why: This draws the small square "Ease My Life" logo mark. How: This is a fixed-viewBox icon composed of a clip definition, a grid, a rounded-square badge outline, and a clipped glyph path. */ }
 
 
 							<defs>{ /* What: Clip Defs Element. Why: An SVG clipPath can only be applied via a defined, referenced id, not inline. How: This holds the one clipPath definition the glyph path below references. */ }
@@ -1958,7 +1958,7 @@ function TabSetCom ( { accSynObj, actStoObj, onNavHomFun, onNavTabFun, staAppObj
 											key={ ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' } // What: Placement Description Key. Why: The description fades whenever the placement changes. How: This keys the span on the saved tabPlacement, or 'bottom' when none is saved.
 
 											className={` ${ cssModObj.setSubSpa }   ${ cssModObj.setSubSpaFade }   ${ cssModObj.setSubSpaLayout } `}
-										>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the selected placement, and should fade between versions. How: This remounts (via its own placement key) and renders whichever of 3 explanatory sentences matches the current placement. Its layout modifier caps its width so the segmented control keeps room on its line. */ }
+										>{ /* What: Settings Sub Span Element. Why: This row's own description changes meaning based on the selected placement, and should fade between versions. How: This remounts (via its own placement key) and renders whichever of 3 explanatory sentences matches the current placement. Its layout modifier caps its width so the segmented control keeps room on its line, and the cap lifts once the row stacks at 500px wide or less. */ }
 
 
 											{ ( ( staAppObj.appearance && staAppObj.appearance.tabPlacement ) || 'bottom' ) === 'bottom' ? ( // What: Bottom Placement Check. Why: The description names wherever the tab bar currently sits. How: This renders the bottom copy while tabPlacement is 'bottom' (or unset).
