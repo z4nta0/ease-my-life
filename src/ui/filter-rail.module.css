@@ -132,8 +132,8 @@
 .filPilBut[aria-selected='true']:hover { /* What: Hovered Selected Filter Pill Button. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent a step. */
 
 
-	border-color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
-	color        : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
+	border-color : var( --acc-dar-col ); /* Accent Dark Color = the accent darkened by 0.1 */
+	color        : var( --acc-dar-col ); /* Accent Dark Color = the accent darkened by 0.1 */
 
 
 }
@@ -182,7 +182,7 @@
 
 
 	background : oklch( from var( --acc-mai-col ) l c h / 0.16 );            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	color      : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */ /* What: Darkened Accent Text. Why: The plain accent on its own tint falls just short of text contrast at this small size. How: This darkens it by 0.1 in lightness. */
+	color      : var( --acc-dar-col ); /* Accent Dark Color = the accent darkened by 0.1 */ /* What: Darkened Accent Text. Why: The plain accent on its own tint falls just short of text contrast at this small size. How: This darkens it by 0.1 in lightness. */
 
 
 }

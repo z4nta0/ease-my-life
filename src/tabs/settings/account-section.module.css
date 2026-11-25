@@ -175,7 +175,7 @@
 .gooLinAnc:hover { /* What: Hovered Google Link Anchor. Why: A link should answer the pointer. How: This darkens the accent a step. */
 
 
-	color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	color : var( --acc-dar-col ); /* Accent Dark Color = the accent darkened by 0.1 */
 
 
 }

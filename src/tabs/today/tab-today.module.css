@@ -1497,8 +1497,8 @@
 .raiGroBut[data-rail-select-active]:hover { /* What: Hovered Selected Rail Group Button. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent a step. */
 
 
-	border-color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
-	color        : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
+	border-color : var( --acc-dar-col ); /* Accent Dark Color = the accent darkened by 0.1 */
+	color        : var( --acc-dar-col ); /* Accent Dark Color = the accent darkened by 0.1 */
 
 
 }
@@ -1658,8 +1658,8 @@
 .ediRaiBut[data-edit-mode-active]:hover { /* What: Hovered Active Edit Rail Button. Why: A chosen control a person can still click should still answer the pointer. How: This darkens its accent a step. */
 
 
-	border-color : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
-	color        : oklch( from var( --acc-mai-col ) calc( l - 0.1 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ), darkened by 0.1 */
+	border-color : var( --acc-dar-col ); /* Accent Dark Color = the accent darkened by 0.1 */
+	color        : var( --acc-dar-col ); /* Accent Dark Color = the accent darkened by 0.1 */
 
 
 }
