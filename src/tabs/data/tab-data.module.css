@@ -869,7 +869,7 @@
 	align-items : center;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : var( --spa-ver-m01 ); /* Spacing Vertical Base Minus 1 = 11px */
+	gap         : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
 
 
 }
@@ -897,7 +897,7 @@
 	align-items : center;
 	display     : flex;
 	flex        : 0 0 auto;
-	gap         : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	gap         : var( --spa-hor-m02 ); /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 
 
 }

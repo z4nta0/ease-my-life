@@ -396,7 +396,7 @@
 
 
 	cursor         : default;
-	opacity        : 0.4;
+	opacity        : var( --cdn-pow-003-rec ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 	pointer-events : none;
 
 
@@ -1103,7 +1103,7 @@
 
 
 		opacity   : var( --cdn-pow-004-rec ); /* Core-Design-Number to the Power of 4 Reciprocal ~= 0.325 */
-		transform : scale( .4 );
+		transform : scale( var( --cdn-pow-003-rec ) ); /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 
 
 	}
