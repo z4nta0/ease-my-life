@@ -367,10 +367,10 @@
 
 
 }
-.groPilBut--new.groPilBut--returning { /* What: Group Pill Button New Returning. Why: After the inline input closes, the pill pops back in, mirroring how it left. How: This plays a springy scale-in while the returning class is set. */
+.groPilBut--new.groPilBut--returning { /* What: Group Pill Button New Returning. Why: After the inline input closes, the pill pops back in, mirroring how it left. How: This plays a scale-in with a gentle overshoot while the returning class is set. */
 
 
-	animation : groPilButReturnPopIn var( --dur-ani-p01 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : groPilButReturnPopIn var( --dur-ani-p01 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 1 ~= 209.1ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 
 
 }

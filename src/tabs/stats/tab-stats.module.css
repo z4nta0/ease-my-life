@@ -1215,7 +1215,7 @@
 	outline            : var( --bor-wid-lar ) solid transparent;                                                                       /* Border Width Large ~= 2.035px */
 	outline-offset     : var( --bor-wid-lar );                                                                                         /* Border Width Large ~= 2.035px */
 	padding            : 0;
-	transition         : outline-color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms */
+	transition         : outline-color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width              : 100%;
 
 
@@ -1304,7 +1304,8 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Heat Cell Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.hetCelBut { /* What: Still Heat Cell Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+	.hetCelIta,
+	.hetCelBut { /* What: Still Heat Cell Italic And Button. Why: The change should happen at once, the press still applying. How: This turns their transition off. */
 
 
 		transition : none;
