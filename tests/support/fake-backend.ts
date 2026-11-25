@@ -3,8 +3,13 @@
 
 // #region Imports
 
-import type { SynBacTyp } from '../../src/state/sync-engine.ts'; // What: Sync Backend Type. Why: The fake has to offer the same calls as the real backend. How: This types it.
-import type { SynManTyp } from '../../src/state/sync-engine.ts'; // What: Sync Manifest Type. Why: The fake stores one manifest. How: This types it.
+import { oldVerFun } from '../../src/state/sync-versions.ts'; // What: Old Version Function. Why: The fake retires old versions by the real backend's rule. How: This lists the version keys to delete.
+import { verKeyFun } from '../../src/state/sync-versions.ts'; // What: Version Key Function. Why: The fake stores versions under the real backend's names. How: This joins a document's id and hash.
+
+
+import type { CldManTyp } from '../../src/state/sync-versions.ts'; // What: Cloud Manifest Type. Why: The fake hands the retirement rule the manifest with its prior, as the real backend does. How: This types it.
+import type { SynBacTyp } from '../../src/state/sync-engine.ts';   // What: Sync Backend Type. Why: The fake has to offer the same calls as the real backend. How: This types it.
+import type { SynManTyp } from '../../src/state/sync-engine.ts';   // What: Sync Manifest Type. Why: The fake stores one manifest. How: This types it.
 
 // #endregion Imports
 
@@ -19,9 +24,11 @@ import type { SynManTyp } from '../../src/state/sync-engine.ts'; // What: Sync M
  * an upload only when the manifest's revision is still the one the upload was
  * built from, as the real backend's transaction does, and records the ids of
  * each download and each committed upload, so a test can check what a sync
- * downloaded and uploaded. A test can also make the next uploads lose the
- * race, as if another device had committed first, or delete the manifest, as
- * if another device had deleted the cloud copy.
+ * downloaded and uploaded. It also keeps every version beside the old ones
+ * and retires them after each upload by the real backend's own rule, so a
+ * test can check which versions remain. A test can also make the next
+ * uploads lose the race, as if another device had committed first, or delete
+ * the manifest, as if another device had deleted the cloud copy.
  *
  * Sections:
  *  - Helpers
@@ -43,7 +50,9 @@ type FakBacTyp = SynBacTyp & { // What: Fake Backend Type. Why: Tests read what 
 	manCurFun : () => SynManTyp | null, // What: Manifest Current Function. Why: Tests read the stored manifest. How: This returns it.
 	manDelFun : () => void,             // What: Manifest Delete Function. Why: A test can delete the cloud copy from another device. How: This removes the stored manifest.
 	putIdeArr : string[][],             // What: Put Identifier Array. Why: Tests check which documents a sync uploaded. How: This records the ids of each committed upload.
-	rejCouObj : { couNum : number }     // What: Reject Count Object. Why: A test can make uploads lose the race. How: This counts how many of the next uploads are refused.
+	rejCouObj : { couNum : number },    // What: Reject Count Object. Why: A test can make uploads lose the race. How: This counts how many of the next uploads are refused.
+
+	verKeySet : Set< string >           // What: Version Key Set. Why: Tests check which stored versions remain after cleanup. How: This holds each stored version's key, the document id and hash.
 
 
 };
@@ -80,7 +89,10 @@ function fakBacFun () : FakBacTyp {
 	const getIdeArr : string[][] = []; // What: Get Identifier Array. Why: Downloads are recorded for tests. How: Each entry is one download's ids.
 	const putIdeArr : string[][] = []; // What: Put Identifier Array. Why: Uploads are recorded for tests. How: Each entry is one committed upload's ids.
 
-	let manCurObj : SynManTyp | null = null; // What: Manifest Current Object. Why: The fake holds one manifest. How: This is null until the first upload.
+	const verKeySet = new Set< string >(); // What: Version Key Set. Why: The real backend keeps every version beside the old ones until cleanup deletes it. How: This holds each stored version's key.
+
+	let manCurObj : SynManTyp | null = null;       // What: Manifest Current Object. Why: The fake holds one manifest. How: This is null until the first upload.
+	let priHasObj : Record< string, string > = {}; // What: Prior Hash Object. Why: The real manifest lists the replaced revision's hashes as prior, for cleanup. How: This holds them, empty before the first commit.
 
 
 
@@ -94,6 +106,7 @@ function fakBacFun () : FakBacTyp {
 		manDelFun : () => { manCurObj = null; },                           // What: Manifest Delete Function. Why: Tests delete the cloud copy. How: This removes the manifest.
 		putIdeArr,                                                         // What: Put Identifier Array. Why: Tests read the uploads. How: This shares the record.
 		rejCouObj,                                                         // What: Reject Count Object. Why: Tests fake a lost race through it. How: This shares the counter.
+		verKeySet,                                                         // What: Version Key Set. Why: Tests read the stored versions. How: This shares the set.
 
 		getDocFun : async ( docHasObj ) => { // What: Get Document Function. Why: A sync downloads the documents it needs. How: This records the ids and returns each stored text.
 
@@ -117,7 +130,32 @@ function fakBacFun () : FakBacTyp {
 
 
 
-			if ( rejCouObj.couNum > 0 || curRevNum !== basRevNum ) { rejCouObj.couNum = Math.max( 0, rejCouObj.couNum - 1 ); return false; } // What: Lost Race Guard. Why: Another device committed first, really or as a test fakes it. How: This counts down any faked refusal and refuses.
+			const newKeyArr = Object.entries( docTexObj ).flatMap( ( [ docIdeStr, docTexStr ] ) : string[] => docTexStr === null ? [] : [ verKeyFun( docIdeStr, manNewObj.docs[ docIdeStr ] ) ] ); // What: New Key Array. Why: The real backend writes each new version before it tries to commit. How: This names the version of every uploaded document.
+			const curCldObj : CldManTyp | null = manCurObj && { ...manCurObj, prior : priHasObj };                                                                                                    // What: Current Cloud Object. Why: The retirement rule reads the stored manifest with its prior. How: This adds the prior hashes to the stored manifest.
+
+
+
+			const losRacBoo = rejCouObj.couNum > 0 || curRevNum !== basRevNum; // What: Lost Race Boolean. Why: Another device committed first, really or as a test fakes it. How: This is true when the upload is refused.
+
+
+
+			for ( const verKeyStr of newKeyArr ) verKeySet.add( verKeyStr ); // What: Version Write Loop. Why: The new versions are stored even when the commit then loses. How: This adds each key.
+
+
+
+			if ( losRacBoo ) { // What: Lost Race Guard. Why: A lost race deletes the versions it uploaded for nothing, and refuses the upload. How: This retires them by the real rule, counts the refusal down, and returns false.
+
+
+				for ( const garKeyStr of oldVerFun( curCldObj, manNewObj, false, newKeyArr ) ) verKeySet.delete( garKeyStr ); // What: Lost Race Cleanup. Why: Only versions no kept manifest lists may go. How: This deletes what the rule returns.
+
+
+				rejCouObj.couNum = Math.max( 0, rejCouObj.couNum - 1 ); // What: Reject Count Decrement. Why: One refusal is used up. How: This counts down toward 0.
+
+
+				return false; // What: Refused Return. Why: The engine starts over when the race was lost. How: This reports the refusal.
+
+
+			}
 
 
 
@@ -133,7 +171,12 @@ function fakBacFun () : FakBacTyp {
 
 
 
-			manCurObj = structuredClone( manNewObj );   // What: Manifest Write. Why: The manifest commits with the documents. How: This stores a copy.
+			for ( const garKeyStr of oldVerFun( curCldObj, manNewObj, true, newKeyArr ) ) verKeySet.delete( garKeyStr ); // What: Commit Cleanup. Why: A commit retires what the replaced manifest's prior listed. How: This deletes what the rule returns.
+
+
+
+			priHasObj = manCurObj ? manCurObj.docs : {}; // What: Prior Write. Why: The replaced hashes become the new prior. How: This keeps the replaced manifest's hashes.
+			manCurObj = structuredClone( manNewObj );    // What: Manifest Write. Why: The manifest commits with the documents. How: This stores a copy.
 			putIdeArr.push( Object.keys( docTexObj ) ); // What: Upload Record. Why: Tests check what was uploaded. How: This adds the ids.
 
 

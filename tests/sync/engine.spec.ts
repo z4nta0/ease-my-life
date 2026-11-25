@@ -373,6 +373,63 @@ test( 'a cloud copy saved by a newer schema is left alone', async () => { // Wha
 
 } );
 
+
+
+test( 'a commit deletes the version two revisions old and keeps the versions the manifest still lists', async () => { // What: Old Version Cleanup Test. Why: The cloud copy used to keep every old version forever, since cleanup spared the replaced manifest's prior. How: This changes core over four syncs, one of them losing a race, and checks which stored versions remain after each.
+
+
+	// #region Revision Syncs
+
+	const fakBacObj = fakBacFun(); // What: Fake Backend Object. Why: The flow reads its stored versions. How: This creates one.
+
+
+
+	const oneResObj = await synRunFun( fakBacObj, staBuiFun( 'Dishes', [] ), 1000, null, TOD_DAY_STR ); // What: One Result Object. Why: The first revision stores core's first version. How: This syncs it.
+	const oneHasStr = fakBacObj.manCurFun()!.docs.core;                                                 // What: One Hash String. Why: The first version's key is checked later. How: This reads core's hash from the manifest. // What: Non-Null Note. Why: The first sync committed a manifest. How: The ! tells TypeScript it exists.
+	const oneKeyArr = [ ...fakBacObj.verKeySet ];                                                       // What: One Key Array. Why: After one revision only core's first version is stored. How: This lists the stored keys.
+
+
+
+	const twoResObj = await synRunFun( fakBacObj, staBuiFun( 'Laundry', [] ), 2000, oneResObj.synMetObj, TOD_DAY_STR ); // What: Two Result Object. Why: The second revision replaces core. How: This syncs a change.
+	const twoHasStr = fakBacObj.manCurFun()!.docs.core;                                                                 // What: Two Hash String. Why: The second version's key is checked later. How: This reads core's hash from the manifest. // What: Non-Null Note. Why: The second sync committed a manifest. How: The ! tells TypeScript it exists.
+	const twoKeyArr = [ ...fakBacObj.verKeySet ].sort();                                                                // What: Two Key Array. Why: After two revisions the first version is still the manifest's prior. How: This lists the stored keys.
+
+
+
+	const thrResObj = await synRunFun( fakBacObj, staBuiFun( 'Garden', [] ), 3000, twoResObj.synMetObj, TOD_DAY_STR ); // What: Three Result Object. Why: The third revision retires the first version. How: This syncs another change.
+	const thrHasStr = fakBacObj.manCurFun()!.docs.core;                                                                // What: Three Hash String. Why: The third version's key is checked later. How: This reads core's hash from the manifest. // What: Non-Null Note. Why: The third sync committed a manifest. How: The ! tells TypeScript it exists.
+	const thrKeyArr = [ ...fakBacObj.verKeySet ].sort();                                                               // What: Three Key Array. Why: After three revisions only the last two versions remain. How: This lists the stored keys.
+
+
+
+	fakBacObj.rejCouObj.couNum = 1; // What: Lost Race Setup. Why: The next upload loses once, then retries. How: This refuses one upload.
+
+
+
+	await synRunFun( fakBacObj, staBuiFun( 'Kitchen', [] ), 4000, thrResObj.synMetObj, TOD_DAY_STR ); // What: Race Sync Call. Why: The fourth revision uploads once for nothing before it commits. How: This syncs a change through one lost race.
+
+
+
+	const forHasStr = fakBacObj.manCurFun()!.docs.core;  // What: Four Hash String. Why: The fourth version's key is checked. How: This reads core's hash from the manifest. // What: Non-Null Note. Why: The fourth sync committed a manifest. How: The ! tells TypeScript it exists.
+	const forKeyArr = [ ...fakBacObj.verKeySet ].sort(); // What: Four Key Array. Why: The lost race left nothing behind, and the second version is retired. How: This lists the stored keys.
+
+	// #endregion Revision Syncs
+
+
+
+	// #region Version Checks
+
+	expect( oneKeyArr ).toEqual( [ `core~${ oneHasStr }` ] );                               // What: First Revision Assertion. Why: One revision stores one version. How: This expects core's first version alone.
+	expect( twoKeyArr ).toEqual( [ `core~${ oneHasStr }`, `core~${ twoHasStr }` ].sort() ); // What: Prior Kept Assertion. Why: The replaced version is the manifest's prior, which another device may still download. How: This expects both versions.
+	expect( thrKeyArr ).toEqual( [ `core~${ twoHasStr }`, `core~${ thrHasStr }` ].sort() ); // What: Old Version Assertion. Why: A version two revisions old is listed nowhere. How: This expects the first version gone and the second and third kept.
+	expect( forKeyArr ).toEqual( [ `core~${ thrHasStr }`, `core~${ forHasStr }` ].sort() ); // What: Lost Race Assertion. Why: A lost race deletes what it uploaded, and the commit after it retires the second version. How: This expects only the third and fourth versions.
+
+	// #endregion Version Checks
+
+
+} );
+
+
 // #endregion Module Init
 
 

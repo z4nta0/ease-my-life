@@ -3,19 +3,21 @@
 
 // #region Imports
 
-import { collection       } from 'firebase/firestore'; // What: Collection. Why: Deleting the copy lists every stored version. How: This names the account's versions collection.
-import { deleteDoc        } from 'firebase/firestore'; // What: Delete Doc. Why: Deleting the copy removes its manifest. How: This deletes one document.
-import { doc              } from 'firebase/firestore'; // What: Doc. Why: A version read or write names its document. How: This builds a reference to one.
-import { firStoObj        } from './firebase.ts';      // What: Firebase Store Object. Why: The cloud copy lives in this database. How: This is its instance.
-import { getDoc           } from 'firebase/firestore'; // What: Get Doc. Why: A document version never changes once written, so it can be read from anywhere. How: This reads one.
-import { getDocFromServer } from 'firebase/firestore'; // What: Get Doc From Server. Why: A sync must compare against the cloud's current manifest, never a cached one. How: This reads it from the server.
-import { getDocs          } from 'firebase/firestore'; // What: Get Docs. Why: Deleting the copy needs every stored version, listed or left over. How: This reads the whole collection.
-import { runTransaction   } from 'firebase/firestore'; // What: Run Transaction. Why: The manifest only changes when it's still at the revision an upload was built on. How: This reads and writes it atomically.
-import { writeBatch       } from 'firebase/firestore'; // What: Write Batch. Why: Versions are uploaded and cleaned up many at a time. How: This groups writes into one request.
+import { collection       } from 'firebase/firestore';        // What: Collection. Why: Deleting the copy lists every stored version. How: This names the account's versions collection.
+import { deleteDoc        } from 'firebase/firestore';        // What: Delete Doc. Why: Deleting the copy removes its manifest. How: This deletes one document.
+import { doc              } from 'firebase/firestore';        // What: Doc. Why: A version read or write names its document. How: This builds a reference to one.
+import { firStoObj        } from './firebase.ts';             // What: Firebase Store Object. Why: The cloud copy lives in this database. How: This is its instance.
+import { getDoc           } from 'firebase/firestore';        // What: Get Doc. Why: A document version never changes once written, so it can be read from anywhere. How: This reads one.
+import { getDocFromServer } from 'firebase/firestore';        // What: Get Doc From Server. Why: A sync must compare against the cloud's current manifest, never a cached one. How: This reads it from the server.
+import { getDocs          } from 'firebase/firestore';        // What: Get Docs. Why: Deleting the copy needs every stored version, listed or left over. How: This reads the whole collection.
+import { oldVerFun        } from '../state/sync-versions.ts'; // What: Old Version Function. Why: What an upload retires is decided apart from Firebase, so the tests apply the same rule. How: This lists the version keys to delete.
+import { runTransaction   } from 'firebase/firestore';        // What: Run Transaction. Why: The manifest only changes when it's still at the revision an upload was built on. How: This reads and writes it atomically.
+import { verKeyFun        } from '../state/sync-versions.ts'; // What: Version Key Function. Why: Each version of a document has its own name. How: This joins a document's id and hash.
+import { writeBatch       } from 'firebase/firestore';        // What: Write Batch. Why: Versions are uploaded and cleaned up many at a time. How: This groups writes into one request.
 
 
-import type { SynBacTyp } from '../state/sync-engine.ts'; // What: Sync Backend Type. Why: This file is the engine's real backend. How: This types what it returns.
-import type { SynManTyp } from '../state/sync-engine.ts'; // What: Sync Manifest Type. Why: The manifest is read and written here. How: This types it.
+import type { CldManTyp } from '../state/sync-versions.ts'; // What: Cloud Manifest Type. Why: The stored manifest also lists the previous revision's hashes. How: This types it.
+import type { SynBacTyp } from '../state/sync-engine.ts';   // What: Sync Backend Type. Why: This file is the engine's real backend. How: This types what it returns.
 
 // #endregion Imports
 
@@ -36,7 +38,8 @@ import type { SynManTyp } from '../state/sync-engine.ts'; // What: Sync Manifest
  * leaves the manifest as it was.
  *
  * Old versions are deleted one revision late: a commit removes the versions
- * the previous manifest's prior listed, unless they're still in use. Another
+ * the previous manifest's prior listed, unless the replaced or new manifest
+ * still lists them. Another
  * device that read the manifest just before the commit can still download
  * what it listed. A lost race deletes the versions it uploaded for nothing.
  * Cleanup is best effort, since a leftover version costs a little storage
@@ -64,7 +67,6 @@ const BAT_WRI_NUM = 400;     // What: Batch Writes Number. Why: Firestore caps o
 
 // #region Helpers
 
-const verKeyFun = ( docIdeStr : string, docHasStr : string ) => `${ docIdeStr }~${ docHasStr }`; // What: Version Key Function. Why: Each version of a document has its own name. How: This joins the document's id and hash.
 
 
 
@@ -148,7 +150,6 @@ async function wriBatFun ( uidValStr : string, verEntArr : [ string, string | nu
 
 
 
-type CldManTyp = SynManTyp & { prior : Record< string, string > }; // What: Cloud Manifest Type. Why: The stored manifest also lists the previous revision's hashes, for cleanup. How: This adds prior to the engine's manifest.
 
 // #region cldBacFun
 
@@ -267,14 +268,12 @@ function cldBacFun ( uidValStr : string ) : SynBacTyp {
 
 			// #region Old Version Cleanup
 
-			const curManObj = traResObj.curManObj; // What: Current Manifest Object. Why: Cleanup keeps every version it lists. How: This reads it from the transaction.
-			const keeHasArr = [ curManObj?.docs, curManObj?.prior, traResObj.cmtNowBoo ? manNewObj.docs : undefined ];                                                                                                   // What: Keep Hash Array. Why: A version any of these manifests lists may still be downloaded. How: This lists the current, prior, and newly committed hashes.
-			const keeKeySet = new Set( keeHasArr.flatMap( ( hasMapObj ) => Object.entries( hasMapObj || {} ).map( ( [ docIdeStr, docHasStr ] ) => verKeyFun( docIdeStr, docHasStr ) ) ) );                               // What: Keep Key Set. Why: Cleanup must not delete a version still listed. How: This collects their keys.
-			const garKeyArr = traResObj.cmtNowBoo ? Object.entries( curManObj?.prior || {} ).map( ( [ docIdeStr, docHasStr ] ) => verKeyFun( docIdeStr, docHasStr ) ) : newEntArr.map( ( [ verKeyStr ] ) => verKeyStr ); // What: Garbage Key Array. Why: A commit retires what the replaced manifest's prior listed, and a lost race retires what it uploaded. How: This lists those candidates.
+			const curManObj = traResObj.curManObj; // What: Current Manifest Object. Why: Cleanup keeps and retires versions by the manifest the cloud held. How: This reads it from the transaction.
+			const garKeyArr = oldVerFun( curManObj, manNewObj, traResObj.cmtNowBoo, newEntArr.map( ( [ verKeyStr ] ) => verKeyStr ) ); // What: Garbage Key Array. Why: A commit retires what the replaced manifest's prior listed, and a lost race retires what it uploaded, each sparing what a kept manifest lists. How: This asks oldVerFun for the keys to delete.
 
 
 
-			try { await wriBatFun( uidValStr, garKeyArr.filter( ( verKeyStr ) => !keeKeySet.has( verKeyStr ) ).map( ( verKeyStr ) : [ string, null ] => [ verKeyStr, null ] ) ); } // What: Cleanup Try. Why: Versions nothing lists only cost storage. How: This deletes every candidate no manifest still lists.
+			try { await wriBatFun( uidValStr, garKeyArr.map( ( verKeyStr ) : [ string, null ] => [ verKeyStr, null ] ) ); } // What: Cleanup Try. Why: Versions nothing lists only cost storage. How: This deletes every key oldVerFun returns.
 
 			catch ( errCatObj ) { console.warn( errCatObj ); } // What: Cleanup Catch. Why: A failed cleanup must not fail a sync that already landed. How: This logs it, leaving at most a little unused storage.
 
