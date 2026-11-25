@@ -123,7 +123,7 @@ function BooResCom ( { booValNum, onResBooFun, sufTexStr = '' } : BrcProTyp ) : 
 
 
 			const proRatNum = Math.min( 1, ( fraTimNum - staTimNum ) / durValNum ); // What: Progress Ratio Number. Why: The eased ratio below needs a clamped [0,1] linear progress to work from. How: This divides elapsed time by durValNum, capped at 1.
-			const easRatNum = 1 - Math.pow( 1 - proRatNum, 3 );                     // What: Eased Ratio Number. Why: A cubic ease-out reads more natural than a linear countdown. How: This applies a standard cubic ease-out curve to proRatNum.
+			const easRatNum = 1 - Math.pow( 1 - proRatNum, 3 );                     // What: Eased Ratio Number. Why: A cubic ease-out reads more natural than a linear countdown. How: This applies a standard cubic ease-out curve to proRatNum. // A numeric requestAnimationFrame tween can't read the --mot-dec-eas CSS string, so it writes the same decelerating shape by hand.
 
 
 			setDisValNum( Math.round( staValNum * ( 1 - easRatNum ) ) ); // What: Display Value Update. Why: This is the actual visible countdown step for this frame. How: This sets disValNum to staValNum scaled down by the eased ratio, rounded to a whole number.
