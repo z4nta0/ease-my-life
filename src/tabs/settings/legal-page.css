@@ -176,7 +176,7 @@
 
 
 	color           : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
-	font-family     : var( --fon-fam-br1 ); /* Font Family Brand 1 = 'Shantell Sans', var( --fon-fam-mai ) */
+	font-family     : var( --fon-fam-br1 ); /* Font Family Brand 1 = 'Shantell Sans', then the main font */
 	font-size       : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight     : 700;
 	text-decoration : none;
