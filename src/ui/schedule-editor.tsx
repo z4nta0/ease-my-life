@@ -437,7 +437,7 @@ function FreFieCom ( { ancHinEle, ariLabStr, desIdeStr, intValNum, maxValStr, on
 	return (
 
 
-		<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N control and its own anchor hint as one schedule subsection. How: This renders the number input plus the shared anchor hint, which stays collapsed until the interval is above 1. */ }
+		<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N control and its own anchor hint as one schedule subsection. How: This renders the label block, the every-N row, and the shared anchor hint, which stays collapsed until the interval is above 1. */ }
 
 
 			<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
@@ -1082,7 +1082,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				{ curRepStr === 'weekly' && ( // What: Weekly Visibility Check. Why: Only the schedule subsection matching the current repeat kind should render. How: This renders the weekly subsection only while curRepStr is 'weekly'.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups every weekly-specific control as one schedule subsection. How: This renders the day-picker, the every-N-weeks control, and the shared anchor hint/visibility note. */ }
+					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups every weekly-specific control as one schedule subsection. How: This renders the label block, the every-N-weeks control, the day-picker, and the shared anchor hint/visibility note. */ }
 
 
 						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
@@ -1155,7 +1155,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				{ curRepStr === 'interval' && ( // What: Interval Visibility Check. Why: Only the schedule subsection matching the current repeat kind should render. How: This renders the interval subsection only while curRepStr is 'interval'.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N-days control and its own anchor hint/visibility note as one schedule subsection. How: This renders the number input plus the shared anchor hint, always visible (unlike weekly/monthly/annual, which collapse it below N of 1). */ }
+					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the every-N-days control and its own anchor hint/visibility note as one schedule subsection. How: This renders the label block, the number input, the shared anchor hint (always visible, unlike weekly/monthly/annual, which collapse it below N of 1), and the visibility note. */ }
 
 
 						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the summary span below, which doesn't fade because the interval kind's summary has no alternate phrasing. */ }
@@ -1220,7 +1220,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				{ curRepStr === 'monthly' && ( // What: Monthly Day Visibility Check. Why: This is the monthly kind's own second, independent subsection, targeting which day of the month. How: This renders it only while curRepStr is 'monthly', right after the frequency subsection above.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders DatModCom plus whichever detail row matches the current dateMode. */ }
+					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders the label block, DatModCom, whichever detail row matches the current dateMode, the clamp hint where one applies, and the visibility note. */ }
 
 
 						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
@@ -1358,7 +1358,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 				{ curRepStr === 'annual' && ( // What: Annual Date Visibility Check. Why: This is the annual kind's own second, independent subsection, targeting which date each year. How: This renders it only while curRepStr is 'annual', right after the frequency subsection above.
 
 
-					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders DatModCom plus whichever detail row matches the current dateMode. */ }
+					<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: This groups the Date/Weekday mode toggle and its own detail controls as one schedule subsection. How: This renders the label block, DatModCom, whichever detail row matches the current dateMode, the 5th-occurrence hint where it applies, and the visibility note. */ }
 
 
 						<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }
@@ -1515,7 +1515,7 @@ function SchEdiCom ( { aniExtBoo = false, layVarStr, onPatTasFun, staAppObj, tas
 		>{ /* What: Schedule Editor Div Element. Why: This is SchEdiCom's own root element, holding the Repeat row and whichever detail subsection currently applies. How: This renders the Repeat row, then the once fields (shown only while repeat is 'once') and the extra fields (hidden while repeat is 'once' only in the animated layout), and its schEdiDivStacked or schEdiDivRows class sets the layout from layVarStr. Its data-element-name-hook is read by help mode. */ }
 
 
-			<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: The Repeat control is its own schedule subsection, always shown regardless of which kind is selected. How: This renders the segmented control plus its own live summary and visibility note. */ }
+			<div className={ cssModObj.forFieDiv }>{ /* What: Form Field Div Element. Why: The Repeat control is its own schedule subsection, always shown regardless of which kind is selected. How: This renders the label block (the Repeat label and its live summary), the segmented control, and its own visibility note while staAppObj is passed. */ }
 
 
 				<div className={ cssModObj.fieLabDiv }>{ /* What: Field Label Div Element. Why: The subsection's own label and live summary need to sit together. How: This wraps the plain label span and the fading summary span below. */ }

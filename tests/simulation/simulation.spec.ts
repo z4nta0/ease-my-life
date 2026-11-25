@@ -81,7 +81,7 @@ import type { StaAppTyp } from '../../src/core/data-model.ts'; // What: State Ap
 // #region Types
 
 type DayTraTyp = { conMapObj : Record< string, [ boolean, number ] >, dayIsoStr : string, entKeyArr : string[], remIdeArr : string[] }; // What: Day Trace Type. Why: Two runs are compared day by day. How: This holds a day's entries, conditionals, and reminders.
-type ProRolTyp = { firNum : number, namStr : string, proSumNum : number, rolNum : number, varSumNum : number };                         // What: Probability Roll Type. Why: Each probability conditional's rolls are tallied. How: This holds its fires, expected fires, rolls, and variance.
+type ProRolTyp = { firNum : number, namStr : string, proSumNum : number, rolNum : number, varSumNum : number };                         // What: Probability Roll Type. Why: Each probability conditional's rolls are tallied. How: This holds its name, fires, expected fires, rolls, and variance.
 
 // #endregion Types
 
