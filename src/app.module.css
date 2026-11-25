@@ -220,7 +220,7 @@
 	background      : oklch( from var( --bac-sur-col ) l c h / 0.94 ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	border          : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius   : 999px;
-	box-shadow      : var( --ele-med-sha );                            /* Elevation Medium Shadow, about 0 8px 26px plus 0 3.6px 8px -2px */
+	box-shadow      : var( --ele-med-sha );                            /* Elevation Medium Shadow ~= 0 8.304px 25.572px plus 0 3.572px 8.304px -2.035px */
 	gap             : var( --spa-hor-m07 );                            /* Spacing Horizontal Base Minus 7 ~= 2.035px */
 	justify-content : center;
 	left            : 50%;
@@ -300,7 +300,7 @@
 	.appTabNav--side[data-rail-open-active] { /* What: Narrow Open App Tab Nav Side. Why: An open drawer slides into view over the content. How: This slides it back on screen with a soft shadow. */
 
 
-		box-shadow : var( --ele-sid-sha ); /* Elevation Side Shadow, about 19px 0 45px -15px plus 6px 0 15px -4px */
+		box-shadow : var( --ele-sid-sha ); /* Elevation Side Shadow ~= 19.304px 0 44.876px -14.572px plus 6.268px 0 14.572px -3.572px */
 		transform  : translateX( 0 );
 
 
@@ -889,7 +889,7 @@
 	border                  : var( --bor-wid-sma ) solid var( --bor-mai-col );              /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-left             : 0;
 	border-radius           : 0 var( --rad-bor-med ) var( --rad-bor-med ) 0;                /* Radius Border Medium = 11px */
-	box-shadow              : var( --ele-sid-sha );                                         /* Elevation Side Shadow, about 19px 0 45px -15px plus 6px 0 15px -4px */
+	box-shadow              : var( --ele-sid-sha );                                         /* Elevation Side Shadow ~= 19.304px 0 44.876px -14.572px plus 6.268px 0 14.572px -3.572px */
 	color                   : var( --tex-mut-col );                                         /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	cursor                  : pointer;
 	display                 : none;

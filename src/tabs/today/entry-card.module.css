@@ -136,7 +136,7 @@
 
 	border-color : oklch( from var( --acc-mai-col ) l c h / var( --cdn-pow-002-rec ) ); /* Accent Main Color = oklch( 0.5 0.14 250 ), Core-Design-Number to the Power of 2 Reciprocal ~= 0.570 */
 	border-style : solid;
-	box-shadow   : var( --ele-lar-sha );                                                /* Elevation Large Shadow, about 0 19px 45px -15px plus 0 6px 15px -4px */
+	box-shadow   : var( --ele-lar-sha );                                                /* Elevation Large Shadow ~= 0 19.304px 44.876px -14.572px plus 0 6.268px 14.572px -3.572px */
 	cursor       : grabbing;
 	transform    : scale( 1.015 );
 

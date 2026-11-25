@@ -62,7 +62,7 @@
 	background    : var( --bac-sur-col ); /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	border-radius : var( --rad-bor-lar ); /* Radius Border Large ~= 14.572px */
 	border-top    : 0;
-	box-shadow    : var( --ele-lar-sha ); /* Elevation Large Shadow, about 0 19px 45px -15px plus 0 6px 15px -4px */
+	box-shadow    : var( --ele-lar-sha ); /* Elevation Large Shadow ~= 0 19.304px 44.876px -14.572px plus 0 6.268px 14.572px -3.572px */
 	padding-top   : 0;
 
 
