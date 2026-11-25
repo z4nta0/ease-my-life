@@ -49,12 +49,12 @@
 .forKicDiv { /* What: Form Kicker Div. Why: A small eyebrow label names whether the form creates or edits. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
 	font-weight    : 500;
-	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-p01 ); /* Vertical Rhythm Base Plus 1 ~= 1.755 */
+	letter-spacing : calc( var( --cdn-pow-009-rec ) * 1em ); /* Core-Design-Number to the Power of 9 Reciprocal ~= 0.080em */
+	line-height    : var( --ver-rhy-p01 );                   /* Vertical Rhythm Base Plus 1 ~= 1.755 */
 	text-transform : uppercase;
 
 

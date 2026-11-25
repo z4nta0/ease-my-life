@@ -307,12 +307,12 @@
 .togKicSpa { /* What: Toggle Kicker Span. Why: The toggle's label reads as a small eyebrow. How: This sets it in small uppercase muted mono type on a tight line. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
 	font-weight    : 500;
-	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	letter-spacing : calc( var( --cdn-pow-009-rec ) * 1em ); /* Core-Design-Number to the Power of 9 Reciprocal ~= 0.080em */
+	line-height    : var( --ver-rhy-m01 );                   /* Vertical Rhythm Base Minus 1 = 1 */
 	text-transform : uppercase;
 
 
@@ -364,10 +364,10 @@
 .matColSpa { /* What: Matrix Column Span. Why: Each kind is named above its column. How: This sets it centered in small uppercase muted mono type. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	letter-spacing : 0.05em;
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	letter-spacing : calc( var( --cdn-pow-011-rec ) * 1em ); /* Core-Design-Number to the Power of 11 Reciprocal ~= 0.045em */
 	text-align     : center;
 	text-transform : uppercase;
 

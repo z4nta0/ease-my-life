@@ -167,10 +167,10 @@
 .supLabLab { /* What: Support Label Span And Label. Why: Field and diagnostic labels read as small captions rather than body text. How: This sets them in small, spaced, muted mono capitals. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	letter-spacing : 0.05em;
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	letter-spacing : calc( var( --cdn-pow-011-rec ) * 1em ); /* Core-Design-Number to the Power of 11 Reciprocal ~= 0.045em */
 	text-transform : uppercase;
 
 

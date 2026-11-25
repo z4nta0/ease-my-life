@@ -196,11 +196,11 @@
 			.todLabSpa { /* What: Today Label Span. Why: The panel names itself like the app's Today tab. How: This sets a muted uppercase label. */
 
 
-				color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-				font-family    : var( --fon-fam-mai ); /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
-				font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+				color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+				font-family    : var( --fon-fam-mai );                   /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+				font-size      : var( --fon-siz-p01 );                   /* Font Size Base Plus 1 ~= 14.572px */
 				font-weight    : 600;
-				letter-spacing : 0.08em;
+				letter-spacing : calc( var( --cdn-pow-009-rec ) * 1em ); /* Core-Design-Number to the Power of 9 Reciprocal ~= 0.080em */
 				text-transform : uppercase;
 
 

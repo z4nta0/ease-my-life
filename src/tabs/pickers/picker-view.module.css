@@ -62,12 +62,12 @@
 .pooKicSpa { /* What: Picker Kicker Div And Pool Kicker Span. Why: A small eyebrow label sits above the picker's name and over the pool. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
 	font-weight    : 500;
-	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-p01 ); /* Vertical Rhythm Base Plus 1 ~= 1.755 */
+	letter-spacing : calc( var( --cdn-pow-009-rec ) * 1em ); /* Core-Design-Number to the Power of 9 Reciprocal ~= 0.080em */
+	line-height    : var( --ver-rhy-p01 );                   /* Vertical Rhythm Base Plus 1 ~= 1.755 */
 	text-transform : uppercase;
 
 
@@ -202,12 +202,12 @@
 .staLabDiv { /* What: Stage Label Div. Why: The figure's label reads as quiet metadata under it. How: This sets it in small uppercase muted mono type, capped at the small text width. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	letter-spacing : 0.06em;
-	margin-bottom  : var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
-	max-width      : var( --tex-wid-sma ); /* Text Width Small Maximum ~= 22.047em */
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	letter-spacing : calc( var( --cdn-pow-010-rec ) * 1em ); /* Core-Design-Number to the Power of 10 Reciprocal ~= 0.060em */
+	margin-bottom  : var( --spa-ver-m02 );                   /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	max-width      : var( --tex-wid-sma );                   /* Text Width Small Maximum ~= 22.047em */
 	text-transform : uppercase;
 
 

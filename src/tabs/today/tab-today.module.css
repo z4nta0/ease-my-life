@@ -112,12 +112,12 @@
 .raiKicDiv { /* What: Page Kicker Div And Rail Kicker Div. Why: A small eyebrow label names the day above the title and heads the rail. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
 	font-weight    : 500;
-	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-p02 ); /* Vertical Rhythm Base Plus 2 ~= 2.325 */
+	letter-spacing : calc( var( --cdn-pow-009-rec ) * 1em ); /* Core-Design-Number to the Power of 9 Reciprocal ~= 0.080em */
+	line-height    : var( --ver-rhy-p02 );                   /* Vertical Rhythm Base Plus 2 ~= 2.325 */
 	text-transform : uppercase;
 
 
@@ -181,7 +181,7 @@
 	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
 	gap            : var( --spa-hor-m03 );                            /* Spacing Horizontal Base Minus 3 ~= 6.268px */
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
-	letter-spacing : 0.08em;
+	letter-spacing : calc( var( --cdn-pow-009-rec ) * 1em );          /* Core-Design-Number to the Power of 9 Reciprocal ~= 0.080em */
 	padding        : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
 	text-transform : uppercase;
 	transition     : background var( --dur-tra-p01 ) var( --mot-sta-eas ), border-color var( --dur-tra-p01 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 1 ~= 209.1ms, Motion Standard Easing = ease */

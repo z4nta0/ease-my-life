@@ -63,12 +63,12 @@
 .pagKicDiv { /* What: Page Kicker Div. Why: A small eyebrow label orients the reader above a heading or a section toggle. How: This sets it in small uppercase muted mono type. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
 	font-weight    : 500;
-	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-p01 ); /* Vertical Rhythm Base Plus 1 ~= 1.755 */
+	letter-spacing : calc( var( --cdn-pow-009-rec ) * 1em ); /* Core-Design-Number to the Power of 9 Reciprocal ~= 0.080em */
+	line-height    : var( --ver-rhy-p01 );                   /* Vertical Rhythm Base Plus 1 ~= 1.755 */
 	text-transform : uppercase;
 
 
@@ -335,11 +335,11 @@
 .filLabSpa { /* What: Filter Label Span. Why: Each rail is labeled in quiet mono type. How: This sets it small, uppercase, and muted, without shrinking. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	flex-shrink    : 0;
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	letter-spacing : 0.06em;
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	letter-spacing : calc( var( --cdn-pow-010-rec ) * 1em ); /* Core-Design-Number to the Power of 10 Reciprocal ~= 0.060em */
 	text-transform : uppercase;
 
 
@@ -927,7 +927,7 @@
 	font-family    : var( --fon-fam-sec );                                           /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas );                                           /* Font Size Base = 11px */
 	height         : calc( var( --ver-rhy-p01 ) * 1rem );                            /* Vertical Rhythm Base Plus 1 ~= 19.304px */
-	letter-spacing : 0.05em;
+	letter-spacing : calc( var( --cdn-pow-011-rec ) * 1em );                         /* Core-Design-Number to the Power of 11 Reciprocal ~= 0.045em */
 	line-height    : calc( var( --ver-rhy-p01 ) * 1rem - 2 * var( --bor-wid-sma ) ); /* Vertical Rhythm Base Plus 1 ~= 19.304px, Border Width Small ~= 0.499px */ /* What: Border-Adjusted Line Height. Why: The tag keeps block layout so its ellipsis still works, so its text is centered by line height instead of flexbox. How: This fills the height inside both borders. */
 	overflow       : hidden;
 	padding        : 0 var( --spa-hor-m02 );                                         /* Spacing Horizontal Base Minus 2 ~= 8.304px */
@@ -1156,12 +1156,12 @@
 .togKicSpa { /* What: Toggle Kicker Span. Why: The toggle's label reads as a small eyebrow sitting centered on its chevron. How: This sets it in small uppercase muted mono type on a tight line. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
 	font-weight    : 500;
-	letter-spacing : 0.08em;
-	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	letter-spacing : calc( var( --cdn-pow-009-rec ) * 1em ); /* Core-Design-Number to the Power of 9 Reciprocal ~= 0.080em */
+	line-height    : var( --ver-rhy-m01 );                   /* Vertical Rhythm Base Minus 1 = 1 */
 	text-transform : uppercase;
 
 

@@ -39,10 +39,10 @@
 .subHeaDiv { /* What: Subsection Header Div. Why: Each subsection names itself, in the same style as the other Appearance subsections. How: This sets the heading in small, spaced, muted mono capitals. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	letter-spacing : 0.05em;
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	letter-spacing : calc( var( --cdn-pow-011-rec ) * 1em ); /* Core-Design-Number to the Power of 11 Reciprocal ~= 0.045em */
 	text-transform : uppercase;
 
 
@@ -157,13 +157,13 @@
 .theLabSpa { /* What: Theme Label Span. Why: The theme's name sits in the strip's bottom-left corner, readable over its colors. How: This pins it there in small, spaced, translucent dark mono capitals. */
 
 
-	bottom         : var( --spa-ver-m03 ); /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	bottom         : var( --spa-ver-m03 );                   /* Spacing Vertical Base Minus 3 ~= 6.268px */
 	color          : rgba( 0, 0, 0, .6 );
 	cursor         : pointer;
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	left           : var( --spa-hor-m01 ); /* Spacing Horizontal Base Minus 1 = 11px */
-	letter-spacing : 0.05em;
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	left           : var( --spa-hor-m01 );                   /* Spacing Horizontal Base Minus 1 = 11px */
+	letter-spacing : calc( var( --cdn-pow-011-rec ) * 1em ); /* Core-Design-Number to the Power of 11 Reciprocal ~= 0.045em */
 	position       : absolute;
 	text-transform : uppercase;
 
@@ -314,7 +314,7 @@
 	font-family    : var( --fon-fam-sec );                                                                                  /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas );                                                                                  /* Font Size Base = 11px */
 	left           : var( --spa-hor-m01 );                                                                                  /* Spacing Horizontal Base Minus 1 = 11px */
-	letter-spacing : 0.05em;
+	letter-spacing : calc( var( --cdn-pow-011-rec ) * 1em );                                                                /* Core-Design-Number to the Power of 11 Reciprocal ~= 0.045em */
 	max-width      : calc( 100% - var( --spa-hor-p01 ) );                                                                   /* Spacing Horizontal Base Plus 1 ~= 19.304px */
 	outline        : none;
 	padding        : var( --spa-ver-m09 ) var( --spa-hor-m05 );                                                             /* Spacing Vertical Base Minus 9 ~= 1.160px, Spacing Horizontal Base Minus 5 ~= 3.572px */

@@ -171,9 +171,9 @@
 .waiDotSpa { /* What: Waiting Dots Span. Why: A slot with nothing to show yet displays quiet waiting dots. How: This sets them muted and widely spaced. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
-	letter-spacing : 0.2em;
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-size      : var( --fon-siz-p01 );                   /* Font Size Base Plus 1 ~= 14.572px */
+	letter-spacing : calc( var( --cdn-pow-006-rec ) * 1em ); /* Core-Design-Number to the Power of 6 Reciprocal ~= 0.185em */
 
 
 }

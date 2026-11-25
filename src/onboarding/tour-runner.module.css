@@ -186,11 +186,11 @@
 .coaProPar { /* What: Coach Progress Paragraph. Why: Each step shows where it sits in the tour. How: This sets the "Step N of M" line in small accent-colored mono type above the title. */
 
 
-	color          : var( --acc-mai-col );     /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	font-family    : var( --fon-fam-sec );     /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas );     /* Font Size Base = 11px */
-	letter-spacing : 0.05em;
-	margin         : 0 0 var( --spa-ver-m04 ); /* Spacing Vertical Base Minus 4 ~= 4.732px */
+	color          : var( --acc-mai-col );                   /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	letter-spacing : calc( var( --cdn-pow-011-rec ) * 1em ); /* Core-Design-Number to the Power of 11 Reciprocal ~= 0.045em */
+	margin         : 0 0 var( --spa-ver-m04 );               /* Spacing Vertical Base Minus 4 ~= 4.732px */
 
 
 }
