@@ -166,7 +166,7 @@
 .braMarBut:active { /* What: Pressed Brand Mark Button. Why: A press should register before anything else happens. How: This presses it in slightly, which also undoes any hover lift. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
@@ -464,7 +464,7 @@
 .scoTabBut:active { /* What: Pressed Scope Tab Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
@@ -1029,7 +1029,7 @@
 .vacTogBut:active { /* What: Pressed Vacation Toggle Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
@@ -1672,7 +1672,7 @@
 .datCreBut:active { /* What: Pressed Data Create Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }

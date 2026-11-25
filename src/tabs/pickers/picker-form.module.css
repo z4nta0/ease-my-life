@@ -526,7 +526,7 @@
 .groChiBut:active { /* What: Pressed Group Chip Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
@@ -606,7 +606,7 @@
 .modOptLab:active { /* What: Pressed Mode Option Label. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
@@ -806,7 +806,7 @@
 .togSwiBut:active { /* What: Pressed Toggle Switch Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
@@ -1524,7 +1524,7 @@
 .pooEdiBut:active { /* What: Pressed Pool Edit Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
@@ -1592,7 +1592,7 @@
 .pooDelBut:active { /* What: Pressed Pool Delete Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
@@ -1662,7 +1662,7 @@
 .iteAddBut:active { /* What: Pressed Item Add Button. Why: A press should register before anything else happens. How: This presses it in slightly. */
 
 
-	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal since no scale step lands within 10%. */
+	transform : scale( 0.97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
