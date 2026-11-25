@@ -641,10 +641,10 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  *   all the way to 0 instead of just nudging the target into view.
  *
  * - `tabStr` (String): Which app tab this step's target lives on. The tour
- *   switches there automatically whenever the active tab does not already
- *   match: this covers ordinary advancing and a resume (there is no "previous
- *   step" to have navigated there on a resume), plus going back, so step
- *   authors never call selTabFun themselves.
+ *   switches there automatically when a step opens on a different tab than
+ *   the active one: this covers ordinary advancing and a resume (there is no
+ *   "previous step" to have navigated there on a resume), plus going back, so
+ *   step authors never call selTabFun themselves.
  *
  * - `titStr` (String): The coach card's heading copy.
  *
@@ -662,10 +662,11 @@ type GtcProTyp = { actIdeStr : string, actStoObj : ActStoTyp, onBacTouFun? : ( c
  *                            later step did). It is called before the step
  *                            actually changes.
  * @param props.onFinTouFun - On Finish Tour Function: Called on genuine
- *                            completion only (the primary button on a step
- *                            whose priStr is 'Done', or a solo step's one
- *                            button), after the persisted activeTour
- *                            checkpoint has been cleared.
+ *                            completion (the primary button on a step whose
+ *                            priStr is 'Done', or a solo step's one button),
+ *                            after the persisted activeTour checkpoint has
+ *                            been cleared, and also for every skip when
+ *                            onSkiTouFun is omitted.
  * @param props.onSkiTouFun - On Skip Tour Function: Called for everything else
  *                            the tour can end from: the Skip button, a target
  *                            that never resolves (the not-found watchdog), or
@@ -798,7 +799,7 @@ function GuiTouCom ( { actIdeStr, actStoObj, onBacTouFun, onFinTouFun, onSkiTouF
 
 
 
-	React.useEffect( () => { // What: Tab Sync Effect. Why: Whichever tab a step's target lives on is load-bearing for a resume (there is no previous step to have navigated there) and, since steps never call selTabFun themselves, this is the only thing that switches to a step's tab, forward, back, or resuming alike. How: This switches to the step's own tabStr whenever the active tab differs.
+	React.useEffect( () => { // What: Tab Sync Effect. Why: Whichever tab a step's target lives on is load-bearing for a resume (there is no previous step to have navigated there) and, since steps never call selTabFun themselves, this is the only thing that switches to a step's tab, forward, back, or resuming alike. How: This switches to the step's own tabStr when a new step opens on a different tab than the active one.
 
 
 		if ( curSteObj && curSteObj.tabStr && actIdeStr !== curSteObj.tabStr ) selTabFun( curSteObj.tabStr ); // What: Tab Switch. Why: The step's own target may live on a different tab than whatever is currently active. How: This only calls selTabFun when the current step names a tab and it does not already match.

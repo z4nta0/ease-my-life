@@ -369,7 +369,7 @@ function tutProFun ( appStaObj : StaAppTyp ) : boolean {
 
 // #region Exports
 
-const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: This gathers the checklist helpers into one namespace object rather than several individual named exports. How: This maps every internal implementation onto an external property name matching it exactly.
+const ONB_CHE_OBJ = { // What: Onboarding Checklist Object. Why: This gathers the checklist helpers into one namespace object rather than several individual named exports. How: This maps each helper function onto an external property name matching it exactly.
 
 
 	cheStaFun : cheStaFun, // What: Checklist Status Function. Why: This is the checklist's summary counts. How: This exports cheStaFun under its own matching name.
