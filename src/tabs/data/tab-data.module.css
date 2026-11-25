@@ -266,16 +266,16 @@
 	font                      : inherit;
 	padding                   : 0;
 	text-decoration           : underline;
-	text-decoration-thickness : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */ /* What: Resting Underline Thickness. Why: A thickness of auto can't ease toward the hover's 2px. How: This sets a length close to the font's own underline, which the hover thickens. */
-	text-underline-offset     : 2px;
-	transition                : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), text-decoration-thickness var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */
+	text-decoration-thickness : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */ /* What: Resting Underline Thickness. Why: A thickness of auto can't ease toward the hover's about 2px. How: This sets a length close to the font's own underline, which the hover thickens. */
+	text-underline-offset     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	transition                : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), text-decoration-thickness var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */ /* What: Underline Thickness Transition. Why: The underline thickness has no transform or opacity equivalent. How: This eases text-decoration-thickness directly. */
 
 
 }
 .subLinBut:hover { /* What: Hovered Sub Link Button. Why: The link should respond to the pointer. How: This thickens its underline. */
 
 
-	text-decoration-thickness : 2px;
+	text-decoration-thickness : var( --bor-wid-lar ); /* Border Width Large ~= 2.035px */
 
 
 }
