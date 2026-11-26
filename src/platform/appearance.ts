@@ -655,7 +655,7 @@ function appPalFun ( palResObj : PalTokTyp ) : void {
 
 		clearTimeout( __tatIdeNum ); // What: Theme-Animation-Timeout Identifier Number Clear. Why: A fast repeat theme swap must not let an earlier removal fire after this newer swap's own attribute set. How: This cancels whatever removal was previously scheduled.
 
-		__tatIdeNum = setTimeout( () => docRooEle.removeAttribute( 'data-theme-fade-active' ), durMilFun( 'p04' ) ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade attribute must not stay on indefinitely, only for the duration of the transition. How: This schedules the attribute's removal after the CSS transition's own p04 duration step. // Duration Base Plus 4 ~= 486.1ms
+		__tatIdeNum = setTimeout( () => docRooEle.removeAttribute( 'data-theme-fade-active' ), durMilFun( 'p03' ) ); // What: Theme-Animation-Timeout Identifier Number Schedule. Why: The cross-fade attribute must not stay on indefinitely, only for the duration of the transition. How: This schedules the attribute's removal after the CSS transition's own p03 duration step. // Duration Base Plus 3 ~= 366.9ms
 
 
 	}

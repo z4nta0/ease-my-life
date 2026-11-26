@@ -623,7 +623,7 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
  *
  * @summary
  * A one-shot theme cross-fade: while data-theme-fade-active is set (added to
- * <html> for one p04 duration step, about 486ms, on a user theme swap), the
+ * <html> for one p03 duration step, about 367ms, on a user theme swap), the
  * themable properties ease so the palette change glides instead of snapping.
  * It's scoped to the swap window, so interaction transitions go back to their
  * own once it ends.
@@ -638,7 +638,7 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 [data-theme-fade-active] *::after { /* What: Theme Cross-Fade. Why: A theme swap should glide rather than snap. How: This eases the background, text, border, fill, and stroke colors for the length of the swap. */
 
 
-	transition : background-color var( --dur-tra-p04 ) var( --mot-sta-eas ), color var( --dur-tra-p04 ) var( --mot-sta-eas ), border-color var( --dur-tra-p04 ) var( --mot-sta-eas ), fill var( --dur-tra-p04 ) var( --mot-sta-eas ), stroke var( --dur-tra-p04 ) var( --mot-sta-eas ) !important; /* Duration Transition Base Plus 4 ~= 486.1ms, Motion Standard Easing = ease */ /* What: Important Transition Fade Override. Why: The swap's fade has to beat every element's own transition, which a plain declaration here would only beat by order. How: The !important wins over each element's own transition for the swap's length. */
+	transition : background-color var( --dur-tra-p03 ) var( --mot-sta-eas ), color var( --dur-tra-p03 ) var( --mot-sta-eas ), border-color var( --dur-tra-p03 ) var( --mot-sta-eas ), fill var( --dur-tra-p03 ) var( --mot-sta-eas ), stroke var( --dur-tra-p03 ) var( --mot-sta-eas ) !important; /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */ /* What: Important Transition Fade Override. Why: The swap's fade has to beat every element's own transition, which a plain declaration here would only beat by order. How: The !important wins over each element's own transition for the swap's length. */
 
 
 }
