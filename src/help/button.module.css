@@ -17,7 +17,7 @@
 
 
 
-.helTogBut { /* What: Help Toggle Button. Why: The help toggle should be quiet but reachable, even over help mode's own dim layer. How: This draws a small muted circled glyph raised above the dim layer, brightening on hover, and eases its press and focus ring. */
+.helTogBut { /* What: Help Toggle Button. Why: The help toggle should be quiet but reachable, even while help mode is on. How: This draws a small muted circled glyph that help mode's dim mask leaves bright, brightening on hover, and eases its press and focus ring. */
 
 
 	align-items     : center;
@@ -36,7 +36,7 @@
 	position        : relative;
 	transition      : border-color var( --dur-tra-bas ) var( --mot-sta-eas ), color var( --dur-tra-bas ) var( --mot-sta-eas ), background var( --dur-tra-bas ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base ~= 157.8ms, Motion Standard Easing = ease, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
-	z-index         : 20;                                              /* What: Above The Help Dim. Why: Help mode's dim layer sits at 19, and the toggle must stay undimmed while it's the way out. How: 20 lifts the button just above it. */
+	z-index         : 1;                                               /* What: Above Neighboring Layers. Why: The toggle must stay above the decorative flourish layer at 0 that shares its stacking context, and help mode's dim never covers it, since the dim's mask cuts a hole around it. How: 1 is the lowest level that clears that layer. */
 
 
 }
