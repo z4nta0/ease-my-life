@@ -181,7 +181,7 @@
 
 
 	align-items     : center;
-	animation       : theCheSpaPickPopIn var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation       : theCheSpaPickPopIn var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */
 	background      : rgba( 255, 255, 255, .92 );
 	border-radius   : 50%;
 	color           : var( --acc-mai-col );                                              /* Accent Main Color = oklch( 0.5 0.14 250 ) */

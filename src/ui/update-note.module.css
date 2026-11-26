@@ -39,7 +39,7 @@
 
 
 	align-items     : center;
-	animation       : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference. */
+	animation       : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference. */
 	background      : var( --bac-sur-col );                                                         /* Background Surface Color = oklch( 0.975 0.004 240 ) */
 	border          : var( --bor-wid-sma ) solid var( --bor-mai-col );                              /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	border-radius   : var( --rad-bor-lar );                                                         /* Radius Border Large ~= 14.572px */

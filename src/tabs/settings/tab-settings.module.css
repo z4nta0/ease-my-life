@@ -985,7 +985,7 @@
 .setMesSpa { /* What: Settings Message Span. Why: An action's result pops in under its row's description. How: This sets small text that plays a springy pop. */
 
 
-	animation  : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-bou-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name. */
+	animation  : global( messageResultBounce ) var( --dur-ani-p03 ) var( --mot-ove-eas ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Global messageResultBounce Keyframes. Why: The messageResultBounce keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name. */
 	font-size  : var( --fon-siz-bas );                                                         /* Font Size Base = 11px */
 	margin-top : var( --spa-ver-m07 );                                                         /* Spacing Vertical Base Minus 7 ~= 2.035px */
 
