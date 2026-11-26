@@ -181,9 +181,8 @@
 .reeNamSpa { /* What: Reel Name Span. Why: Each candidate name the reel flashes should drop in rather than blink. How: This plays a quick fade-and-drop each time a new name mounts. */
 
 
-	animation   : reeNamSpaTickFadeIn var( --dur-ani-m02 ) var( --mot-dec-eas ); /* Duration Animation Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
-	display     : inline-block;
-	will-change : transform, opacity;                                            /* What: Reel Name Will Change. Why: Each reel name mounts for a single quick tick and starts its drop at once. How: The hint lives only as long as each short-lived name does, since the next tick replaces the element. */
+	animation : reeNamSpaTickFadeIn var( --dur-ani-m02 ) var( --mot-dec-eas ); /* Duration Animation Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	display   : inline-block;
 
 
 }
