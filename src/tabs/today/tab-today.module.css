@@ -37,12 +37,12 @@
 .todPagHed { /* What: Today Page Header. Why: The header stays pinned at the top while the list scrolls under it. How: This makes it a sticky padded bar on the page background above a hairline. */
 
 
-	background    : var( --bac-pag-col );                                           /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
-	padding       : var( --spa-ver-p02 ) var( --spa-hor-p01 ) var( --spa-ver-p02 ); /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+	background    : var( --bac-pag-col );                            /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	border-bottom : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	padding       : var( --spa-ver-p02 ) var( --spa-hor-p01 );       /* Spacing Vertical Base Plus 2 ~= 25.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
 	position      : sticky;
 	top           : 0;
-	z-index       : 12;                                                             /* What: Header Stack Level. Why: The sticky header has to stay over the list and over the sticky pill row at 11 that tucks under it. How: 12 sits just above that row. */
+	z-index       : 12;                                              /* What: Header Stack Level. Why: The sticky header has to stay over the list and over the sticky pill row at 11 that tucks under it. How: 12 sits just above that row. */
 
 
 }
@@ -52,7 +52,7 @@
 	.todPagHed { /* What: Trimmed Today Page Header. Why: The narrow header needs less padding. How: This tightens its padding. */
 
 
-		padding : var( --spa-ver-bas ) var( --spa-hor-p01 ) var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
+		padding : var( --spa-ver-bas ) var( --spa-hor-p01 ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base Plus 1 ~= 19.304px */
 
 
 	}

@@ -612,12 +612,12 @@
 .conFooDiv { /* What: Conditional Footer Div. Why: The footer ends the editor below a divider. How: This stacks its row in a padded column under a hairline. */
 
 
-	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col );                /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
+	border-top     : var( --bor-wid-sma ) solid var( --bor-mai-col ); /* Border Width Small ~= 0.499px, Border Main Color = oklch( 0.91 0.005 240 ) */
 	display        : flex;
 	flex-direction : column;
-	gap            : var( --spa-ver-m01 );                                           /* Spacing Vertical Base Minus 1 = 11px */
+	gap            : var( --spa-ver-m01 );                            /* Spacing Vertical Base Minus 1 = 11px */
 	margin         : 0;
-	padding        : var( --spa-ver-bas ) var( --spa-hor-bas ) var( --spa-ver-bas ); /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
+	padding        : var( --spa-ver-bas ) var( --spa-hor-bas );       /* Spacing Vertical Base ~= 14.572px, Spacing Horizontal Base ~= 14.572px */
 
 
 }

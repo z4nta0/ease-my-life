@@ -1363,16 +1363,16 @@
 
 
 	align-items    : center;
-	background     : oklch( from var( --acc-mai-col ) 0.95 0.035 h );                                     /* Accent Main Color = oklch( 0.5 0.14 250 ) */
-	border-radius  : 0 0 var( --rad-bor-sma ) var( --rad-bor-sma );                                       /* Radius Border Small ~= 8.304px */
-	color          : oklch( from var( --acc-mai-col ) calc( l - 0.02 ) c h );                             /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	background     : oklch( from var( --acc-mai-col ) 0.95 0.035 h );         /* Accent Main Color = oklch( 0.5 0.14 250 ) */
+	border-radius  : 0 0 var( --rad-bor-sma ) var( --rad-bor-sma );           /* Radius Border Small ~= 8.304px */
+	color          : oklch( from var( --acc-mai-col ) calc( l - 0.02 ) c h ); /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	display        : flex;
-	font-family    : var( --fon-fam-sec );                                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas );                                                                /* Font Size Base = 11px */
-	gap            : var( --spa-hor-m03 );                                                                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	letter-spacing : calc( var( --cdn-pow-014-rec ) * 1em );                                              /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
-	margin         : 0 0 var( --spa-ver-m02 );                                                            /* Spacing Vertical Base Minus 2 ~= 8.304px */
-	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 ) var( --spa-ver-m03 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
+	font-family    : var( --fon-fam-sec );                                    /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                                    /* Font Size Base = 11px */
+	gap            : var( --spa-hor-m03 );                                    /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	letter-spacing : calc( var( --cdn-pow-014-rec ) * 1em );                  /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
+	margin         : 0 0 var( --spa-ver-m02 );                                /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 );               /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
 
 
 }
