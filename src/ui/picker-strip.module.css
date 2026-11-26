@@ -63,21 +63,21 @@
 
 }
 
-.reeRowDiv { /* What: Reel Row Div. Why: Each candidate is one fixed-height row of large centered text. How: This sizes the row, centers its name in muted text, and fades its color as it becomes current. */
+.reeRowDiv { /* What: Reel Row Div. Why: Each candidate is one fixed-height row of large centered text. How: This sizes the row, centers its name in muted text, and eases its color and the settled scale as it becomes current. */
 
 
 	align-items     : center;
-	color           : var( --tex-mut-col );                            /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color           : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display         : flex;
-	font-size       : var( --fon-siz-p02 );                            /* Font Size Base Plus 2 ~= 19.304px */
+	font-size       : var( --fon-siz-p02 );                /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight     : 500;
-	height          : calc( var( --ver-rhy-p05 ) * 1rem );             /* Vertical Rhythm Base Plus 5 ~= 59.447px */
+	height          : calc( var( --ver-rhy-p05 ) * 1rem ); /* Vertical Rhythm Base Plus 5 ~= 59.447px */
 	justify-content : center;
 	letter-spacing  : -0.015em;
-	padding         : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
+	padding         : 0 var( --spa-hor-m01 );              /* Spacing Horizontal Base Minus 1 = 11px */
 	text-align      : center;
 	text-wrap       : pretty;
-	transition      : color var( --dur-tra-p02 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease */
+	transition      : color var( --dur-tra-p02 ) var( --mot-sta-eas ), transform var( --dur-tra-m01 ) var( --mot-dec-eas ); /* Duration Transition Base Plus 2 ~= 277.0ms, Motion Standard Easing = ease, Duration Transition Base Minus 1 ~= 119.2ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 
 }
@@ -97,10 +97,10 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Row Div In Unforced Picker Reel Div. Why: Someone who asked for less motion shouldn't see the row's color fade, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Reel Row Div In Unforced Picker Reel Div. Why: Someone who asked for less motion shouldn't see the row's color fade and scale ease, unless they asked to preview it. How: This applies only when the reduced-motion preference is set. */
 
 
-	.picReeDiv:not( [data-motion-force-active] ) .reeRowDiv { /* What: Still Reel Row Div In Unforced Picker Reel Div. Why: The row's color should simply switch. How: This turns the color fade off, except inside a forced-motion preview. */
+	.picReeDiv:not( [data-motion-force-active] ) .reeRowDiv { /* What: Still Reel Row Div In Unforced Picker Reel Div. Why: The row's color and scale should simply switch. How: This turns the color fade and scale ease off, except inside a forced-motion preview. */
 
 
 		transition : none;
