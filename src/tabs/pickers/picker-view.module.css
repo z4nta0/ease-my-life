@@ -404,19 +404,24 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Picker Done, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.picActDiv .picDonBut,
+	.picActDiv .picDonBut:not( .picDonBut--leaving ),
+	.picActDiv .picRerBut:not( .picRerBut--leaving ),
 	.picActDiv .picSenBut,
-	.picActDiv .picRerBut,
-	.picActDiv .picOneBut,
+	.picActDiv .picOneBut { /* What: Still Picker Done, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: The buttons should be there at once, since nothing waits on the entrance's end and its backwards fill with the inline delays would hide them. How: This turns the entrance off for the buttons that aren't leaving. */
+
+
+		animation : none;
+
+
+	}
 	.picActDiv .picDonBut--leaving,
-	.picActDiv .picRerBut--leaving { /* What: Instant Picker Done, Send, Re-Roll, And Pick One Buttons In Picker Actions Div. Why: The buttons should arrive and leave at once. How: This shortens both animations to .01ms. */
+	.picActDiv .picRerBut--leaving { /* What: Instant Picker Done Button Leaving And Picker Re-Roll Button Leaving In Picker Actions Div. Why: The buttons should leave at once, and the sent phase relies on the exit's both fill holding them hidden. How: This shortens the exit to .01ms, so its fill still applies. */
 
 
 		animation-duration : .01ms;
 
 
 	}
-
 	.picActDiv .picSenBut--sent { /* What: Still Picker Send Button Sent In Picker Actions Div. Why: The swell is only decoration. How: This turns it off. */
 
 
@@ -1086,10 +1091,10 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Sent Check SVG. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.senCheSvg { /* What: Instant Sent Check SVG. Why: The check should simply appear. How: This shortens its pop to .01ms. */
+	.senCheSvg { /* What: Still Sent Check SVG. Why: The check should simply appear, and nothing waits on its pop's end. How: This turns its pop off. */
 
 
-		animation-duration : .01ms;
+		animation : none;
 
 
 	}
