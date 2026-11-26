@@ -235,7 +235,7 @@
 .panCloBut:hover { /* What: Hovered Panel Close Button. Why: The close button should respond to the pointer. How: This gives it the hover tint and full text color. */
 
 
-	background : var( --bac-hov-col ); /* Background Hover Color ~= oklch( 0 0 0 / 0.045 ) */
+	background : var( --bac-hov-col ); /* Background Hover Color ~= oklch( 0 0 0 ) @ 0.045 opacity */
 	color      : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
 
 

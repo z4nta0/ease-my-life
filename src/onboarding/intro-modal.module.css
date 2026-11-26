@@ -255,7 +255,7 @@
 .intActBut--ghost:hover { /* What: Hovered Intro Action Button Ghost. Why: The quiet skip button still needs a hover response. How: This gives it the shared hover tint. */
 
 
-	background : var( --bac-hov-col ); /* Background Hover Color ~= oklch( 0 0 0 / 0.045 ) */
+	background : var( --bac-hov-col ); /* Background Hover Color ~= oklch( 0 0 0 ) @ 0.045 opacity */
 
 
 }
