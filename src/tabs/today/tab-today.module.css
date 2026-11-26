@@ -374,7 +374,7 @@
 
 
 		color       : var( --acc-sec-col ); /* Accent Secondary Color = oklch( 0.62 0.13 50 ) */
-		font-weight : 600;
+		font-weight : 600;                  /* What: Streak Count Bold Weight. Why: A heavier weight changes the glyphs themselves, so it has no transform or opacity equivalent. How: This animates font-weight directly, repainting only one short count. */
 
 
 	}

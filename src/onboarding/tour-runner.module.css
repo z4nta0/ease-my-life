@@ -88,7 +88,7 @@
 
 
 }
-@keyframes touSpoDivRingPing { /* What: Tour Spotlight Div Ring Ping Keyframes. Why: A ring that grows and fades reads as a call to click. How: This spreads an attention ring shadow outward from the border while fading it out, white by default because the accent color barely shows against the dark scrim. */
+@keyframes touSpoDivRingPing { /* What: Tour Spotlight Div Ring Ping Keyframes. Why: A ring that grows and fades reads as a call to click. How: This spreads an attention ring shadow outward from the border while fading it out, white by default because the accent color barely shows against the dark scrim. */ /* What: Box Shadow Spread Note. Why: A box-shadow ring has no transform version that keeps its look, and the ping runs on one spotlight at a time. How: This animates the spread directly. */
 
 
 	0% {

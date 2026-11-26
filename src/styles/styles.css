@@ -723,7 +723,7 @@ body[data-tour-active] { /* What: Tour Running. Why: While a tour runs, every ta
 
 /* #region Shared Keyframes */
 
-@keyframes cardCelebrateSwell { /* What: Card Celebrate Swell Keyframes. Why: The Ripple celebration makes each card swell and glow once. How: This scales the card up with an accent ring, then settles it back. */
+@keyframes cardCelebrateSwell { /* What: Card Celebrate Swell Keyframes. Why: The Ripple celebration makes each card swell and glow once. How: This scales the card up with an accent ring, then settles it back. */ /* What: Box Shadow Spread Note. Why: A box-shadow glow has no transform version that keeps its look, and the celebration plays once per card. How: This animates the spread directly beside the compositor scale. */
 
 
 	0% {
