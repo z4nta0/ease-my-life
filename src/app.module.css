@@ -100,7 +100,7 @@
 .skiLinAnc:focus:active { /* What: Pressed Skip Link Anchor. Why: A press should register before focus moves. How: This presses the button in slightly, undoing any hover lift, and names its focused state too, since the focused hover lift outranks a plain press. */
 
 
-	transform : scale( .97 );
+	transform : scale( .97 ); /* What: Press Scale. Why: A press should register before anything else happens. How: This shrinks the control by 3%, a literal, since the only step within 10% is 1, which would undo the press. */
 
 
 }
