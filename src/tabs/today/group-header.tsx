@@ -106,7 +106,7 @@ function GroHeaCom ( { donCouNum, ediModBoo, groNamStr, logOpeBoo = false, merPe
 
 			setFreIndNum( curIndNum ); // What: Fresh Index Set. Why: The dash-row map below needs to know which single dash to flag as freshly lit. How: This publishes curIndNum into freIndNum.
 
-			const freTimNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), durMilFun( 'p04' ) ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself once its dash sweep ends, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after the sweep's own p04 duration step, guarded so a stale timeout can't stomp a fresher one. // Duration Base Plus 4 ~= 486.1ms
+			const freTimNum = setTimeout( () => setFreIndNum( ( curValNum ) => ( curValNum === curIndNum ? -1 : curValNum ) ), durMilFun( 'p03' ) ); // What: Fresh Timeout Number. Why: The fresh cue must clear itself once its dash sweep ends, but only if a newer cascade hasn't already claimed freIndNum in the meantime. How: This clears freIndNum back to -1 after the sweep's own p03 duration step, guarded so a stale timeout can't stomp a fresher one. // Duration Base Plus 3 ~= 366.9ms
 
 
 			preDonRef.current = donCouNum; // What: Previous Done Update. Why: The next run of this effect must compare against the count that is current now. How: This overwrites preDonRef with the fresh donCouNum.

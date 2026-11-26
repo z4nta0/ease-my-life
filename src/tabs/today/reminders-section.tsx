@@ -1043,7 +1043,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 	const remPreRef = React.useRef( remDonNum ); // What: Reminder Previous Reference. Why: The dash-bar animation below needs remDonNum's own PRIOR value to detect a genuine increase, not just its current value. How: This starts at remDonNum and is updated at the end of the effect below.
 
-	const [ remFreNum, setRemFreNum ] = React.useState( -1 ); // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroHeaCom's own freIndNum. How: This is set by the effect below and cleared after the dash sweep's p04 duration step.
+	const [ remFreNum, setRemFreNum ] = React.useState( -1 ); // What: Reminder Fresh Number And Setter. Why: The dash-bar's own just-completed dash needs to know WHICH index to briefly animate, mirroring GroHeaCom's own freIndNum. How: This is set by the effect below and cleared after the dash sweep's p03 duration step.
 
 
 	React.useEffect( () => { // What: Dash Animation Effect. Why: The dash that just turned on should animate in. How: This detects a genuine increase in remDonNum, stages remFreNum, then clears it after the flourish's own duration.
@@ -1057,7 +1057,7 @@ function RemSecCom ( { actEdiStr, actStoObj, ariTasSet, cheExiBoo, ediModBoo, le
 
 			setRemFreNum( newFreNum ); // What: Fresh Index Stage Call. Why: This is what actually tells the dash bar which index to briefly animate. How: This sets remFreNum to newFreNum.
 
-			const freTimNum = setTimeout( () => setRemFreNum( ( curFreNum ) => ( curFreNum === newFreNum ? -1 : curFreNum ) ), durMilFun( 'p04' ) ); // What: Fresh Timeout Number. Why: The flourish must clear itself after its own animation duration, but only if nothing newer has already taken over. How: This resets remFreNum back to -1 after the dash sweep's own p04 duration step, guarded against a staler run clobbering a newer one. // Duration Base Plus 4 ~= 486.1ms
+			const freTimNum = setTimeout( () => setRemFreNum( ( curFreNum ) => ( curFreNum === newFreNum ? -1 : curFreNum ) ), durMilFun( 'p03' ) ); // What: Fresh Timeout Number. Why: The flourish must clear itself after its own animation duration, but only if nothing newer has already taken over. How: This resets remFreNum back to -1 after the dash sweep's own p03 duration step, guarded against a staler run clobbering a newer one. // Duration Base Plus 3 ~= 366.9ms
 
 
 			remPreRef.current = remDonNum; // What: Previous Snapshot Update. Why: The next run of this effect needs to compare against whatever remDonNum is right now. How: This overwrites remPreRef with remDonNum's own current value.

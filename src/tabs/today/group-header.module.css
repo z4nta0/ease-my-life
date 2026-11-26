@@ -371,7 +371,7 @@
 .proDasIta.proDasIta--fresh::after { /* What: Progress Dash Italic Fresh Sweep. Why: The fill should sweep in from the left. How: This scales an accent overlay from nothing to full width with the shared sweep animation. */
 
 
-	animation        : global( dashFreshSweep ) var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global dashFreshSweep Keyframes. Why: The dashFreshSweep keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation        : global( dashFreshSweep ) var( --dur-ani-p03 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global dashFreshSweep Keyframes. Why: The dashFreshSweep keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
 	background       : var( --acc-mai-col );                                                        /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius    : inherit;
 	content          : '';
