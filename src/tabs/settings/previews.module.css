@@ -91,7 +91,7 @@
 .preCarDiv--exhaling { /* What: Preview Card Div Exhaling. Why: The ripple style pulses each card once with a soft accent halo as the celebration cascades down. How: JS adds this class per card with a staggered --exh-car-del, playing the shared exhale animation. */
 
 
-	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1,130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( cardCelebrateSwell ) var( --exh-car-dur ) var( --mot-dec-eas ) var( --exh-car-del, 0ms ) both; /* Exhale Card Duration ~= 1,130.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Exhale Card Delay, set inline per card by the ripple cascade */ /* What: Global cardCelebrateSwell Keyframes. Why: The cardCelebrateSwell keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Deliberate Moment Note. Why: The exhale marks the ripple celebration, so it may run past the usual interface limit. How: This keeps the p07 duration step, read through --exh-car-dur. */
 
 
 }
