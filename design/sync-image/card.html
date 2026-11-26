@@ -135,10 +135,11 @@
 
 
 				<g
+					style='stroke : var( --acc-tin-col )'
+
 					fill='none'
-					stroke='oklch( 0.95 0.025 250 )'
 					stroke-width='16'
-				><!-- What: Grid Line Group Element. Why: Every line shares the icon's tint and weight. How: The lines below inherit these. -->
+				><!-- What: Grid Line Group Element. Why: Every line shares the icon's tint and weight. How: The lines below inherit these. --><!-- Accent Tint Color = oklch( 0.95 0.025 250 ) -->
 
 					<path d='M 0 240 H 1200 M 0 480 H 1200 M 0 720 H 1200 M 0 960 H 1200 M 240 0 V 1200 M 480 0 V 1200 M 720 0 V 1200 M 960 0 V 1200' /><!-- What: Grid Line Path Element. Why: This is the grid itself. How: Four horizontal and four vertical lines, 240px apart. -->
 
@@ -159,12 +160,13 @@
 
 
 				<g
+					style='stroke : var( --acc-sec-col )'
+
 					fill='none'
-					stroke='oklch( 0.62 0.13 50 )'
 					stroke-linecap='round'
 					stroke-linejoin='round'
 					stroke-width='18'
-				><!-- What: Sync Arrow Group Element. Why: The arrows say the two devices exchange changes. How: Two arcs with arrowheads in the warm secondary accent. -->
+				><!-- What: Sync Arrow Group Element. Why: The arrows say the two devices exchange changes. How: Two arcs with arrowheads in the warm secondary accent. --><!-- Accent Secondary Color = oklch( 0.62 0.13 50 ) -->
 
 					<path d='M 150 135 A 210 210 0 0 1 455 125' /><!-- What: Upper Arrow Arc Element. Why: This carries changes from the laptop to the phone. How: An arc over the top. -->
 
@@ -176,17 +178,17 @@
 
 				</g>
 
-				<rect x='40' y='190' width='310' height='200' rx='18' fill='oklch( 0.975 0.004 240 )' stroke='oklch( 0.5 0.14 250 )' stroke-width='16' /><!-- What: Laptop Screen Rect Element. Why: This is the laptop's screen. How: A rounded rectangle in the surface color. -->
+				<rect style='fill : var( --bac-sur-col ); stroke : var( --acc-mai-col )' x='40' y='190' width='310' height='200' rx='18' stroke-width='16' /><!-- What: Laptop Screen Rect Element. Why: This is the laptop's screen. How: A rounded rectangle in the surface color. --><!-- Background Surface Color = oklch( 0.975 0.004 240 ), Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
-				<path d='M 10 405 H 380 L 358 438 Q 352 446 340 446 H 50 Q 38 446 32 438 Z' fill='oklch( 0.95 0.025 250 )' stroke='oklch( 0.5 0.14 250 )' stroke-linejoin='round' stroke-width='16' /><!-- What: Laptop Base Path Element. Why: The laptop needs its keyboard base. How: A flat tapered slab in the accent tint. -->
+				<path style='fill : var( --acc-tin-col ); stroke : var( --acc-mai-col )' d='M 10 405 H 380 L 358 438 Q 352 446 340 446 H 50 Q 38 446 32 438 Z' stroke-linejoin='round' stroke-width='16' /><!-- What: Laptop Base Path Element. Why: The laptop needs its keyboard base. How: A flat tapered slab in the accent tint. --><!-- Accent Tint Color = oklch( 0.95 0.025 250 ), Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
-				<path transform='translate( 118 214 ) scale( 0.28 )' d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z' fill='oklch( 0.5 0.14 250 )' /><!-- What: Laptop Swoosh Path Element. Why: The laptop shows the app. How: The icon's swoosh, scaled onto its screen. -->
+				<path style='fill : var( --acc-mai-col )' transform='translate( 118 214 ) scale( 0.28 )' d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z' /><!-- What: Laptop Swoosh Path Element. Why: The laptop shows the app. How: The icon's swoosh, scaled onto its screen. --><!-- Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
-				<rect x='425' y='190' width='150' height='256' rx='26' fill='oklch( 0.975 0.004 240 )' stroke='oklch( 0.5 0.14 250 )' stroke-width='16' /><!-- What: Phone Body Rect Element. Why: This is the phone. How: A tall rounded rectangle in the surface color. -->
+				<rect style='fill : var( --bac-sur-col ); stroke : var( --acc-mai-col )' x='425' y='190' width='150' height='256' rx='26' stroke-width='16' /><!-- What: Phone Body Rect Element. Why: This is the phone. How: A tall rounded rectangle in the surface color. --><!-- Background Surface Color = oklch( 0.975 0.004 240 ), Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
-				<path d='M 480 216 H 520' fill='none' stroke='oklch( 0.5 0.14 250 )' stroke-linecap='round' stroke-width='10' /><!-- What: Phone Speaker Path Element. Why: The slot makes the shape read as a phone. How: A short rounded line near the top. -->
+				<path style='stroke : var( --acc-mai-col )' d='M 480 216 H 520' fill='none' stroke-linecap='round' stroke-width='10' /><!-- What: Phone Speaker Path Element. Why: The slot makes the shape read as a phone. How: A short rounded line near the top. --><!-- Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
-				<path transform='translate( 457 270 ) scale( 0.17 )' d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z' fill='oklch( 0.5 0.14 250 )' /><!-- What: Phone Swoosh Path Element. Why: The phone shows the same app. How: The icon's swoosh, scaled onto its screen. -->
+				<path style='fill : var( --acc-mai-col )' transform='translate( 457 270 ) scale( 0.17 )' d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z' /><!-- What: Phone Swoosh Path Element. Why: The phone shows the same app. How: The icon's swoosh, scaled onto its screen. --><!-- Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
 
 			</svg>

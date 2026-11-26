@@ -135,10 +135,11 @@
 
 
 				<g
+					style='stroke : var( --acc-tin-col )'
+
 					fill='none'
-					stroke='oklch( 0.95 0.025 250 )'
 					stroke-width='16'
-				><!-- What: Grid Line Group Element. Why: Every line shares the icon's tint and weight. How: The lines below inherit these. -->
+				><!-- What: Grid Line Group Element. Why: Every line shares the icon's tint and weight. How: The lines below inherit these. --><!-- Accent Tint Color = oklch( 0.95 0.025 250 ) -->
 
 					<path d='M 0 240 H 1200 M 0 480 H 1200 M 0 720 H 1200 M 0 960 H 1200 M 240 0 V 1200 M 480 0 V 1200 M 720 0 V 1200 M 960 0 V 1200' /><!-- What: Grid Line Path Element. Why: This is the grid itself. How: Four horizontal and four vertical lines, 240px apart. -->
 
@@ -159,12 +160,12 @@
 
 
 				<g
+					style='opacity : var( --cdn-pow-002-rec ); stroke : var( --acc-mai-col )'
+
 					fill='none'
-					stroke='oklch( 0.5 0.14 250 )'
 					stroke-linecap='round'
 					stroke-width='14'
-					opacity='0.55'
-				><!-- What: Steam Group Element. Why: Rising steam says the coffee is fresh. How: Three soft curls in a lighter accent. -->
+				><!-- What: Steam Group Element. Why: Rising steam says the coffee is fresh. How: Three soft curls in a lighter accent. --><!-- Core-Design-Number to the Power of 2 Reciprocal ~= 0.570, Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
 					<path d='M 230 160 C 200 120 260 100 230 50' /><!-- What: Steam Curl Element. Why: This is the left curl. How: An S-curve rising above the cup. -->
 
@@ -174,15 +175,15 @@
 
 				</g>
 
-				<ellipse cx='300' cy='505' rx='230' ry='38' fill='oklch( 0.95 0.025 250 )' stroke='oklch( 0.5 0.14 250 )' stroke-width='14' /><!-- What: Saucer Ellipse Element. Why: The cup rests on a saucer. How: A flat ellipse in the accent tint. -->
+				<ellipse style='fill : var( --acc-tin-col ); stroke : var( --acc-mai-col )' cx='300' cy='505' rx='230' ry='38' stroke-width='14' /><!-- What: Saucer Ellipse Element. Why: The cup rests on a saucer. How: A flat ellipse in the accent tint. --><!-- Accent Tint Color = oklch( 0.95 0.025 250 ), Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
-				<path d='M 455 270 C 565 270 565 420 440 425' fill='none' stroke='oklch( 0.5 0.14 250 )' stroke-linecap='round' stroke-width='22' /><!-- What: Handle Path Element. Why: The cup needs a handle. How: A thick loop off the cup's right side. -->
+				<path style='stroke : var( --acc-mai-col )' d='M 455 270 C 565 270 565 420 440 425' fill='none' stroke-linecap='round' stroke-width='22' /><!-- What: Handle Path Element. Why: The cup needs a handle. How: A thick loop off the cup's right side. --><!-- Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
-				<path d='M 140 210 H 460 L 432 440 Q 426 485 380 485 H 220 Q 174 485 168 440 Z' fill='oklch( 0.975 0.004 240 )' stroke='oklch( 0.5 0.14 250 )' stroke-linejoin='round' stroke-width='16' /><!-- What: Cup Body Path Element. Why: This is the cup itself. How: A tapered shape with rounded bottom corners in the surface color. -->
+				<path style='fill : var( --bac-sur-col ); stroke : var( --acc-mai-col )' d='M 140 210 H 460 L 432 440 Q 426 485 380 485 H 220 Q 174 485 168 440 Z' stroke-linejoin='round' stroke-width='16' /><!-- What: Cup Body Path Element. Why: This is the cup itself. How: A tapered shape with rounded bottom corners in the surface color. --><!-- Background Surface Color = oklch( 0.975 0.004 240 ), Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
-				<ellipse cx='300' cy='212' rx='158' ry='24' fill='oklch( 0.62 0.13 50 )' stroke='oklch( 0.5 0.14 250 )' stroke-width='14' /><!-- What: Coffee Surface Ellipse Element. Why: The cup is full. How: The rim's ellipse filled with the warm secondary accent. -->
+				<ellipse style='fill : var( --acc-sec-col ); stroke : var( --acc-mai-col )' cx='300' cy='212' rx='158' ry='24' stroke-width='14' /><!-- What: Coffee Surface Ellipse Element. Why: The cup is full. How: The rim's ellipse filled with the warm secondary accent. --><!-- Accent Secondary Color = oklch( 0.62 0.13 50 ), Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
-				<path transform='translate( 225 275 ) scale( 0.29 )' d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z' fill='oklch( 0.5 0.14 250 )' stroke='oklch( 0.5 0.14 250 )' stroke-linejoin='round' stroke-width='8' /><!-- What: Swoosh Mark Path Element. Why: The cup carries the app's own mark, tying the image to the app. How: The icon's swoosh path, scaled onto the cup's front. -->
+				<path style='fill : var( --acc-mai-col ); stroke : var( --acc-mai-col )' transform='translate( 225 275 ) scale( 0.29 )' d='M 24.467 527.792 C 67.266 416.298 77.088 228.913 172.207 434.412 C 200.739 535.77 262.562 434.412 314.873 292.51 C 381.45 120.201 450.381 44.636 528.854 24.365 C 521.725 22.337 512.215 24.365 493.193 34.5 C 369.548 105.451 295.85 292.51 234.029 363.461 C 186.473 414.14 167.451 241.831 124.651 262.102 C 101.828 270.008 60.133 375.754 24.467 527.792 Z' stroke-linejoin='round' stroke-width='8' /><!-- What: Swoosh Mark Path Element. Why: The cup carries the app's own mark, tying the image to the app. How: The icon's swoosh path, scaled onto the cup's front. --><!-- Accent Main Color = oklch( 0.5 0.14 250 ) -->
 
 
 			</svg>
