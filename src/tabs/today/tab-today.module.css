@@ -200,7 +200,7 @@
 .todStkDiv.todStkDiv--bumped { /* What: Today Streak Div Bumped. Why: A streak that just grew should pop for a moment. How: This plays a springy scale while the bumped class is set. */
 
 
-	animation : todStkDivBumpBounce var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : todStkDivBumpBounce var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Deliberate Moment Note. Why: The streak badge bump marks the streak growing, so it may run past the usual interface limit. How: This keeps the p06 duration on the animation. */
 
 
 }
@@ -269,7 +269,7 @@
 .todStkDiv.todStkDiv--bumped .stkFlaSvg { /* What: Streak Flame SVG In Today Streak Div Bumped. Why: The flame flares as the streak grows. How: This plays a scale, tilt, and glow flare. */
 
 
-	animation : stkFlaSvgBumpFlare var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : stkFlaSvgBumpFlare var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Deliberate Moment Note. Why: The streak flame flare marks the streak growing, so it may run past the usual interface limit. How: This keeps the p06 duration on the animation. */
 
 
 }
@@ -340,7 +340,7 @@
 .todStkDiv.todStkDiv--bumped .stkCouSpa { /* What: Streak Count Span In Today Streak Div Bumped. Why: The count flashes warm as it grows. How: This plays a brief warm, bolder color flash. */
 
 
-	animation : stkCouSpaBumpFlash var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : stkCouSpaBumpFlash var( --dur-ani-p06 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Deliberate Moment Note. Why: The streak count flash marks the streak growing, so it may run past the usual interface limit. How: This keeps the p06 duration on the animation. */
 
 
 }
@@ -566,7 +566,7 @@
 .todTitHea .titStaSpa--done .titWorSpa { /* What: Title Word Span In Title State Span Done In Today Title Heading. Why: The celebratory title's words enter one by one. How: This starts each word hidden and low and plays a fade-rise. */
 
 
-	animation : titWorSpaRiseFadeIn var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation : titWorSpaRiseFadeIn var( --dur-ani-p04 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Deliberate Moment Note. Why: The closing banner title rising in marks the day being complete, so it may run past the usual interface limit. How: This keeps the p04 duration on the animation. */
 	display   : inline-block;
 	opacity   : 0;
 	transform : translateY( var( --spa-ver-m02 ) );                                     /* Spacing Vertical Base Minus 2 ~= 8.304px */
@@ -590,7 +590,7 @@
 .todTitHea .titStaSpa--done[aria-hidden='false'] .titWorSpa--3 { /* What: Title Word Span 3 In Shown Title State Span Done In Today Title Heading. Why: "eased!" lands last with a spring to match its meaning. How: This plays a delayed spring scale in the accent color. */
 
 
-	animation        : titWorSpaSpringBounce var( --dur-ani-p06 ) var( --mot-bou-eas ) var( --dur-ani-p04 ) forwards; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ), Duration Animation Base Plus 4 ~= 486.1ms */
+	animation        : titWorSpaSpringBounce var( --dur-ani-p06 ) var( --mot-bou-eas ) var( --dur-ani-p04 ) forwards; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ), Duration Animation Base Plus 4 ~= 486.1ms */ /* What: Deliberate Moment Note. Why: The closing banner title spring marks the day being complete, so it may run past the usual interface limit. How: This keeps the p06 duration on the animation. */
 	color            : var( --acc-mai-col );                                                                          /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	transform-origin : 0% 70%;
 
@@ -720,7 +720,7 @@
 .proRinDiv.proRinDiv--pulsing .rinGraSvg { /* What: Ring Graphic SVG In Progress Ring Div Pulsing. Why: Each completed item gives the ring a small pop. How: This plays a springy scale while the pulsing class is set. */
 
 
-	animation : rinGraSvgPulseBounce var( --dur-ani-p05 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : rinGraSvgPulseBounce var( --dur-ani-p05 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Deliberate Moment Note. Why: The progress ring pulse marks a check-off, so it may run past the usual interface limit. How: This keeps the p05 duration on the animation. */
 
 
 }
@@ -838,14 +838,14 @@
 .proRinDiv.proRinDiv--pulsing .rinNumSpa { /* What: Ring Number Span In Progress Ring Div Pulsing. Why: The count flashes as it grows. How: This plays a springy scale and accent flash. */
 
 
-	animation : rinNumSpaPulseBounce var( --dur-ani-p05 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : rinNumSpaPulseBounce var( --dur-ani-p05 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Deliberate Moment Note. Why: The progress number pulse marks a check-off, so it may run past the usual interface limit. How: This keeps the p05 duration on the animation. */
 
 
 }
 .proRinDiv.proRinDiv--celebrating .rinNumSpa { /* What: Ring Number Span In Progress Ring Div Celebrating. Why: Completing the day gives the count a bigger flash. How: This plays a larger springy scale and accent flash. */
 
 
-	animation : rinNumSpaCompleteBounce var( --dur-ani-p08 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 8 ~= 1,497.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */
+	animation : rinNumSpaCompleteBounce var( --dur-ani-p08 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 8 ~= 1,497.0ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Deliberate Moment Note. Why: The progress number bounce marks the day being complete, so it may run past the usual interface limit. How: This keeps the p08 duration on the animation. */
 
 
 }
@@ -967,14 +967,14 @@
 .proRinDiv.proRinDiv--pulsing .rinGloIta { /* What: Ring Glow Italic In Progress Ring Div Pulsing. Why: Each completed item blooms a small glow. How: This plays a short glow bloom. */
 
 
-	animation : rinGloItaPulseFade var( --dur-ani-p06 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation : rinGloItaPulseFade var( --dur-ani-p06 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Deliberate Moment Note. Why: The progress ring glow marks a check-off, so it may run past the usual interface limit. How: This keeps the p06 duration on the animation. */
 
 
 }
 .proRinDiv.proRinDiv--celebrating .rinGloIta { /* What: Ring Glow Italic In Progress Ring Div Celebrating. Why: Completing the day blooms a bigger glow. How: This plays a longer, wider glow bloom. */
 
 
-	animation : rinGloItaCompleteFade var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1,497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation : rinGloItaCompleteFade var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1,497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Deliberate Moment Note. Why: The progress ring glow marks the day being complete, so it may run past the usual interface limit. How: This keeps the p08 duration on the animation. */
 
 
 }
@@ -1073,7 +1073,7 @@
 .proRinDiv.proRinDiv--celebrating .rinRipIta { /* What: Ring Ripple Italic In Progress Ring Div Celebrating. Why: The ripple marks the moment the ring fills. How: This plays the ripple once over the p08 step, matching the ring's other completion animations. */
 
 
-	animation : rinRipItaCompleteRipple var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1,497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
+	animation : rinRipItaCompleteRipple var( --dur-ani-p08 ) var( --mot-dec-eas ); /* Duration Animation Base Plus 8 ~= 1,497.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Deliberate Moment Note. Why: The progress ring ripple marks the day being complete, so it may run past the usual interface limit. How: This keeps the p08 duration on the animation. */
 
 
 }
@@ -1720,7 +1720,7 @@
 .conPieIta { /* What: Confetti Piece Italic. Why: Each piece bursts out from the center along its own angle and distance. How: This draws a small accent chip at the center that plays the shared burst, reading its inline angle, distance, rotation, and opacity. */
 
 
-	animation     : global( confettiCelebrateBurst ) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global confettiCelebrateBurst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation     : global( confettiCelebrateBurst ) var( --dur-ani-p06 ) var( --mot-dec-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global confettiCelebrateBurst Keyframes. Why: The confettiCelebrateBurst keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Deliberate Moment Note. Why: The confetti burst marks the day being complete, so it may run past the usual interface limit. How: This keeps the p06 duration on the animation. */
 	background    : var( --acc-mai-col );                                                            /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius : var( --rad-bor-xsm );                                                            /* Radius Border Extra Small ~= 3.572px */
 	height        : calc( var( --ver-rhy-bas ) * 1rem );                                             /* Vertical Rhythm Base ~= 14.572px */
@@ -1750,7 +1750,7 @@
 .spkPieSpa { /* What: Sparkle Piece Span. Why: Each sparkle twinkles at its own spot. How: This draws an accent glyph centered on its inline position that plays the shared twinkle. */
 
 
-	animation   : global( sparkleCelebrateTwinkle ) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Global sparkleCelebrateTwinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation   : global( sparkleCelebrateTwinkle ) var( --dur-ani-p06 ) var( --mot-sta-eas ) both; /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Global sparkleCelebrateTwinkle Keyframes. Why: The sparkleCelebrateTwinkle keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Deliberate Moment Note. Why: The sparkle twinkle marks the day being complete, so it may run past the usual interface limit. How: This keeps the p06 duration on the animation. */
 	color       : var( --acc-mai-col );                                                             /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	font-size   : var( --fon-siz-p02 );                                                             /* Font Size Base Plus 2 ~= 19.304px */
 	line-height : var( --ver-rhy-m01 );                                                             /* Vertical Rhythm Base Minus 1 = 1 */

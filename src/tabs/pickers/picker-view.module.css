@@ -274,7 +274,7 @@
 
 
 	align-items     : center;
-	animation       : senCheDivOpenPopIn var( --dur-ani-p04 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Sent Check Duration Note. Why: The check landing marks a send, which is a deliberate moment, so it runs longer than an ordinary result. How: This keeps the p04 duration step instead of the shorter result steps. */
+	animation       : senCheDivOpenPopIn var( --dur-ani-p04 ) var( --mot-bou-eas ); /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Bounce Easing = cubic-bezier( .34, 1.56, .5, 1 ) */ /* What: Sent Check Duration Note. Why: The check landing marks a send, which is a deliberate moment, so it runs longer than an ordinary result. How: This keeps the p04 duration step instead of the shorter result steps. */ /* What: Deliberate Moment Note. Why: The Sent check pop marks a pick being sent to Today, so it may run past the usual interface limit. How: This keeps the p04 duration on the animation. */
 	background      : var( --acc-mai-col );                                         /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	border-radius   : 50%;
 	color           : var( --bac-pag-col );                                         /* Background Page Color = oklch( 0.985 0.003 240 ) */
