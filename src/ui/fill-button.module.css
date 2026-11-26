@@ -18,7 +18,7 @@
 .refIcoSvg--spinning { /* What: Refresh Icon SVG Spinning. Why: A click on the lever should visibly register even when the fill itself shows no immediate change. How: FilButCom hands ButBasCom this class for its icon while its spin state is on, which turns the icon once. */
 
 
-	animation : refIcoSvgClickSpin var( --dur-ani-p05 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Standard Easing = ease */
+	animation : refIcoSvgClickSpin var( --dur-ani-p03 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */
 
 
 }
