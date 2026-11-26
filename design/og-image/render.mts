@@ -38,7 +38,7 @@ import { statSync      } from 'node:fs';           // What: Stat Sync. Why: The 
 
 const CAR_URL_STR = new URL( './card.html', import.meta.url ).href;                                   // What: Card URL String. Why: The card loads its fonts and styles by paths relative to itself. How: This is card.html's own file URL.
 const MAX_BYT_NUM = 300 * 1024;                                                                       // What: Maximum Bytes Number. Why: The preview image stays under 300 KB, the limit the Social Previews rule sets. How: This is that limit in bytes.
-const OUT_PAT_STR = fileURLToPath( new URL( '../../public/assets/og-image-2.png', import.meta.url ) ); // What: Output Path String. Why: The home page's tags point at the card in public/assets/. How: This resolves that path from the script's own location.
+const OUT_PAT_STR = fileURLToPath( new URL( '../../public/assets/og-image-3.png', import.meta.url ) ); // What: Output Path String. Why: The home page's tags point at the card in public/assets/. How: This resolves that path from the script's own location.
 
 // #endregion Constants
 
