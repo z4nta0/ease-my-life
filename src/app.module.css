@@ -196,21 +196,21 @@
 .appTabNav--entering.appTabNav--bottom { /* What: App Tab Nav Entering Bottom. Why: The new bottom bar should arrive from its edge a beat after the old one starts to leave. How: This plays the bottom entrance after a short stagger. */
 
 
-	animation : appTabNavBottomSlideIn var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
+	animation : appTabNavBottomSlideIn var( --dur-ani-p03 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
 
 
 }
 .appTabNav--entering.appTabNav--top { /* What: App Tab Nav Entering Top. Why: The new top bar should arrive from its edge a beat after the old one starts to leave. How: This plays the top entrance after a short stagger. */
 
 
-	animation : appTabNavTopSlideIn var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
+	animation : appTabNavTopSlideIn var( --dur-ani-p03 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
 
 
 }
 .appTabNav--entering.appTabNav--side { /* What: App Tab Nav Entering Side. Why: The new side rail should arrive from its edge a beat after the old one starts to leave. How: This plays the side entrance after a short stagger. */
 
 
-	animation : appTabNavSideSlideIn var( --dur-ani-p04 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 4 ~= 486.1ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
+	animation : appTabNavSideSlideIn var( --dur-ani-p03 ) var( --mot-dec-eas ) var( --dur-ani-m01 ) both; /* Duration Animation Base Plus 3 ~= 366.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Animation Base Minus 1 ~= 119.2ms */
 
 
 }
@@ -970,7 +970,7 @@
 	padding-left          : var( --mai-hor-pad, var( --spa-hor-p01 ) );        /* Main Horizontal Padding, set by its layout rules, falling back to Spacing Horizontal Base Plus 1 ~= 19.304px */
 	padding-right         : var( --mai-hor-pad, var( --spa-hor-p01 ) );        /* Main Horizontal Padding, set by its layout rules, falling back to Spacing Horizontal Base Plus 1 ~= 19.304px */
 	scroll-padding-bottom : var( --spa-ver-p07 );                              /* Spacing Vertical Base Plus 7 ~= 104.323px */ /* What: Focus Scroll Clearance. Why: The floating tab bar covers the bottom of this area, and a control focused by keyboard was scrolled just into view right underneath it. How: This keeps keyboard and scrollIntoView scrolling clear of the same space the bottom padding reserves. */
-	transition            : padding var( --dur-tra-p04 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 4 ~= 486.1ms, Motion Standard Easing = ease */ /* What: Layout Padding Transition. Why: The content has to reflow as the padding changes between layouts, which a transform can't do. How: This animates the padding itself. */
+	transition            : padding var( --dur-tra-p03 ) var( --mot-sta-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Standard Easing = ease */ /* What: Layout Padding Transition. Why: The content has to reflow as the padding changes between layouts, which a transform can't do. How: This animates the padding itself. */
 
 
 }

@@ -656,7 +656,7 @@ function AppRooCom () : React.JSX.Element {
 
 
 		const exiEndTim = setTimeout( () => setExiPlaStr( null ), durMilFun( 'p03' ) );                       // What: Exit End Timeout. Why: The ghost bar must be unmounted once its own exit keyframe has actually finished playing. How: This clears exiPlaStr, removing the ghost, after the exit animation's own p03 duration step. // Duration Base Plus 3 ~= 366.9ms
-		const entEndTim = setTimeout( () => setNavEntBoo( false ), durMilFun( 'p04' ) + durMilFun( 'm01' ) ); // What: Enter End Timeout. Why: The entering module class only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo after the enter animation's own p04 duration plus its m01 delay. // Duration Base Plus 4 ~= 486.1ms, Duration Base Minus 1 ~= 119.2ms
+		const entEndTim = setTimeout( () => setNavEntBoo( false ), durMilFun( 'p03' ) + durMilFun( 'm01' ) ); // What: Enter End Timeout. Why: The entering module class only needs to apply for the duration of the enter keyframe. How: This clears navEntBoo after the enter animation's own p03 duration plus its m01 delay. // Duration Base Plus 3 ~= 366.9ms, Duration Base Minus 1 ~= 119.2ms
 
 		// #endregion Ghost Animation Start
 

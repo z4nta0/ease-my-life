@@ -785,7 +785,7 @@
 	stroke         : var( --acc-mai-col );                                       /* Accent Main Color = oklch( 0.5 0.14 250 ) */
 	stroke-linecap : round;
 	stroke-width   : 2.8;
-	transition     : stroke-dasharray var( --dur-tra-p05 ) var( --mot-ove-eas ); /* Duration Transition Base Plus 5 ~= 643.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Arc Length Transition. Why: The arc's length changes only through its dash array, which has no transform or opacity equivalent. How: This eases stroke-dasharray directly. */
+	transition     : stroke-dasharray var( --dur-tra-p03 ) var( --mot-ove-eas ); /* Duration Transition Base Plus 3 ~= 366.9ms, Motion Overshoot Easing = cubic-bezier( .34, 1.2, .5, 1 ) */ /* What: Arc Length Transition. Why: The arc's length changes only through its dash array, which has no transform or opacity equivalent. How: This eases stroke-dasharray directly. */
 
 
 }
