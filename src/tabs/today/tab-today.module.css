@@ -1188,10 +1188,10 @@
 @media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Edit Banner Div. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.ediBanDiv.ediBanDiv--closing { /* What: Still Edit Banner Div Closing. Why: The banner should go at once under reduced motion. How: This shortens the fold to .01ms. */
+	.ediBanDiv.ediBanDiv--closing { /* What: Still Edit Banner Div Closing. Why: The banner should go at once under reduced motion. How: This turns the fold off, since the script unmounts the banner at once under reduced motion and nothing waits on its end. */
 
 
-		animation-duration : .01ms;
+		animation : none;
 
 
 	}
