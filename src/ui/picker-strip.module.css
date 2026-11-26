@@ -45,7 +45,13 @@
 	flex-direction             : column;
 	transition-property        : transform;
 	transition-timing-function : linear;
-	will-change                : transform; /* What: Track Motion Hint. Why: The track is the element that slides frame by frame while the reel runs, so promoting it up front saves a first-frame hitch on each move. How: This keeps the track on its own layer for as long as the reel is mounted. */
+
+
+}
+.picReeDiv:not( .picReeDiv--settled ) .reeTraDiv { /* What: Cycling Reel Track Div In Picker Reel Div. Why: The track is the element that slides frame by frame while the reel cycles, so promoting it up front saves a first-frame hitch on each move, and the hint should drop once the reel settles. How: This sets will-change for transform only until the settled modifier lands. */
+
+
+	will-change : transform;
 
 
 }
