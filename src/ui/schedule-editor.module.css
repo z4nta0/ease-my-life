@@ -267,7 +267,7 @@
 	font-weight               : 600;
 	padding                   : 0;
 	text-decoration           : underline;
-	text-decoration-thickness : 1px;
+	text-decoration-thickness : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */
 	text-underline-offset     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 
 
