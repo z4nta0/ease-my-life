@@ -2030,7 +2030,7 @@
 	font                      : inherit;
 	padding                   : 0;
 	text-decoration           : underline;
-	text-decoration-thickness : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */ /* What: Resting Underline Thickness. Why: The hover thickens the underline from this resting thickness. How: This sets it to the base border width. */
+	text-decoration-thickness : 1px; /* What: Resting Underline Thickness. Why: The hover thickens the underline from this resting thickness. How: This sets it to the base border width. */ /* What: Literal Thickness Note. Why: WebKit doesn't snap an underline's thickness to whole pixels, so the base border width token draws two rows there. How: A literal 1px draws one row in all three engines. */
 	text-underline-offset     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 	transition                : opacity var( --dur-tra-m02 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ), text-decoration-thickness var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 2 ~= 89.9ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Duration Transition Base Minus 1 ~= 119.2ms */ /* What: Underline Thickness Transition. Why: The underline thickness has no transform or opacity equivalent. How: This eases text-decoration-thickness directly. */
 

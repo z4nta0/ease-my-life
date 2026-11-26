@@ -267,7 +267,7 @@
 	font-weight               : 600;
 	padding                   : 0;
 	text-decoration           : underline;
-	text-decoration-thickness : var( --bor-wid-bas ); /* Border Width Base ~= 1.160px */
+	text-decoration-thickness : 1px; /* What: Literal Underline Thickness. Why: WebKit doesn't snap an underline's thickness to whole pixels, so the base border width token draws two rows there. How: A literal 1px draws one row in all three engines. */
 	text-underline-offset     : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
 
 
