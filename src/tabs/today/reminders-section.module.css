@@ -923,7 +923,7 @@
 .todCarArt.todCarArt--fresh .cheRipSpa { /* What: Check Ripple Span In Today Card Article Fresh. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
 
 
-	animation : global( checkDoneRipple ) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global checkDoneRipple Keyframes. Why: The checkDoneRipple keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( checkDoneRipple ) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global checkDoneRipple Keyframes. Why: The checkDoneRipple keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Deliberate Moment Note. Why: The check-off ripple marks a completed task, so it may run past the usual interface limit. How: This keeps the p05 duration on the animation. */
 
 
 }

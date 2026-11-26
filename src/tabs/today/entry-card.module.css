@@ -375,7 +375,7 @@
 .todCarArt.todCarArt--fresh .cheRipSpa { /* What: Check Ripple Span In Today Card Article Fresh. Why: The card just checked sends its ring out once. How: This plays the shared ripple while the card carries its fresh class. */
 
 
-	animation : global( checkDoneRipple ) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global checkDoneRipple Keyframes. Why: The checkDoneRipple keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */
+	animation : global( checkDoneRipple ) var( --dur-ani-p05 ) var( --mot-dec-eas ) forwards; /* Duration Animation Base Plus 5 ~= 643.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */ /* What: Global checkDoneRipple Keyframes. Why: The checkDoneRipple keyframes are shared with other modules, so they stay in the global sheet. How: global() keeps CSS modules from renaming the keyframe reference to a scoped name that doesn't exist. */ /* What: Deliberate Moment Note. Why: The check-off ripple marks a completed task, so it may run past the usual interface limit. How: This keeps the p05 duration on the animation. */
 
 
 }
@@ -436,7 +436,7 @@
 .todCarArt.todCarArt--rolling .carBodDiv { /* What: Card Body Div In Today Card Article Rolling. Why: A re-roll tumbles the card's text a full turn. How: This spins the body once around its X axis in 3D. */
 
 
-	animation       : carBodDivRollFlip var( --dur-ani-p06 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */
+	animation       : carBodDivRollFlip var( --dur-ani-p06 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Deliberate Moment Note. Why: The re-roll marks a fresh pick, so it may run past the usual interface limit. How: This keeps the p06 duration on the animation. */
 	transform-style : preserve-3d;
 
 
@@ -742,7 +742,7 @@
 .actIcoBut.actIcoBut--spinning .rolIcoSvg { /* What: Roll Icon SVG In Action Icon Button Spinning. Why: The re-roll icon spins along with the card's tumble. How: This turns the icon a full turn backward while the button carries its spinning class. */
 
 
-	animation : rolIcoSvgRollSpin var( --dur-ani-p06 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */
+	animation : rolIcoSvgRollSpin var( --dur-ani-p06 ) var( --mot-sta-eas ); /* Duration Animation Base Plus 6 ~= 853.0ms, Motion Standard Easing = ease */ /* What: Deliberate Moment Note. Why: The re-roll icon's spin marks a fresh pick, so it may run past the usual interface limit. How: This keeps the p06 duration on the animation. */
 
 
 }
