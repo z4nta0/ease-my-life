@@ -65,10 +65,10 @@
 
 
 }
-.skiLinAnc:focus:hover { /* What: Focused Hovered Skip Link Anchor. Why: A shown button lifts a little under the pointer. How: This raises it by the large border width. */
+.skiLinAnc:focus:hover { /* What: Focused Hovered Skip Link Anchor. Why: A shown button lifts a little under the pointer. How: This raises it by the vertical m07 spacing step. */
 
 
-	transform : translateY( calc( var( --bor-wid-lar ) * -1 ) ); /* Border Width Large ~= -2.035px */
+	transform : translateY( calc( var( --spa-ver-m07 ) * -1 ) ); /* Spacing Vertical Base Minus 7 ~= -2.035px */
 
 
 }
