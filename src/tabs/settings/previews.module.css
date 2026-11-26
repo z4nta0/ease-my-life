@@ -261,7 +261,7 @@
 	line-height : var( --ver-rhy-m01 );                                                             /* Vertical Rhythm Base Minus 1 = 1 */
 	opacity     : 0;
 	position    : absolute;
-	transform   : translate( -50%, -50% ) scale( 0.4 );
+	transform   : translate( -50%, -50% ) scale( var( --cdn-pow-003-rec ) );                        /* Core-Design-Number to the Power of 3 Reciprocal ~= 0.430 */
 
 
 }
