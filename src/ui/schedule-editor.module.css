@@ -205,7 +205,7 @@
 
 	clip-path : inset( 50% );
 	height    : 1px;
-	margin    : calc( var( --spa-ver-m09 ) * -1 ) -1px; /* Spacing Vertical Base Minus 9 ~= -1.160px */
+	margin    : -1px;
 	overflow  : hidden;
 	position  : absolute;
 	width     : 1px;
