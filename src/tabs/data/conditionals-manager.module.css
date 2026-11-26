@@ -94,7 +94,7 @@
 .catHeaBut:hover { /* What: Hovered Category Header Button. Why: The control should respond to the pointer. How: This shades it with the shared hover tint. */
 
 
-	background : var( --bac-hov-col ); /* Background Hover Color = oklch( 0 0 0 / 0.05 ) */
+	background : var( --bac-hov-col ); /* Background Hover Color ~= oklch( 0 0 0 / 0.045 ) */
 
 
 }
