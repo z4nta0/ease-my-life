@@ -1572,10 +1572,11 @@
 
 
 }
-@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Row Chevron Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
+@media ( prefers-reduced-motion : reduce ) { /* What: Reduced Motion Row Chevron Span And Button. Why: Someone who asked for less motion shouldn't see this move. How: This applies only when the reduced-motion preference is set. */
 
 
-	.rowChvBut { /* What: Still Row Chevron Button. Why: The change should happen at once, the press still applying. How: This turns its transition off. */
+	.rowChvSpa,
+	.rowChvBut { /* What: Still Row Chevron Span And Button. Why: The change should happen at once, the press still applying. How: This turns their transition off. */
 
 
 		transition : none;

@@ -654,7 +654,9 @@ ol { /* What: List Reset. Why: Lists are used for layout, not bullets. How: This
 
 
 	[data-theme-fade-active],
-	[data-theme-fade-active] * { /* What: Still Theme Cross-Fade. Why: The theme should switch at once. How: This turns the transition off. */
+	[data-theme-fade-active] *,
+	[data-theme-fade-active] *::before,
+	[data-theme-fade-active] *::after { /* What: Still Theme Cross-Fade. Why: The theme should switch at once. How: This turns the transition off. */
 
 
 		transition : none !important; /* What: Important Transition Override. Why: During a swap the page-wide fade has to stop every element's transition at once, including each module's own hover fades, which a plain declaration here would only beat by order. How: The !important wins over every element's own transition for the swap's length. */
