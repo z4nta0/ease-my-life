@@ -204,10 +204,10 @@
 .pagTitHea { /* What: Page Title Heading. Why: The page's main heading leads the tab. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-p04 ); /* Font Size Base Plus 4 ~= 33.876px */
+	font-size      : var( --fon-siz-p04 );                    /* Font Size Base Plus 4 ~= 33.876px */
 	font-weight    : 500;
-	letter-spacing : -0.025em;
-	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	letter-spacing : calc( var( --cdn-pow-013-rec ) * -1em ); /* Core-Design-Number to the Power of 13 Reciprocal ~= -0.026em */
+	line-height    : var( --ver-rhy-m01 );                    /* Vertical Rhythm Base Minus 1 = 1 */
 	margin         : 0;
 
 
@@ -705,10 +705,10 @@
 .picTitHea { /* What: Picker Title Heading. Why: The picker's name heads its stats. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
+	font-size      : var( --fon-siz-p03 );                    /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight    : 500;
-	letter-spacing : -0.025em;
-	margin         : var( --spa-ver-m03 ) 0 0; /* Spacing Vertical Base Minus 3 ~= 6.268px */
+	letter-spacing : calc( var( --cdn-pow-013-rec ) * -1em ); /* Core-Design-Number to the Power of 13 Reciprocal ~= -0.026em */
+	margin         : var( --spa-ver-m03 ) 0 0;                /* Spacing Vertical Base Minus 3 ~= 6.268px */
 
 
 }
@@ -2014,7 +2014,7 @@
 	color          : oklch( from var( --tex-mut-col ) l c h / 0.85 ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	font-family    : var( --fon-fam-sec );                            /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas );                            /* Font Size Base = 11px */
-	letter-spacing : 0.02em;
+	letter-spacing : calc( var( --cdn-pow-014-rec ) * 1em );          /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
 
 
 }
@@ -2296,13 +2296,13 @@
 .logWheSpa { /* What: Log When Span. Why: A one-digit day is narrower than a two-digit one, which would shift the pill before it. How: This fixes it at a rhythm step, right-aligned in small muted mono on one line. */
 
 
-	color          : var( --tex-mut-col );                /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas );                /* Font Size Base = 11px */
-	letter-spacing : 0.02em;
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	letter-spacing : calc( var( --cdn-pow-014-rec ) * 1em ); /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
 	text-align     : right;
 	white-space    : nowrap;
-	width          : calc( var( --ver-rhy-p06 ) * 1rem ); /* Vertical Rhythm Base Plus 6 ~= 78.751px */
+	width          : calc( var( --ver-rhy-p06 ) * 1rem );    /* Vertical Rhythm Base Plus 6 ~= 78.751px */
 
 
 }
@@ -2358,11 +2358,11 @@
 .pagRanSpa { /* What: Pager Range Span. Why: The showing rows read as quiet metadata. How: This sets small muted tabular mono. */
 
 
-	color                : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size            : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	color                : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family          : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );                   /* Font Size Base = 11px */
 	font-variant-numeric : tabular-nums;
-	letter-spacing       : 0.02em;
+	letter-spacing       : calc( var( --cdn-pow-014-rec ) * 1em ); /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
 
 
 }

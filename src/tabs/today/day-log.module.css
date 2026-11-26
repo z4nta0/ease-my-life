@@ -1122,10 +1122,10 @@
 .rowSubSpa { /* What: Row Subline Span. Why: The line under a name explains the item's value or the conditional's state. How: This sets it in small muted mono type. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	letter-spacing : 0.02em;
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	letter-spacing : calc( var( --cdn-pow-014-rec ) * 1em ); /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
 
 
 }
@@ -1370,7 +1370,7 @@
 	font-family    : var( --fon-fam-sec );                                                                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
 	font-size      : var( --fon-siz-bas );                                                                /* Font Size Base = 11px */
 	gap            : var( --spa-hor-m03 );                                                                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	letter-spacing : 0.02em;
+	letter-spacing : calc( var( --cdn-pow-014-rec ) * 1em );                                              /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
 	margin         : 0 0 var( --spa-ver-m02 );                                                            /* Spacing Vertical Base Minus 2 ~= 8.304px */
 	padding        : var( --spa-ver-m03 ) var( --spa-hor-m01 ) var( --spa-ver-m03 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
 

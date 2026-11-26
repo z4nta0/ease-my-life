@@ -76,10 +76,10 @@
 .picTitHea { /* What: Picker Title Heading. Why: The picker's name heads the view. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
+	font-size      : var( --fon-siz-p03 );                    /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight    : 500;
-	letter-spacing : -0.025em;
-	margin         : var( --spa-ver-m05 ) 0 0; /* Spacing Vertical Base Minus 5 ~= 3.572px */
+	letter-spacing : calc( var( --cdn-pow-013-rec ) * -1em ); /* Core-Design-Number to the Power of 13 Reciprocal ~= -0.026em */
+	margin         : var( --spa-ver-m05 ) 0 0;                /* Spacing Vertical Base Minus 5 ~= 3.572px */
 
 
 }
@@ -333,10 +333,10 @@
 .senNamDiv { /* What: Sent Name Div. Why: The sent item's name is the confirmation's headline. How: This sets it large and wrapping cleanly. */
 
 
-	color          : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
-	font-size      : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+	color          : var( --tex-mai-col );                    /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-size      : var( --fon-siz-p03 );                    /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight    : 500;
-	letter-spacing : -0.015em;
+	letter-spacing : calc( var( --cdn-pow-015-rec ) * -1em ); /* Core-Design-Number to the Power of 15 Reciprocal ~= -0.015em */
 	text-wrap      : pretty;
 
 

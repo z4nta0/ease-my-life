@@ -141,10 +141,10 @@
 .intTitHea { /* What: Intro Title Heading. Why: The title leads the card. How: This centers it in a larger, tighter heading style. */
 
 
-	font-size      : var( --fon-siz-p02 );     /* Font Size Base Plus 2 ~= 19.304px */
+	font-size      : var( --fon-siz-p02 );                    /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight    : 600;
-	letter-spacing : -0.02em;
-	margin         : 0 0 var( --spa-ver-m02 ); /* Spacing Vertical Base Minus 2 ~= 8.304px */
+	letter-spacing : calc( var( --cdn-pow-014-rec ) * -1em ); /* Core-Design-Number to the Power of 14 Reciprocal ~= -0.020em */
+	margin         : 0 0 var( --spa-ver-m02 );                /* Spacing Vertical Base Minus 2 ~= 8.304px */
 	text-align     : center;
 
 

@@ -204,10 +204,10 @@
 .pagTitHea { /* What: Page Title Heading. Why: The page's main heading leads the tab. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-p04 ); /* Font Size Base Plus 4 ~= 33.876px */
+	font-size      : var( --fon-siz-p04 );                    /* Font Size Base Plus 4 ~= 33.876px */
 	font-weight    : 500;
-	letter-spacing : -0.025em;
-	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	letter-spacing : calc( var( --cdn-pow-013-rec ) * -1em ); /* Core-Design-Number to the Power of 13 Reciprocal ~= -0.026em */
+	line-height    : var( --ver-rhy-m01 );                    /* Vertical Rhythm Base Minus 1 = 1 */
 	margin         : 0;
 
 
@@ -516,7 +516,7 @@
 	font-weight     : 500;
 	gap             : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
 	justify-content : space-between;
-	letter-spacing  : -0.005em;
+	letter-spacing  : calc( var( --cdn-pow-019-rec ) * -1em );   /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
 	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );       /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	padding         : var( --spa-ver-m03 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
 	text-align      : left;
@@ -1251,7 +1251,7 @@
 	font-weight    : 500;
 	gap            : var( --spa-hor-m04 );                            /* Spacing Horizontal Base Minus 4 ~= 4.732px */
 	height         : calc( var( --ver-rhy-p02 ) * 1rem );             /* Vertical Rhythm Base Plus 2 ~= 25.572px */
-	letter-spacing : -0.005em;
+	letter-spacing : calc( var( --cdn-pow-019-rec ) * -1em );         /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
 	padding        : 0 var( --spa-hor-m01 );                          /* Spacing Horizontal Base Minus 1 = 11px */
 	transition     : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Transition Base ~= 157.8ms */
 	white-space    : nowrap;
@@ -1318,9 +1318,9 @@
 .aboNamSpa { /* What: About Name Span. Why: The app's name leads the block. How: This sets it large and bold. */
 
 
-	font-size      : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
+	font-size      : var( --fon-siz-p02 );                    /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight    : 600;
-	letter-spacing : -0.015em;
+	letter-spacing : calc( var( --cdn-pow-015-rec ) * -1em ); /* Core-Design-Number to the Power of 15 Reciprocal ~= -0.015em */
 
 
 }

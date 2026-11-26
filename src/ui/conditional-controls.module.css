@@ -519,9 +519,9 @@
 .modNamSpa { /* What: Mode Name Span. Why: The type's name leads the option. How: This sets it in medium weight. */
 
 
-	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-size      : var( --fon-siz-p01 );                    /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
-	letter-spacing : -0.005em;
+	letter-spacing : calc( var( --cdn-pow-019-rec ) * -1em ); /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
 
 
 }

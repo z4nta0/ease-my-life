@@ -1470,7 +1470,7 @@
 	font-weight     : 500;
 	gap             : var( --spa-hor-m01 );                      /* Spacing Horizontal Base Minus 1 = 11px */
 	justify-content : space-between;
-	letter-spacing  : -0.005em;
+	letter-spacing  : calc( var( --cdn-pow-019-rec ) * -1em );   /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
 	min-height      : calc( var( --ver-rhy-p03 ) * 1rem );       /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	padding         : var( --spa-ver-m03 ) var( --spa-hor-m01 ); /* Spacing Vertical Base Minus 3 ~= 6.268px, Spacing Horizontal Base Minus 1 = 11px */
 	text-align      : left;
@@ -1630,7 +1630,7 @@
 	gap             : var( --spa-hor-m02 );                             /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	height          : calc( var( --ver-rhy-p03 ) * 1rem );              /* Vertical Rhythm Base Plus 3 ~= 33.876px */
 	justify-content : center;
-	letter-spacing  : -0.005em;
+	letter-spacing  : calc( var( --cdn-pow-019-rec ) * -1em );          /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
 	padding         : 0 var( --spa-hor-m01 );                           /* Spacing Horizontal Base Minus 1 = 11px */
 	transition      : color var( --dur-tra-m01 ) var( --mot-sta-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), background var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-bas ) var( --mot-dec-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base ~= 157.8ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 	width           : 100%;
@@ -2071,12 +2071,12 @@
 	align-items    : center;
 	border-radius  : 999px;
 	display        : inline-flex;
-	font-size      : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
+	font-size      : var( --fon-siz-p01 );                    /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
-	gap            : var( --spa-hor-m03 );                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	height         : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
-	letter-spacing : -0.005em;
-	padding        : 0 var( --spa-hor-bas );              /* Spacing Horizontal Base ~= 14.572px */
+	gap            : var( --spa-hor-m03 );                    /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height         : calc( var( --ver-rhy-p03 ) * 1rem );     /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	letter-spacing : calc( var( --cdn-pow-019-rec ) * -1em ); /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
+	padding        : 0 var( --spa-hor-bas );                  /* Spacing Horizontal Base ~= 14.572px */
 	transition     : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ) */
 
 

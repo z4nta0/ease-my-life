@@ -204,9 +204,9 @@
 .legDocArt h1 { /* What: Legal Document Title. Why: The document opens with its own name. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-p03 );     /* Font Size Base Plus 3 ~= 25.572px */
-	letter-spacing : -0.02em;
-	margin         : var( --spa-ver-p02 ) 0 0; /* Spacing Vertical Base Plus 2 ~= 25.572px */
+	font-size      : var( --fon-siz-p03 );                    /* Font Size Base Plus 3 ~= 25.572px */
+	letter-spacing : calc( var( --cdn-pow-014-rec ) * -1em ); /* Core-Design-Number to the Power of 14 Reciprocal ~= -0.020em */
+	margin         : var( --spa-ver-p02 ) 0 0;                /* Spacing Vertical Base Plus 2 ~= 25.572px */
 
 
 }

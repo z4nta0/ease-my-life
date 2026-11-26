@@ -206,10 +206,10 @@
 .pagTitHea { /* What: Page Title Heading. Why: The page's main heading leads the tab. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-p04 ); /* Font Size Base Plus 4 ~= 33.876px */
+	font-size      : var( --fon-siz-p04 );                    /* Font Size Base Plus 4 ~= 33.876px */
 	font-weight    : 500;
-	letter-spacing : -0.025em;
-	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	letter-spacing : calc( var( --cdn-pow-013-rec ) * -1em ); /* Core-Design-Number to the Power of 13 Reciprocal ~= -0.026em */
+	line-height    : var( --ver-rhy-m01 );                    /* Vertical Rhythm Base Minus 1 = 1 */
 	margin         : 0;
 
 
@@ -1444,7 +1444,7 @@
 	font           : inherit;
 	font-size      : var( --fon-siz-p01 );                                   /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
-	letter-spacing : -0.005em;
+	letter-spacing : calc( var( --cdn-pow-019-rec ) * -1em );                /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
 	padding        : var( --spa-ver-m09 ) 0;                                 /* Spacing Vertical Base Minus 9 ~= 1.160px */
 	transition     : border-color var( --dur-tra-m01 ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease */
 	width          : 100%;
@@ -1484,9 +1484,9 @@
 .rowNamSpa { /* What: Row Name Span. Why: A closed row leads with its item's name. How: This sets it in medium weight. */
 
 
-	font-size      : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
+	font-size      : var( --fon-siz-p01 );                    /* Font Size Base Plus 1 ~= 14.572px */
 	font-weight    : 500;
-	letter-spacing : -0.005em;
+	letter-spacing : calc( var( --cdn-pow-019-rec ) * -1em ); /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
 
 
 }

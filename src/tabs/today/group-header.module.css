@@ -106,7 +106,7 @@
 	font-size        : var( --fon-siz-p02 );                                               /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight      : 500;
 	height           : calc( var( --ver-rhy-p03 ) * 1rem );                                /* Vertical Rhythm Base Plus 3 ~= 33.876px */
-	letter-spacing   : -0.015em;
+	letter-spacing   : calc( var( --cdn-pow-015-rec ) * -1em );                            /* Core-Design-Number to the Power of 15 Reciprocal ~= -0.015em */
 	margin           : calc( var( --spa-ver-m06 ) * -1 ) 0;                                /* Spacing Vertical Base Minus 6 ~= -2.696px */
 	max-width        : calc( var( --ver-rhy-p10 ) * 1rem );                                /* Vertical Rhythm Base Plus 10 ~= 242.522px */
 	min-width        : 0;
@@ -209,7 +209,7 @@
 	font-size      : var( --fon-siz-p02 );                                                /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight    : 500;
 	gap            : var( --spa-hor-m03 );                                                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	letter-spacing : -0.015em;
+	letter-spacing : calc( var( --cdn-pow-015-rec ) * -1em );                             /* Core-Design-Number to the Power of 15 Reciprocal ~= -0.015em */
 	margin         : calc( var( --spa-ver-m07 ) * -1 ) calc( var( --spa-hor-m03 ) * -1 ); /* Spacing Vertical Base Minus 7 ~= -2.035px, Spacing Horizontal Base Minus 3 ~= -6.268px */
 	padding        : var( --spa-ver-m07 ) var( --spa-hor-m03 );                           /* Spacing Vertical Base Minus 7 ~= 2.035px, Spacing Horizontal Base Minus 3 ~= 6.268px */
 	text-wrap      : pretty;
@@ -281,9 +281,9 @@
 .groNamHea { /* What: Group Name Heading. Why: Outside Edit Mode the group's name leads its header. How: This sets it in medium-weight heading text with no margin. */
 
 
-	font-size      : var( --fon-siz-p02 ); /* Font Size Base Plus 2 ~= 19.304px */
+	font-size      : var( --fon-siz-p02 );                    /* Font Size Base Plus 2 ~= 19.304px */
 	font-weight    : 500;
-	letter-spacing : -0.015em;
+	letter-spacing : calc( var( --cdn-pow-015-rec ) * -1em ); /* Core-Design-Number to the Power of 15 Reciprocal ~= -0.015em */
 	margin         : 0;
 	text-wrap      : pretty;
 
@@ -297,13 +297,13 @@
 
 
 	align-items          : baseline;
-	color                : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color                : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display              : inline-flex;
-	font-family          : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size            : var( --fon-siz-bas ); /* Font Size Base = 11px */
+	font-family          : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size            : var( --fon-siz-bas );                   /* Font Size Base = 11px */
 	font-variant-numeric : tabular-nums;
-	gap                  : var( --spa-hor-m05 ); /* Spacing Horizontal Base Minus 5 ~= 3.572px */
-	letter-spacing       : 0.02em;
+	gap                  : var( --spa-hor-m05 );                   /* Spacing Horizontal Base Minus 5 ~= 3.572px */
+	letter-spacing       : calc( var( --cdn-pow-014-rec ) * 1em ); /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
 
 
 }

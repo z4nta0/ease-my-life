@@ -197,13 +197,13 @@
 .holDatSpa { /* What: Holiday Date Span. Why: The landing date and any observed note stack under the name in quieter type. How: This sets them in small muted mono, stacked in a tight column. */
 
 
-	color          : var( --tex-mut-col ); /* Text Muted Color = oklch( 0.5 0.012 250 ) */
+	color          : var( --tex-mut-col );                   /* Text Muted Color = oklch( 0.5 0.012 250 ) */
 	display        : flex;
 	flex-direction : column;
-	font-family    : var( --fon-fam-sec ); /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size      : var( --fon-siz-bas ); /* Font Size Base = 11px */
-	gap            : var( --spa-ver-m07 ); /* Spacing Vertical Base Minus 7 ~= 2.035px */
-	letter-spacing : 0.02em;
+	font-family    : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size      : var( --fon-siz-bas );                   /* Font Size Base = 11px */
+	gap            : var( --spa-ver-m07 );                   /* Spacing Vertical Base Minus 7 ~= 2.035px */
+	letter-spacing : calc( var( --cdn-pow-014-rec ) * 1em ); /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
 	position       : relative;
 
 

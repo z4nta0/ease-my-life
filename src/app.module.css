@@ -658,11 +658,11 @@
 .appTabNav--top .braWorSpa .worLifSpa { /* What: Wordmark Life Span In Brand Wordmark Span In App Tab Nav Side And Top. Why: "My Life" completes the wordmark in the brand's second face. How: This sets it bold in Quicksand, in the text color. */
 
 
-	color          : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
-	font-family    : var( --fon-fam-br2 ); /* Font Family Brand 2 = 'Quicksand', then the main font */
-	font-size      : var( --fon-siz-p03 ); /* Font Size Base Plus 3 ~= 25.572px */
+	color          : var( --tex-mai-col );                    /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family    : var( --fon-fam-br2 );                    /* Font Family Brand 2 = 'Quicksand', then the main font */
+	font-size      : var( --fon-siz-p03 );                    /* Font Size Base Plus 3 ~= 25.572px */
 	font-weight    : 700;
-	letter-spacing : -0.005em;
+	letter-spacing : calc( var( --cdn-pow-019-rec ) * -1em ); /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
 
 
 }

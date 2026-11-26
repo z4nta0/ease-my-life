@@ -206,10 +206,10 @@
 .pagTitHea { /* What: Page Title Heading. Why: The page's main heading leads the tab. How: This sets it large and tight. */
 
 
-	font-size      : var( --fon-siz-p04 ); /* Font Size Base Plus 4 ~= 33.876px */
+	font-size      : var( --fon-siz-p04 );                    /* Font Size Base Plus 4 ~= 33.876px */
 	font-weight    : 500;
-	letter-spacing : -0.025em;
-	line-height    : var( --ver-rhy-m01 ); /* Vertical Rhythm Base Minus 1 = 1 */
+	letter-spacing : calc( var( --cdn-pow-013-rec ) * -1em ); /* Core-Design-Number to the Power of 13 Reciprocal ~= -0.026em */
+	line-height    : var( --ver-rhy-m01 );                    /* Vertical Rhythm Base Minus 1 = 1 */
 	margin         : 0;
 
 

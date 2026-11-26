@@ -22,17 +22,17 @@
 
 	align-items          : center;
 	border-radius        : 999px;
-	display              : var( --but-bas-dis, inline-flex );   /* Button Base Display, set by its parent, falling back to inline-flex */ /* What: Button Display. Why: A button that only belongs at some widths, like Today's footer Edit Mode button, is hidden by its caller. How: A caller sets --but-bas-dis on the button, falling back to the normal inline flex. */
-	flex                 : var( --but-bas-fle, 0 1 auto );      /* Button Base Flex, set by its parent, falling back to 0 1 auto */ /* What: Button Flex. Why: Some rows need their buttons to keep their size instead of shrinking. How: A parent sets --but-bas-fle, falling back to the normal flex sizing. */
-	font-size            : var( --fon-siz-p01 );                /* Font Size Base Plus 1 ~= 14.572px */
-	font-variant-numeric : var( --but-bas-fig, inherit );       /* Button Base Figures, set by its parent, falling back to inherit */ /* What: Button Figures. Why: A button whose label counts up should keep its width steady as digits change. How: A parent sets --but-bas-fig to tabular figures, otherwise the button inherits as usual. */
+	display              : var( --but-bas-dis, inline-flex );       /* Button Base Display, set by its parent, falling back to inline-flex */ /* What: Button Display. Why: A button that only belongs at some widths, like Today's footer Edit Mode button, is hidden by its caller. How: A caller sets --but-bas-dis on the button, falling back to the normal inline flex. */
+	flex                 : var( --but-bas-fle, 0 1 auto );          /* Button Base Flex, set by its parent, falling back to 0 1 auto */ /* What: Button Flex. Why: Some rows need their buttons to keep their size instead of shrinking. How: A parent sets --but-bas-fle, falling back to the normal flex sizing. */
+	font-size            : var( --fon-siz-p01 );                    /* Font Size Base Plus 1 ~= 14.572px */
+	font-variant-numeric : var( --but-bas-fig, inherit );           /* Button Base Figures, set by its parent, falling back to inherit */ /* What: Button Figures. Why: A button whose label counts up should keep its width steady as digits change. How: A parent sets --but-bas-fig to tabular figures, otherwise the button inherits as usual. */
 	font-weight          : 500;
-	gap                  : var( --spa-hor-m03 );                /* Spacing Horizontal Base Minus 3 ~= 6.268px */
-	height               : calc( var( --ver-rhy-p03 ) * 1rem ); /* Vertical Rhythm Base Plus 3 ~= 33.876px */
-	letter-spacing       : -0.005em;
-	padding              : 0 var( --spa-hor-bas );              /* Spacing Horizontal Base ~= 14.572px */
+	gap                  : var( --spa-hor-m03 );                    /* Spacing Horizontal Base Minus 3 ~= 6.268px */
+	height               : calc( var( --ver-rhy-p03 ) * 1rem );     /* Vertical Rhythm Base Plus 3 ~= 33.876px */
+	letter-spacing       : calc( var( --cdn-pow-019-rec ) * -1em ); /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
+	padding              : 0 var( --spa-hor-bas );                  /* Spacing Horizontal Base ~= 14.572px */
 	transition           : background var( --dur-tra-m01 ) var( --mot-sta-eas ), color var( --dur-tra-m01 ) var( --mot-sta-eas ), transform var( --dur-tra-m02 ) var( --mot-dec-eas ), border-color var( --dur-tra-m01 ) var( --mot-sta-eas ), outline-offset var( --dur-tra-bas ) var( --mot-sta-eas ), outline-width var( --dur-tra-bas ) var( --mot-sta-eas ); /* Duration Transition Base Minus 1 ~= 119.2ms, Motion Standard Easing = ease, Duration Transition Base Minus 2 ~= 89.9ms, Motion Decelerate Easing = cubic-bezier( .2, .7, .3, 1 ), Duration Transition Base ~= 157.8ms */
-	white-space          : var( --but-bas-whi, inherit );       /* Button Base White Space, set by its parent, falling back to inherit */ /* What: Button Wrapping. Why: A button in a tight row shouldn't wrap its label. How: A parent sets --but-bas-whi to nowrap, otherwise the button inherits as usual. */
+	white-space          : var( --but-bas-whi, inherit );           /* Button Base White Space, set by its parent, falling back to inherit */ /* What: Button Wrapping. Why: A button in a tight row shouldn't wrap its label. How: A parent sets --but-bas-whi to nowrap, otherwise the button inherits as usual. */
 
 
 }

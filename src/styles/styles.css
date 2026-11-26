@@ -118,6 +118,14 @@
 	--cdn-pow-009-rec : calc( 1 / var( --cdn-pow-009 ) ); /* What: Core-Design-Number to the Power of 9 Reciprocal ~= 0.080. Why: Sometimes the reciprocal of the ninth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 9. */
 	--cdn-pow-010-rec : calc( 1 / var( --cdn-pow-010 ) ); /* What: Core-Design-Number to the Power of 10 Reciprocal ~= 0.060. Why: Sometimes the reciprocal of the tenth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 10. */
 	--cdn-pow-011-rec : calc( 1 / var( --cdn-pow-011 ) ); /* What: Core-Design-Number to the Power of 11 Reciprocal ~= 0.045. Why: Sometimes the reciprocal of the eleventh power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 11. */
+	--cdn-pow-012-rec : calc( 1 / var( --cdn-pow-012 ) ); /* What: Core-Design-Number to the Power of 12 Reciprocal ~= 0.034. Why: Sometimes the reciprocal of the twelfth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 12. */
+	--cdn-pow-013-rec : calc( 1 / var( --cdn-pow-013 ) ); /* What: Core-Design-Number to the Power of 13 Reciprocal ~= 0.026. Why: Sometimes the reciprocal of the thirteenth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 13. */
+	--cdn-pow-014-rec : calc( 1 / var( --cdn-pow-014 ) ); /* What: Core-Design-Number to the Power of 14 Reciprocal ~= 0.020. Why: Sometimes the reciprocal of the fourteenth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 14. */
+	--cdn-pow-015-rec : calc( 1 / var( --cdn-pow-015 ) ); /* What: Core-Design-Number to the Power of 15 Reciprocal ~= 0.015. Why: Sometimes the reciprocal of the fifteenth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 15. */
+	--cdn-pow-016-rec : calc( 1 / var( --cdn-pow-016 ) ); /* What: Core-Design-Number to the Power of 16 Reciprocal ~= 0.011. Why: Sometimes the reciprocal of the sixteenth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 16. */
+	--cdn-pow-017-rec : calc( 1 / var( --cdn-pow-017 ) ); /* What: Core-Design-Number to the Power of 17 Reciprocal ~= 0.008. Why: Sometimes the reciprocal of the seventeenth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 17. */
+	--cdn-pow-018-rec : calc( 1 / var( --cdn-pow-018 ) ); /* What: Core-Design-Number to the Power of 18 Reciprocal ~= 0.006. Why: Sometimes the reciprocal of the eighteenth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 18. */
+	--cdn-pow-019-rec : calc( 1 / var( --cdn-pow-019 ) ); /* What: Core-Design-Number to the Power of 19 Reciprocal ~= 0.005. Why: Sometimes the reciprocal of the nineteenth power of the core design number is needed for scaling, literal number or percentage. How: This divides one by the core design number to the power of 19. */
 
 	/* #endregion Core Design Numbers */
 
@@ -478,13 +486,13 @@ body { /* What: Page Body Text. Why: All text starts from the app's own typeface
 
 	-moz-osx-font-smoothing : grayscale;
 	-webkit-font-smoothing  : antialiased;
-	background              : var( --bac-pag-col ); /* Background Page Color = oklch( 0.985 0.003 240 ) */
-	color                   : var( --tex-mai-col ); /* Text Main Color = oklch( 0.17 0.012 250 ) */
-	font-family             : var( --fon-fam-mai ); /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
+	background              : var( --bac-pag-col );                    /* Background Page Color = oklch( 0.985 0.003 240 ) */
+	color                   : var( --tex-mai-col );                    /* Text Main Color = oklch( 0.17 0.012 250 ) */
+	font-family             : var( --fon-fam-mai );                    /* Font Family Main = 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif */
 	font-feature-settings   : 'ss01', 'cv11';
-	font-size               : var( --fon-siz-p01 ); /* Font Size Base Plus 1 ~= 14.572px */
-	letter-spacing          : -0.005em;
-	line-height             : var( --ver-rhy-bas ); /* Vertical Rhythm Base ~= 1.325 */
+	font-size               : var( --fon-siz-p01 );                    /* Font Size Base Plus 1 ~= 14.572px */
+	letter-spacing          : calc( var( --cdn-pow-019-rec ) * -1em ); /* Core-Design-Number to the Power of 19 Reciprocal ~= -0.005em */
+	line-height             : var( --ver-rhy-bas );                    /* Vertical Rhythm Base ~= 1.325 */
 
 
 }

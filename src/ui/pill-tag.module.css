@@ -21,21 +21,21 @@
 
 
 	align-items     : center;
-	align-self      : var( --pil-tag-ali, auto );          /* Pill Tag Align, set by its parent, falling back to auto */
+	align-self      : var( --pil-tag-ali, auto );             /* Pill Tag Align, set by its parent, falling back to auto */
 	border-radius   : 999px;
 	display         : inline-flex;
-	flex            : var( --pil-tag-fle, 0 1 auto );      /* Pill Tag Flex, set by its parent, falling back to 0 1 auto */
-	font-family     : var( --fon-fam-sec );                /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
-	font-size       : var( --fon-siz-bas );                /* Font Size Base = 11px */
+	flex            : var( --pil-tag-fle, 0 1 auto );         /* Pill Tag Flex, set by its parent, falling back to 0 1 auto */
+	font-family     : var( --fon-fam-sec );                   /* Font Family Secondary = 'Geist Mono', ui-monospace, SFMono-Regular, monospace */
+	font-size       : var( --fon-siz-bas );                   /* Font Size Base = 11px */
 	font-weight     : 500;
-	height          : calc( var( --ver-rhy-p01 ) * 1rem ); /* Vertical Rhythm Base Plus 1 ~= 19.304px */
-	justify-content : var( --pil-tag-jus, normal );        /* Pill Tag Justify, set by its parent, falling back to normal */
-	letter-spacing  : 0.02em;
-	margin-left     : var( --pil-lef-mar, 0 );             /* Pill Left Margin, set by its parent, falling back to 0 */
-	margin-top      : var( --pil-top-mar, 0 );             /* Pill Top Margin, set by its parent, falling back to 0 */
-	padding         : 0 var( --spa-hor-m02 );              /* Spacing Horizontal Base Minus 2 ~= 8.304px */
+	height          : calc( var( --ver-rhy-p01 ) * 1rem );    /* Vertical Rhythm Base Plus 1 ~= 19.304px */
+	justify-content : var( --pil-tag-jus, normal );           /* Pill Tag Justify, set by its parent, falling back to normal */
+	letter-spacing  : calc( var( --cdn-pow-014-rec ) * 1em ); /* Core-Design-Number to the Power of 14 Reciprocal ~= 0.020em */
+	margin-left     : var( --pil-lef-mar, 0 );                /* Pill Left Margin, set by its parent, falling back to 0 */
+	margin-top      : var( --pil-top-mar, 0 );                /* Pill Top Margin, set by its parent, falling back to 0 */
+	padding         : 0 var( --spa-hor-m02 );                 /* Spacing Horizontal Base Minus 2 ~= 8.304px */
 	text-transform  : uppercase;
-	width           : var( --pil-tag-wid, auto );          /* Pill Tag Width, set by its parent, falling back to auto */
+	width           : var( --pil-tag-wid, auto );             /* Pill Tag Width, set by its parent, falling back to auto */
 
 
 }
